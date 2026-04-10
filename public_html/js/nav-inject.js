@@ -6,10 +6,11 @@
  * in ONE file instead of editing 12 page <head>s.
  */
 (function () {
-  /* ---- GLOBAL ACCESSIBILITY CSS — injected into <head> as early as possible ----
-     Runs synchronously when this script is parsed, before init() / DOMContentLoaded.
-     This ensures focus rings render correctly on first interaction and reduced-motion
-     takes effect before any animation has a chance to start. */
+  /* ---- GLOBAL CSS injected synchronously during <head> parse ----
+     This script tag lives in <head> BEFORE any page <style>. We create
+     a <style> element and append it to head — it lands BEFORE the page
+     <style> that follows in source, so page rules win via source order
+     when specificity is equal. */
   if (!document.getElementById('zd-a11y-css')) {
     var a11yStyle = document.createElement('style');
     a11yStyle.id = 'zd-a11y-css';
@@ -93,9 +94,11 @@
       '.zd-hamburger.zd-open .bar1{transform:translateY(7px) rotate(45deg);}' +
       '.zd-hamburger.zd-open .bar2{opacity:0;}' +
       '.zd-hamburger.zd-open .bar3{transform:translateY(-7px) rotate(-45deg);}';
-    // Insert as early as possible — at the top of <head> if it exists, else <html>
+    // Append to head at parse time. This style lands just after the <script>
+    // (which is before the page's own <style>), so the page <style> wins when
+    // specificity is equal — per-page rules override these defaults.
     var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
-    head.insertBefore(a11yStyle, head.firstChild);
+    head.appendChild(a11yStyle);
   }
 
   function init() {

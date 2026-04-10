@@ -32,6 +32,7 @@
 <link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
 
 <link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<script src="js/nav-inject.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous"></script>
 <style>
@@ -53,13 +54,12 @@
   h1, h2, h3, .serif { font-family: 'DM Serif Display', serif; }
 
   /* ═══ NAV OVERRIDES — transparent over hero video, scrolled state ═══ */
-  /* Base nav layout is injected by nav-inject.js. These rules only override the over-video + scrolled state. */
-  nav { position: fixed!important; left: 0; right: 0; transition: background 0.3s cubic-bezier(0.16,1,0.3,1), padding 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s cubic-bezier(0.16,1,0.3,1); }
-  nav:not(.scrolled) { background: transparent!important; border-bottom: none!important; backdrop-filter: none!important; -webkit-backdrop-filter: none!important; box-shadow: none; }
+  /* Base nav layout is injected by nav-inject.js. These rules only override the over-video state. */
+  nav:not(.scrolled) { background: transparent !important; border-bottom: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: none; }
   nav:not(.scrolled) .nav-links a.nav-link,
-  nav:not(.scrolled) .nav-btn-partner { color: #fff!important; text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
-  nav:not(.scrolled) .nav-links a.nav-link:hover { color: var(--zd-gold)!important; }
-  nav:not(.scrolled) .nav-btn-login { color: #fff!important; border-color: rgba(255,255,255,0.3); }
+  nav:not(.scrolled) .nav-btn-partner { color: #fff !important; text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  nav:not(.scrolled) .nav-links a.nav-link:hover { color: var(--zd-gold) !important; }
+  nav:not(.scrolled) .nav-btn-login { color: #fff !important; border-color: rgba(255,255,255,0.3); }
   nav:not(.scrolled) .nav-btn-login:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.5); }
 
   /* ═══ HERO ═══ */
@@ -647,7 +647,6 @@
   function activate(n){ cards.forEach(function(c){c.classList.toggle('active',c.dataset.feature===n);}); states.forEach(function(s){s.classList.toggle('active',s.dataset.state===n);}); }
 })();
 </script>
-<script src="js/nav-inject.js"></script>
 <script src="js/cookie-banner.js"></script>
 <script src="js/analytics-loader.js"></script>
 </body>

@@ -39,6 +39,7 @@ ZaDeteto 2.0 Claude/
 ## Always Do First
 - **Invoke the `frontend-design` skill** before writing any frontend code, every session, no exceptions.
 - After you create or update any execution script (`executions/*.py`), you **must** follow the Sub-Agent Trigger Sequence below. No exceptions.
+- After you create or update any HTML, CSS, or JS file in `public_html/`, you **must** follow the Frontend Review Trigger below. No exceptions.
 
 ---
 
@@ -68,6 +69,18 @@ This is mandatory for every `.py` change. Do not skip steps. Do not batch multip
 
 ---
 
+## Frontend Review Trigger
+
+After creating or modifying any frontend file (`*.html`, `*.css`, or `*.js`) inside `public_html/`, follow this sequence **automatically** without being asked:
+
+1. **Invoke `frontend-reviewer`** — pass the path(s) to the changed file(s). Review the report.
+2. **Apply fixes** from any Critical or Important findings.
+3. **Re-invoke `frontend-reviewer`** if Critical findings were fixed, to verify they are resolved.
+
+This is mandatory for every frontend file change in `public_html/`. Do not skip steps.
+
+---
+
 ## Self-Annealing Protocol
 
 When an error occurs during script execution:
@@ -89,22 +102,40 @@ Do not ask the user for help on the first error. Diagnose, fix, verify first.
 - If no reference image: design from scratch with high craft (see guardrails below).
 - Screenshot your output, compare against reference, fix mismatches, re-screenshot. Do at least 2 comparison rounds. Stop only when no visible differences remain or user says so.
 
-### Local Server
-- **Always serve on localhost** — never screenshot a `file:///` URL.
-- Start the dev server: `node serve.mjs` (serves the project root at `http://localhost:3000`)
-- Website pages are at `http://localhost:3000/public_html/`
-- `serve.mjs` lives in the project root. Start it in the background before taking any screenshots.
-- If the server is already running, do not start a second instance.
+### Screenshot Workflow (Chrome Headless — THE way to take screenshots)
 
-### Screenshot Workflow
-- Puppeteer is installed at `C:/Users/nateh/AppData/Local/Temp/puppeteer-test/`. Chrome cache is at `C:/Users/nateh/.cache/puppeteer/`.
-- **Always screenshot from localhost:** `node screenshot.mjs http://localhost:3000/public_html/`
-- Screenshots are saved automatically to `./temporary screenshots/screenshot-N.png` (auto-incremented, never overwritten).
-- Optional label suffix: `node screenshot.mjs http://localhost:3000/public_html/ label` -> saves as `screenshot-N-label.png`
-- `screenshot.mjs` lives in the project root. Use it as-is.
-- After screenshotting, read the PNG from `temporary screenshots/` with the Read tool.
-- When comparing, be specific: "heading is 32px but reference shows ~24px", "card gap is 16px but should be 24px"
-- Check: spacing/padding, font size/weight/line-height, colors (exact hex), alignment, border-radius, shadows, image sizing
+**Node.js is NOT installed on this machine.** Do not try `node serve.mjs` or `node screenshot.mjs` — they will fail with "node: command not found". Use Chrome headless directly instead. It reads `file://` URLs fine (no local server needed) and works out of the box.
+
+**Chrome executable path:** `/c/Program Files/Google/Chrome/Application/chrome.exe`
+
+**Screenshots output folder:** `/c/tmp/` (the project `temporary screenshots/` folder has a space in its path which Chrome's `--screenshot` flag rejects, so use `/c/tmp/` instead and read PNGs from there).
+
+**Desktop screenshot (1920x1080):**
+```bash
+"/c/Program Files/Google/Chrome/Application/chrome.exe" --headless=new --disable-gpu --hide-scrollbars \
+  --window-size=1920,1080 \
+  --screenshot="C:/tmp/desktop-index.png" \
+  "file:///J:/My%20Drive/%21WIP%20VS%20Code%20%26%20Antigravity%20-10.4.2026/ZaDeteto%202.0%20Claude/public_html/index.html"
+```
+
+**Mobile screenshot (iPhone 12 Pro = 390x844):**
+```bash
+"/c/Program Files/Google/Chrome/Application/chrome.exe" --headless=new --disable-gpu --hide-scrollbars \
+  --window-size=390,844 \
+  --screenshot="C:/tmp/mobile-index.png" \
+  "file:///J:/My%20Drive/%21WIP%20VS%20Code%20%26%20Antigravity%20-10.4.2026/ZaDeteto%202.0%20Claude/public_html/index.html"
+```
+
+**URL encoding:** the project path contains spaces, `!`, and `&` which MUST be percent-encoded in the `file://` URL — otherwise Chrome silently fails. Use `%20` for spaces, `%21` for `!`, `%26` for `&`.
+
+**Reading the screenshot:** use the `Read` tool on `C:/tmp/<filename>.png` (NOT relative path — absolute path required).
+
+**Ignore these Chrome stderr messages** — they're benign and don't prevent the screenshot:
+- `ERROR:chrome\browser\extensions\external_registry_loader_win.cc:161 ...`
+
+**Known limitation:** `file://` URLs cannot load Supabase data (CORS), so mobile search cards will appear empty. That's expected — verify structure and nav, not data.
+
+**Always screenshot before pushing frontend changes.** The deployed site has bitten us multiple times when I didn't verify locally first.
 
 ### Output Defaults
 - Single HTML file, all styles inline, unless user says otherwise
