@@ -1,0 +1,126 @@
+{
+  "description": "Authority profiles for content intelligence. Authorities serve as benchmarks; discovery mode finds outlier posts from anyone via topic search.",
+  "profiles": {
+    "childcare": {
+      "description": "Childcare, early education, parenting content — BG, EN, SP",
+      "search_terms_by_language": {
+        "BG": [
+          "родителство", "детска градина", "майчинство",
+          "детско развитие", "ранно детство", "деца съвети",
+          "бременност", "кърмене"
+        ],
+        "ENG": [
+          "parenting tips", "gentle parenting", "early childhood education",
+          "toddler activities", "childhood development", "motherhood",
+          "preschool activities", "positive parenting"
+        ],
+        "SP": [
+          "crianza respetuosa", "educación infantil", "maternidad",
+          "desarrollo infantil", "actividades para niños",
+          "crianza positiva", "lactancia materna"
+        ]
+      },
+      "content_focus": ["static_image", "reel", "ig_carousel", "video", "linkedin_pdf_carousel"],
+      "authorities": [
+        {
+          "name": "Suzie & Reni",
+          "platform": "instagram",
+          "language": "BG",
+          "url": "https://www.instagram.com/suzie.and.reni/",
+          "notes": "Twin BG content creators — motherhood, family humor, parenting tips"
+        },
+        {
+          "name": "Monika Aleksandrova",
+          "platform": "instagram",
+          "language": "BG",
+          "url": "https://www.instagram.com/monika.aleksandrova/",
+          "notes": "BG mom sharing parenting experiences"
+        },
+        {
+          "name": "Dr. Becky Kennedy",
+          "platform": "instagram",
+          "language": "ENG",
+          "url": "https://www.instagram.com/drbeckyatgoodinside/",
+          "notes": "Top parenting psychologist — Good Inside. Massive reach."
+        },
+        {
+          "name": "Busy Toddler",
+          "platform": "instagram",
+          "language": "ENG",
+          "url": "https://www.instagram.com/busytoddler/",
+          "notes": "Former kindergarten teacher — play-based learning activities"
+        },
+        {
+          "name": "Big Little Feelings",
+          "platform": "instagram",
+          "language": "ENG",
+          "url": "https://www.instagram.com/biglittlefeelings/",
+          "notes": "Toddler behavior reels — highly viral format"
+        },
+        {
+          "name": "Kids Eat in Color",
+          "platform": "instagram",
+          "language": "ENG",
+          "url": "https://www.instagram.com/kids.eat.in.color/",
+          "notes": "Registered dietitian — child nutrition, static images + carousels"
+        },
+        {
+          "name": "The Dad Lab",
+          "platform": "instagram",
+          "language": "ENG",
+          "url": "https://www.instagram.com/thedadlab/",
+          "notes": "Science experiments for kids — video-first content"
+        },
+        {
+          "name": "Mama Psychologists",
+          "platform": "instagram",
+          "language": "ENG",
+          "url": "https://www.instagram.com/mamapsychologists/",
+          "notes": "Registered psychologists — maternal mental health + parenting"
+        },
+        {
+          "name": "Álvaro Bilbao",
+          "platform": "instagram",
+          "language": "SP",
+          "url": "https://www.instagram.com/alvarobilbao/",
+          "notes": "Neuropsicólogo — neuroscience applied to parenting, major SP authority"
+        },
+        {
+          "name": "Lucía mi pediatra",
+          "platform": "instagram",
+          "language": "SP",
+          "url": "https://www.instagram.com/luciamipediatra/",
+          "notes": "Pediatra y escritora — child health reference in Spain"
+        },
+        {
+          "name": "Dr. Becky Kennedy",
+          "platform": "facebook",
+          "language": "ENG",
+          "url": "https://www.facebook.com/drbeckyatgoodinside/",
+          "notes": "Good Inside — FB presence"
+        },
+        {
+          "name": "Busy Toddler",
+          "platform": "facebook",
+          "language": "ENG",
+          "url": "https://www.facebook.com/busytoddler/",
+          "notes": "Play-based learning — FB"
+        },
+        {
+          "name": "Lucía mi pediatra",
+          "platform": "facebook",
+          "language": "SP",
+          "url": "https://www.facebook.com/luciamipediatra/",
+          "notes": "SP pediatric authority — FB"
+        },
+        {
+          "name": "Álvaro Bilbao",
+          "platform": "facebook",
+          "language": "SP",
+          "url": "https://www.facebook.com/alvarobilbaoneuropsicologo/",
+          "notes": "SP neuroscience + parenting — FB"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>За Детето — Cards v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --zd-purple-50: #f8f5ff;
+  --zd-purple-100: #efe8ff;
+  --zd-purple-200: #d4b6ff;
+  --zd-purple-400: #a56cff;
+  --zd-purple-600: #7c4dff;
+  --zd-purple-800: #5a2ecf;
+  --zd-gold-300: #f5d76e;
+  --zd-mint-50: #edf9f0;
+  --zd-mint-100: #d4f5dc;
+  --zd-mint-400: #4caf6a;
+  --zd-mint-600: #2e994d;
+  --zd-mint-800: #1a6e34;
+  --zd-gray-50: #fafafa;
+  --zd-gray-100: #f3f3f3;
+  --zd-gray-200: #e8e8e8;
+  --zd-gray-400: #b0b0b0;
+  --zd-gray-600: #777;
+  --zd-gray-800: #333;
+  --zd-sop: #9c27b0;
+  --zd-online: #1976d2;
+  --zd-font: 'DM Sans', sans-serif;
+  --zd-card-h: calc((100vh - 100px) / 2);
+  --zd-heart: #e74c6f;
+  --zd-nope: #c85050;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--zd-font);
+  background: #f5f3f0;
+  color: var(--zd-gray-800);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ═══ RESULTS BAR ═══ */
+.results-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(245,243,240,.92);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.results-left { display: flex; align-items: center; gap: 12px; }
+.results-count { font-size: 14px; font-weight: 600; }
+.results-count span { color: var(--zd-purple-600); font-weight: 700; }
+
+/* Dismissed toggle */
+.dismissed-toggle {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--zd-gray-600);
+  background: var(--zd-gray-100);
+  border: 1px solid var(--zd-gray-200);
+  border-radius: 8px;
+  padding: 4px 10px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.dismissed-toggle.has-items { display: flex; }
+.dismissed-toggle svg { width: 14px; height: 14px; }
+.dismissed-toggle.active {
+  background: var(--zd-purple-50);
+  border-color: var(--zd-purple-200);
+  color: var(--zd-purple-600);
+}
+
+.view-toggle {
+  display: flex; gap: 4px;
+  background: var(--zd-gray-100); border-radius: 10px; padding: 3px;
+}
+.view-btn {
+  width: 32px; height: 28px; border: none; background: transparent;
+  border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--zd-gray-400); transition: all .2s;
+}
+.view-btn.active {
+  background: #fff; color: var(--zd-gray-800);
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+.view-btn svg { width: 16px; height: 16px; }
+
+/* ═══ CARD STACK ═══ */
+.card-stack { display: flex; flex-direction: column; gap: 8px; padding: 8px 10px 80px; }
+
+/* ═══ DISMISSED SECTION ═══ */
+.dismissed-section {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.dismissed-section.visible { display: flex; }
+.dismissed-divider {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; color: var(--zd-gray-400); font-size: 11px; font-weight: 600;
+}
+.dismissed-divider::before, .dismissed-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--zd-gray-200);
+}
+
+/* ═══ BASE CARD ═══ */
+.zd-card {
+  --accent: var(--zd-gray-400);
+  --accent-light: var(--zd-gray-100);
+  --accent-text: var(--zd-gray-600);
+  --card-border: transparent;
+  background: #fff; border-radius: 18px; border: 1.5px solid var(--card-border);
+  display: flex; flex-direction: column; position: relative;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  -webkit-tap-highlight-color: transparent;
+  min-height: var(--zd-card-h); overflow: hidden;
+  touch-action: pan-y;
+  transition: transform .3s ease, opacity .3s ease, filter .4s ease, box-shadow .25s ease;
+  will-change: transform;
+}
+.zd-card.swiping { transition: none; }
+
+/* ═══ DISMISSED STATE ═══ */
+.zd-card.dismissed {
+  filter: grayscale(1);
+  opacity: .45;
+  min-height: auto;
+  --card-border: var(--zd-gray-200);
+  box-shadow: none;
+}
+.zd-card.dismissed::before { display: none; }
+.zd-card.dismissed .zd-expand-hint { display: none !important; }
+.zd-card.dismissed .zd-desc { display: none; }
+
+/* ═══ LIKED STATE ═══ */
+.zd-card.liked .zd-logo {
+  border-color: var(--zd-heart) !important;
+}
+
+/* ═══ LOGO STATUS OVERLAY ═══ */
+.zd-logo {
+  width: 56px; height: 56px; border-radius: 14px;
+  border: 2px solid var(--accent-light);
+  overflow: hidden; flex-shrink: 0; position: relative;
+}
+.zd-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+.zd-logo-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .3s;
+  pointer-events: none;
+  border-radius: 12px;
+}
+.zd-logo-overlay--x {
+  background: rgba(200,80,80,.12);
+}
+.zd-logo-overlay--x svg {
+  width: 28px; height: 28px;
+  color: var(--zd-nope); opacity: .45;
+}
+.zd-logo-overlay--heart {
+  background: rgba(231,76,111,.08);
+}
+.zd-logo-overlay--heart svg {
+  width: 24px; height: 24px;
+  color: var(--zd-heart); opacity: .4;
+}
+
+.zd-card.dismissed .zd-logo-overlay--x { opacity: 1; }
+.zd-card.liked .zd-logo-overlay--heart { opacity: 1; }
+
+/* Undo button on dismissed cards */
+.zd-undo {
+  display: none;
+  position: absolute; top: 12px; right: 12px;
+  font-size: 10px; font-weight: 600;
+  color: var(--zd-gray-600); background: #fff;
+  border: 1px solid var(--zd-gray-200);
+  border-radius: 8px; padding: 4px 10px;
+  cursor: pointer; z-index: 5;
+  -webkit-tap-highlight-color: transparent;
+}
+.zd-card.dismissed .zd-undo { display: block; }
+.zd-card.dismissed .zd-score { display: none; }
+
+/* ═══ CARD BODY ═══ */
+.zd-card-body {
+  padding: 18px 16px 14px;
+  display: flex; flex-direction: column; flex: 1; gap: 10px;
+}
+.zd-top { display: flex; gap: 12px; align-items: center; }
+.zd-info { flex: 1; min-width: 0; }
+.zd-name { font-size: 16px; font-weight: 700; line-height: 1.2; letter-spacing: -0.2px; }
+.zd-city { font-size: 12px; font-weight: 500; color: var(--zd-gray-600); margin-top: 1px; }
+.zd-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
+.zd-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 5px;
+}
+.zd-badge--tier { background: var(--accent-light); color: var(--accent-text); }
+.zd-badge--sop { background: rgba(156,39,176,.08); color: var(--zd-sop); }
+.zd-badge--online { background: rgba(25,118,210,.08); color: var(--zd-online); }
+
+.zd-score {
+  position: absolute; top: 14px; right: 14px;
+  display: flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 700; color: var(--accent);
+  background: var(--accent-light); padding: 3px 8px; border-radius: 8px;
+}
+.zd-score svg { width: 12px; height: 12px; }
+
+.zd-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.zd-tag {
+  font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 8px;
+  background: var(--zd-gray-50); color: var(--zd-gray-600);
+  border: 1px solid var(--zd-gray-200);
+}
+
+.zd-desc {
+  font-size: 13px; line-height: 1.5; color: var(--zd-gray-600);
+  display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.zd-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-top: auto; padding-top: 10px;
+  border-top: 1px solid var(--zd-gray-100);
+}
+.zd-contacts { display: flex; gap: 6px; }
+.zd-contact-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--zd-gray-50); border: 1px solid var(--zd-gray-200);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.zd-contact-icon:active { background: var(--accent-light); border-color: var(--accent); }
+.zd-contact-icon svg { width: 16px; height: 16px; color: var(--zd-gray-600); }
+
+.zd-cta-group { display: flex; gap: 6px; flex-shrink: 0; }
+.zd-cta {
+  height: 38px; padding: 0 16px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--zd-font); font-size: 12px; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+}
+.zd-cta:active { filter: brightness(.9); }
+.zd-cta--primary { background: var(--accent); color: #fff; }
+.zd-cta--secondary { background: var(--accent-light); color: var(--accent-text); }
+
+/* ═══ EXPAND ═══ */
+.zd-expand {
+  max-height: 0; overflow: hidden;
+  transition: max-height .4s cubic-bezier(.4,0,.2,1), padding .3s;
+  background: var(--accent-light); padding: 0 16px;
+}
+.zd-card.expanded .zd-expand { max-height: 400px; padding: 14px 16px; }
+.zd-expand-inner { display: flex; flex-direction: column; gap: 10px; }
+.zd-detail-row { display: flex; align-items: flex-start; gap: 10px; }
+.zd-detail-icon { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent); margin-top: 1px; }
+.zd-detail-text { font-size: 12px; line-height: 1.5; color: var(--zd-gray-800); }
+.zd-detail-label { font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-text); margin-bottom: 2px; }
+
+.zd-expand-hint {
+  display: none; align-items: center; justify-content: center;
+  padding: 6px 0 2px; color: var(--accent);
+  font-size: 11px; font-weight: 600; gap: 4px; cursor: pointer;
+}
+.zd-expand-hint svg { width: 14px; height: 14px; transition: transform .3s; }
+.zd-card.expanded .zd-expand-hint svg { transform: rotate(180deg); }
+.zd-card--elite .zd-expand-hint,
+.zd-card--verified .zd-expand-hint { display: flex; }
+
+/* ═══ TIERS ═══ */
+.zd-card--free {
+  --accent: var(--zd-gray-400); --accent-light: var(--zd-gray-100);
+  --accent-text: var(--zd-gray-600); opacity: .82;
+}
+.zd-card--free .zd-logo { border-color: var(--zd-gray-200); filter: saturate(.5); }
+.zd-card--free .zd-cta--primary { background: var(--zd-gray-400); }
+
+.zd-card--standard {
+  --accent: var(--zd-gray-600); --accent-light: var(--zd-gray-100);
+  --accent-text: var(--zd-gray-800); --card-border: var(--zd-gray-200);
+}
+.zd-card--standard .zd-cta--primary { background: var(--zd-gray-800); }
+
+.zd-card--verified {
+  --accent: var(--zd-mint-600); --accent-light: var(--zd-mint-50);
+  --accent-text: var(--zd-mint-800); --card-border: var(--zd-mint-100);
+  box-shadow: 0 2px 12px rgba(46,153,77,.08);
+}
+.zd-card--verified .zd-logo { border-color: var(--zd-mint-400); }
+.zd-card--verified .zd-tag { background: var(--zd-mint-50); border-color: var(--zd-mint-100); color: var(--zd-mint-800); }
+.zd-card--verified .zd-cta--primary { background: var(--zd-mint-600); }
+.zd-card--verified .zd-cta--secondary { background: var(--zd-mint-50); color: var(--zd-mint-800); }
+
+.zd-card--elite {
+  --accent: var(--zd-purple-600); --accent-light: var(--zd-purple-50);
+  --accent-text: var(--zd-purple-800); --card-border: var(--zd-purple-200);
+  box-shadow: 0 2px 16px rgba(124,77,255,.1);
+}
+.zd-card--elite::before {
+  content: ""; position: absolute; inset: -1.5px; border-radius: 19.5px; z-index: -1;
+  background: linear-gradient(130deg, var(--zd-purple-200) 0%, var(--zd-purple-200) 38%, var(--zd-gold-300) 50%, var(--zd-purple-200) 62%, var(--zd-purple-200) 100%);
+  background-size: 250% 100%; animation: shimmer 8s ease-in-out infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude; padding: 1.5px;
+}
+@keyframes shimmer { 0%,100%{background-position:100% 50%} 50%{background-position:0% 50%} }
+.zd-card--elite .zd-badge--tier { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-400)); color: #fff; }
+.zd-card--elite .zd-logo { border-color: var(--zd-purple-400); }
+.zd-card--elite .zd-tag { background: var(--zd-purple-50); border-color: var(--zd-purple-100); color: var(--zd-purple-800); }
+.zd-card--elite .zd-cta--primary { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-400)); }
+.zd-card--elite .zd-cta--secondary { background: var(--zd-purple-50); color: var(--zd-purple-800); }
+
+/* ═══ SAVED BAR ═══ */
+.saved-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0,0,0,.06);
+  padding: 10px 16px; display: flex; align-items: center; gap: 12px; z-index: 100;
+  transform: translateY(100%); transition: transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.saved-bar.visible { transform: translateY(0); }
+.saved-avatars { display: flex; margin-right: auto; }
+.saved-avatar {
+  width: 32px; height: 32px; border-radius: 10px;
+  border: 2px solid #fff; overflow: hidden; margin-left: -8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+.saved-avatar:first-child { margin-left: 0; }
+.saved-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.saved-count { font-size: 12px; font-weight: 600; color: var(--zd-gray-600); }
+.saved-view-btn {
+  height: 34px; padding: 0 16px; border-radius: 10px; border: none;
+  background: var(--zd-purple-600); color: #fff;
+  font-family: var(--zd-font); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+
+/* ═══ DESKTOP ═══ */
+@media (min-width: 768px) {
+  :root { --zd-card-h: auto; }
+  .card-stack, .dismissed-section {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 16px; padding: 8px 24px 80px; max-width: 900px; margin: 0 auto;
+  }
+  .dismissed-section { padding-top: 0; padding-bottom: 20px; }
+  .dismissed-divider { grid-column: 1 / -1; }
+  .zd-card { min-height: 240px; border-radius: 20px; }
+  .zd-card--elite::before { border-radius: 21.5px; }
+  .zd-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.08); transform: translateY(-2px); }
+  .zd-card.dismissed:hover { box-shadow: none; transform: none; }
+  .results-bar { max-width: 900px; margin: 0 auto; border-radius: 0 0 16px 16px; }
+}
+@media (min-width: 1100px) {
+  .card-stack, .dismissed-section { grid-template-columns: repeat(3, 1fr); max-width: 1100px; }
+  .results-bar { max-width: 1100px; }
+}
+</style>
+</head>
+<body>
+
+<div class="results-bar">
+  <div class="results-left">
+    <div class="results-count"><span id="count">4</span> резултата</div>
+    <button class="dismissed-toggle" id="dismissedToggle" onclick="toggleDismissed()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span id="dismissedToggleLabel">0 скрити</span>
+    </button>
+  </div>
+  <div class="view-toggle">
+    <button class="view-btn active" title="List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <button class="view-btn" title="Grid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+  </div>
+</div>
+
+<div class="card-stack" id="cardStack">
+
+  <!-- ДОВЕРЕН -->
+  <div class="zd-card zd-card--elite" data-expandable="true">
+    <span class="zd-undo" onclick="undoDismiss(this)">Върни</span>
+    <div class="zd-card-body">
+      <div class="zd-score"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><span>92</span></div>
+      <div class="zd-top">
+        <div class="zd-logo">
+          <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=200&h=200&fit=crop" alt="">
+          <div class="zd-logo-overlay zd-logo-overlay--x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="17" y1="7" x2="7" y2="17"/><line x1="7" y1="7" x2="17" y2="17"/></svg></div>
+          <div class="zd-logo-overlay zd-logo-overlay--heart"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+        </div>
+        <div class="zd-info">
+          <div class="zd-name">Малкият Принц</div>
+          <div class="zd-city">София, Лозенец</div>
+          <div class="zd-badges">
+            <span class="zd-badge zd-badge--tier">Доверен</span>
+            <span class="zd-badge zd-badge--sop">СОП</span>
+            <span class="zd-badge zd-badge--online">Online</span>
+          </div>
+        </div>
+      </div>
+      <div class="zd-tags"><span class="zd-tag">Частна градина</span><span class="zd-tag">STEM Роботика</span><span class="zd-tag">Арт зона</span></div>
+      <div class="zd-desc">Иновативен подход към ранното обучение. Монтесори + STEM програма за деца от 2 до 7 години.</div>
+      <div class="zd-bottom">
+        <div class="zd-contacts">
+          <div class="zd-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+          <div class="zd-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg></div>
+          <div class="zd-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg></div>
+        </div>
+        <div class="zd-cta-group">
+          <a class="zd-cta zd-cta--secondary" href="#">Повече</a>
+          <a class="zd-cta zd-cta--primary" href="#">Запази час</a>
+        </div>
+      </div>
+      <div class="zd-expand-hint" onclick="toggleExpand(this)"><span>Детайли</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+    <div class="zd-expand"><div class="zd-expand-inner">
+      <div class="zd-detail-row"><svg class="zd-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div><div class="zd-detail-label">Работно време</div><div class="zd-detail-text">Пон-Пет 7:30 — 19:00</div></div></div>
+      <div class="zd-detail-row"><svg class="zd-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div><div class="zd-detail-label">Възраст</div><div class="zd-detail-text">2 — 7 години</div></div></div>
+      <div class="zd-detail-row"><svg class="zd-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><div><div class="zd-detail-label">Адрес</div><div class="zd-detail-text">ул. Черни връх 47, София</div></div></div>
+    </div></div>
+  </div>
+
+  <!-- ПРОВЕРЕН -->
+  <div class="zd-card zd-card--verified" data-expandable="true">
+    <span class="zd-undo" onclick="undoDismiss(this)">Върни</span>
+    <div class="zd-card-body">
+      <div class="zd-score"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><span>74</span></div>
+      <div class="zd-top">
+        <div class="zd-logo">
+          <img src="https://images.unsplash.com/photo-1587654780291-39c9404d7dd0?w=200&h=200&fit=crop" alt="">
+          <div class="zd-logo-overlay zd-logo-overlay--x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="17" y1="7" x2="7" y2="17"/><line x1="7" y1="7" x2="17" y2="17"/></svg></div>
+          <div class="zd-logo-overlay zd-logo-overlay--heart"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+        </div>
+        <div class="zd-info">
+          <div class="zd-name">Светулка</div>
+          <div class="zd-city">Пловдив, Център</div>
+          <div class="zd-badges">
+            <span class="zd-badge zd-badge--tier">Проверен</span>
+            <span class="zd-badge zd-badge--sop">СОП</span>
+          </div>
+        </div>
+      </div>
+      <div class="zd-tags"><span class="zd-tag">Занималня</span><span class="zd-tag">Арт ателие</span><span class="zd-tag">Логопед</span></div>
+      <div class="zd-desc">Творческа занималня с акцент върху изкуствата и логопедична подкрепа.</div>
+      <div class="zd-bottom">
+        <div class="zd-contacts">
+          <div class="zd-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+          <div class="zd-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg></div>
+        </div>
+        <div class="zd-cta-group"><a class="zd-cta zd-cta--primary" href="#">Виж повече</a></div>
+      </div>
+      <div class="zd-expand-hint" onclick="toggleExpand(this)"><span>Детайли</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+    <div class="zd-expand"><div class="zd-expand-inner">
+      <div class="zd-detail-row"><svg class="zd-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div><div class="zd-detail-label">Работно време</div><div class="zd-detail-text">Пон-Пет 8:00 — 18:30</div></div></div>
+      <div class="zd-detail-row"><svg class="zd-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div><div class="zd-detail-label">Възраст</div><div class="zd-detail-text">4 — 12 години</div></div></div>
+    </div></div>
+  </div>
+
+  <!-- СТАНДАРТЕН -->
+  <div class="zd-card zd-card--standard">
+    <span class="zd-undo" onclick="undoDismiss(this)">Върни</span>
+    <div class="zd-card-body">
+      <div class="zd-top">
+        <div class="zd-logo">
+          <img src="https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=200&h=200&fit=crop" alt="">
+          <div class="zd-logo-overlay zd-logo-overlay--x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="17" y1="7" x2="7" y2="17"/><line x1="7" y1="7" x2="17" y2="17"/></svg></div>
+          <div class="zd-logo-overlay zd-logo-overlay--heart"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+        </div>
+        <div class="zd-info">
+          <div class="zd-name">Първи стъпки</div>
+          <div class="zd-city">Варна</div>
+          <div class="zd-badges"><span class="zd-badge zd-badge--tier">Стандартен</span></div>
+        </div>
+      </div>
+      <div class="zd-tags"><span class="zd-tag">Частни уроци</span><span class="zd-tag">Математика</span></div>
+      <div class="zd-bottom">
+        <div class="zd-contacts"><div class="zd-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div></div>
+        <div class="zd-cta-group"><a class="zd-cta zd-cta--primary" href="#">Детайли</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- БЕЗПЛАТЕН -->
+  <div class="zd-card zd-card--free">
+    <span class="zd-undo" onclick="undoDismiss(this)">Върни</span>
+    <div class="zd-card-body">
+      <div class="zd-top">
+        <div class="zd-logo">
+          <img src="https://images.unsplash.com/photo-1560421683-6856ea585c78?w=200&h=200&fit=crop" alt="">
+          <div class="zd-logo-overlay zd-logo-overlay--x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="17" y1="7" x2="7" y2="17"/><line x1="7" y1="7" x2="17" y2="17"/></svg></div>
+          <div class="zd-logo-overlay zd-logo-overlay--heart"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+        </div>
+        <div class="zd-info">
+          <div class="zd-name">Монтесори Радост</div>
+          <div class="zd-city">Бургас</div>
+          <div class="zd-badges"><span class="zd-badge zd-badge--tier">Безплатен</span></div>
+        </div>
+      </div>
+      <div class="zd-tags"><span class="zd-tag">Занималня</span></div>
+      <div class="zd-bottom">
+        <div class="zd-contacts"><div class="zd-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div></div>
+        <div class="zd-cta-group"><a class="zd-cta zd-cta--primary" href="#">Детайли</a></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Dismissed section -->
+<div class="dismissed-section" id="dismissedSection">
+  <div class="dismissed-divider"><span id="dismissedCount">0</span> отхвърлени</div>
+</div>
+
+<!-- Saved bar -->
+<div class="saved-bar" id="savedBar">
+  <div class="saved-avatars" id="savedAvatars"></div>
+  <div class="saved-count"><span id="savedCount">0</span> запазени</div>
+  <button class="saved-view-btn">Виж списък</button>
+</div>
+
+<script>
+const SWIPE_THRESHOLD = 80;
+const savedItems = [];
+const stack = document.getElementById('cardStack');
+const dismissedSection = document.getElementById('dismissedSection');
+let showDismissed = false;
+
+function initSwipe(card) {
+  let startX = 0, currentX = 0, isDragging = false;
+
+  const isInteractive = e => e.target.closest('.zd-cta, .zd-contact-icon, .zd-expand-hint, .zd-expand, .zd-undo');
+
+  function handleSwipeEnd(card) {
+    if (currentX > SWIPE_THRESHOLD) {
+      likeCard(card);
+    } else if (currentX < -SWIPE_THRESHOLD) {
+      dismissCard(card);
+    } else {
+      card.style.transform = '';
+    }
+    currentX = 0;
+  }
+
+  card.addEventListener('touchstart', e => {
+    if (isInteractive(e) || card.classList.contains('dismissed')) return;
+    startX = e.touches[0].clientX;
+    isDragging = true;
+    card.classList.add('swiping');
+  }, { passive: true });
+
+  card.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    currentX = e.touches[0].clientX - startX;
+    card.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.04}deg)`;
+  }, { passive: true });
+
+  card.addEventListener('touchend', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    card.classList.remove('swiping');
+    handleSwipeEnd(card);
+  });
+
+  card.addEventListener('mousedown', e => {
+    if (isInteractive(e) || card.classList.contains('dismissed')) return;
+    startX = e.clientX; isDragging = true;
+    card.classList.add('swiping');
+    const onMove = ev => {
+      if (!isDragging) return;
+      currentX = ev.clientX - startX;
+      card.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.04}deg)`;
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      card.classList.remove('swiping');
+      if (!isDragging) return;
+      isDragging = false;
+      handleSwipeEnd(card);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+
+function likeCard(card) {
+  card.style.transform = '';
+  card.classList.add('liked');
+  const img = card.querySelector('.zd-logo img');
+  const name = card.querySelector('.zd-name').textContent;
+  savedItems.push({ img: img ? img.src : '', name });
+  updateSavedBar();
+}
+
+function dismissCard(card) {
+  card.style.transform = '';
+  card.classList.add('dismissed');
+  card.classList.remove('expanded');
+
+  // Animate to dismissed section
+  setTimeout(() => {
+    dismissedSection.appendChild(card);
+    updateCounts();
+  }, 350);
+}
+
+function undoDismiss(btn) {
+  const card = btn.closest('.zd-card');
+  card.classList.remove('dismissed');
+  card.style.transform = '';
+  stack.appendChild(card);
+  updateCounts();
+}
+
+function updateCounts() {
+  const activeCards = stack.querySelectorAll('.zd-card:not(.dismissed)').length;
+  document.getElementById('count').textContent = activeCards;
+
+  const dismissedCards = dismissedSection.querySelectorAll('.zd-card').length;
+  document.getElementById('dismissedCount').textContent = dismissedCards;
+
+  const toggle = document.getElementById('dismissedToggle');
+  const label = document.getElementById('dismissedToggleLabel');
+  if (dismissedCards > 0) {
+    toggle.classList.add('has-items');
+    label.textContent = `${dismissedCards} скрити`;
+  } else {
+    toggle.classList.remove('has-items');
+    dismissedSection.classList.remove('visible');
+    showDismissed = false;
+    toggle.classList.remove('active');
+  }
+}
+
+function toggleDismissed() {
+  showDismissed = !showDismissed;
+  const toggle = document.getElementById('dismissedToggle');
+  toggle.classList.toggle('active', showDismissed);
+  dismissedSection.classList.toggle('visible', showDismissed);
+}
+
+function updateSavedBar() {
+  const bar = document.getElementById('savedBar');
+  const avatars = document.getElementById('savedAvatars');
+  const count = document.getElementById('savedCount');
+  if (savedItems.length === 0) { bar.classList.remove('visible'); return; }
+  bar.classList.add('visible');
+  count.textContent = savedItems.length;
+  avatars.innerHTML = savedItems.slice(-4).map(s =>
+    `<div class="saved-avatar"><img src="${s.img}" alt="${s.name}"></div>`
+  ).join('');
+}
+
+function toggleExpand(hint) {
+  hint.closest('.zd-card').classList.toggle('expanded');
+}
+
+// Init
+document.querySelectorAll('.zd-card').forEach(initSwipe);
+document.querySelectorAll('.zd-cta, .zd-contact-icon').forEach(el => {
+  el.addEventListener('click', e => e.stopPropagation());
+});
+</script>
+</body>
+</html>

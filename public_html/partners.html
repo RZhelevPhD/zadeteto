@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>За партньори — За Детето</title>
+<meta name="description" content="Станете партньор на За Детето. Кандидатствайте за верификация и достигнете до хиляди родители, които търсят качество.">
+
+<!-- SEO -->
+<link rel="canonical" href="https://zadeteto.com/partners.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="За Детето">
+<meta property="og:locale" content="bg_BG">
+<meta property="og:url" content="https://zadeteto.com/partners.html">
+<meta property="og:title" content="За партньори — За Детето">
+<meta property="og:description" content="Станете партньор на За Детето. Кандидатствайте за верификация и достигнете до хиляди родители, които търсят качество.">
+<meta property="og:image" content="https://zadeteto.com/brand_assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="За Детето — национална директория за детски специалисти и услуги">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="За партньори — За Детето">
+<meta name="twitter:description" content="Станете партньор на За Детето. Кандидатствайте за верификация и достигнете до хиляди родители.">
+<meta name="twitter:image" content="https://zadeteto.com/brand_assets/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<style>
+  :root { --accent:#7c4dff; --bg:#fdfcfb; --surface:#fff; --text:#1a103c; --muted:#8b80b0; --border:#ece8f3; --zd-gold:#f5d76e; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  h1,h2,h3 { font-family:'DM Serif Display',serif; }
+
+  /* NAV */
+  nav { position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,0.05); }
+  .nav-logo img { height:80px; }
+  .nav-links { display:flex; align-items:center; gap:24px; }
+  .nav-links a { color:var(--text); text-decoration:none; font-size:13px; font-weight:600; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--accent); }
+  .nav-auth-btn { padding:8px 20px; background:var(--accent); border-radius:10px; color:#fff!important; font-weight:600; box-shadow:0 4px 12px rgba(124,77,255,0.2); }
+  @media(max-width:768px){ .nav-links{gap:16px;} .nav-links a:not(.nav-auth-btn){display:none;} nav{padding:12px 20px;} .nav-logo img{height:36px;} }
+
+  /* HERO */
+  .p-hero { padding:140px 24px 80px; text-align:center; max-width:900px; margin:0 auto; }
+  .p-hero h1 { font-size:48px; line-height:1.1; margin-bottom:24px; }
+  .p-hero h1 span { color:var(--accent); display:block; }
+  .p-hero p { font-size:18px; color:var(--muted); line-height:1.6; max-width:600px; margin:0 auto 40px; }
+  
+  /* GRID / SECTIONS */
+  .section { padding:80px 24px; max-width:1200px; margin:0 auto; }
+  .section-title { font-size:36px; text-align:center; margin-bottom:60px; }
+
+  /* STATS */
+  .stats-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:32px; text-align:center; }
+  .stat-card { background:var(--surface); padding:40px 32px; border-radius:24px; border:1px solid var(--border); box-shadow:0 12px 30px rgba(0,0,0,0.03); transition:transform 0.3s cubic-bezier(0.16,1,0.3,1); }
+  .stat-card:hover { transform:translateY(-8px); }
+  .stat-val { font-size:48px; font-family:'DM Serif Display',serif; color:var(--accent); margin-bottom:12px; }
+  .stat-desc { font-size:15px; color:var(--muted); line-height:1.5; }
+
+  /* PAIN POINTS */
+  .pain-points { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+  .pain-list { list-style:none; }
+  .pain-list li { display:flex; gap:16px; margin-bottom:24px; align-items:flex-start; font-size:15px; line-height:1.6; color:var(--text); }
+  .pain-icon { width:24px; height:24px; background:rgba(217,87,87,0.1); color:#d95757; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; font-weight:700; font-size:12px; }
+  .pain-list li.pro .pain-icon { background:rgba(124,77,255,0.1); color:var(--accent); }
+
+  /* CATEGORIES */
+  .cats-list { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:40px; }
+  .cat-pill { padding:12px 24px; background:#fff; border:1px solid var(--border); border-radius:40px; font-size:15px; font-weight:600; color:var(--accent); box-shadow:0 4px 12px rgba(0,0,0,0.03); }
+
+  /* QUOTAS */
+  .quotas-grid { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; }
+  .quota-box { background:var(--surface); border:1px solid var(--border); padding:24px 32px; border-radius:16px; text-align:center; min-width:260px; box-shadow:0 8px 24px rgba(0,0,0,0.03); }
+  .quota-val { font-size:32px; font-family:'DM Serif Display',serif; margin-bottom:8px; }
+  .quota-city { font-size:14px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+  /* FAQ */
+  .faq-container { max-width:800px; margin:0 auto; }
+  .faq-item { border-bottom:1px solid var(--border); padding:24px 0; cursor:pointer; }
+  .faq-item:last-child { border-bottom:none; }
+  .faq-q { display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:18px; color:var(--text); }
+  .faq-icon { width:24px; height:24px; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:transform 0.3s; color:var(--muted); }
+  .faq-a { max-height:0; overflow:hidden; transition:max-height 0.4s ease; font-size:15px; line-height:1.6; color:var(--muted); }
+  .faq-a-inner { padding-top:16px; }
+  .faq-item.active .faq-icon { transform:rotate(45deg); background:var(--accent); color:#fff; border-color:var(--accent); }
+  .faq-item.active .faq-a { max-height:600px; }
+
+  /* FORM */
+  .form-section { background:#fff; border:1px solid var(--border); border-radius:32px; padding:64px; max-width:800px; margin:0 auto; box-shadow:0 24px 60px rgba(0,0,0,0.05); }
+  .form-sub { text-align:center; color:var(--muted); margin-bottom:40px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px; }
+  .form-group label { display:block; font-size:14px; font-weight:600; margin-bottom:8px; }
+  .form-group input, .form-group select { width:100%; padding:16px; border:1px solid var(--border); border-radius:12px; font-family:'DM Sans',sans-serif; font-size:15px; outline:none; transition:border-color 0.2s; background:#fcfcfd; }
+  .form-group input:focus, .form-group select:focus { border-color:var(--accent); background:#fff; box-shadow:0 0 0 4px rgba(124,77,255,0.1); }
+  .submit-btn { width:100%; padding:18px; background:var(--accent); color:#fff; border:none; border-radius:12px; font-weight:600; font-size:16px; cursor:pointer; margin-top:24px; box-shadow:0 6px 20px rgba(124,77,255,0.25); transition:transform 0.2s; }
+  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(124,77,255,0.35); }
+
+  /* FOOTER */
+  .zd-footer { border-top:1px solid rgba(0,0,0,0.05); padding:48px 40px; background:var(--surface, #fff); text-align:center; position:relative; z-index:10; margin-top:80px; }
+  .zd-footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:16px; flex-wrap:wrap; }
+  .zd-footer-links a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:500; font-family:'DM Sans',sans-serif; transition:color 0.2s; }
+  .zd-footer-links a:hover { color:var(--accent); }
+  .zd-footer-copy { font-size:12px; color:var(--muted); opacity:0.6; }
+
+  @media(max-width:768px){
+    .p-hero { padding:100px 24px 60px; }
+    .p-hero h1 { font-size:36px; }
+    .stats-grid, .pain-points, .form-row { grid-template-columns:1fr; gap:24px; }
+    .form-section { padding:32px 24px; border-radius:24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo" style="text-decoration:none;">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето">
+  </a>
+  <div class="nav-links">
+    <a href="index.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Начало</a>
+    <a href="partners.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">За партньори</a>
+    <a href="contacts.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Контакти</a>
+    <a href="pricing.html" class="nav-btn-partner">Стани партньор</a>
+    <a href="search.html?login=true" class="nav-btn-login">Вход</a>
+  </div>
+</nav>
+
+<main id="zd-main-content">
+<section class="p-hero">
+  <h1>Влезте в единствената <span>верифицирана общност</span> за специалисти, </h1>
+  <p style="font-size:24px;font-family:'DM Serif Display',serif;color:var(--text);margin-bottom:24px;">които отказват да се конкурират с аматьорите.</p>
+  <p>Регистърът е отворен за професионалисти и организации, които работят с деца и родители и поемат отговорност за качеството, безопасността и стойността на това, което предлагат.</p>
+  <button class="submit-btn" style="width:auto;padding:16px 40px;border-radius:40px;font-size:16px;" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Кандидатствай сега</button>
+</section>
+
+<section class="section" style="background:#fff;border-radius:40px;box-shadow:0 24px 80px rgba(0,0,0,0.03);">
+  <h2 class="section-title">Системата, в която сте днес</h2>
+  <div class="pain-points">
+    <ul class="pain-list">
+      <li>
+        <div class="pain-icon">✕</div>
+        <div>В морето от реклами опита Ви остава невидим. Всеки може да се нарече специалист във фейсбук. Без доказателства, без критерии, без отговорност. (И без последици.)</div>
+      </li>
+      <li>
+        <div class="pain-icon">✕</div>
+        <div>Родителите, които търсят качество, го разпознават трудно и често сравняват само по цена. Останалите просто търсят евтиното.</div>
+      </li>
+      <li>
+        <div class="pain-icon">✕</div>
+        <div>Ако не се отделите от шума, рискувате да останете най-добре пазената тайна в бранша и да продължавате да НЕ получавате заплащане, което е достойно за вложения труд.</div>
+      </li>
+    </ul>
+    
+    <div style="background:var(--bg); border:1px solid var(--border); border-radius:24px; padding:40px;">
+      <h3 style="font-size:28px;margin-bottom:24px;text-align:center;">Реалността на пазара</h3>
+      <div style="margin-bottom:24px;">
+        <div style="font-size:36px;font-family:'DM Serif Display',serif;color:#d95757;line-height:1;">91.4%</div>
+        <div style="font-size:15px;color:var(--muted);margin-top:4px;">от родителите не вярват, че системата ги защитава.</div>
+      </div>
+      <div style="margin-bottom:24px;">
+        <div style="font-size:36px;font-family:'DM Serif Display',serif;color:#4caf6a;line-height:1;">61.1%</div>
+        <div style="font-size:15px;color:var(--muted);margin-top:4px;">плащат повече, когато не са сигурни на кого да се доверят.</div>
+      </div>
+      <div>
+        <div style="font-size:36px;font-family:'DM Serif Display',serif;color:var(--accent);line-height:1;">72.7%</div>
+        <div style="font-size:15px;color:var(--muted);margin-top:4px;">търсят стойност и качество, а не просто по-ниска цена.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Как работи стандартът „За Детето“ на практика</h2>
+  <div style="max-width:800px;margin:0 auto;text-align:center;font-size:18px;color:var(--muted);line-height:1.6;">
+    <p>С над 15 години клиничен опит създадохме ZaDeteto като „крепост на доверието“. Не сме просто указател, а филтър.</p>
+    <br>
+    <p>Проверка от специалисти с реален опит, по ясни критерии за качество, безопасност и отговорност към децата.</p>
+  </div>
+  
+  <div class="cats-list">
+    <div class="cat-pill">Детски психолози и логопеди</div>
+    <div class="cat-pill">Образователни школи</div>
+    <div class="cat-pill">Търговци на стоки</div>
+    <div class="cat-pill">Специалисти по ранно развитие</div>
+    <div class="cat-pill">Организатори на забавления</div>
+  </div>
+</section>
+
+<section class="section" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <h2 class="section-title">Ограничен капацитет</h2>
+  <p style="text-align:center;max-width:700px;margin:0 auto 40px;color:var(--muted);font-size:16px;line-height:1.6;">
+    От една страна имаме ограничен капацитет да разглеждаме кандидатурите, от друга искаме да подсигурим оптимален поток от клиенти за одобрените. Не е едно и също клиентите да се делят между 10 и 100 партньора.
+  </p>
+  
+  <div class="quotas-grid">
+    <div class="quota-box">
+      <div class="quota-val">20</div>
+      <div class="quota-city">позиции / гр. София</div>
+    </div>
+    <div class="quota-box">
+      <div class="quota-val" style="color:#4caf6a;">10</div>
+      <div class="quota-city">Пловдив, Варна, Бургас</div>
+    </div>
+    <div class="quota-box">
+      <div class="quota-val" style="color:#d95757;">5</div>
+      <div class="quota-city">Останали градове</div>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--muted);font-size:14px;margin-top:24px;">Когато квотата се запълни, следващият шанс е при освобождаване на място от настоящ член.</p>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Често задавани въпроси</h2>
+  <div class="faq-container">
+    <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="faq-q">Защо трябва да плащам такса за одит? <div class="faq-icon">+</div></div>
+      <div class="faq-a"><div class="faq-a-inner">Таксата покрива прецизния процес по верификация. Не е плащане за „място в списък“, а инвестиция във Вашия статус. Самият одит служи като бариера, която допуска само елитни специалисти.</div></div>
+    </div>
+    <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="faq-q">Какво става, ако не премина одита? <div class="faq-icon">+</div></div>
+      <div class="faq-a"><div class="faq-a-inner">Ако резултатът от проверката е недостатъчен, ще получите подробен отчет с препоръки. Разполагате със 7 дни, за да отстраните пропуските. Таксата не се възстановява, тъй като покрива труда по проучването.</div></div>
+    </div>
+    <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="faq-q">Мога ли просто да закупя място на първа страница? <div class="faq-icon">+</div></div>
+      <div class="faq-a"><div class="faq-a-inner">Не. В За Детето позицията не се купува, а се печели. Възможността за включване в „Елитния пакет“ се отваря единствено след успешно преминаване на пълния одит.</div></div>
+    </div>
+    <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="faq-q">Какво се случва, ако прекратя членството си? <div class="faq-icon">+</div></div>
+      <div class="faq-a"><div class="faq-a-inner">Прекратяването води до незабавна загуба на идентификатора „Верифициран“. Мястото Ви се заема от следващия в списъка на чакащите. Повторното включване изисква нов одит и входна такса.</div></div>
+    </div>
+    <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="faq-q">Гарантирате ли ми определен брой клиенти? <div class="faq-icon">+</div></div>
+      <div class="faq-a"><div class="faq-a-inner">В За Детето не „купувате“ контакти, а изграждате инфраструктура на доверието. Ако в рамките на договорения период профилът Ви не генерира очакваното ниво на свързаност, поемаме ангажимента лично да анализираме и оптимизираме представянето Ви пред ключовата аудитория.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="apply">
+  <div class="form-section">
+
+    <!-- STEP 1: Application form -->
+    <div id="partnerStep1">
+      <h2 style="font-size:36px;text-align:center;margin-bottom:12px;">Кандидатствай за присъединяване</h2>
+      <p class="form-sub">Попълнете формуляра и ние ще се свържем с вас със следващите стъпки.</p>
+
+      <form id="partnerForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Вашето име и фамилия</label>
+            <input type="text" id="name" name="contact_name" required placeholder="Иван Иванов">
+          </div>
+          <div class="form-group">
+            <label for="company">Име на фирмата (юридическо лице)</label>
+            <input type="text" id="company" name="company" required placeholder="Напр. Искра ООД">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:8px;">
+          <label for="brand">Име на бранда / практиката</label>
+          <input type="text" id="brand" name="brand" required placeholder="Напр. Учебен център Искра">
+          <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted);font-weight:500;cursor:pointer;">
+            <input type="checkbox" id="brandSame" onchange="if(this.checked){const c=document.getElementById('company').value;document.getElementById('brand').value=c;document.getElementById('brand').setAttribute('readonly','readonly');}else{document.getElementById('brand').removeAttribute('readonly');document.getElementById('brand').value='';}" style="width:auto;margin:0;">
+            Името на бранда съвпада с това на фирмата
+          </label>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Служебен имейл</label>
+            <input type="email" id="email" name="email" required placeholder="office@example.com">
+          </div>
+          <div class="form-group">
+            <label for="phone">Телефон за връзка</label>
+            <input type="tel" id="phone" name="phone" required placeholder="+359 88 123 4567">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">Населено място</label>
+            <input type="text" id="city" name="city" required placeholder="гр. София">
+          </div>
+          <div class="form-group">
+            <label for="category">Категория</label>
+            <select id="category" name="category" required>
+              <option value="" disabled selected>Изберете сфера</option>
+              <option>Специалисти</option>
+              <option>Учене и умения</option>
+              <option>Игри и забавления</option>
+              <option>Култура</option>
+              <option>Спорт и движение</option>
+              <option>Тържества и събития</option>
+              <option>Стоки</option>
+              <option>Домашна грижа и помощ</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:24px;">
+          <label for="link">Линк към уебсайт / Фейсбук страница</label>
+          <input type="url" id="link" name="website" placeholder="https://...">
+          <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted);font-weight:500;cursor:pointer;">
+            <input type="checkbox" id="noWebsite" onchange="const l=document.getElementById('link');if(this.checked){l.setAttribute('disabled','disabled');l.value='';l.style.opacity='0.4';}else{l.removeAttribute('disabled');l.style.opacity='1';}" style="width:auto;margin:0;">
+            Все още нямам уебсайт
+          </label>
+        </div>
+        <div id="partnerFormError" style="display:none;background:rgba(231,76,111,0.08);border:1px solid rgba(231,76,111,0.25);color:#c23a5d;padding:12px 16px;border-radius:12px;font-size:13px;margin-top:24px;"></div>
+        <button type="submit" class="submit-btn" id="partnerSubmitBtn" style="margin-top:40px;">Продължи към избор на план</button>
+        <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:16px;">Вашите данни са защитени. Без обвързване или автоматични такси преди старта на одита.</p>
+      </form>
+      <script>
+        (function () {
+          var form = document.getElementById('partnerForm');
+          var btn = document.getElementById('partnerSubmitBtn');
+          var errBox = document.getElementById('partnerFormError');
+          var originalBtnText = btn.textContent;
+
+          function showError(msg) { errBox.textContent = msg; errBox.style.display = 'block'; errBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+          function clearError() { errBox.style.display = 'none'; errBox.textContent = ''; }
+
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearError();
+
+            var contact_name = document.getElementById('name').value.trim();
+            var company = document.getElementById('company').value.trim();
+            var brand = document.getElementById('brand').value.trim();
+            var email = document.getElementById('email').value.trim();
+            var phone = document.getElementById('phone').value.trim();
+            var city = document.getElementById('city').value.trim();
+            var category = document.getElementById('category').value;
+            var website = document.getElementById('link').value.trim();
+            var noWebsite = document.getElementById('noWebsite').checked;
+
+            if (!contact_name) return showError('Моля въведете вашето име.');
+            if (!company) return showError('Моля въведете името на фирмата.');
+            if (!brand) return showError('Моля въведете името на бранда.');
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Моля въведете валиден служебен имейл.');
+            if (!phone || phone.replace(/[^\d]/g, '').length < 9) return showError('Моля въведете валиден телефон.');
+            if (!city) return showError('Моля въведете населено място.');
+            if (!category) return showError('Моля изберете категория.');
+            if (!noWebsite && website && !/^https?:\/\//i.test(website)) return showError('Линкът към сайта трябва да започва с http:// или https://');
+
+            btn.disabled = true;
+            btn.textContent = 'Запазване...';
+            btn.style.opacity = '0.7';
+
+            // 1. Always log the application (admin can review even if signup fails later)
+            //    This row exists independent of whether the auth user gets created.
+            ZdApi.submitForm('partner_applications', {
+              contact_name: contact_name,
+              company: company,
+              brand: brand,
+              email: email,
+              phone: phone,
+              city: city,
+              category: category,
+              website: noWebsite ? null : (website || null),
+              status: 'pending'
+            })
+              .then(async function (res) {
+                if (!res || !res.ok) throw new Error('Submission failed');
+
+                // Persist application id so step 2 can link the chosen plan to it
+                if (res.id) {
+                  try { sessionStorage.setItem('zd_partner_application_id', res.id); } catch (e) {}
+                }
+
+                // 2. Try to auto-create the partner's auth user + magic link.
+                //    This is best-effort: if it fails (email already exists, Supabase
+                //    not loaded, etc), the application is still in partner_applications
+                //    and admin can manually create the user later.
+                if (window.ZdSupabase) {
+                  try {
+                    var { data: signUpData, error: signUpErr } = await window.ZdSupabase.auth.signUp({
+                      email: email,
+                      // Random throwaway password — partner will use magic link or reset
+                      password: 'tmp-' + Math.random().toString(36).slice(2) + '-' + Date.now().toString(36),
+                      options: {
+                        emailRedirectTo: window.location.origin + '/business-dashboard.html',
+                        data: {
+                          display_name: contact_name,
+                          role: 'business_owner',
+                          company: company,
+                          brand: brand
+                        }
+                      }
+                    });
+                    if (signUpErr && !(signUpErr.message || '').toLowerCase().includes('already')) {
+                      console.warn('[partner signUp]', signUpErr);
+                    } else if (signUpData && signUpData.user) {
+                      console.info('[partner signUp] auth user created:', signUpData.user.id);
+                      // 3. Send a magic link explicitly (signUp may or may not have sent
+                      //    a confirmation email depending on dashboard settings).
+                      try {
+                        await window.ZdSupabase.auth.signInWithOtp({
+                          email: email,
+                          options: { emailRedirectTo: window.location.origin + '/business-dashboard.html' }
+                        });
+                      } catch (e) { console.warn('[partner magic link]', e); }
+                    }
+                  } catch (e) {
+                    console.warn('[partner auth setup]', e);
+                  }
+                }
+
+                // 4. Advance to step 2 (plan picker) regardless of auth result —
+                //    application is recorded, partner can complete signup via the
+                //    magic link they'll receive in their inbox.
+                document.getElementById('partnerStep1').style.display = 'none';
+                document.getElementById('partnerStep2').style.display = 'block';
+                window.scrollTo({ top: document.getElementById('partnerStep2').offsetTop - 80, behavior: 'smooth' });
+              })
+              .catch(function (err) {
+                console.error('[partner form]', err);
+                showError('Възникна грешка при изпращането. Моля опитайте отново или ни пишете на info@zadeteto.bg.');
+                btn.disabled = false;
+                btn.textContent = originalBtnText;
+                btn.style.opacity = '1';
+              });
+          });
+        })();
+      </script>
+    </div>
+
+    <!-- STEP 2: Choose audit level -->
+    <div id="partnerStep2" style="display:none;">
+      <h2 style="font-size:36px;text-align:center;margin-bottom:12px;">Изберете ниво на одит</h2>
+      <p class="form-sub">Изберете плана, който отговаря на нуждите на вашия бизнес.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:32px;">
+        <a href="pricing.html#standard" style="text-decoration:none;display:block;padding:24px;border:2px solid var(--border);border-radius:18px;background:#fff;transition:all .2s;color:var(--text);">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#777;margin-bottom:8px;">Стандартен</div>
+          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">95€</div>
+          <div style="font-size:12px;color:var(--muted);">+ 49€/год. ресертификация</div>
+        </a>
+        <a href="pricing.html#verified" style="text-decoration:none;display:block;padding:24px;border:2px solid #2e994d;border-radius:18px;background:#fff;transition:all .2s;color:var(--text);position:relative;">
+          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#2e994d;color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px;">Популярен</div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2e994d;margin-bottom:8px;">Проверен</div>
+          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">147€</div>
+          <div style="font-size:12px;color:var(--muted);">+ 29€/мес. или 348€/год.</div>
+        </a>
+        <a href="pricing.html#elite" style="text-decoration:none;display:block;padding:24px;border:2px solid #d4b6ff;border-radius:18px;background:#fff;transition:all .2s;color:var(--text);">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7c4dff;margin-bottom:8px;">Доверен</div>
+          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">197€</div>
+          <div style="font-size:12px;color:var(--muted);">+ 49€/мес. или 588€/год.</div>
+        </a>
+        <a href="contacts.html" style="text-decoration:none;display:block;padding:24px;border:2px solid #f5d76e;border-radius:18px;background:linear-gradient(180deg,#fffdf5 0%,#fff 100%);transition:all .2s;color:var(--text);">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#c89a00;margin-bottom:8px;">Премиум</div>
+          <div style="font-size:18px;font-weight:700;margin-bottom:4px;">Свържете се с нас</div>
+          <div style="font-size:12px;color:var(--muted);">Персонализирана оферта</div>
+        </a>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;">
+        <a href="pricing.html" style="display:inline-block;padding:14px 32px;background:var(--accent);color:#fff;border-radius:14px;font-weight:600;text-decoration:none;box-shadow:0 4px 16px rgba(124,77,255,.2);">Виж пълно сравнение на плановете</a>
+      </div>
+      <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:16px;">Не сте сигурни? Свържете се с нас за консултация.</p>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<footer class="zd-footer">
+  <div class="zd-footer-links">
+    <a href="index.html">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="report.html">Докладвай</a>
+    <a href="business-login.html">Бизнес Вход</a>
+  </div>
+  <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+<script src="js/nav-inject.js"></script>
+<script src="js/cookie-banner.js"></script>
+<script src="js/analytics-loader.js"></script>
+<script src="js/supabase-init.js"></script>
+<script src="js/api-stub.js"></script>
+</body>
+</html>

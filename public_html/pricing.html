@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Абонаменти — За Детето</title>
+<meta name="description" content="Изберете план за вашия бизнес. Станете видими за хиляди родители в националната директория За Детето.">
+
+<!-- SEO -->
+<link rel="canonical" href="https://zadeteto.com/pricing.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="За Детето">
+<meta property="og:locale" content="bg_BG">
+<meta property="og:url" content="https://zadeteto.com/pricing.html">
+<meta property="og:title" content="Абонаменти за партньори — За Детето">
+<meta property="og:description" content="Изберете план за вашия бизнес. Станете видими за хиляди родители в националната директория За Детето.">
+<meta property="og:image" content="https://zadeteto.com/brand_assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="За Детето — национална директория за детски специалисти и услуги">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Абонаменти за партньори — За Детето">
+<meta name="twitter:description" content="Изберете план за вашия бизнес. Станете видими за хиляди родители.">
+<meta name="twitter:image" content="https://zadeteto.com/brand_assets/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<style>
+:root { --accent:#7c4dff; --bg:#fdfcfb; --surface:#fff; --text:#1a103c; --muted:#8b80b0; --border:#ece8f3;
+  --purple:#7c4dff; --mint:#2e994d; --gray:#777; --gold:#c89a00; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; }
+h1,h2,h3 { font-family:'DM Serif Display',serif; }
+
+nav { position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid #e8e8e8; }
+@media(max-width:768px){ nav{padding:12px 20px;} nav img{height:36px!important;} .nav-links{gap:16px!important;} .nav-links a:not(.nav-partner){display:none;} }
+
+.page-hero { padding:120px 24px 60px; text-align:center; background:linear-gradient(180deg,#efe8ff 0%,var(--bg) 100%); }
+.page-hero h1 { font-size:clamp(32px,5vw,52px); margin-bottom:16px; }
+.page-hero h1 span { color:var(--accent); }
+.page-hero p { font-size:18px; color:var(--muted); max-width:560px; margin:0 auto; line-height:1.6; }
+
+/* Toggle */
+.billing-toggle { display:flex; justify-content:center; margin:32px 0 8px; gap:0; }
+.billing-btn { padding:10px 24px; font:600 14px/1 'DM Sans',sans-serif; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); cursor:pointer; transition:all .2s; }
+.billing-btn:first-child { border-radius:12px 0 0 12px; }
+.billing-btn:last-child { border-radius:0 12px 12px 0; }
+.billing-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+.billing-save { text-align:center; font-size:12px; font-weight:600; color:var(--mint); margin-bottom:32px; }
+
+/* Plans grid */
+.plans { max-width:1200px; margin:0 auto; padding:0 24px 60px; display:grid; grid-template-columns:repeat(4,1fr); gap:20px; align-items:start; }
+@media(max-width:1000px){ .plans{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:600px){ .plans{grid-template-columns:1fr; max-width:400px;} }
+
+.plans { align-items:stretch; }
+.plan { background:var(--surface); border:1.5px solid var(--border); border-radius:24px; padding:32px 24px; display:flex; flex-direction:column; position:relative; transition:transform .3s, box-shadow .3s; height:100%; }
+.plan:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,0.06); }
+.plan--popular { border-color:var(--mint); box-shadow:0 4px 20px rgba(46,153,77,0.1); }
+.plan--popular::before { content:"Популярен"; position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--mint); color:#fff; font-size:11px; font-weight:700; padding:4px 16px; border-radius:8px; letter-spacing:.5px; text-transform:uppercase; }
+.plan--elite { border-color:#d4b6ff; }
+.plan--premium { border-color:var(--gold); background:linear-gradient(180deg,#fffdf5 0%,var(--surface) 100%); }
+.plan-setup s { color:var(--muted); opacity:.7; text-decoration:line-through; }
+.plan-setup .bonus { color:var(--muted); font-weight:500; font-size:12px; opacity:.8; }
+
+.plan-name { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.plan-name--standard { color:var(--gray); }
+.plan-name--verified { color:var(--mint); }
+.plan-name--elite { color:var(--purple); }
+.plan-name--premium { color:var(--gold); }
+
+.plan-title { font-size:clamp(22px,3vw,28px); margin-bottom:4px; }
+.plan-subtitle { font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.4; }
+
+.plan-price { margin-bottom:6px; }
+.plan-price .amount { font-size:36px; font-weight:700; letter-spacing:-1px; }
+.plan-price .period { font-size:14px; color:var(--muted); font-weight:500; }
+.plan-price .original { font-size:14px; color:var(--muted); text-decoration:line-through; margin-left:6px; }
+.plan-setup { font-size:13px; color:var(--muted); margin-bottom:24px; }
+.plan-setup strong { color:var(--text); }
+
+.plan-features { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:28px; flex:1; }
+.plan-features li { font-size:13px; line-height:1.4; display:flex; gap:8px; align-items:flex-start; }
+.plan-features li::before { content:"✓"; font-weight:700; flex-shrink:0; width:18px; height:18px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; }
+.plan--standard .plan-features li::before { background:rgba(119,119,119,.08); color:var(--gray); }
+.plan--popular .plan-features li::before { background:rgba(46,153,77,.08); color:var(--mint); }
+.plan--elite .plan-features li::before { background:rgba(124,77,255,.08); color:var(--purple); }
+.plan--premium .plan-features li::before { background:rgba(200,154,0,.08); color:var(--gold); }
+.plan-features li.disabled { color:var(--muted); opacity:.5; }
+.plan-features li.disabled::before { content:"—"; color:var(--muted); background:rgba(0,0,0,.03); }
+
+.plan-cta { display:block; width:100%; padding:14px; border-radius:14px; border:none; font:600 15px/1 'DM Sans',sans-serif; cursor:pointer; text-align:center; text-decoration:none; transition:transform .2s, box-shadow .2s; }
+.plan-cta:hover { transform:translateY(-2px); }
+.plan-cta:active { transform:scale(.97); }
+.plan-cta--standard { background:var(--gray); color:#fff; box-shadow:0 4px 16px rgba(0,0,0,.1); }
+.plan-cta--verified { background:var(--mint); color:#fff; box-shadow:0 4px 16px rgba(46,153,77,.2); }
+.plan-cta--elite { background:linear-gradient(135deg,var(--purple),#a56cff); color:#fff; box-shadow:0 4px 16px rgba(124,77,255,.25); }
+.plan-cta--premium { background:linear-gradient(135deg,#c89a00,#e6b800); color:#fff; box-shadow:0 4px 16px rgba(200,154,0,.25); }
+
+/* Comparison table */
+.comparison { max-width:1100px; margin:0 auto; padding:40px 24px 80px; }
+.comparison h2 { text-align:center; font-size:clamp(26px,4vw,36px); margin-bottom:8px; }
+.comparison .sub { text-align:center; color:var(--muted); font-size:15px; margin-bottom:40px; }
+.comp-table { width:100%; border-collapse:collapse; font-size:13px; }
+.comp-table th, .comp-table td { padding:12px 16px; text-align:center; border-bottom:1px solid var(--border); }
+.comp-table th:first-child, .comp-table td:first-child { text-align:left; font-weight:600; }
+.comp-table thead th { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding-bottom:16px; }
+.comp-table thead th:nth-child(2) { color:var(--gray); }
+.comp-table thead th:nth-child(3) { color:var(--mint); }
+.comp-table thead th:nth-child(4) { color:var(--purple); }
+.comp-table thead th:nth-child(5) { color:var(--gold); }
+/* Row hover: subtle gray bg */
+.comp-table tbody tr:hover { background:rgba(0,0,0,0.025); }
+.comp-table tbody tr:hover td:first-child { background:rgba(124,77,255,0.04); color:var(--text); }
+
+/* Column hover via :has() — entire column tinted in tier color */
+.comp-table:has(tbody td:nth-child(2):hover) tbody td:nth-child(2),
+.comp-table:has(thead th:nth-child(2):hover) tbody td:nth-child(2) { background:rgba(119,119,119,0.06); }
+.comp-table:has(tbody td:nth-child(3):hover) tbody td:nth-child(3),
+.comp-table:has(thead th:nth-child(3):hover) tbody td:nth-child(3) { background:rgba(46,153,77,0.08); }
+.comp-table:has(tbody td:nth-child(4):hover) tbody td:nth-child(4),
+.comp-table:has(thead th:nth-child(4):hover) tbody td:nth-child(4) { background:rgba(124,77,255,0.08); }
+.comp-table:has(tbody td:nth-child(5):hover) tbody td:nth-child(5),
+.comp-table:has(thead th:nth-child(5):hover) tbody td:nth-child(5) { background:rgba(200,154,0,0.08); }
+
+/* Header background coordination on column hover */
+.comp-table:has(tbody td:nth-child(2):hover) thead th:nth-child(2),
+.comp-table:has(thead th:nth-child(2):hover) thead th:nth-child(2) { background:rgba(119,119,119,0.1); }
+.comp-table:has(tbody td:nth-child(3):hover) thead th:nth-child(3),
+.comp-table:has(thead th:nth-child(3):hover) thead th:nth-child(3) { background:rgba(46,153,77,0.12); }
+.comp-table:has(tbody td:nth-child(4):hover) thead th:nth-child(4),
+.comp-table:has(thead th:nth-child(4):hover) thead th:nth-child(4) { background:rgba(124,77,255,0.12); }
+.comp-table:has(tbody td:nth-child(5):hover) thead th:nth-child(5),
+.comp-table:has(thead th:nth-child(5):hover) thead th:nth-child(5) { background:rgba(200,154,0,0.12); }
+
+/* Hovered cell itself: stronger tier color + inset border */
+.comp-table tbody td:nth-child(2):hover { background:rgba(119,119,119,0.16) !important; box-shadow:inset 0 0 0 1.5px var(--gray); }
+.comp-table tbody td:nth-child(3):hover { background:rgba(46,153,77,0.18) !important; box-shadow:inset 0 0 0 1.5px var(--mint); }
+.comp-table tbody td:nth-child(4):hover { background:rgba(124,77,255,0.18) !important; box-shadow:inset 0 0 0 1.5px var(--purple); }
+.comp-table tbody td:nth-child(5):hover { background:rgba(200,154,0,0.18) !important; box-shadow:inset 0 0 0 1.5px var(--gold); }
+
+/* Smooth transitions */
+.comp-table td, .comp-table th { transition:background 0.15s, box-shadow 0.15s; }
+
+.comp-check { font-weight:700; }
+.comp-check--standard, .comp-check--verified { color:var(--mint); }
+.comp-check--elite { color:var(--purple); }
+.comp-check--premium { color:var(--gold); }
+.comp-x { color:var(--muted); opacity:.4; }
+.comp-table tbody tr td:nth-child(2) { color:var(--gray); font-weight:600; }
+.comp-table tbody tr td:nth-child(3) { color:var(--mint); font-weight:600; }
+.comp-table tbody tr td:nth-child(4) { color:var(--purple); font-weight:600; }
+.comp-table tbody tr td:nth-child(5) { color:var(--gold); font-weight:600; }
+.comp-table tbody tr td.comp-x { font-weight:400; }
+.comp-price td { padding-top:18px !important; font-size:14px; }
+.comp-price s { color:var(--muted); opacity:.7; font-size:11px; font-weight:500; display:block; margin-top:2px; }
+@media(max-width:700px){ .comp-table{font-size:11px;} .comp-table th,.comp-table td{padding:8px 6px;} }
+
+.zd-footer { border-top:1px solid rgba(0,0,0,0.05); padding:48px 40px; background:var(--surface); text-align:center; }
+.zd-footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:16px; flex-wrap:wrap; }
+.zd-footer-links a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:500; transition:color 0.2s; }
+.zd-footer-links a:hover { color:var(--accent); }
+.zd-footer-copy { font-size:12px; color:var(--muted); opacity:0.6; }
+@media(max-width:768px){ .zd-footer{padding:24px;} .zd-footer-links{gap:16px;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето" style="height:80px;">
+  </a>
+  <div class="nav-links">
+    <a href="index.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Начало</a>
+    <a href="partners.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">За партньори</a>
+    <a href="contacts.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Контакти</a>
+    <a href="pricing.html" class="nav-btn-partner">Стани партньор</a>
+    <a href="search.html?login=true" class="nav-btn-login">Вход</a>
+  </div>
+</nav>
+
+<main id="zd-main-content">
+<section class="page-hero">
+  <h1>Изберете <span>план</span> за вашия бизнес</h1>
+  <p>Станете видими за хиляди родители. Всеки план включва професионален одит и верификация.</p>
+</section>
+
+<div class="billing-toggle">
+  <button class="billing-btn active" onclick="setBilling('monthly')">Месечно</button>
+  <button class="billing-btn" onclick="setBilling('yearly')">Годишно</button>
+</div>
+<div class="billing-save">Спестете до 40% с годишен план</div>
+
+<div class="plans" id="plansGrid">
+
+  <!-- Стандартен -->
+  <div class="plan plan--standard" id="standard">
+    <div class="plan-name plan-name--standard">Стандартен</div>
+    <h3 class="plan-title">Основен профил</h3>
+    <div class="plan-subtitle">Минимум инвестиция за специалисти, които държат на качеството и искат присъствие в директорията.</div>
+    <div class="plan-price">
+      <span class="amount">95€</span>
+      <span class="period">еднократно</span>
+    </div>
+    <div class="plan-setup">+ <strong>49€</strong>/год. ресертификация</div>
+    <ul class="plan-features">
+      <li>Профил в директорията</li>
+      <li>1 категория</li>
+      <li>До 2 услуги (тагове)</li>
+      <li>4 контакт иконки (тел, имейл, сайт, Facebook)</li>
+      <li>Основен бадж "Стандартен"</li>
+      <li class="disabled">Без описание на профила</li>
+      <li class="disabled">Без CTA бутони</li>
+      <li class="disabled">Без разширена секция</li>
+    </ul>
+    <a href="#" class="plan-cta plan-cta--standard" data-plan="standard">Кандидатствай</a>
+  </div>
+
+  <!-- Проверен -->
+  <div class="plan plan--popular" id="verified">
+    <div class="plan-name plan-name--verified">Проверен</div>
+    <h3 class="plan-title">Верифициран профил</h3>
+    <div class="plan-subtitle">За утвърдени специалисти, които търсят доверие и повече видимост.</div>
+    <div class="plan-price">
+      <span class="amount" data-monthly="29€" data-yearly="348€">29€</span>
+      <span class="period" data-monthly="/месец" data-yearly="/година">/месец</span>
+    </div>
+    <div class="plan-setup" data-setup-monthly="Одит: <strong>147€</strong> (еднократно)" data-setup-yearly="Одит: <s>147€</s> <span class='bonus'>включен в годишния план</span>">Одит: <strong>147€</strong> (еднократно)</div>
+    <div class="plan-setup" data-setup-monthly="+ <strong>147€</strong>/год. ресертификация" data-setup-yearly="<s>147€/год. ресертификация</s> <span class='bonus'>включена</span>">+ <strong>147€</strong>/год. ресертификация</div>
+    <ul class="plan-features">
+      <li>Всичко от Стандартен</li>
+      <li>2 категории</li>
+      <li>До 3 услуги (тагове)</li>
+      <li>6 контакт иконки (+ Instagram, Maps)</li>
+      <li>Описание на профила</li>
+      <li>1 CTA бутон</li>
+      <li>Разширена секция (възраст, адрес)</li>
+      <li><strong>Лийд магнити</strong></li>
+      <li>Зелен верифициран бадж</li>
+      <li>Значка за точки от одита</li>
+    </ul>
+    <a href="#" class="plan-cta plan-cta--verified" data-plan="verified">Избери Проверен</a>
+  </div>
+
+  <!-- Доверен -->
+  <div class="plan plan--elite" id="elite">
+    <div class="plan-name plan-name--elite">Доверен</div>
+    <h3 class="plan-title">Премиум присъствие</h3>
+    <div class="plan-subtitle">Максимална видимост, 2 CTA бутона и още по-голямо доверие.</div>
+    <div class="plan-price">
+      <span class="amount" data-monthly="49€" data-yearly="588€">49€</span>
+      <span class="period" data-monthly="/месец" data-yearly="/година">/месец</span>
+    </div>
+    <div class="plan-setup" data-setup-monthly="Одит: <strong>197€</strong> (еднократно)" data-setup-yearly="Одит: <s>197€</s> <span class='bonus'>включен в годишния план</span>">Одит: <strong>197€</strong> (еднократно)</div>
+    <div class="plan-setup" data-setup-monthly="+ <strong>197€</strong>/год. ресертификация" data-setup-yearly="<s>197€/год. ресертификация</s> <span class='bonus'>включена</span>">+ <strong>197€</strong>/год. ресертификация</div>
+    <ul class="plan-features">
+      <li>Всичко от Проверен</li>
+      <li>4 категории</li>
+      <li>До 4 услуги (тагове)</li>
+      <li>Всички 11 контакт иконки</li>
+      <li>2 CTA бутона</li>
+      <li><strong>SEO настройки</strong> (URL, meta)</li>
+      <li><strong>Календар за резервации</strong></li>
+      <li><strong>Продукт магазин</strong> (123marketing)</li>
+      <li>Премиум рамка</li>
+      <li>Лилав "Доверен" бадж</li>
+      <li>Приоритетно позициониране</li>
+      <li>Разширена профилна страница</li>
+    </ul>
+    <a href="#" class="plan-cta plan-cta--elite" data-plan="elite">Избери Доверен</a>
+  </div>
+
+  <!-- Премиум -->
+  <div class="plan plan--premium" id="premium">
+    <div class="plan-name plan-name--premium">Премиум</div>
+    <h3 class="plan-title">Enterprise решение</h3>
+    <div class="plan-subtitle">За водещи организации с множество локации и персонализирани нужди.</div>
+    <div class="plan-price">
+      <span class="amount" style="font-size:24px;">По заявка</span>
+    </div>
+    <div class="plan-setup">Персонализирана оферта</div>
+    <ul class="plan-features">
+      <li>Всичко от Доверен</li>
+      <li>Неограничен брой категории</li>
+      <li>Неограничен брой услуги</li>
+      <li>Персонализиран брандинг</li>
+      <li>Множество локации</li>
+      <li>Приоритетна поддръжка</li>
+      <li>Месечен performance отчет</li>
+      <li>Личен Акаунт Мениджър</li>
+      <li>Златен "Премиум" бадж</li>
+    </ul>
+    <a href="contacts.html" class="plan-cta plan-cta--premium">Свържете се с нас</a>
+  </div>
+
+</div>
+
+<!-- Comparison table -->
+<section class="comparison">
+  <h2>Сравнение на плановете</h2>
+  <p class="sub">Детайлен преглед на всички функции по план.</p>
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Функция</th>
+        <th>Стандартен</th>
+        <th>Проверен</th>
+        <th>Доверен</th>
+        <th>Премиум</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Профил в директорията</td><td class="comp-check comp-check--standard">✓</td><td class="comp-check comp-check--verified">✓</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Брой категории</td><td>1</td><td>2</td><td>4</td><td>∞</td></tr>
+      <tr><td>Брой услуги (тагове)</td><td>2</td><td>3</td><td>4</td><td>∞</td></tr>
+      <tr><td>Контакт иконки</td><td>4</td><td>6</td><td>11</td><td>11+</td></tr>
+      <tr><td>Описание на профила</td><td class="comp-x">—</td><td class="comp-check comp-check--verified">✓</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>CTA бутони</td><td class="comp-x">—</td><td>1</td><td>2</td><td>2</td></tr>
+      <tr><td>Разширена секция (възраст, адрес)</td><td class="comp-x">—</td><td class="comp-check comp-check--verified">✓</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Значка за точки от одита</td><td class="comp-x">—</td><td class="comp-check comp-check--verified">✓</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Профилна страница</td><td class="comp-x">—</td><td class="comp-check comp-check--verified">✓</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Лийд магнити</td><td class="comp-x">—</td><td class="comp-check comp-check--verified">✓</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>SEO настройки (URL, meta)</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Календар за резервации</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Продукт магазин (123marketing)</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Премиум рамка</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Приоритизирана поддръжка</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Приоритетно позициониране</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-check comp-check--elite">✓</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Множество локации</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Персонализиран брандинг</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr><td>Личен Акаунт Мениджър</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-x">—</td><td class="comp-check comp-check--premium">✓</td></tr>
+      <tr class="comp-price">
+        <td><strong>Годишен абонамент</strong></td>
+        <td><strong>95€</strong> еднокр.<br><span style="color:var(--muted);font-size:11px;font-weight:500;">+ 49€/год.</span></td>
+        <td><strong>348€/год</strong><s>+ 147€ одит</s></td>
+        <td><strong>588€/год</strong><s>+ 197€ одит</s></td>
+        <td><strong>По заявка</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+</main>
+
+<footer class="zd-footer">
+  <div class="zd-footer-links">
+    <a href="index.html">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="report.html">Докладвай</a>
+    <a href="business-login.html">Бизнес Вход</a>
+  </div>
+  <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+<script>
+/* ═══ STRIPE PAYMENT LINKS ═══
+ * Replace placeholder URLs below with real Stripe Payment Link URLs from
+ * https://dashboard.stripe.com/payment-links
+ *
+ * Each link should be a Subscription product. Stripe supports adding a
+ * one-time setup fee directly to a subscription Payment Link, so the
+ * audit cost can be bundled into a single checkout flow.
+ *
+ * No backend required — Stripe handles checkout, subscriptions, and webhooks
+ * via your Stripe Dashboard. When ready, just paste the URLs here.
+ */
+const paymentLinks = {
+  standardYearly:  '#REPLACE_WITH_STRIPE_LINK', // Subscription 49€/year + 95€ setup
+  verifiedMonthly: '#REPLACE_WITH_STRIPE_LINK', // Subscription 29€/month + 147€ setup
+  verifiedYearly:  '#REPLACE_WITH_STRIPE_LINK', // Subscription 348€/year (audit included)
+  eliteMonthly:    '#REPLACE_WITH_STRIPE_LINK', // Subscription 49€/month + 197€ setup
+  eliteYearly:     '#REPLACE_WITH_STRIPE_LINK', // Subscription 588€/year (audit included)
+  // Premium uses contact form, no Payment Link
+};
+
+let currentBilling = 'monthly';
+
+function setBilling(type) {
+  currentBilling = type;
+  document.querySelectorAll('.billing-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  // Update prices
+  document.querySelectorAll('.plan-price .amount[data-monthly]').forEach(el => {
+    el.textContent = el.dataset[type];
+  });
+  document.querySelectorAll('.plan-price .period[data-monthly]').forEach(el => {
+    el.textContent = el.dataset[type];
+  });
+
+  // Update setup line — strikethrough for yearly (audit included)
+  document.querySelectorAll('.plan-setup[data-setup-monthly]').forEach(el => {
+    el.innerHTML = el.dataset[type === 'monthly' ? 'setupMonthly' : 'setupYearly'];
+  });
+
+  // Update CTA hrefs based on plan + billing
+  updateCTALinks();
+}
+
+function updateCTALinks() {
+  const linkMap = {
+    standard: paymentLinks.standardYearly, // standard is yearly only
+    verified: currentBilling === 'monthly' ? paymentLinks.verifiedMonthly : paymentLinks.verifiedYearly,
+    elite:    currentBilling === 'monthly' ? paymentLinks.eliteMonthly    : paymentLinks.eliteYearly,
+  };
+  document.querySelectorAll('.plan-cta[data-plan]').forEach(btn => {
+    const plan = btn.dataset.plan;
+    if (linkMap[plan]) btn.href = linkMap[plan];
+  });
+}
+
+// Initialize CTA links on load
+document.addEventListener('DOMContentLoaded', updateCTALinks);
+</script>
+
+<script src="js/nav-inject.js"></script>
+<script src="js/cookie-banner.js"></script>
+<script src="js/analytics-loader.js"></script>
+</body>
+</html>

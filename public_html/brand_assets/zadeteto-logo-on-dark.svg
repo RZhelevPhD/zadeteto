@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 100" width="480" height="100">
+<defs>
+<linearGradient id="pMain" x1="0.2" y1="0" x2="0.8" y2="1">
+<stop offset="0%" stop-color="#b388ff"/>
+<stop offset="40%" stop-color="#9c5fff"/>
+<stop offset="100%" stop-color="#7c4dff"/>
+</linearGradient>
+<linearGradient id="cMain" x1="0.1" y1="0" x2="0.9" y2="1">
+<stop offset="0%" stop-color="#ffe082"/>
+<stop offset="45%" stop-color="#f5d76e"/>
+<stop offset="100%" stop-color="#d4a843"/>
+</linearGradient>
+</defs>
+<rect width="480" height="100" fill="#1a1a2e" rx="12"/>
+<circle cx="55" cy="48" r="38" fill="url(#pMain)" opacity=".95"/>
+<circle cx="78" cy="62" r="21" fill="url(#cMain)" opacity=".95"/>
+<circle cx="69" cy="57" r="8" fill="rgba(255,255,255,.1)"/>
+<text x="120" y="44" font-family="Inter, sans-serif" font-weight="800" font-size="28" fill="#ffffff" letter-spacing="-0.5">За Детето</text>
+<line x1="120" y1="55" x2="315" y2="55" stroke="#d4a843" stroke-width="0.8" opacity=".5"/>
+<text x="120" y="72" font-family="Inter, sans-serif" font-weight="400" font-size="9.5" fill="rgba(255,255,255,.55)" letter-spacing="4">ДИРЕКТОРИЯ ЗА РОДИТЕЛИ</text>
+</svg>

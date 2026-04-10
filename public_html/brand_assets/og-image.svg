@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="cMain" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#ffe082"/>
+      <stop offset="45%" stop-color="#f5d76e"/>
+      <stop offset="100%" stop-color="#d4a843"/>
+    </linearGradient>
+    <radialGradient id="bgGlow" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#a56cff" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#7c4dff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bgGlow2" cx="85%" cy="90%" r="50%">
+      <stop offset="0%" stop-color="#5a2ecf" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#5a2ecf" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.04 0"/>
+    </filter>
+  </defs>
+
+  <!-- Background base -->
+  <rect width="1200" height="630" fill="#7c4dff"/>
+  <!-- Layered radial gradients for depth -->
+  <rect width="1200" height="630" fill="url(#bgGlow)"/>
+  <rect width="1200" height="630" fill="url(#bgGlow2)"/>
+  <!-- Subtle grain overlay -->
+  <rect width="1200" height="630" filter="url(#grain)"/>
+
+  <!-- Logo group, centered upper area, scaled ~2.4x from 480px source -->
+  <g transform="translate(244, 188)">
+    <!-- Mark: outer soft circle -->
+    <circle cx="132" cy="115" r="91" fill="rgba(255,255,255,.2)"/>
+    <!-- Mark: gold orb -->
+    <circle cx="187" cy="149" r="50" fill="url(#cMain)" opacity=".95"/>
+    <!-- Mark: highlight -->
+    <circle cx="166" cy="137" r="19" fill="rgba(255,255,255,.1)"/>
+    <!-- Wordmark -->
+    <text x="288" y="106" font-family="'DM Serif Display', serif" font-weight="700" font-size="78" fill="#ffffff" letter-spacing="-1.5">За Детето</text>
+    <!-- Hairline divider -->
+    <line x1="288" y1="132" x2="700" y2="132" stroke="#f5d76e" stroke-width="2" opacity=".6"/>
+    <!-- Subtitle -->
+    <text x="288" y="174" font-family="'DM Sans', sans-serif" font-weight="400" font-size="22" fill="rgba(255,255,255,.75)" letter-spacing="9">ДИРЕКТОРИЯ ЗА РОДИТЕЛИ</text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="600" y="468" text-anchor="middle" font-family="'DM Serif Display', serif" font-weight="700" font-size="38" fill="#ffffff" letter-spacing="-0.5">Първата национална директория</text>
+  <text x="600" y="514" text-anchor="middle" font-family="'DM Serif Display', serif" font-weight="700" font-size="38" fill="#ffffff" letter-spacing="-0.5">за детски специалисти и услуги</text>
+
+  <!-- Domain wordmark, lower-right corner -->
+  <text x="1140" y="595" text-anchor="end" font-family="'DM Sans', sans-serif" font-weight="600" font-size="20" fill="rgba(255,255,255,.55)" letter-spacing="2">zadeteto.com</text>
+
+  <!-- Verified badge accent, lower-left corner -->
+  <g transform="translate(60, 555)" opacity="0.85">
+    <circle cx="20" cy="20" r="18" fill="rgba(245,215,110,0.18)" stroke="#f5d76e" stroke-width="1.5"/>
+    <path d="M12 20 L18 26 L28 14" fill="none" stroke="#f5d76e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="50" y="27" font-family="'DM Sans', sans-serif" font-weight="600" font-size="16" fill="rgba(255,255,255,.7)" letter-spacing="1">ВЕРИФИЦИРАНО КАЧЕСТВО</text>
+  </g>
+</svg>

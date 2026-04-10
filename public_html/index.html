@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>За Детето — Открий най-доброто за твоето дете</title>
+<meta name="description" content="Първата национална директория с верифицирани детски специалисти, школи и услуги. Избирай с увереност.">
+
+<!-- SEO -->
+<link rel="canonical" href="https://zadeteto.com/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="За Детето">
+<meta property="og:locale" content="bg_BG">
+<meta property="og:url" content="https://zadeteto.com/">
+<meta property="og:title" content="За Детето — Открий най-доброто за твоето дете">
+<meta property="og:description" content="Първата национална директория с верифицирани детски специалисти, школи и услуги. Избирай с увереност.">
+<meta property="og:image" content="https://zadeteto.com/brand_assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="За Детето — национална директория за детски специалисти и услуги">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="За Детето — Открий най-доброто за твоето дете">
+<meta name="twitter:description" content="Първата национална директория с верифицирани детски специалисти, школи и услуги. Избирай с увереност.">
+<meta name="twitter:image" content="https://zadeteto.com/brand_assets/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --zd-purple: #7c4dff;
+    --zd-purple-light: #efe8ff;
+    --zd-purple-dark: #5a2ecf;
+    --zd-gold: #f5d76e;
+    --zd-mint: #4caf6a;
+    --bg: #fdfcfb;
+    --surface: #ffffff;
+    --text: #1a103c;
+    --muted: #8b80b0;
+    --accent: var(--zd-purple);
+    --border: #ece8f3;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, .serif { font-family: 'DM Serif Display', serif; }
+
+  /* ═══ NAV ═══ */
+  nav { position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 16px 40px; z-index: 100; transition: background 0.3s cubic-bezier(0.16,1,0.3,1), padding 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s cubic-bezier(0.16,1,0.3,1), backdrop-filter 0.3s cubic-bezier(0.16,1,0.3,1); }
+  nav.scrolled { background: rgba(255,255,255,0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.04); padding: 12px 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+  .nav-logo img { height: 80px; transition: filter 0.3s; }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a.nav-link { color: #fff; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  .nav-links a.nav-link:hover { color: var(--zd-gold); }
+  nav.scrolled .nav-links a.nav-link { color: var(--text); text-shadow: none; }
+  nav.scrolled .nav-logo img { filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+  .nav-btn { padding: 10px 24px; background: var(--accent); border-radius: 12px; color: #fff !important; font-weight: 600; text-decoration: none; box-shadow: 0 4px 16px rgba(124,77,255,0.2); transition: transform 0.2s, box-shadow 0.3s; }
+  .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124,77,255,0.3); }
+  .nav-auth { padding: 10px 24px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(8px); border-radius: 12px; color: #fff; font-weight: 600; text-decoration: none; transition: background 0.2s; }
+  nav.scrolled .nav-auth { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .nav-auth:hover { background: rgba(255,255,255,0.25); }
+  nav.scrolled .nav-auth:hover { background: var(--zd-gray-50); }
+  /* Login button: white on hero, dark when scrolled */
+  nav:not(.scrolled) .nav-btn-login { color: #fff !important; border-color: rgba(255,255,255,0.3); }
+  nav:not(.scrolled) .nav-btn-login:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.5); }
+  @media (max-width: 768px) { .nav-links { gap: 16px; } .nav-links a:not(.nav-btn):not(.nav-auth) { display: none; } nav { padding: 16px 20px; } nav.scrolled { padding: 12px 20px; } }
+
+  /* ═══ HERO ═══ */
+  .hero-section { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .hero-video { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; }
+  .hero-overlay { position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, rgba(253,252,251,0.15) 0%, rgba(253,252,251,0.05) 35%, rgba(253,252,251,0.25) 65%, rgba(253,252,251,0.75) 100%); pointer-events: none; }
+  .hero-content { position: relative; z-index: 3; text-align: center; max-width: 680px; padding: 44px 44px 40px; background: rgba(255,255,255,0.22); backdrop-filter: blur(8px) saturate(1.2); -webkit-backdrop-filter: blur(8px) saturate(1.2); border-radius: 32px; border: 1px solid rgba(255,255,255,0.35); box-shadow: 0 8px 40px rgba(0,0,0,0.06); }
+  .hero-tag { display: inline-block; padding: 5px 14px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.6); border-radius: 100px; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 20px; }
+  .hero-content h1 { font-size: clamp(36px, 6.5vw, 60px); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px; color: var(--text); text-shadow: 0 1px 6px rgba(255,255,255,0.5); }
+  .hero-content h1 span { color: var(--accent); }
+  .hero-content p { font-size: clamp(14px, 1.6vw, 17px); color: #2a1a4e; line-height: 1.6; max-width: 500px; margin: 0 auto 28px; text-shadow: 0 1px 4px rgba(255,255,255,0.5); }
+  .btn-wrap { position: relative; display: inline-block; }
+  .explode-btn { padding: 16px 40px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; border: none; border-radius: 14px; cursor: pointer; position: relative; transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s; z-index: 2; background: var(--accent); color: white; text-decoration: none; box-shadow: 0 6px 20px rgba(124,77,255,0.25); }
+  .explode-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(124,77,255,0.35); }
+  .explode-btn:active { transform: scale(0.96); }
+  .particle { position: fixed; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 9999; }
+
+  /* ═══ STICKY STACK ═══ */
+  .stack-section { max-width: 1200px; margin: 0 auto; padding: 100px 24px; }
+  .stack-container { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .stack-visual { position: sticky; top: 120px; height: fit-content; }
+  .mockup { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.04); }
+  .mockup-body { min-height: 380px; position: relative; display: flex; flex-direction: column; justify-content: center; background: #fff; }
+  .mockup-state { position: absolute; inset: 0; padding: 48px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; opacity: 0; transition: opacity 0.6s ease, transform 0.6s ease; transform: scale(0.95); background: #fff; }
+  .mockup-state.active { opacity: 1; transform: scale(1); z-index: 2; }
+  .mock-step { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 700; margin: 0 auto 20px; }
+  .mock-step--1 { background: rgba(124,77,255,0.08); color: var(--accent); border: 2px solid rgba(124,77,255,0.15); }
+  .mock-step--2 { background: rgba(200,80,80,0.08); color: #c85050; border: 2px solid rgba(200,80,80,0.15); }
+  .mock-step--3 { background: rgba(245,180,0,0.08); color: #c89a00; border: 2px solid rgba(245,180,0,0.15); }
+  .mock-step--4 { background: rgba(255,255,255,0.2); color: #fff; border: 2px solid rgba(255,255,255,0.3); }
+  .mock-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); line-height: 1.2; margin-bottom: 10px; }
+  .mock-desc { font-size: 15px; color: var(--muted); line-height: 1.5; max-width: 260px; }
+  .stack-features { display: flex; flex-direction: column; gap: 40px; padding: 40px 0; }
+  .feature-card { padding: 40px 36px; border-radius: 24px; background: var(--surface); border: 1px solid var(--border); opacity: 0.3; transform: translateY(16px); transition: all 0.5s cubic-bezier(0.16,1,0.3,1); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+  .feature-card.active { opacity: 1; transform: translateY(0); border-color: rgba(124,77,255,0.4); box-shadow: 0 0 0 1px rgba(124,77,255,0.3), 0 16px 48px rgba(124,77,255,0.08); }
+  .feature-num { font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+  .feature-card h3 { font-size: 24px; font-family: 'DM Serif Display', serif; margin-bottom: 16px; line-height: 1.3; }
+  .feature-card p { font-size: 16px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+  .feature-card p:last-child { margin-bottom: 0; }
+  @media (max-width: 900px) { .stack-container { grid-template-columns: 1fr; } .stack-visual { position: relative; top: 0; } .mockup-body { min-height: 280px; } .feature-card { padding: 28px 24px; } }
+
+  /* ═══ MARQUEE ═══ */
+  .marquee-section { padding: 36px 0; overflow: hidden; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .marquee-row { display: flex; white-space: nowrap; will-change: transform; padding: 10px 0; }
+  .marquee-content { display: flex; flex-shrink: 0; }
+  .marquee-item {
+    display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+    width: 280px; height: 64px; padding: 0 24px; margin: 0 12px; flex-shrink: 0;
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(124,77,255,0.04);
+    font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 600; color: var(--text);
+  }
+  .marquee-icon { width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .marquee-icon svg { width: 20px; height: 20px; }
+
+  /* ═══ FLIP CARDS ═══ */
+  .cards-section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 48px; }
+  .section-header h2 { font-size: clamp(32px, 5vw, 48px); margin-bottom: 12px; }
+  .section-header p { font-size: 17px; color: var(--muted); }
+  .flip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .flip-card { perspective: 1200px; height: 300px; cursor: pointer; position: relative; top: 0; border-radius: 22px; transition: top 0.4s cubic-bezier(0.16,1,0.3,1), filter 0.4s ease, opacity 0.4s ease; }
+  /* Liquid border glow — rotating conic gradient behind the card */
+  .flip-card::before { content:''; position:absolute; inset:-2px; border-radius:22px; background:conic-gradient(from var(--glow-angle, 0deg), transparent 40%, rgba(124,77,255,0.4) 50%, rgba(76,175,106,0.3) 55%, rgba(245,215,110,0.25) 60%, transparent 70%); opacity:0; transition: opacity 0.4s ease; z-index:0; animation: liquidSpin 3.5s linear infinite; pointer-events:none; }
+  @property --glow-angle { syntax:'<angle>'; initial-value:0deg; inherits:false; }
+  @keyframes liquidSpin { to { --glow-angle: 360deg; } }
+  @supports not (background: conic-gradient(from var(--glow-angle, 0deg), red, blue)) {
+    .flip-card::before { background: linear-gradient(135deg, rgba(124,77,255,0.35), rgba(76,175,106,0.25), rgba(245,215,110,0.25), rgba(124,77,255,0.35)); background-size:300% 300%; animation: liquidFallback 3.5s ease infinite; }
+    @keyframes liquidFallback { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  }
+  .flip-card:hover::before { opacity:1; }
+  .flip-card:hover { top: -4px; z-index:2; }
+  /* Dim sibling cards when any card is hovered */
+  .flip-grid:hover .flip-card:not(:hover) { filter: brightness(0.88) saturate(0.6); opacity:0.55; }
+  .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.16,1,0.3,1); transform-style: preserve-3d; z-index:1; will-change: transform; -webkit-font-smoothing: antialiased; }
+  .flip-card:hover .flip-inner, .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; overflow: hidden; transform: translateZ(0); }
+  .flip-front { background: var(--surface); border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.03); justify-content: flex-end; transition: box-shadow 0.4s ease; }
+  .flip-card:hover .flip-front { box-shadow: 0 16px 48px rgba(124,77,255,0.14), 0 4px 12px rgba(0,0,0,0.06); }
+  .flip-front .icon-circle { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: auto; }
+  .flip-front .icon-circle svg { width: 26px; height: 26px; }
+  .flip-front h3 { font-size: 22px; margin-bottom: 4px; }
+  .flip-front p { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .flip-back { background: var(--surface); border: 1px solid var(--border); transform: rotateY(180deg); justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.04); border-top: 3px solid rgba(var(--card-color), 0.5); }
+  .flip-back h3 { font-size: 18px; margin-bottom: 10px; }
+  .flip-back p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .flip-back .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 16px; }
+  .flip-back .tag { font-size: 10px; font-weight: 600; padding: 3px 9px; background: rgba(var(--card-color),0.08); color: rgba(var(--card-color),1); border: 1px solid rgba(var(--card-color),0.15); border-radius: 100px; }
+  /* Premium card variant */
+  .flip-card--premium .flip-front { background: linear-gradient(135deg, #fff 60%, #fdf6e3); border-color: rgba(200,154,0,0.25); }
+  .flip-card--premium .flip-front::after { content:'★ Премиум'; position:absolute; top:14px; right:14px; font-size:10px; font-weight:700; letter-spacing:0.04em; padding:3px 10px; background:linear-gradient(135deg,#f5d76e,#c89a00); color:#fff; border-radius:100px; box-shadow:0 2px 8px rgba(200,154,0,0.3); }
+  .flip-card--premium::before { background:conic-gradient(from var(--glow-angle, 0deg), transparent 35%, rgba(200,154,0,0.5) 48%, rgba(245,215,110,0.45) 55%, rgba(200,154,0,0.35) 62%, transparent 72%); }
+  .flip-card--premium:hover .flip-front { box-shadow: 0 16px 48px rgba(200,154,0,0.18), 0 4px 12px rgba(0,0,0,0.06); }
+  @media (max-width: 1000px) { .flip-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px) { .flip-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } .flip-card { height: 260px; } .flip-front, .flip-back { padding: 18px; } }
+
+  /* Missing category CTA */
+  .missing-cat-cta {
+    margin-top: 48px;
+    padding: 36px 40px;
+    background: linear-gradient(135deg, rgba(124,77,255,0.04), rgba(124,77,255,0.08));
+    border: 1.5px dashed rgba(124,77,255,0.25);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .missing-cat-icon {
+    width: 64px; height: 64px;
+    border-radius: 18px;
+    background: rgba(124,77,255,0.12);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .missing-cat-icon svg { width: 32px; height: 32px; }
+  .missing-cat-content { flex: 1; min-width: 280px; }
+  .missing-cat-content h3 { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 8px; color: var(--text); }
+  .missing-cat-content p { font-size: 15px; line-height: 1.6; color: var(--muted); margin-bottom: 16px; max-width: 600px; }
+  .missing-cat-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 22px;
+    background: var(--accent);
+    color: #fff !important;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(124,77,255,0.25);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .missing-cat-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,77,255,0.35); }
+  .missing-cat-btn:active { transform: scale(0.97); }
+  @media (max-width: 700px) {
+    .missing-cat-cta { padding: 24px; flex-direction: column; align-items: flex-start; text-align: left; }
+    .missing-cat-content h3 { font-size: 20px; }
+  }
+
+  /* ═══ GLOBAL FOOTER ═══ */
+  .zd-footer { border-top:1px solid rgba(0,0,0,0.05); padding:48px 40px; background:var(--surface, #fff); text-align:center; position:relative; z-index:10; margin-top:auto; }
+  .zd-footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:16px; flex-wrap:wrap; }
+  .zd-footer-links a { color:var(--muted, #8b80b0); text-decoration:none; font-size:14px; font-weight:500; font-family:'DM Sans',sans-serif; transition:color 0.2s; }
+  .zd-footer-links a:hover { color:var(--accent, #7c4dff); }
+  .zd-footer-copy { font-size:12px; color:var(--muted, #8b80b0); opacity:0.6; font-family:'DM Sans',sans-serif; }
+  @media(max-width:768px){ .zd-footer{padding:32px 24px;} .zd-footer-links{gap:16px;} }
+</style>
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Начало</a>
+    <a href="partners.html" class="nav-link">За партньори</a>
+    <a href="contacts.html" class="nav-link">Контакти</a>
+    <a href="pricing.html" class="nav-btn-partner">Стани партньор</a>
+    <a href="search.html?login=true" class="nav-btn-login">Вход</a>
+  </div>
+</nav>
+
+<main id="zd-main-content">
+<!-- ═══ HERO ═══ -->
+<section class="hero-section" id="heroSection">
+  <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto" poster="brand_assets/hero-poster.png">
+    <source src="video/hero-video.mp4" type="video/mp4">
+  </video>
+  <video class="hero-video" id="heroVideo2" autoplay muted loop playsinline preload="auto" style="opacity:0;" poster="brand_assets/hero-poster.png">
+    <source src="video/hero-video-2.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Национален Регистър За Детето</div>
+    <h1>Открий <span>най-доброто</span><br>за детето си</h1>
+    <p>От „надявам се да не сгреша" до „знам, че избрах правилния" с няколко клика.</p>
+    <div class="btn-wrap">
+      <a href="search.html" class="explode-btn" data-type="particles" data-color="#7c4dff">Търси</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STICKY NARRATIVE ═══ -->
+<section class="stack-section">
+  <div class="stack-container">
+    <div class="stack-visual">
+      <div class="mockup">
+        <div class="mockup-body">
+          <div class="mockup-state active" data-state="1">
+            <div class="mock-step mock-step--1">1</div>
+            <div class="mock-title">Целта</div>
+            <div class="mock-desc">Точният специалист за детето ти.</div>
+          </div>
+          <div class="mockup-state" data-state="2">
+            <div class="mock-step mock-step--2">2</div>
+            <div class="mock-title">Хаосът</div>
+            <div class="mock-desc">47 коментара. 5 си противоречат.</div>
+          </div>
+          <div class="mockup-state" data-state="3">
+            <div class="mock-step mock-step--3">3</div>
+            <div class="mock-title" style="color:#c89a00;">Цената</div>
+            <div class="mock-desc">Прибързан избор или отлагане.</div>
+          </div>
+          <div class="mockup-state" data-state="4" style="background:linear-gradient(135deg,#7c4dff,#a56cff);">
+            <div class="mock-step mock-step--4">✓</div>
+            <div class="mock-title" style="color:#fff;">ZaDeteto</div>
+            <div class="mock-desc" style="color:rgba(255,255,255,0.9);">Избираш с увереност.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stack-features">
+      <div class="feature-card active" data-feature="1">
+        <div class="feature-num">Целта</div>
+        <h3>Всеки родител иска да е сигурен в избора си.</h3>
+        <p>Правилният логопед. Правилният зъболекар. Правилната школа, правилната детегледачка.</p>
+        <p>Не „някой". <strong>Точният специалист</strong>, който не прави компромиси с развитието, здравето и безопасността на децата. Този, който води, поема отговорност и Ви оставя уверени в избора си.</p>
+      </div>
+      <div class="feature-card" data-feature="2">
+        <div class="feature-num">Хаосът</div>
+        <h3>Днес това решение е повече от трудно.</h3>
+        <p>Ровиш във форуми. Питаш в 5 Facebook групи. Получаваш 47 коментара. Три или четири са полезни, но твърде общи. Пет си противоречат. Още пет са от „специалисти", които искат да им се обадиш. Поне един ти препоръчва хомеопатия за всичко.</p>
+        <p>Търсиш в Google и попадаш на табели, не на опит. Разчиташ на късмет, докато добрите специалисти разчитат на професионален, научен и медицински обоснован подход. <strong>Не на късмет.</strong></p>
+      </div>
+      <div class="feature-card" data-feature="3">
+        <div class="feature-num">Цената</div>
+        <h3>Колкото повече търсиш, толкова повече се объркваш.</h3>
+        <p>Всяка противоречива препоръка храни съмнението. А несигурният родител или избира прибързано, или отлага. Поне докато стане твърде късно.</p>
+        <p>Шумът затрупва качествените специалисти. Те остават невидими зад шарени реклами. А когато става дума за деца, <strong>рискът не е безобиден</strong>.</p>
+      </div>
+      <div class="feature-card" data-feature="4">
+        <div class="feature-num">Решението</div>
+        <h3>Затова създадохме За Детето.</h3>
+        <p>Със среден опит от над 15 години като специалисти и предприемачи (а най-важното, всеки от екипа ни е родител и знае какъв е залогът) изградихме <strong>първата национална директория За Детето</strong>.</p>
+        <p>Профилът на всеки тук показва специализация, подход и реални отзиви от родители, минали по същия път.</p>
+        <p style="margin-top:8px;"><strong>Родителят избира с увереност.<br>Детето получава по-добра грижа.<br>А добрите специалисти се открояват.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ KINETIC MARQUEE ═══ -->
+<section class="marquee-section">
+  <div class="marquee-row marquee-giant" data-speed="1" data-direction="right">
+    <div class="marquee-content">
+      <span class="marquee-item"><span class="marquee-icon" style="background:rgba(90,46,207,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgb(90,46,207)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg></span>Специалисти</span>
+      <span class="marquee-item"><span class="marquee-icon" style="background:rgba(124,77,255,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgb(124,77,255)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>Учене и умения</span>
+      <span class="marquee-item"><span class="marquee-icon" style="background:rgba(245,180,0,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgb(200,150,0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="13" r="1"/><circle cx="18" cy="11" r="1"/></svg></span>Игри и забавления</span>
+      <span class="marquee-item"><span class="marquee-icon" style="background:rgba(186,85,211,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgb(186,85,211)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>Култура</span>
+      <span class="marquee-item"><span class="marquee-icon" style="background:rgba(76,175,106,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgb(76,175,106)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>Спорт и движение</span>
+      <span class="marquee-item"><span class="marquee-icon" style="background:rgba(233,30,99,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgb(233,30,99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>Тържества</span>
+      <span class="marquee-item"><span class="marquee-icon" style="background:rgba(255,87,34,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgb(255,87,34)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>Стоки</span>
+      <span class="marquee-item"><span class="marquee-icon" style="background:rgba(0,150,136,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgb(0,150,136)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>Домашна грижа</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FLIP CARDS ═══ -->
+<section class="cards-section" id="categories">
+  <div class="section-header">
+    <h2>Всичко необходимо</h2>
+    <p>Вижте категориите и намерете точно това, от което се нуждаете.</p>
+  </div>
+  <div class="flip-grid">
+
+    <!-- 1. Учене и умения -->
+    <div class="flip-card" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(124,77,255,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(124,77,255)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+          </div>
+          <h3>Учене и умения</h3>
+          <p>Ясли, градини, школи и кръжоци</p>
+        </div>
+        <div class="flip-back" style="--card-color:124,77,255;">
+          <h3>Учене и умения</h3>
+          <p>От първите стъпки в яслата до специализирани уроци и езикови школи за по-големите.</p>
+          <div class="tags"><span class="tag">Ясли и градини</span><span class="tag">Училища</span><span class="tag">Занимални</span><span class="tag">Частни уроци</span><span class="tag">STEM и програмиране</span><span class="tag">Изкуства</span><span class="tag">Езикови школи</span><span class="tag">Музикални</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Спорт и движение -->
+    <div class="flip-card" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(76,175,106,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(76,175,106)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/></svg>
+          </div>
+          <h3>Спорт и движение</h3>
+          <p>Физическа активност</p>
+        </div>
+        <div class="flip-back" style="--card-color:76,175,106;">
+          <h3>Спорт и движение</h3>
+          <p>Индивидуални и отборни спортове за развитие на физическата култура и дисциплина.</p>
+          <div class="tags"><span class="tag">Отборни</span><span class="tag">Индивидуални</span><span class="tag">Бойни изкуства</span><span class="tag">Танци</span><span class="tag">Плувни</span><span class="tag">Outdoor</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Игри и забавления -->
+    <div class="flip-card" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(245,180,0,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(200,150,0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+          </div>
+          <h3>Игри и забавления</h3>
+          <p>Творчество и веселие</p>
+        </div>
+        <div class="flip-back" style="--card-color:245,180,0;">
+          <h3>Игри и забавления</h3>
+          <p>Детски центрове, аркадни игри и места за незабравими моменти за деца на всяка възраст.</p>
+          <div class="tags"><span class="tag">Детски центрове</span><span class="tag">Аркадни и VR</span><span class="tag">Ресторанти</span><span class="tag">Други</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Култура -->
+    <div class="flip-card" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(186,85,211,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(186,85,211)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <h3>Култура</h3>
+          <p>Изкуство и веселие</p>
+        </div>
+        <div class="flip-back" style="--card-color:186,85,211;">
+          <h3>Култура</h3>
+          <p>Театър, кино, музеи и концерти за деца — посветени на любопитството и въображението.</p>
+          <div class="tags"><span class="tag">Театър</span><span class="tag">Кино</span><span class="tag">Музей</span><span class="tag">Концерти</span><span class="tag">Културни събития</span><span class="tag">Изложби</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Специалисти -->
+    <div class="flip-card" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(90,46,207,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(90,46,207)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+          </div>
+          <h3>Специалисти</h3>
+          <p>Подкрепа за развитието и здравето</p>
+        </div>
+        <div class="flip-back" style="--card-color:90,46,207;">
+          <h3>Специалисти</h3>
+          <p>Проверени логопеди, психолози и терапевти, които поставят детето на първо място.</p>
+          <div class="tags"><span class="tag">Детски психолози</span><span class="tag">Логопеди</span><span class="tag">Рехабилитатори</span><span class="tag">Хранене и диетология</span><span class="tag">Лекари</span><span class="tag">Зъболекари</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Тържества и събития -->
+    <div class="flip-card" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(233,30,99,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(233,30,99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><path d="M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M15 6a9 9 0 0 0-9 9"/></svg>
+          </div>
+          <h3>Тържества и събития</h3>
+          <p>Незабравими рождени дни и празници</p>
+        </div>
+        <div class="flip-back" style="--card-color:233,30,99;">
+          <h3>Тържества и събития</h3>
+          <p>Организация на рождени дни, тематични партита и специални детски събития.</p>
+          <div class="tags"><span class="tag">Центрове</span><span class="tag">Аниматори</span><span class="tag">Торти и кетъринг</span><span class="tag">Фото и видео</span><span class="tag">Декор</span><span class="tag">Под наем</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Домашна грижа -->
+    <div class="flip-card" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(0,150,136,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(0,150,136)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Домашна грижа и помощ</h3>
+          <p>Детегледачки и домашни майстори</p>
+        </div>
+        <div class="flip-back" style="--card-color:0,150,136;">
+          <h3>Домашна грижа и помощ</h3>
+          <p>Проверени професионалисти за грижа вкъщи. Гъвкави графици, реални отзиви.</p>
+          <div class="tags"><span class="tag">Детегледачки</span><span class="tag">Домашен майстор</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Стоки -->
+    <div class="flip-card" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(255,87,34,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(255,87,34)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <h3>Стоки</h3>
+          <p>Детски продукти</p>
+        </div>
+        <div class="flip-back" style="--card-color:255,87,34;">
+          <h3>Стоки за деца</h3>
+          <p>Качествени детски стоки — от играчки и дрехи до образователни материали и аксесоари.</p>
+          <div class="tags"><span class="tag">За бебето</span><span class="tag">Дрехи и обувки</span><span class="tag">Играчки и игри</span><span class="tag">Книги и помагала</span><span class="tag">Храни</span><span class="tag">Безопасност</span><span class="tag">Джаджи</span><span class="tag">Конзоли и PC</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Тържества и събития (Premium) -->
+    <div class="flip-card flip-card--premium" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(200,154,0,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(200,154,0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <h3>Тържества и събития</h3>
+          <p>Рождени дни, аниматори, фотографи</p>
+        </div>
+        <div class="flip-back" style="--card-color:200,154,0;">
+          <h3>Тържества и събития</h3>
+          <p>Всичко за незабравим детски празник — от място и украса до аниматори и фотосесии.</p>
+          <div class="tags"><span class="tag">Рождени дни</span><span class="tag">Аниматори</span><span class="tag">Фотографи</span><span class="tag">Зали под наем</span><span class="tag">Кетъринг</span><span class="tag">Украса</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Технологии и STEM (Premium) -->
+    <div class="flip-card flip-card--premium" tabindex="0" role="button" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="icon-circle" style="background:rgba(200,154,0,0.08);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgb(200,154,0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3>Технологии и STEM</h3>
+          <p>Роботика, програмиране, VR</p>
+        </div>
+        <div class="flip-back" style="--card-color:200,154,0;">
+          <h3>Технологии и STEM</h3>
+          <p>Бъдещето започва рано — курсове по роботика, програмиране, 3D печат и виртуална реалност за деца.</p>
+          <div class="tags"><span class="tag">Роботика</span><span class="tag">Програмиране</span><span class="tag">3D принтиране</span><span class="tag">VR / AR</span><span class="tag">Електроника</span><span class="tag">AI за деца</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="missing-cat-cta">
+    <div class="missing-cat-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="missing-cat-content">
+      <h3>Не виждате подходяща категория?</h3>
+      <p>Работите с деца и родители и искате да участвате, но категорията ви липсва? Пишете ни и ще я добавим.</p>
+      <a href="mailto:hello@zadeteto.com?subject=Предложение%20за%20нова%20категория" class="missing-cat-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        hello@zadeteto.com
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="zd-footer">
+  <div class="zd-footer-links">
+    <a href="index.html">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="report.html">Докладвай</a>
+    <a href="business-login.html">Бизнес Вход</a>
+  </div>
+  <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+<script>
+// NAV SCROLL
+(function(){
+  var nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 50) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+})();
+
+// VIDEO HERO — crossfade rotation + parallax
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+  var vid1 = document.getElementById('heroVideo');
+  var vid2 = document.getElementById('heroVideo2');
+  var active = 1;
+  vid1.play().catch(function(){});
+  vid2.play().catch(function(){});
+  setInterval(function(){
+    if(active===1){ vid1.style.transition='opacity 2.5s ease'; vid2.style.transition='opacity 2.5s ease'; vid1.style.opacity='0'; vid2.style.opacity='1'; active=2; }
+    else { vid1.style.transition='opacity 2.5s ease'; vid2.style.transition='opacity 2.5s ease'; vid1.style.opacity='1'; vid2.style.opacity='0'; active=1; }
+  }, 8000);
+  gsap.to('.hero-content', { opacity:0, y:-60, ease:'none', scrollTrigger:{ trigger:'#heroSection', start:'top top', end:'80% top', scrub:true }});
+  gsap.to('#heroVideo, #heroVideo2', { scale:1.08, ease:'none', scrollTrigger:{ trigger:'#heroSection', start:'top top', end:'bottom top', scrub:true }});
+})();
+
+// PARTICLE BUTTON
+(function(){
+  document.querySelectorAll('.explode-btn').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      var rect=btn.getBoundingClientRect(); var cx=rect.left+rect.width/2; var cy=rect.top+rect.height/2;
+      for(var i=0;i<20;i++){
+        var p=document.createElement('div'); p.className='particle';
+        p.style.background=Math.random()>0.5?'#7c4dff':'#f5d76e';
+        p.style.left=cx+'px'; p.style.top=cy+'px'; document.body.appendChild(p);
+        var a=Math.random()*Math.PI*2, d=40+Math.random()*80;
+        p.style.transition='all .6s cubic-bezier(.16,1,.3,1)'; p.offsetHeight;
+        p.style.transform='translate('+Math.cos(a)*d+'px,'+(Math.sin(a)*d-20)+'px) scale(0)'; p.style.opacity='0';
+        setTimeout(function(el){el.remove()},700,p);
+      }
+    });
+  });
+})();
+
+// KINETIC MARQUEE — seamless infinite loop
+(function(){
+  function startMarquee() {
+    gsap.registerPlugin(ScrollTrigger);
+    var rows = document.querySelectorAll('.marquee-row');
+    var baseSpeed = 25, scrollVelocity = 0;
+    ScrollTrigger.create({ onUpdate: function(self){ scrollVelocity = Math.abs(self.getVelocity()); }});
+
+    rows.forEach(function(row){
+      var content = row.querySelector('.marquee-content');
+      if (!content) return;
+
+      // Measure original content width
+      var contentWidth = content.offsetWidth;
+      var viewportWidth = window.innerWidth;
+
+      // Append clones until total content is at least 2x viewport (for seamless looping)
+      var minTotalWidth = viewportWidth * 2 + contentWidth;
+      var currentWidth = contentWidth;
+      while (currentWidth < minTotalWidth) {
+        var clone = content.cloneNode(true);
+        row.appendChild(clone);
+        currentWidth += contentWidth;
+      }
+
+      var dir = row.dataset.direction === 'right' ? 1 : -1;
+      var sm = parseFloat(row.dataset.speed) || 1;
+      var cw = contentWidth; // single content unit width = wrap distance
+      var x = dir === -1 ? 0 : -cw;
+
+      function anim(){
+        var spd = (baseSpeed + scrollVelocity * 0.15) * sm;
+        x += dir * -1 * spd / 60;
+        // Seamless wrap by single content-unit width
+        if (dir === -1 && x <= -cw) x += cw;
+        if (dir === 1 && x >= 0) x -= cw;
+        row.style.transform = 'translateX(' + x + 'px)';
+        requestAnimationFrame(anim);
+      }
+      anim();
+    });
+  }
+
+  // Wait for fonts + layout before measuring
+  if (document.readyState === 'complete') {
+    startMarquee();
+  } else {
+    window.addEventListener('load', startMarquee);
+  }
+})();
+
+// STICKY NARRATIVE
+(function(){
+  var cards=document.querySelectorAll('.feature-card'), states=document.querySelectorAll('.mockup-state');
+  cards.forEach(function(card){ ScrollTrigger.create({ trigger:card, start:'top 50%', end:'bottom 50%', onEnter:function(){activate(card.dataset.feature);}, onEnterBack:function(){activate(card.dataset.feature);} }); });
+  function activate(n){ cards.forEach(function(c){c.classList.toggle('active',c.dataset.feature===n);}); states.forEach(function(s){s.classList.toggle('active',s.dataset.state===n);}); }
+})();
+</script>
+<script src="js/nav-inject.js"></script>
+<script src="js/cookie-banner.js"></script>
+<script src="js/analytics-loader.js"></script>
+</body>
+</html>

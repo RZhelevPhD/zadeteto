@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>За Детето — Профил</title>
+<meta name="description" content="Профил на верифициран детски специалист или услуга — опит, отзиви, контакти и възможност за директна връзка.">
+
+<!-- SEO -->
+<link rel="canonical" href="https://zadeteto.com/listing.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="За Детето">
+<meta property="og:locale" content="bg_BG">
+<meta property="og:url" content="https://zadeteto.com/listing.html">
+<meta property="og:title" content="За Детето — Профил на специалист">
+<meta property="og:description" content="Профил на верифициран детски специалист или услуга — опит, отзиви, контакти и възможност за директна връзка.">
+<meta property="og:image" content="https://zadeteto.com/brand_assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="За Детето — национална директория за детски специалисти и услуги">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="За Детето — Профил на специалист">
+<meta name="twitter:description" content="Профил на верифициран детски специалист или услуга — опит, отзиви, контакти и възможност за директна връзка.">
+<meta name="twitter:image" content="https://zadeteto.com/brand_assets/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous"></script>
+<style>
+:root {
+  --zd-purple-50: #f8f5ff;
+  --zd-purple-100: #efe8ff;
+  --zd-purple-200: #d4b6ff;
+  --zd-purple-400: #a56cff;
+  --zd-purple-600: #7c4dff;
+  --zd-purple-800: #5a2ecf;
+  --zd-gold-300: #f5d76e;
+  --zd-mint-50: #edf9f0;
+  --zd-mint-100: #d4f5dc;
+  --zd-mint-400: #4caf6a;
+  --zd-mint-600: #2e994d;
+  --zd-mint-800: #1a6e34;
+  --zd-gray-50: #fafafa;
+  --zd-gray-100: #f3f3f3;
+  --zd-gray-200: #e8e8e8;
+  --zd-gray-400: #b0b0b0;
+  --zd-gray-600: #777;
+  --zd-gray-800: #333;
+  --zd-sop: #9c27b0;
+  --zd-online: #1976d2;
+  --zd-font: 'DM Sans', sans-serif;
+  --zd-heart: #e74c6f;
+  --accent: var(--zd-purple-600);
+  --accent-light: var(--zd-purple-50);
+  --accent-text: var(--zd-purple-800);
+  --bg: #fdfcfb;
+  --surface: #fff;
+  --text: #1a103c;
+  --muted: #8b80b0;
+  --border: #ece8f3;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--zd-font);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: 'DM Serif Display', serif; }
+
+/* ═══ NAV ═══ */
+nav {
+  position: sticky; top: 0; display: flex; justify-content: space-between;
+  align-items: center; padding: 12px 24px; z-index: 900;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid #e8e8e8;
+}
+.nav-logo img { height: 80px; }
+.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-links a { color: var(--text); text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-auth-btn { padding: 8px 20px; background: var(--zd-purple-600); border-radius: 10px; color: #fff !important; font-weight: 600; box-shadow: 0 4px 12px rgba(124,77,255,0.2); }
+@media(max-width:768px) { .nav-links { gap: 16px; } .nav-links a:not(.nav-auth-btn) { display: none; } nav { padding: 12px 20px; } .nav-logo img { height: 36px; } }
+
+/* ═══ BREADCRUMB ═══ */
+.breadcrumb {
+  padding: 14px 24px; background: var(--zd-gray-50);
+  border-bottom: 1px solid var(--zd-gray-200);
+  font-size: 13px; color: var(--zd-gray-600);
+  display: flex; align-items: center; gap: 8px;
+}
+.breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb svg { width: 14px; height: 14px; flex-shrink: 0; }
+.breadcrumb .sep { color: var(--zd-gray-400); margin: 0 2px; }
+
+/* ═══ TWO-COLUMN LAYOUT ═══ */
+.listing-layout {
+  max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px;
+  display: grid; grid-template-columns: 1fr 320px; gap: 32px;
+  align-items: start;
+}
+@media(max-width:900px) {
+  .listing-layout { grid-template-columns: 1fr; padding: 20px 16px 120px; }
+}
+
+/* ═══ HERO SECTION ═══ */
+.listing-hero {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 24px; padding: 32px; position: relative; overflow: hidden;
+}
+.listing-hero::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0;
+  height: 6px; background: var(--accent); opacity: 0.15;
+}
+.hero-top { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
+.hero-logo {
+  width: 100px; height: 100px; border-radius: 20px;
+  border: 3px solid var(--accent-light); overflow: hidden; flex-shrink: 0;
+}
+.hero-logo img { width: 100%; height: 100%; object-fit: cover; }
+.hero-info { flex: 1; min-width: 0; }
+.hero-name { font-size: clamp(24px, 3.5vw, 36px); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 6px; }
+.hero-city { font-size: 14px; font-weight: 500; color: var(--zd-gray-600); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.hero-city svg { width: 14px; height: 14px; }
+.hero-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.zd-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; }
+.zd-badge--tier { background: var(--accent-light); color: var(--accent-text); }
+.zd-badge--sop { background: rgba(156,39,176,.08); color: var(--zd-sop); }
+.zd-badge--online { background: rgba(25,118,210,.08); color: var(--zd-online); }
+
+/* Rating */
+.hero-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.hero-stars { color: var(--zd-gold-300); font-size: 18px; letter-spacing: -1px; }
+.hero-rating-num { font-size: 18px; font-weight: 700; }
+.hero-rating-count { font-size: 13px; color: var(--muted); font-weight: 500; }
+
+/* Contact icons in hero */
+.hero-contacts { display: flex; gap: 8px; flex-wrap: wrap; }
+.zd-contact-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--zd-gray-50); border: 1px solid var(--zd-gray-200);
+  cursor: pointer; text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.zd-contact-icon:hover { background: var(--accent-light); border-color: var(--accent); transform: translateY(-2px); }
+.zd-contact-icon:active { transform: scale(0.95); }
+.zd-contact-icon img { width: 20px; height: 20px; display: block; }
+
+@media(max-width:480px) {
+  .hero-top { flex-direction: column; align-items: center; text-align: center; }
+  .hero-badges { justify-content: center; }
+  .hero-rating { justify-content: center; }
+  .hero-contacts { justify-content: center; }
+}
+
+/* ═══ CONTENT SECTIONS ═══ */
+.listing-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px; margin-top: 24px;
+}
+.listing-section h2 { font-size: clamp(20px, 3vw, 26px); margin-bottom: 16px; }
+
+/* About */
+.about-desc { font-size: 15px; line-height: 1.7; color: var(--zd-gray-600); margin-bottom: 20px; }
+.about-placeholder { font-size: 14px; color: var(--zd-gray-400); font-style: italic; }
+
+/* Categories */
+.category-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.category-pill {
+  font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 10px;
+  background: var(--accent-light); color: var(--accent-text);
+  border: 1px solid transparent;
+}
+
+/* Tags */
+.service-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.zd-tag {
+  font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 8px;
+  background: var(--zd-gray-50); color: var(--zd-gray-600);
+  border: 1px solid var(--zd-gray-200);
+}
+
+/* Age groups */
+.age-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+.age-chip {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; padding: 10px 18px; border-radius: 12px;
+  background: var(--accent-light); color: var(--accent-text);
+  border: 1px solid var(--border);
+}
+.age-chip svg { width: 18px; height: 18px; opacity: 0.6; }
+
+/* ═══ REVIEWS ═══ */
+.reviews-summary {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px; background: var(--zd-gray-50); border-radius: 14px;
+  margin-bottom: 24px;
+}
+.reviews-big-num { font-size: 42px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+.reviews-stars-col { display: flex; flex-direction: column; gap: 2px; }
+.reviews-stars-col .stars { color: var(--zd-gold-300); font-size: 20px; letter-spacing: -1px; }
+.reviews-stars-col .count { font-size: 13px; color: var(--muted); }
+.review-card {
+  padding: 20px; background: var(--zd-gray-50); border-radius: 14px;
+  border: 1px solid var(--zd-gray-200); margin-bottom: 12px;
+}
+.review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.review-avatar {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--accent-light); color: var(--accent-text);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; flex-shrink: 0;
+}
+.review-meta { flex: 1; }
+.review-name { font-size: 14px; font-weight: 600; }
+.review-date { font-size: 12px; color: var(--muted); }
+.review-stars { color: var(--zd-gold-300); font-size: 14px; letter-spacing: -1px; }
+.review-text { font-size: 14px; line-height: 1.6; color: var(--zd-gray-600); }
+.write-review-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 16px; padding: 12px 24px; background: var(--accent);
+  color: #fff; border: none; border-radius: 12px; font-family: var(--zd-font);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(124,77,255,0.2);
+}
+.write-review-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,77,255,0.3); }
+.write-review-btn:active { transform: scale(0.97); }
+
+/* ═══ GALLERY ═══ */
+.gallery-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+.gallery-placeholder {
+  aspect-ratio: 4/3; border-radius: 14px;
+  background: var(--zd-gray-100); border: 2px dashed var(--zd-gray-200);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: var(--zd-gray-400); font-size: 12px; gap: 6px;
+}
+.gallery-placeholder svg { width: 24px; height: 24px; opacity: 0.4; }
+@media(max-width:600px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ═══ LOCATION ═══ */
+.location-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; }
+.location-row svg { width: 20px; height: 20px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+.location-text { font-size: 14px; line-height: 1.5; color: var(--zd-gray-800); }
+.map-placeholder {
+  width: 100%; height: 240px; border-radius: 18px;
+  background: var(--zd-gray-100); border: 1px solid var(--zd-gray-200);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: var(--zd-gray-400); font-size: 13px; gap: 8px;
+  position: relative; overflow: hidden;
+}
+.map-placeholder svg { width: 32px; height: 32px; opacity: 0.3; }
+.map-placeholder--consent { cursor: pointer; }
+.map-placeholder--consent:hover { background: var(--zd-gray-50); }
+.map-placeholder--consent .map-consent-cta {
+  margin-top: 6px; padding: 8px 16px; border-radius: 10px;
+  background: var(--accent); color: #fff; font-size: 12px; font-weight: 600;
+  border: none; cursor: pointer; pointer-events: none;
+}
+.map-placeholder--consent .map-consent-disclaimer {
+  font-size: 10px; color: var(--zd-gray-400); max-width: 320px;
+  text-align: center; margin-top: 4px; line-height: 1.4;
+}
+.map-iframe {
+  width: 100%; height: 240px; border: 0;
+  border-radius: 18px; display: block;
+}
+
+/* ═══ REAL WORKING HOURS (sidebar) ═══ */
+.sidebar-hours-grid {
+  display: grid; grid-template-columns: auto 1fr;
+  gap: 4px 12px; margin-top: 4px;
+}
+.sidebar-hours-day { font-size: 12px; color: var(--zd-gray-600); font-weight: 500; }
+.sidebar-hours-time { font-size: 12px; color: var(--zd-gray-800); text-align: right; font-variant-numeric: tabular-nums; }
+.sidebar-hours-time--closed { color: var(--zd-gray-400); font-style: italic; }
+.sidebar-hours-day--today { color: var(--accent); font-weight: 700; }
+.sidebar-hours-time--today { color: var(--accent); font-weight: 700; }
+.sidebar-hours-note {
+  margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border);
+  font-size: 11px; color: var(--zd-gray-600); font-style: italic; line-height: 1.4;
+}
+
+/* ═══ DEMO DATA BADGE (mock reviews fallback) ═══ */
+.demo-data-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  background: rgba(245,215,110,0.15); border: 1px solid rgba(245,215,110,0.4);
+  font-size: 10px; font-weight: 700; color: #8a6500;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+.demo-data-badge::before { content: '◉'; font-size: 8px; }
+
+/* ═══ RELATED SPECIALISTS ═══ */
+.related-section { margin-top: 24px; }
+.related-scroll {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr);
+  gap: 16px; overflow-x: auto; overflow-y: hidden;
+  padding: 4px 4px 16px 4px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--zd-gray-200) transparent;
+}
+.related-scroll::-webkit-scrollbar { height: 6px; }
+.related-scroll::-webkit-scrollbar-thumb { background: var(--zd-gray-200); border-radius: 3px; }
+.related-scroll::-webkit-scrollbar-track { background: transparent; }
+
+.related-card {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 16px; border-radius: 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  text-decoration: none; color: inherit;
+  scroll-snap-align: start;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.related-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  border-color: var(--accent-light);
+}
+.related-card-top { display: flex; align-items: center; gap: 10px; }
+.related-card-logo {
+  width: 40px; height: 40px; border-radius: 10px;
+  border: 1.5px solid var(--zd-gray-200); overflow: hidden; flex-shrink: 0;
+  background: var(--zd-gray-50);
+}
+.related-card-logo img { width: 100%; height: 100%; object-fit: cover; }
+.related-card-name { font-size: 14px; font-weight: 700; line-height: 1.2; flex: 1; min-width: 0; }
+.related-card-name-text {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.related-card-meta { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--zd-gray-600); }
+.related-card-tier {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+  padding: 2px 7px; border-radius: 5px; text-transform: uppercase;
+}
+.related-card--elite .related-card-tier { background: var(--zd-purple-100); color: var(--zd-purple-800); }
+.related-card--verified .related-card-tier { background: rgba(46,153,77,0.12); color: #1a6e34; }
+.related-card--standard .related-card-tier { background: var(--zd-gray-100); color: var(--zd-gray-800); }
+.related-card-rating { display: flex; align-items: center; gap: 3px; font-size: 11px; color: var(--zd-gray-600); }
+.related-card-rating .stars { color: var(--zd-gold-300); letter-spacing: -1px; }
+
+.related-empty {
+  padding: 24px; text-align: center;
+  color: var(--zd-gray-400); font-size: 13px;
+}
+
+/* ═══ STICKY SIDEBAR ═══ */
+.listing-sidebar { position: sticky; top: 80px; }
+.sidebar-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+.sidebar-top { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.sidebar-logo {
+  width: 52px; height: 52px; border-radius: 14px;
+  border: 2px solid var(--accent-light); overflow: hidden; flex-shrink: 0;
+}
+.sidebar-logo img { width: 100%; height: 100%; object-fit: cover; }
+.sidebar-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
+.sidebar-tier { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 5px; background: var(--accent-light); color: var(--accent-text); margin-top: 4px; display: inline-block; }
+
+.sidebar-cta {
+  display: block; width: 100%; padding: 14px; border-radius: 12px; border: none;
+  font-family: var(--zd-font); font-size: 15px; font-weight: 600;
+  cursor: pointer; text-align: center; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, filter 0.15s;
+  margin-bottom: 10px;
+}
+.sidebar-cta--primary { background: var(--accent); color: #fff; box-shadow: 0 4px 16px rgba(124,77,255,0.2); }
+.sidebar-cta--primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,77,255,0.3); }
+.sidebar-cta--primary:active { transform: scale(0.97); }
+.sidebar-cta--secondary { background: var(--accent-light); color: var(--accent-text); }
+.sidebar-cta--secondary:hover { filter: brightness(0.97); }
+
+.sidebar-contacts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.sidebar-hours { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--zd-gray-600); }
+.sidebar-hours strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--zd-gray-800); margin-bottom: 6px; }
+
+/* ═══ MOBILE BOTTOM BAR ═══ */
+.mobile-cta-bar {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding: 12px 16px; z-index: 100;
+  gap: 10px; align-items: center;
+}
+.mobile-cta-bar .sidebar-cta { margin-bottom: 0; flex: 1; }
+.mobile-cta-bar .phone-btn {
+  width: 48px; height: 48px; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--surface); display: flex; align-items: center; justify-content: center;
+  text-decoration: none; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.mobile-cta-bar .phone-btn:hover { background: var(--accent-light); }
+.mobile-cta-bar .phone-btn img { width: 20px; height: 20px; }
+@media(max-width:900px) {
+  .mobile-cta-bar { display: flex; }
+  .listing-sidebar { display: none; }
+}
+
+/* ═══ TIER VARIATIONS ═══ */
+/* Elite */
+.listing--elite { --accent: var(--zd-purple-600); --accent-light: var(--zd-purple-50); --accent-text: var(--zd-purple-800); }
+.listing--elite .listing-hero::before { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-400)); opacity: 0.12; }
+.listing--elite .hero-logo { border-color: var(--zd-purple-400); }
+.listing--elite .zd-badge--tier { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-400)); color: #fff; }
+.listing--elite .zd-tag { background: var(--zd-purple-50); border-color: var(--zd-purple-100); color: var(--zd-purple-800); }
+.listing--elite .sidebar-cta--primary { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-400)); }
+.listing--elite .listing-hero { box-shadow: 0 2px 16px rgba(124,77,255,0.08); }
+
+/* Verified */
+.listing--verified { --accent: var(--zd-mint-600); --accent-light: var(--zd-mint-50); --accent-text: var(--zd-mint-800); }
+.listing--verified .listing-hero::before { background: var(--zd-mint-600); }
+.listing--verified .hero-logo { border-color: var(--zd-mint-400); }
+.listing--verified .zd-tag { background: var(--zd-mint-50); border-color: var(--zd-mint-100); color: var(--zd-mint-800); }
+.listing--verified .sidebar-cta--primary { background: var(--zd-mint-600); box-shadow: 0 4px 16px rgba(46,153,77,0.2); }
+.listing--verified .sidebar-cta--primary:hover { box-shadow: 0 8px 24px rgba(46,153,77,0.3); }
+.listing--verified .listing-hero { box-shadow: 0 2px 12px rgba(46,153,77,0.06); }
+.listing--verified .write-review-btn { background: var(--zd-mint-600); box-shadow: 0 4px 16px rgba(46,153,77,0.2); }
+.listing--verified .category-pill { background: var(--zd-mint-50); color: var(--zd-mint-800); }
+.listing--verified .review-avatar { background: var(--zd-mint-50); color: var(--zd-mint-800); }
+.listing--verified .age-chip { background: var(--zd-mint-50); color: var(--zd-mint-800); }
+
+/* Standard */
+.listing--standard { --accent: var(--zd-gray-600); --accent-light: var(--zd-gray-100); --accent-text: var(--zd-gray-800); }
+.listing--standard .sidebar-cta--primary { background: var(--zd-gray-800); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.listing--standard .write-review-btn { display: none; }
+.listing--standard .age-section,
+.listing--standard .gallery-section,
+.listing--standard .location-section { display: none; }
+
+/* Free */
+.listing--free { --accent: var(--zd-gray-400); --accent-light: var(--zd-gray-100); --accent-text: var(--zd-gray-600); }
+.listing--free .hero-logo { filter: saturate(0.5); border-color: var(--zd-gray-200); }
+.listing--free .sidebar-cta--primary { background: var(--zd-gray-400); box-shadow: none; }
+.listing--free .write-review-btn { display: none; }
+.listing--free .age-section,
+.listing--free .gallery-section,
+.listing--free .location-section { display: none; }
+.listing--free .listing-hero,
+.listing--free .listing-section { opacity: 0.82; }
+
+/* ═══ SHIMMER (Elite only) ═══ */
+.listing--elite .listing-hero::after {
+  content: ""; position: absolute; inset: -2px; border-radius: 26px; z-index: -1;
+  background: linear-gradient(130deg, var(--zd-purple-200) 0%, var(--zd-purple-200) 38%, var(--zd-gold-300) 50%, var(--zd-purple-200) 62%, var(--zd-purple-200) 100%);
+  background-size: 250% 100%; animation: shimmer 8s ease-in-out infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude; padding: 2px;
+}
+@keyframes shimmer { 0%,100%{background-position:100% 50%} 50%{background-position:0% 50%} }
+
+/* ═══ LOADING STATE ═══ */
+.listing-loading {
+  text-align: center; padding: 120px 24px; grid-column: 1 / -1;
+}
+.listing-loading p { font-size: 16px; color: var(--muted); }
+.listing-error { color: var(--zd-heart); }
+.listing-error a { color: var(--accent); font-weight: 600; }
+
+/* ═══ FOOTER ═══ */
+.zd-footer { border-top: 1px solid rgba(0,0,0,0.05); padding: 48px 40px; background: var(--surface); text-align: center; position: relative; z-index: 10; }
+.zd-footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
+.zd-footer-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+.zd-footer-links a:hover { color: var(--accent); }
+.zd-footer-copy { font-size: 12px; color: var(--muted); opacity: 0.6; }
+@media(max-width:768px) { .zd-footer { padding: 24px; } .zd-footer-links { gap: 16px; } }
+
+/* ═══ AUTH MODAL ═══ */
+.auth-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(8px); z-index:9999; display:none; justify-content:center; align-items:center; opacity:0; transition:opacity 0.3s ease; }
+.auth-modal-overlay.open { opacity:1; }
+.auth-modal { background:#fff; width:100%; max-width:400px; border-radius:24px; box-shadow:0 20px 40px rgba(0,0,0,0.1); padding:32px 24px; position:relative; transform:translateY(20px); transition:transform 0.3s cubic-bezier(0.16,1,0.3,1); }
+.auth-modal-overlay.open .auth-modal { transform:translateY(0); }
+.auth-close { position:absolute; top:20px; right:20px; background:none; border:none; cursor:pointer; padding:4px; border-radius:50%; background:var(--zd-gray-100); display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+.auth-close:hover { background:var(--zd-gray-200); }
+.auth-logo { height:32px; margin:0 auto 20px; display:block; }
+.auth-title { text-align:center; font-family:'DM Serif Display',serif; font-size:24px; margin-bottom:8px; }
+.auth-sub { text-align:center; color:var(--muted); font-size:14px; margin-bottom:24px; }
+.auth-tabs { display:flex; background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:4px; margin-bottom:20px; }
+.auth-tab { flex:1; text-align:center; padding:8px; font-size:14px; font-weight:600; cursor:pointer; border-radius:8px; color:var(--muted); transition:all 0.2s; }
+.auth-tab.active { background:#fff; color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+.auth-btn { display:flex; align-items:center; justify-content:center; gap:12px; width:100%; padding:14px; background:var(--surface); border:1px solid var(--border); border-radius:12px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; margin-bottom:12px; transition:border-color 0.2s, background 0.2s; }
+.auth-btn:hover { border-color:var(--zd-purple-200); background:var(--zd-purple-50); }
+.auth-btn img { width:20px; height:20px; }
+.auth-email-wrap { margin-top:16px; border-top:1px solid var(--border); padding-top:16px; }
+.auth-email-input { width:100%; padding:14px; border:1px solid var(--border); border-radius:12px; outline:none; font-family:'DM Sans',sans-serif; font-size:15px; transition:border-color 0.2s; }
+.auth-email-input:focus { border-color:var(--accent); }
+.otp-input { text-align:center; letter-spacing:8px; font-size:24px; font-weight:700; width:100%; padding:12px; border:1px solid var(--border); border-radius:12px; margin-bottom:16px; outline:none; }
+.otp-input:focus { border-color:var(--accent); }
+.auth-verify-btn { width:100%; padding:14px; background:var(--accent); color:#fff; border:none; border-radius:12px; font-weight:600; font-size:15px; cursor:pointer; box-shadow:0 4px 16px rgba(124,77,255,0.2); transition:transform 0.2s; }
+.auth-verify-btn:active { transform:scale(0.98); }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a href="index.html" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето" class="nav-logo" style="height:80px;">
+  </a>
+  <div class="nav-links">
+    <a href="index.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Начало</a>
+    <a href="partners.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">За партньори</a>
+    <a href="contacts.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Контакти</a>
+    <a href="pricing.html" class="nav-btn-partner">Стани партньор</a>
+    <a href="#" class="nav-btn-login" onclick="openAuthModal(event); return false;">Вход</a>
+  </div>
+</nav>
+
+<main id="zd-main-content">
+<!-- ═══ BREADCRUMB ═══ -->
+<div class="breadcrumb" id="breadcrumb">
+  <a href="search.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <a href="search.html">Каталог</a>
+  <span class="sep">/</span>
+  <span id="breadcrumbCategory">...</span>
+  <span class="sep">/</span>
+  <span id="breadcrumbName" style="color:var(--text);font-weight:600;">...</span>
+</div>
+
+<!-- ═══ MAIN LAYOUT ═══ -->
+<div class="listing-layout" id="listingContent" style="display:none;">
+
+  <!-- LEFT COLUMN: Main content -->
+  <div class="listing-main">
+
+    <!-- Hero -->
+    <div class="listing-hero listing-anim" id="heroSection">
+      <div class="hero-top">
+        <div class="hero-logo" id="heroLogo"></div>
+        <div class="hero-info">
+          <h1 class="hero-name" id="heroName"></h1>
+          <div class="hero-city" id="heroCity">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span></span>
+          </div>
+          <div class="hero-badges" id="heroBadges"></div>
+          <div class="hero-rating" id="heroRating"></div>
+        </div>
+      </div>
+      <div class="hero-contacts" id="heroContacts"></div>
+    </div>
+
+    <!-- About -->
+    <div class="listing-section listing-anim" id="aboutSection">
+      <h2>За нас</h2>
+      <div id="aboutContent"></div>
+    </div>
+
+    <!-- Age Groups -->
+    <div class="listing-section listing-anim age-section" id="ageSection">
+      <h2>Възрастови групи</h2>
+      <div class="age-chips" id="ageChips"></div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="listing-section listing-anim" id="reviewsSection">
+      <h2>Отзиви от родители</h2>
+      <div id="reviewsContent"></div>
+    </div>
+
+    <!-- Gallery -->
+    <div class="listing-section listing-anim gallery-section" id="gallerySection">
+      <h2>Галерия</h2>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+
+    <!-- Location -->
+    <div class="listing-section listing-anim location-section" id="locationSection">
+      <h2>Местоположение</h2>
+      <div id="locationContent"></div>
+    </div>
+
+    <!-- Related specialists ("You might also like") -->
+    <div class="listing-section listing-anim related-section" id="relatedSection" style="display:none;">
+      <h2>Подобни специалисти</h2>
+      <div class="related-scroll" id="relatedScroll"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN: Sticky sidebar -->
+  <aside class="listing-sidebar">
+    <div class="sidebar-card" id="sidebarCard"></div>
+  </aside>
+</div>
+
+<!-- Loading state -->
+<div class="listing-loading" id="listingLoading">
+  <p>Зареждане...</p>
+</div>
+
+<!-- Mobile bottom CTA bar -->
+<div class="mobile-cta-bar" id="mobileCta"></div>
+
+<!-- ═══ AUTH MODAL ═══ -->
+<div class="auth-modal-overlay" id="authModal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal">
+    <button class="auth-close" onclick="closeAuthModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" class="auth-logo" alt="За Детето">
+    <div id="authStep1">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchAuthTab('login')">Вход</div>
+        <div class="auth-tab" onclick="switchAuthTab('register')">Регистрация</div>
+      </div>
+      <h3 class="auth-title" id="authTitle">Добре дошли отново</h3>
+      <p class="auth-sub" id="authSub">Влезте, за да запазвате специалисти и да оставяте отзиви от опит.</p>
+      <button class="auth-btn" onclick="triggerAuthOTP()">
+        <img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688ee41ecef9f25cb7394cba.png" alt="Google" loading="lazy" decoding="async"> Продължи с Google
+      </button>
+      <button class="auth-btn" onclick="triggerAuthOTP()">
+        <img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg" alt="Facebook" loading="lazy" decoding="async"> Продължи с Facebook
+      </button>
+      <div class="auth-email-wrap">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:8px;text-align:center;">Или продължете с имейл:</p>
+        <input type="email" class="auth-email-input" placeholder="Вашият имейл адрес">
+        <button class="auth-verify-btn" style="margin-top:12px;background:var(--text);" onclick="triggerAuthOTP()">Изпрати код</button>
+      </div>
+    </div>
+    <div id="authStep2" style="display:none;">
+      <h3 class="auth-title">Потвърждение</h3>
+      <p class="auth-sub">Въведете кода, изпратен на вашия имейл.</p>
+      <input type="text" class="otp-input" placeholder="0000" maxlength="4">
+      <button class="auth-verify-btn" onclick="confirmAuth()">Потвърди</button>
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--accent);cursor:pointer;" onclick="document.getElementById('authStep2').style.display='none';document.getElementById('authStep1').style.display='block'">Върни се назад</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="zd-footer">
+  <div class="zd-footer-links">
+    <a href="index.html">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="report.html">Докладвай</a>
+    <a href="business-login.html">Бизнес Вход</a>
+  </div>
+  <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+<script src="js/zd-security.js"></script>
+<script>
+/* ═══ DATA CONSTANTS ═══ */
+const tierClassMap = { "Доверен": "elite", "Проверен": "verified", "Стандартен": "standard", "Безплатен": "free" };
+
+const icons = {
+  phone: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165ce6566161a.svg",
+  email: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f3b45fe711.svg",
+  website: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e39f520486ca465431130.svg",
+  facebook: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg",
+  instagram: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165b73b661619.svg",
+  tiktok: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c80d255fe70e.svg",
+  linkedin: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45f958ee9ecb86249762.svg",
+  x: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933def5016cb73723d0adc.svg",
+  youtube: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f88b5fe710.svg",
+  maps: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933df9ed9c8fc6588920f1.svg",
+  reviews: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68939cebd69f994a4dd582e5.png"
+};
+
+const allContactKeys = ["phone","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps"];
+
+const allowedIconsByTier = {
+  "Доверен": ["phone","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps","reviews"],
+  "Проверен": ["phone","email","website","facebook","instagram","maps"],
+  "Стандартен": ["phone","email","website","facebook"],
+  "Безплатен": ["phone","email"]
+};
+
+/* ═══ MOCK REVIEWS DATA ═══ */
+const reviewerNames = [
+  "Мария И.", "Петър К.", "Елена Д.", "Георги С.", "Ивана М.",
+  "Стоян Б.", "Десислава Р.", "Николай Т.", "Анна В.", "Христо Н."
+];
+const reviewTexts = [
+  "Много сме доволни! Детето ходи с удоволствие и вече забелязваме напредък. Препоръчваме на всички родители.",
+  "Отличен подход към децата. Професионално и с внимание към всяко дете. Благодарим за търпението!",
+  "Записахме сина ни миналата година и резултатите са невероятни. Персоналът е изключително мил и отзивчив.",
+  "Добро обслужване, но понякога е трудно да се намери свободен час. Като цяло сме доволни.",
+  "Перфектно място за деца! Дъщеря ни обожава заниманията. Ще продължим и догодина.",
+  "Много добра организация и чисти помещения. Децата се чувстват комфортно и в безопасност.",
+  "Бяхме впечатлени от индивидуалния подход. Специалистите наистина разбират нуждите на всяко дете.",
+  "Препоръчахме на приятели и те също останаха доволни. Заслужава всяка стотинка.",
+  "Детето ни направи голям напредък само за няколко месеца. Благодарим за усилията!",
+  "Хубаво място, макар и малко скъпо. Качеството обаче си заслужава цената."
+];
+const reviewDates = [
+  "2 април 2026", "28 март 2026", "15 март 2026", "3 март 2026",
+  "18 февруари 2026", "5 февруари 2026", "22 януари 2026", "10 януари 2026"
+];
+
+/* ═══ SEEDED RANDOM ═══ */
+function seededRandom(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+
+function hashId(id) {
+  let h = 0;
+  const str = String(id);
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h) + str.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h) || 1;
+}
+
+/* ═══ AUTH MODAL ═══ */
+function openAuthModal(e) {
+  if (e) e.preventDefault();
+  const modal = document.getElementById('authModal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  setTimeout(() => modal.classList.add('open'), 10);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById('authModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  setTimeout(() => {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+    document.getElementById('authStep1').style.display = 'block';
+    document.getElementById('authStep2').style.display = 'none';
+  }, 300);
+}
+
+function triggerAuthOTP() {
+  document.getElementById('authStep1').style.display = 'none';
+  document.getElementById('authStep2').style.display = 'block';
+}
+
+function confirmAuth() {
+  localStorage.setItem('zd_parent_logged_in', 'true');
+  closeAuthModal();
+  updateAuthUI();
+}
+
+function updateAuthUI() {
+  if (localStorage.getItem('zd_parent_logged_in') === 'true') {
+    document.querySelectorAll('.nav-auth-btn').forEach(btn => {
+      btn.innerHTML = '<span style="font-size:16px;">👤</span> Профил';
+      btn.style.background = 'transparent';
+      btn.style.color = '#333';
+      btn.style.boxShadow = 'none';
+      btn.style.border = '1px solid #ccc';
+      btn.onclick = () => { alert("Тук ще се отваря профила на родителя."); };
+    });
+  }
+}
+
+function switchAuthTab(type) {
+  const tabs = document.querySelectorAll('.auth-tab');
+  tabs[0].classList.toggle('active', type === 'login');
+  tabs[1].classList.toggle('active', type === 'register');
+  if (type === 'login') {
+    document.getElementById('authTitle').innerText = 'Добре дошли отново';
+    document.getElementById('authSub').innerText = 'Влезте, за да запазвате специалисти и да оставяте отзиви от опит.';
+  } else {
+    document.getElementById('authTitle').innerText = 'Регистрация';
+    document.getElementById('authSub').innerText = 'Създайте профил, за да оценявате специалистите.';
+  }
+}
+
+/* ═══ BUILD CONTACT ICONS HTML ═══ */
+function buildContactIcons(d, keysToUse) {
+  let html = '';
+  keysToUse.forEach(k => {
+    if (d[k] && d[k] !== '#') {
+      const href = k === 'phone' ? 'tel:' + d[k] : k === 'email' ? 'mailto:' + d[k] : ZdSec.sanitizeUrl(d[k]);
+      html += `<a class="zd-contact-icon" href="${href}" target="_blank" rel="noopener" title="${k}"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
+    }
+  });
+  return html;
+}
+
+/* ═══ HYDRATE PAGE ═══ */
+function hydratePage(d) {
+  const tierClass = tierClassMap[d.tier] || 'free';
+  const isExpandable = d.tier === 'Доверен' || d.tier === 'Проверен';
+  const rand = seededRandom(hashId(d.id));
+  const rating = (4.1 + rand() * 0.8).toFixed(1);
+  const reviewCount = Math.floor(rand() * 150) + 5;
+
+  // Set tier class on body
+  document.body.className = 'listing--' + tierClass;
+
+  // Update page title
+  document.title = `${d.name} — За Детето`;
+
+  // Breadcrumb
+  const cats = Array.isArray(d.categories) ? d.categories : [d.categories || 'Услуги'];
+  document.getElementById('breadcrumbCategory').textContent = cats[0];
+  document.getElementById('breadcrumbName').textContent = d.name;
+
+  // Hero: Logo
+  document.getElementById('heroLogo').innerHTML = `<img src="${ZdSec.escapeHtml(d.logo)}" alt="${ZdSec.escapeHtml(d.name)}">`;
+
+  // Hero: Name
+  document.getElementById('heroName').textContent = d.name;
+
+  // Hero: City
+  document.getElementById('heroCity').querySelector('span').textContent = d.city;
+
+  // Hero: Badges
+  let badgesHTML = `<span class="zd-badge zd-badge--tier">${ZdSec.escapeHtml(d.tier)}</span>`;
+  if (d.sop) badgesHTML += `<span class="zd-badge zd-badge--sop">СОП</span>`;
+  if (d.city === 'Онлайн') badgesHTML += `<span class="zd-badge zd-badge--online">Online</span>`;
+  document.getElementById('heroBadges').innerHTML = badgesHTML;
+
+  // Hero: Rating
+  const filledStars = Math.round(parseFloat(rating));
+  let starsHTML = '';
+  for (let i = 0; i < 5; i++) starsHTML += i < filledStars ? '★' : '☆';
+  document.getElementById('heroRating').innerHTML = `
+    <span class="hero-stars">${starsHTML}</span>
+    <span class="hero-rating-num">${rating}</span>
+    <span class="hero-rating-count">(${reviewCount} отзива)</span>
+  `;
+
+  // Hero: Contact icons — show all that exist on profile page
+  document.getElementById('heroContacts').innerHTML = buildContactIcons(d, allContactKeys);
+
+  // About section
+  const aboutEl = document.getElementById('aboutContent');
+  if (isExpandable && d.description) {
+    let catPills = cats.map(c => `<span class="category-pill">${ZdSec.escapeHtml(c)}</span>`).join('');
+    let tagsHTML = (d.services || []).map(s => `<span class="zd-tag">${ZdSec.escapeHtml(s)}</span>`).join('');
+    aboutEl.innerHTML = `
+      <p class="about-desc">${ZdSec.escapeHtml(d.description)}</p>
+      <div class="category-pills">${catPills}</div>
+      <div class="service-tags">${tagsHTML}</div>
+    `;
+  } else {
+    let catPills = cats.map(c => `<span class="category-pill">${ZdSec.escapeHtml(c)}</span>`).join('');
+    const tagLimit = d.tier === 'Стандартен' ? 2 : 1;
+    let tagsHTML = (d.services || []).slice(0, tagLimit).map(s => `<span class="zd-tag">${ZdSec.escapeHtml(s)}</span>`).join('');
+    aboutEl.innerHTML = `
+      <p class="about-placeholder">Този бизнес все още не е добавил описание.</p>
+      <div class="category-pills" style="margin-top:16px;">${catPills}</div>
+      <div class="service-tags" style="margin-top:12px;">${tagsHTML}</div>
+    `;
+  }
+
+  // Age groups
+  if (isExpandable && d.ageGroups && d.ageGroups.length) {
+    const chipsSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`;
+    document.getElementById('ageChips').innerHTML = d.ageGroups.map(ag =>
+      `<div class="age-chip">${chipsSvg}<span>${ag === 'Тийнейджъри' ? 'Тийнейджъри (13-19)' : ZdSec.escapeHtml(ag) + ' години'}</span></div>`
+    ).join('');
+  } else {
+    document.getElementById('ageSection').style.display = 'none';
+  }
+
+  // Reviews — async: query Supabase first, fall back to mock if no real reviews
+  const reviewsEl = document.getElementById('reviewsContent');
+  if (d.tier === 'Безплатен') {
+    reviewsEl.innerHTML = `<p class="about-placeholder">Все още няма отзиви за този бизнес.</p>`;
+  } else {
+    // Render mock immediately so the page isn't blank during the network round-trip,
+    // then replace with real reviews if any are found.
+    reviewsEl.innerHTML = renderReviewsBlock(d, /* isMock */ true, [], rand, rating, starsHTML, reviewCount, isExpandable);
+    // Try to load real reviews in the background
+    loadRealReviews(d, rand, rating, starsHTML, reviewCount, isExpandable);
+  }
+
+  // Gallery
+  const galleryEl = document.getElementById('galleryGrid');
+  const camSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+  let galleryHTML = '';
+  for (let i = 0; i < 6; i++) {
+    galleryHTML += `<div class="gallery-placeholder">${camSvg}<span>Очаквайте скоро</span></div>`;
+  }
+  galleryEl.innerHTML = galleryHTML;
+
+  // Location: address + Google Maps iframe (consent-gated)
+  const locationEl = document.getElementById('locationContent');
+  const address = d.address || d.city;
+  locationEl.innerHTML = `
+    <div class="location-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <div class="location-text">${ZdSec.escapeHtml(address)}</div>
+    </div>
+    <div id="mapContainer"></div>
+  `;
+  renderMap(d, address);
+
+  // Sidebar
+  const sidebarEl = document.getElementById('sidebarCard');
+  const sidebarIcons = allowedIconsByTier[d.tier] || ['phone','email'];
+  let ctaHTML = '';
+  if (d.tier === 'Доверен') {
+    ctaHTML = `
+      <a class="sidebar-cta sidebar-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl1 || '#')}" target="_blank">${ZdSec.escapeHtml(d.ctaLabel1 || 'Запази час')}</a>
+      <a class="sidebar-cta sidebar-cta--secondary" href="${ZdSec.sanitizeUrl(d.ctaUrl2 || '#')}" target="_blank">${ZdSec.escapeHtml(d.ctaLabel2 || 'Повече информация')}</a>
+    `;
+  } else {
+    const ctaLabel = ZdSec.escapeHtml(d.ctaLabel || 'Свържете се');
+    const ctaUrl = ZdSec.sanitizeUrl(d.ctaUrl || '#');
+    ctaHTML = `<a class="sidebar-cta sidebar-cta--primary" href="${ctaUrl}" target="_blank">${ctaLabel}</a>`;
+  }
+
+  // Working hours block — render real working_hours jsonb if present, hide otherwise
+  const hoursHTML = renderWorkingHours(d.working_hours);
+
+  sidebarEl.innerHTML = `
+    <div class="sidebar-top">
+      <div class="sidebar-logo"><img src="${ZdSec.escapeHtml(d.logo)}" alt="${ZdSec.escapeHtml(d.name)}"></div>
+      <div>
+        <div class="sidebar-name">${ZdSec.escapeHtml(d.name)}</div>
+        <span class="sidebar-tier">${ZdSec.escapeHtml(d.tier)}</span>
+      </div>
+    </div>
+    ${ctaHTML}
+    <div class="sidebar-contacts">${buildContactIcons(d, sidebarIcons)}</div>
+    ${hoursHTML}
+  `;
+
+  // Mobile CTA bar
+  const mobileCtaEl = document.getElementById('mobileCta');
+  const phoneHref = d.phone ? `tel:${d.phone}` : '#';
+  mobileCtaEl.innerHTML = `
+    <a class="sidebar-cta sidebar-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl1 || d.ctaUrl || '#')}" target="_blank">${ZdSec.escapeHtml(d.ctaLabel1 || d.ctaLabel || 'Свържете се')}</a>
+    <a class="phone-btn" href="${phoneHref}"><img src="${icons.phone}" alt="Обади се"></a>
+  `;
+
+  // Show content, hide loading
+  document.getElementById('listingLoading').style.display = 'none';
+  document.getElementById('listingContent').style.display = 'grid';
+
+  // GSAP animations — hero plays immediately, rest on scroll
+  gsap.registerPlugin(ScrollTrigger);
+  const sections = gsap.utils.toArray('.listing-anim');
+  // First section (hero) animates immediately
+  if (sections[0]) {
+    gsap.from(sections[0], { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
+  }
+  // Remaining sections animate on scroll
+  sections.slice(1).forEach((el) => {
+    gsap.from(el, {
+      opacity: 0, y: 30, duration: 0.6,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+    });
+  });
+}
+
+/* ═══ MAP (Google Maps Embed iframe, consent-gated) ═══
+ * Google Maps iframe drops third-party cookies when loaded, so under GDPR
+ * we cannot load it unconditionally. Pattern:
+ *   1. If user has already granted "analytics" consent → load iframe immediately
+ *   2. Otherwise → show a click-to-load placeholder that explains the trade-off
+ *      Clicking it = explicit consent for THIS map, so the iframe loads
+ *   3. Also listen for zd-consent-change so if the user accepts cookies
+ *      elsewhere on the site, the placeholder upgrades to a real map automatically
+ */
+function _buildMapIframeSrc(query) {
+  // Google Maps Embed (no API key required for the basic place search)
+  // Using "place" mode + URL-encoded query (address or business name).
+  return 'https://www.google.com/maps?q=' + encodeURIComponent(query) + '&output=embed';
+}
+function _injectMapIframe(container, query, businessName) {
+  if (!container) return;
+  container.innerHTML = `
+    <iframe class="map-iframe"
+            src="${_buildMapIframeSrc(query)}"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Карта — ${(businessName || '').replace(/[<>"]/g, '')}">
+    </iframe>
+  `;
+}
+function _injectMapPlaceholder(container, query, businessName) {
+  if (!container) return;
+  container.innerHTML = `
+    <div class="map-placeholder map-placeholder--consent" role="button" tabindex="0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>Картата изисква съгласие за бисквитки</span>
+      <button class="map-consent-cta" type="button">Покажи карта</button>
+      <span class="map-consent-disclaimer">Картата се зарежда от Google и може да постави бисквитки. Виж <a href="privacy.html" style="color:var(--accent);text-decoration:none">политика за поверителност</a>.</span>
+    </div>
+  `;
+  const ph = container.querySelector('.map-placeholder--consent');
+  const click = function () {
+    // Explicit user action → load the iframe for this session
+    _injectMapIframe(container, query, businessName);
+  };
+  ph.addEventListener('click', click);
+  ph.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); click(); }
+  });
+}
+function renderMap(d, address) {
+  const container = document.getElementById('mapContainer');
+  if (!container) return;
+  // Build the query: prefer name + address combo for better Google match
+  const query = [d.name, address, 'България'].filter(Boolean).join(', ');
+
+  // Check consent state — if analytics already accepted, load iframe immediately
+  const hasConsent = window.ZdConsent && window.ZdConsent.has && window.ZdConsent.has('analytics');
+  if (hasConsent) {
+    _injectMapIframe(container, query, d.name);
+  } else {
+    _injectMapPlaceholder(container, query, d.name);
+    // Listen for consent change — if user accepts later, upgrade to real iframe
+    window.addEventListener('zd-consent-change', function once() {
+      if (window.ZdConsent && window.ZdConsent.has('analytics')) {
+        _injectMapIframe(container, query, d.name);
+        window.removeEventListener('zd-consent-change', once);
+      }
+    });
+  }
+}
+
+/* ═══ WORKING HOURS (real jsonb → sidebar grid) ═══
+ * Renders a sidebar block from the businesses.working_hours jsonb column.
+ * Returns an empty string if hours are missing — the calling code can
+ * splice the result directly into innerHTML.
+ *
+ * Expected shape:
+ *   { mon: "9:00-18:00", tue: "9:00-18:00", ..., sun: "closed", note: "..." }
+ * All keys optional. Lowercase 3-letter day names. "closed" is the magic value.
+ */
+function renderWorkingHours(hours) {
+  if (!hours || typeof hours !== 'object') return '';
+  // Day order — Monday first per Bulgarian convention
+  const dayKeys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  const dayLabels = { mon: 'Понеделник', tue: 'Вторник', wed: 'Сряда', thu: 'Четвъртък', fri: 'Петък', sat: 'Събота', sun: 'Неделя' };
+  // Detect "today" — getDay() returns 0=Sunday..6=Saturday, we need it in our schema
+  const jsToKey = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  const todayKey = jsToKey[new Date().getDay()];
+
+  // Filter to days that exist in the data
+  const presentDays = dayKeys.filter(k => hours[k] !== undefined && hours[k] !== null);
+  if (presentDays.length === 0 && !hours.note) return '';  // truly empty
+
+  let rowsHTML = '';
+  presentDays.forEach(k => {
+    const value = hours[k];
+    const isToday = k === todayKey;
+    const isClosed = value === 'closed' || value === 'затворено';
+    const dayCls = 'sidebar-hours-day' + (isToday ? ' sidebar-hours-day--today' : '');
+    const timeCls = 'sidebar-hours-time'
+      + (isToday ? ' sidebar-hours-time--today' : '')
+      + (isClosed ? ' sidebar-hours-time--closed' : '');
+    const display = isClosed ? 'Затворено' : value;
+    rowsHTML += `<div class="${dayCls}">${dayLabels[k]}</div><div class="${timeCls}">${display}</div>`;
+  });
+
+  const noteHTML = hours.note
+    ? `<div class="sidebar-hours-note">${String(hours.note).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}</div>`
+    : '';
+
+  return `
+    <div class="sidebar-hours">
+      <strong>Работно време</strong>
+      <div class="sidebar-hours-grid">${rowsHTML}</div>
+      ${noteHTML}
+    </div>
+  `;
+}
+
+/* ═══ REVIEWS (real + mock fallback) ═══ */
+
+/* renderReviewsBlock — pure function, returns HTML string */
+function renderReviewsBlock(d, isMock, realReviews, rand, rating, starsHTML, reviewCount, isExpandable) {
+  // Show summary header
+  let html = `
+    <div class="reviews-summary">
+      <div class="reviews-big-num">${rating}</div>
+      <div class="reviews-stars-col">
+        <div class="stars">${starsHTML}</div>
+        <div class="count">от ${reviewCount} отзива</div>
+      </div>
+    </div>
+  `;
+
+  // Demo data badge if we're showing mock fallback
+  if (isMock) {
+    html += `<div class="demo-data-badge">Примерни данни</div>`;
+  }
+
+  if (isMock) {
+    // Generate mock reviews using the seeded random + hardcoded arrays
+    const numReviews = Math.min(Math.floor(rand() * 4) + 4, 8);
+    for (let i = 0; i < numReviews; i++) {
+      const rName = reviewerNames[Math.floor(rand() * reviewerNames.length)];
+      const rText = reviewTexts[Math.floor(rand() * reviewTexts.length)];
+      const rDate = reviewDates[i % reviewDates.length];
+      const rRating = Math.min(5, Math.floor(rand() * 2) + 4);
+      let rStars = '';
+      for (let j = 0; j < 5; j++) rStars += j < rRating ? '★' : '☆';
+      const initials = rName.split(' ').map(n => n[0]).join('');
+      html += `
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar">${initials}</div>
+            <div class="review-meta">
+              <div class="review-name">${rName}</div>
+              <div class="review-date">${rDate}</div>
+            </div>
+            <div class="review-stars">${rStars}</div>
+          </div>
+          <div class="review-text">${rText}</div>
+        </div>
+      `;
+    }
+  } else {
+    // Render REAL reviews from Supabase
+    realReviews.forEach(r => {
+      const rRating = r.stars || 5;
+      let rStars = '';
+      for (let j = 0; j < 5; j++) rStars += j < rRating ? '★' : '☆';
+      // Anonymous reviews have no parent_id → show "Анонимен родител"
+      // (Future: join parents table to get display_name)
+      const rName = r.parent_display_name || 'Анонимен родител';
+      const initials = rName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      const rDate = r.created_at
+        ? new Date(r.created_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })
+        : '';
+      const rText = (r.text || '').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+      html += `
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar">${initials || '?'}</div>
+            <div class="review-meta">
+              <div class="review-name">${rName}</div>
+              <div class="review-date">${rDate}</div>
+            </div>
+            <div class="review-stars">${rStars}</div>
+          </div>
+          <div class="review-text">${rText || '<i style="color:var(--zd-gray-400)">Без текст</i>'}</div>
+        </div>
+      `;
+    });
+  }
+
+  if (isExpandable) {
+    html += `<button class="write-review-btn" onclick="openAuthModal(event)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Напиши отзив
+    </button>`;
+  }
+  return html;
+}
+
+/* loadRealReviews — async, replaces the mock if real reviews exist */
+async function loadRealReviews(d, rand, rating, starsHTML, reviewCount, isExpandable) {
+  if (!window.ZdSupabase || !d.id) return;
+  try {
+    const { data: rows, error } = await window.ZdSupabase
+      .from('reviews')
+      .select('id, stars, text, created_at, parent_id')
+      .eq('business_id', d.id)
+      .eq('approved', true)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (error) {
+      console.warn('[loadRealReviews]', error);
+      return;
+    }
+    if (rows && rows.length > 0) {
+      // Real reviews exist — replace the mock block
+      const reviewsEl = document.getElementById('reviewsContent');
+      // Recompute summary stats from the real data
+      const realCount = rows.length;
+      const realAvg = (rows.reduce((sum, r) => sum + (r.stars || 0), 0) / realCount).toFixed(1);
+      const filledStars = Math.round(parseFloat(realAvg));
+      let realStarsHTML = '';
+      for (let i = 0; i < 5; i++) realStarsHTML += i < filledStars ? '★' : '☆';
+      reviewsEl.innerHTML = renderReviewsBlock(
+        d, /* isMock */ false, rows, rand,
+        realAvg, realStarsHTML, realCount, isExpandable
+      );
+      console.info('[loadRealReviews]', realCount, 'real reviews loaded for', d.name);
+    }
+    // If zero real reviews → mock stays in place (already rendered)
+  } catch (e) {
+    console.warn('[loadRealReviews] exception:', e);
+  }
+}
+
+/* ═══ RELATED SPECIALISTS ("You might also like") ═══ */
+async function loadRelatedSpecialists(d) {
+  if (!window.ZdSupabase || !d.id) return;
+  const sectionEl = document.getElementById('relatedSection');
+  const scrollEl = document.getElementById('relatedScroll');
+  if (!sectionEl || !scrollEl) return;
+
+  const cats = Array.isArray(d.categories) ? d.categories : (d.categories ? [d.categories] : []);
+  if (!cats.length) return;  // no categories → can't recommend
+
+  try {
+    // 1. First try: same category + same city
+    let { data: rows, error } = await window.ZdSupabase
+      .from('businesses')
+      .select('id, slug, name, tier, city, logo, audit_score, categories')
+      .eq('published', true)
+      .neq('id', d.id)            // exclude current business
+      .overlaps('categories', cats) // category overlap (jsonb @> works for arrays)
+      .eq('city', d.city)
+      .order('tier', { ascending: true })  // 'Доверен' < 'Проверен' < 'Стандартен' < 'Безплатен' alphabetically. NOT desired order, will sort client-side
+      .limit(8);
+    if (error) {
+      console.warn('[loadRelatedSpecialists] same-city error', error);
+      return;
+    }
+    // 2. Fallback: if not enough city matches, broaden to same category any city
+    if (!rows || rows.length < 4) {
+      const more = await window.ZdSupabase
+        .from('businesses')
+        .select('id, slug, name, tier, city, logo, audit_score, categories')
+        .eq('published', true)
+        .neq('id', d.id)
+        .overlaps('categories', cats)
+        .limit(8);
+      if (!more.error && more.data) {
+        // Merge, dedupe by id
+        const seen = new Set((rows || []).map(r => r.id));
+        more.data.forEach(r => { if (!seen.has(r.id)) { (rows = rows || []).push(r); seen.add(r.id); } });
+      }
+    }
+    if (!rows || rows.length === 0) {
+      // Nothing to show → leave section hidden
+      return;
+    }
+    // Sort: Доверен first, then Проверен, then Стандартен (Безплатен excluded for related)
+    const tierRank = { 'Доверен': 0, 'Проверен': 1, 'Стандартен': 2, 'Безплатен': 3 };
+    rows = rows
+      .filter(r => r.tier !== 'Безплатен')  // free tier has no profile page
+      .sort((a, b) => (tierRank[a.tier] ?? 99) - (tierRank[b.tier] ?? 99))
+      .slice(0, 6);
+    if (rows.length === 0) return;
+
+    // Render
+    scrollEl.innerHTML = rows.map(r => {
+      const cls = (tierClassMap[r.tier] || 'free');
+      const href = r.slug ? `listing.html?slug=${encodeURIComponent(r.slug)}` : `listing.html?id=${r.id}`;
+      const score = r.audit_score || '';
+      // Synthesize a star rating from audit_score (real reviews would override later)
+      const stars = score >= 100 ? '★★★★★' : score >= 70 ? '★★★★☆' : '★★★☆☆';
+      return `
+        <a class="related-card related-card--${cls}" href="${href}">
+          <div class="related-card-top">
+            <div class="related-card-logo">${r.logo ? `<img src="${r.logo}" alt="${r.name}" loading="lazy">` : ''}</div>
+            <div class="related-card-name"><div class="related-card-name-text">${r.name}</div></div>
+          </div>
+          <div class="related-card-meta">
+            <span class="related-card-tier">${r.tier}</span>
+            <span class="related-card-rating"><span class="stars">${stars}</span></span>
+          </div>
+        </a>
+      `;
+    }).join('');
+    sectionEl.style.display = '';  // unhide
+    console.info('[loadRelatedSpecialists]', rows.length, 'related shown for', d.name);
+  } catch (e) {
+    console.warn('[loadRelatedSpecialists] exception:', e);
+  }
+}
+
+/* ═══ INIT ═══ */
+async function init() {
+  updateAuthUI();
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const slug = params.get('slug');
+
+  // Helper: turn name into slug for slug-based lookups (mock until backend stores real slugs)
+  function toSlug(name) {
+    return (name || '').toLowerCase()
+      .replace(/[а-я]/g, c => ({а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'ts',ч:'ch',ш:'sh',щ:'sht',ъ:'a',ь:'y',ю:'yu',я:'ya'})[c] || c)
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  if (!id && !slug) {
+    document.getElementById('listingLoading').innerHTML = `
+      <div class="listing-error">
+        <p>Не е избран специалист.</p>
+        <p style="margin-top:12px;"><a href="search.html">Обратно към каталога</a></p>
+      </div>`;
+    return;
+  }
+
+  try {
+    let specialist = null;
+
+    // Helper: map snake_case → camelCase for fields the rendering code expects
+    const aliasRow = row => {
+      if (!row) return row;
+      if (row.ageGroups || !row.age_groups) return row;
+      const out = { ...row, ageGroups: row.age_groups };
+      delete out.age_groups;
+      return out;
+    };
+
+    // 1. Try Supabase (preferred path) — direct fetch by id or slug, no full table scan
+    if (window.ZdSupabase || window.ZdSupabaseConfig) {
+      // Wait briefly for the SDK to finish loading if init hasn't fired yet
+      if (!window.ZdSupabase) {
+        await new Promise(resolve => {
+          const t = setTimeout(resolve, 1500);
+          window.addEventListener('zd-supabase-ready', () => { clearTimeout(t); resolve(); }, { once: true });
+        });
+      }
+      if (window.ZdSupabase) {
+        let query = window.ZdSupabase.from('businesses').select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups').eq('published', true);
+        if (id) query = query.eq('id', id);
+        else if (slug) query = query.eq('slug', slug);
+        const { data: rows, error } = await query.limit(1);
+        if (!error && rows && rows.length) {
+          specialist = aliasRow(rows[0]);
+        }
+      }
+    }
+
+    // 2. If no Supabase result, fall back to localStorage cache (offline / not yet loaded)
+    if (!specialist) {
+      const cacheKey = 'companyData_v4';
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const data = JSON.parse(cached);
+        if (id) {
+          specialist = data.find(d => String(d.id) === String(id));
+        } else if (slug) {
+          specialist = data.find(d => (d.slug && d.slug === slug) || (d.tier === 'Доверен' && toSlug(d.name) === slug));
+        }
+        if (specialist) specialist = aliasRow(specialist);
+      }
+    }
+    if (!specialist) {
+      document.getElementById('listingLoading').innerHTML = `
+        <div class="listing-error">
+          <p>Специалистът не е намерен.</p>
+          <p style="margin-top:12px;"><a href="search.html">Обратно към каталога</a></p>
+        </div>`;
+      return;
+    }
+
+    // Free tier has no profile page — redirect back to search
+    if (specialist.tier === 'Безплатен') {
+      document.getElementById('listingLoading').innerHTML = `
+        <div class="listing-error">
+          <p>Профилната страница е достъпна за платени абонаменти.</p>
+          <p style="margin-top:12px;"><a href="search.html">Обратно към каталога</a></p>
+        </div>`;
+      return;
+    }
+
+    hydratePage(specialist);
+    // Fire-and-forget: load related specialists in the background
+    loadRelatedSpecialists(specialist);
+  } catch (err) {
+    console.error('Load error:', err);
+    document.getElementById('listingLoading').innerHTML = `
+      <div class="listing-error">
+        <p>Грешка при зареждане: ${err.message}</p>
+        <p style="margin-top:12px;"><a href="search.html">Обратно към каталога</a></p>
+      </div>`;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<script src="js/nav-inject.js"></script>
+<script src="js/cookie-banner.js"></script>
+<script src="js/analytics-loader.js"></script>
+<script src="js/supabase-init.js"></script>
+</body>
+</html>

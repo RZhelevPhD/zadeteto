@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>За партньори — За Детето</title>
+<meta name="description" content="Станете партньор на За Детето. Кандидатствайте за верификация и достигнете до хиляди родители, които търсят качество.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root { --accent:#7c4dff; --bg:#fdfcfb; --surface:#fff; --text:#1a103c; --muted:#8b80b0; --border:#ece8f3; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3 { font-family:'DM Serif Display',serif; }
+
+  /* NAV */
+  /* NAV CSS */
+  nav { position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,0.05); }
+  .nav-logo img { height:56px; }
+  .nav-links { display:flex; align-items:center; gap:24px; }
+  .nav-links a { color:var(--text); text-decoration:none; font-size:13px; font-weight:600; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--accent); }
+  .nav-auth-btn { padding:8px 20px; background:var(--zd-purple-600); border-radius:10px; color:#fff!important; font-weight:600; box-shadow:0 4px 12px rgba(124,77,255,0.2); }
+  @media(max-width:768px){ .nav-links{gap:16px;} .nav-links a:not(.nav-auth-btn){display:none;} nav{padding:12px 20px;} .nav-logo img{height:36px;} }
+</style>
+</head>
+<body>
+
+<nav style="position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;z-index:900;background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #e8e8e8;">
+  <a href="index.html" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето" style="height:44px;">
+  </a>
+  <div style="display:flex;align-items:center;gap:24px;">
+    <a href="index.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Начало</a>
+    <a href="partners.html" style="color:var(--accent);text-decoration:none;font-size:13px;font-weight:600;">За партньори</a>
+    <a href="contacts.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:500;">Контакти</a>
+    <a href="search.html?login=true" class="nav-auth-btn" style="padding:8px 20px; background:var(--zd-purple-600); color:#fff; border-radius:10px; font-weight:600; text-decoration:none; font-size:13px; box-shadow:0 4px 12px rgba(124,77,255,0.2);">Вход</a>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <h1>Станете <span>партньор</span></h1>
+  <p>Присъединете се към мрежата от верифицирани специалисти и достигнете до родители, които търсят качество — не отстъпки.</p>
+</section>
+
+<section class="benefits">
+  <div class="benefit-card">
+    <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+    <h3>Достъп до родители</h3>
+    <p>Свържете се директно с хиляди родители, които активно търсят точно вашата услуга.</p>
+  </div>
+  <div class="benefit-card">
+    <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+    <h3>Верификация</h3>
+    <p>Преминете нашата проверка и получете знак за доверие, който ви отличава от конкуренцията.</p>
+  </div>
+  <div class="benefit-card">
+    <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <h3>Реални отзиви</h3>
+    <p>Получавайте отзиви от доволни родители, които изграждат репутацията ви в дългосрочен план.</p>
+  </div>
+</section>
+
+<section class="form-section">
+  <h2>Кандидатствайте</h2>
+  <p class="form-sub">Попълнете формуляра и ние ще се свържем с вас до 48 часа.</p>
+
+  <form id="partnerForm" onsubmit="event.preventDefault(); document.getElementById('partnerForm').innerHTML='<div style=text-align:center;padding:60px><h3 style=color:#4caf6a;margin-bottom:12px>✓ Заявката е изпратена!</h3><p style=color:#8b80b0>Ще се свържем с вас до 48 часа.</p></div>';">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Име и фамилия *</label>
+        <input type="text" id="name" required placeholder="Иван Иванов">
+      </div>
+      <div class="form-group">
+        <label for="company">Име на бизнеса *</label>
+        <input type="text" id="company" required placeholder="СуперКидс ООД">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Имейл *</label>
+        <input type="email" id="email" required placeholder="ivan@example.com">
+      </div>
+      <div class="form-group">
+        <label for="phone">Телефон *</label>
+        <input type="tel" id="phone" required placeholder="+359 88 123 4567">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="category">Категория *</label>
+      <select id="category" required>
+        <option value="" disabled selected>Изберете категория</option>
+        <option>Учене и умения</option>
+        <option>Спорт и движение</option>
+        <option>Игри и забавления</option>
+        <option>Специалисти</option>
+        <option>Тържества и събития</option>
+        <option>Домашна грижа</option>
+        <option>Стоки</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="message">Разкажете ни за вашата дейност</label>
+      <textarea id="message" placeholder="Опишете какво предлагате, кои са вашите клиенти и какво ви отличава..."></textarea>
+    </div>
+    <button type="submit" class="submit-btn">Изпрати заявка</button>
+  </form>
+</section>
+
+<footer>
+  <div class="footer-links">
+    <a href="/">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+  </div>
+  <div class="footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+</body>
+</html>

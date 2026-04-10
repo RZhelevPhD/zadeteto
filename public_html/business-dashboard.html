@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="bg" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Табло за управление — За Детето</title>
+<meta name="description" content="Бизнес табло за партньори — статистика, отзиви и съобщения от родители.">
+<meta name="robots" content="noindex, nofollow">
+
+<!-- SEO -->
+<link rel="canonical" href="https://zadeteto.com/business-dashboard.html">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<style>
+:root {
+  --accent:#7c4dff; --accent-light:#efe8ff; --bg:#f5f6f8; --surface:#fff; --text:#1a103c;
+  --border:#e2e4ea; --muted:#8b80b0; --danger:#e74c6f; --success:#4caf6a; --gold:#c89a00;
+}
+[data-theme="dark"] {
+  --bg:#262633; --surface:#32323f; --text:#ebebf2; --border:#42424f; --muted:#9695a8; --accent-light:rgba(124,77,255,0.18);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; display:flex; min-height:100vh; transition:background 0.3s, color 0.3s; }
+h1,h2,h3 { font-family:'DM Serif Display',serif; }
+
+/* SIDEBAR */
+.sidebar { width:260px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:24px 0; z-index:10; position:sticky; top:0; height:100vh; flex-shrink:0; transition:background 0.3s, border-color 0.3s; }
+.logo-box { padding:0 24px 24px; border-bottom:1px solid var(--border); margin-bottom:16px; }
+.logo-box img { height:64px; }
+[data-theme="dark"] .logo-box img { filter:brightness(0) invert(1); }
+.nav-item { padding:12px 24px; display:flex; align-items:center; gap:12px; color:var(--muted); text-decoration:none; font-weight:600; font-size:14px; cursor:pointer; transition:all 0.2s; border-left:3px solid transparent; background:none; border-top:none; border-right:none; border-bottom:none; width:100%; text-align:left; font-family:inherit; }
+.nav-item svg { width:18px; height:18px; stroke:currentColor; stroke-width:2; fill:none; flex-shrink:0; }
+.nav-item:hover { color:var(--text); background:rgba(0,0,0,0.02); }
+[data-theme="dark"] .nav-item:hover { background:rgba(255,255,255,0.04); }
+.nav-item.active { color:var(--accent); background:var(--accent-light); border-left-color:var(--accent); }
+.nav-badge { margin-left:auto; background:var(--danger); color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; }
+.sidebar-bottom { margin-top:auto; padding:24px; border-top:1px solid var(--border); }
+.logout { color:var(--danger); text-decoration:none; font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
+
+/* MAIN */
+.main-area { flex:1; padding:40px; min-width:0; overflow-x:hidden; }
+.header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px; }
+.header h1 { font-size:32px; margin-bottom:4px; }
+.header p { color:var(--muted); font-size:15px; }
+
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; margin-bottom:40px; }
+.stat-card { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:24px; display:flex; align-items:center; gap:20px; box-shadow:0 4px 16px rgba(0,0,0,0.02); transition:background 0.3s, border-color 0.3s; }
+.stat-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.stat-icon--1 { background:rgba(124,77,255,0.1); color:var(--accent); }
+.stat-icon--2 { background:rgba(76,175,106,0.1); color:var(--success); }
+.stat-icon--3 { background:rgba(245,215,110,0.2); color:var(--gold); }
+.stat-val { font-size:28px; font-weight:700; font-family:'DM Serif Display',serif; margin-bottom:4px; }
+.stat-label { font-size:13px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+
+/* CONTENT */
+.content-grid { display:grid; grid-template-columns:2fr 1fr; gap:24px; margin-bottom:24px; }
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px; box-shadow:0 4px 16px rgba(0,0,0,0.02); transition:background 0.3s, border-color 0.3s; }
+.panel h2 { font-size:22px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; }
+.panel-link { font-size:13px; font-weight:600; color:var(--accent); text-decoration:none; cursor:pointer; }
+
+.review-item { padding-bottom:20px; border-bottom:1px solid var(--border); margin-bottom:20px; }
+.review-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.review-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.reviewer { display:flex; align-items:center; gap:12px; }
+.r-av { width:40px; height:40px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; }
+.r-name { font-weight:600; font-size:15px; }
+.r-date { font-size:12px; color:var(--muted); margin-top:2px; }
+.r-stars { color:#f5d76e; font-size:14px; }
+.review-text { font-size:14px; color:var(--text); line-height:1.6; }
+
+.msg-item { display:flex; gap:12px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+.msg-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.msg-icon { width:32px; height:32px; border-radius:8px; background:var(--accent-light); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.msg-title { font-weight:600; font-size:14px; margin-bottom:4px; }
+.msg-desc { font-size:13px; color:var(--muted); line-height:1.5; }
+
+/* MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:9998; display:none; opacity:0; transition:opacity 0.3s; }
+.modal-overlay.open { display:flex; opacity:1; align-items:center; justify-content:center; padding:32px; }
+.modal { background:var(--surface); border-radius:24px; box-shadow:0 24px 80px rgba(0,0,0,0.2); width:100%; max-width:720px; max-height:90vh; display:flex; flex-direction:column; transform:translateY(20px) scale(0.97); transition:transform 0.35s cubic-bezier(0.16,1,0.3,1); border:1px solid var(--border); }
+.modal-overlay.open .modal { transform:translateY(0) scale(1); }
+.modal--wide { max-width:900px; }
+.modal-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
+.modal-header h2 { font-size:24px; }
+.modal-close { width:36px; height:36px; border-radius:10px; border:none; background:var(--bg); cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text); transition:background 0.2s; }
+.modal-close:hover { background:var(--border); }
+.modal-body { padding:28px; overflow-y:auto; flex:1; }
+.modal-footer { padding:20px 28px; border-top:1px solid var(--border); display:flex; gap:12px; justify-content:flex-end; flex-shrink:0; }
+
+/* FORMS */
+.form-group { margin-bottom:18px; }
+.form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--text); }
+.form-group input, .form-group textarea, .form-group select { width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; font-size:14px; font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); outline:none; transition:border-color 0.2s, box-shadow 0.2s; }
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,77,255,0.12); }
+.form-group textarea { min-height:80px; resize:vertical; font-family:'DM Sans',sans-serif; }
+.form-group .hint { font-size:12px; color:var(--muted); margin-top:6px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-section-title { font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin:24px 0 12px; padding-top:18px; border-top:1px solid var(--border); }
+.form-section-title:first-child { margin-top:0; padding-top:0; border-top:none; }
+.field-locked { background:var(--bg); color:var(--muted); cursor:not-allowed; }
+.upload-slot { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:20px; border:2px dashed var(--border); border-radius:14px; cursor:pointer; color:var(--muted); font-size:12px; font-weight:600; transition:border-color 0.2s, background 0.2s; }
+.upload-slot:hover { border-color:var(--accent); background:rgba(124,77,255,0.04); color:var(--accent); }
+.upload-slot:active { transform:scale(0.98); }
+.upload-slot svg { opacity:0.5; }
+.upload-slot:hover svg { opacity:1; stroke:var(--accent); }
+.upload-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:8px; }
+.upload-grid .upload-slot { padding:14px 8px; }
+.tier-limits { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+.tier-limit { font-size:11px; padding:3px 10px; border-radius:100px; background:var(--bg); border:1px solid var(--border); color:var(--muted); font-weight:600; }
+.tier-limit--active { background:rgba(124,77,255,0.08); border-color:rgba(124,77,255,0.2); color:var(--accent); }
+.tier-na { font-size:11px; padding:2px 8px; border-radius:6px; background:rgba(200,80,80,0.08); color:#c85050; font-weight:600; margin-left:4px; }
+.field-locked-hint { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--gold); margin-top:4px; }
+
+.btn-primary { padding:12px 24px; background:var(--accent); color:#fff; border:none; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; box-shadow:0 4px 12px rgba(124,77,255,0.2); transition:transform 0.2s; }
+.btn-primary:hover { transform:translateY(-1px); }
+.btn-secondary { padding:12px 24px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
+
+/* Reviews modal — full list */
+.review-filter-bar { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+.filter-pill { padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:var(--bg); cursor:pointer; font-size:12px; font-weight:600; color:var(--muted); transition:all 0.2s; }
+.filter-pill.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* System messages list */
+.sys-msg { display:flex; gap:14px; padding:16px; border:1px solid var(--border); border-radius:14px; margin-bottom:12px; background:var(--bg); transition:background 0.2s; cursor:pointer; }
+.sys-msg:hover { background:var(--accent-light); }
+.sys-msg-icon { width:40px; height:40px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.sys-msg-icon--info { background:rgba(124,77,255,0.1); color:var(--accent); }
+.sys-msg-icon--success { background:rgba(76,175,106,0.1); color:var(--success); }
+.sys-msg-icon--warning { background:rgba(245,180,0,0.1); color:var(--gold); }
+.sys-msg-content { flex:1; min-width:0; }
+.sys-msg-title { font-weight:600; font-size:14px; margin-bottom:4px; display:flex; justify-content:space-between; gap:12px; }
+.sys-msg-time { font-size:11px; color:var(--muted); font-weight:500; flex-shrink:0; }
+.sys-msg-desc { font-size:13px; color:var(--muted); line-height:1.5; }
+.sys-msg-unread { border-left:3px solid var(--accent); }
+
+/* Integration cards in system messages modal */
+.integ-card { display:flex; align-items:center; gap:14px; padding:16px; border:1px dashed var(--border); border-radius:14px; margin-bottom:12px; background:var(--bg); }
+.integ-icon { width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, var(--accent), #a56cff); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:700; font-size:18px; }
+.integ-content { flex:1; }
+.integ-title { font-weight:600; font-size:14px; margin-bottom:2px; }
+.integ-desc { font-size:12px; color:var(--muted); line-height:1.5; }
+.integ-status { font-size:10px; font-weight:700; padding:4px 10px; border-radius:10px; background:rgba(245,180,0,0.15); color:var(--gold); text-transform:uppercase; letter-spacing:0.5px; flex-shrink:0; }
+.integ-status--connected { background:rgba(76,175,106,0.15); color:var(--success); }
+
+/* Profile modal sections */
+.profile-card-preview { padding:20px; border:1px solid var(--border); border-radius:16px; background:var(--bg); margin-bottom:24px; display:flex; gap:16px; align-items:center; }
+.profile-card-preview img { width:64px; height:64px; border-radius:14px; object-fit:cover; border:2px solid var(--accent); }
+.profile-card-preview .pcp-name { font-weight:700; font-size:18px; }
+.profile-card-preview .pcp-tier { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--accent); margin-top:4px; }
+
+.maps-preview { background:var(--bg); border:1px dashed var(--border); border-radius:14px; padding:20px; text-align:center; color:var(--muted); margin-top:8px; }
+.maps-preview svg { width:32px; height:32px; opacity:0.4; margin-bottom:8px; }
+
+/* Settings */
+.setting-row { display:flex; align-items:center; justify-content:space-between; padding:16px 0; border-bottom:1px solid var(--border); }
+.setting-row:last-child { border-bottom:none; }
+.setting-info { flex:1; }
+.setting-label { font-weight:600; font-size:14px; margin-bottom:2px; }
+.setting-desc { font-size:12px; color:var(--muted); }
+
+/* Footer */
+.zd-footer { border-top:1px solid var(--border); padding:32px 40px; background:var(--surface); text-align:center; margin-top:40px; border-radius:20px; }
+.zd-footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:12px; flex-wrap:wrap; }
+.zd-footer-links a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:500; transition:color 0.2s; }
+.zd-footer-links a:hover { color:var(--accent); }
+.zd-footer-copy { font-size:12px; color:var(--muted); opacity:0.6; }
+
+@media(max-width:900px){
+  body { flex-direction:column; }
+  .sidebar { width:100%; height:auto; position:relative; padding:16px 0; flex-direction:row; overflow-x:auto; }
+  .logo-box, .sidebar-bottom { display:none; }
+  .nav-item { white-space:nowrap; padding:10px 16px; border-left:none; border-bottom:3px solid transparent; }
+  .nav-item.active { border-left:none; border-bottom-color:var(--accent); }
+  .main-area { padding:20px; }
+  .stats-grid { grid-template-columns:1fr; }
+  .content-grid { grid-template-columns:1fr; }
+  .form-row { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-box">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето">
+  </div>
+  <button class="nav-item active" onclick="setActiveNav(this); closeAllModals();">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Табло
+  </button>
+  <button class="nav-item" onclick="setActiveNav(this); openModal('reviewsModal');">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Отзиви
+    <span class="nav-badge">12</span>
+  </button>
+  <button class="nav-item" onclick="setActiveNav(this); openModal('profileModal');">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Профил
+  </button>
+  <button class="nav-item" onclick="setActiveNav(this); openModal('messagesModal');">
+    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Системни съобщения
+    <span class="nav-badge">3</span>
+  </button>
+  <a href="https://login.123marketing.app" target="_blank" rel="noopener" class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Съобщения от родители
+    <span class="nav-badge">2</span>
+  </a>
+  <button class="nav-item" onclick="setActiveNav(this); openModal('settingsModal');">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Настройки
+  </button>
+  <div class="sidebar-bottom">
+    <a href="#" class="logout" onclick="event.preventDefault(); zdDashboardSignOut();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Изход от портала</a>
+  </div>
+</aside>
+
+<main class="main-area">
+  <div class="header">
+    <div>
+      <h1>Здравейте, Учебен център "Искра" 👋</h1>
+      <p>Ето какво се случва с вашия профил този месец.</p>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon--1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div>
+        <div class="stat-val">1,248</div>
+        <div class="stat-label">Виждания</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon--2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      <div>
+        <div class="stat-val">84</div>
+        <div class="stat-label">Запазени в списък</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon--3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+      <div>
+        <div class="stat-val">4.8</div>
+        <div class="stat-label">Среден рейтинг</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="panel">
+      <h2>Последни отзиви <a class="panel-link" onclick="openModal('reviewsModal')">Виж всички →</a></h2>
+      <div class="review-item">
+        <div class="review-header">
+          <div class="reviewer">
+            <div class="r-av">М</div>
+            <div>
+              <div class="r-name">Мария Петрова</div>
+              <div class="r-date">преди 2 дни</div>
+            </div>
+          </div>
+          <div class="r-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Уникално място! Детето ми обожава преподавателите и се научи да чете само за няколко месеца. Горещо препоръчвам на всички родители.</div>
+      </div>
+      <div class="review-item">
+        <div class="review-header">
+          <div class="reviewer">
+            <div class="r-av" style="background:var(--success);">Г</div>
+            <div>
+              <div class="r-name">Георги Иванов</div>
+              <div class="r-date">преди 1 седмица</div>
+            </div>
+          </div>
+          <div class="r-stars">★★★★☆</div>
+        </div>
+        <div class="review-text">Много сме доволни от отношението и базата. Единствената забележка е, че трудно се намира място за паркиране наоколо, но центърът е супер.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Системни съобщения <a class="panel-link" onclick="openModal('messagesModal')">Виж всички →</a></h2>
+      <div class="msg-item">
+        <div class="msg-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+        <div>
+          <div class="msg-title">Успешна верификация</div>
+          <div class="msg-desc">Вашият профил получи статус "Проверен" и вече се показва по-напред.</div>
+        </div>
+      </div>
+      <div class="msg-item">
+        <div class="msg-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div>
+          <div class="msg-title">Нов 5-звезден отзив</div>
+          <div class="msg-desc">Мария Петрова остави 5-звезден отзив за вашия профил.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="zd-footer">
+    <div class="zd-footer-links">
+      <a href="index.html">Начало</a>
+      <a href="search.html">Каталог</a>
+      <a href="partners.html">За партньори</a>
+      <a href="contacts.html">Контакти</a>
+      <a href="report.html">Докладвай</a>
+      <a href="business-login.html">Бизнес Вход</a>
+    </div>
+    <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+  </footer>
+</main>
+
+<!-- ═══ REVIEWS MODAL ═══ -->
+<div class="modal-overlay" id="reviewsModal" onclick="if(event.target===this)closeModal('reviewsModal')">
+  <div class="modal modal--wide" role="dialog" aria-modal="true" aria-labelledby="reviewsModalTitle">
+    <div class="modal-header">
+      <h2 id="reviewsModalTitle">Всички отзиви</h2>
+      <button class="modal-close" onclick="closeModal('reviewsModal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="review-filter-bar">
+        <button class="filter-pill active" data-filter="all">Всички (8)</button>
+        <button class="filter-pill" data-filter="5">5 звезди (5)</button>
+        <button class="filter-pill" data-filter="4">4 звезди (1)</button>
+        <button class="filter-pill" data-filter="3">3 звезди (1)</button>
+        <button class="filter-pill" data-filter="low">≤ 2 звезди (1)</button>
+      </div>
+      <div class="review-item" data-rating="5">
+        <div class="review-header">
+          <div class="reviewer"><div class="r-av">М</div><div><div class="r-name">Мария Петрова</div><div class="r-date">преди 2 дни</div></div></div>
+          <div class="r-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Уникално място! Детето ми обожава преподавателите и се научи да чете само за няколко месеца.</div>
+      </div>
+      <div class="review-item" data-rating="4">
+        <div class="review-header">
+          <div class="reviewer"><div class="r-av" style="background:var(--success);">Г</div><div><div class="r-name">Георги Иванов</div><div class="r-date">преди 1 седмица</div></div></div>
+          <div class="r-stars">★★★★☆</div>
+        </div>
+        <div class="review-text">Много сме доволни. Единствената забележка е, че трудно се намира място за паркиране.</div>
+      </div>
+      <div class="review-item" data-rating="5">
+        <div class="review-header">
+          <div class="reviewer"><div class="r-av" style="background:var(--gold);">Е</div><div><div class="r-name">Елена Димитрова</div><div class="r-date">преди 2 седмици</div></div></div>
+          <div class="r-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Перфектно за деца с различни потребности. Препоръчвам на всички родители които търсят индивидуален подход.</div>
+      </div>
+      <div class="review-item" data-rating="5">
+        <div class="review-header">
+          <div class="reviewer"><div class="r-av" style="background:var(--accent);">С</div><div><div class="r-name">Стоян Николов</div><div class="r-date">преди 3 седмици</div></div></div>
+          <div class="r-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Невероятно отношение към децата. Синът ми обича да ходи там и не иска да си тръгва вкъщи.</div>
+      </div>
+      <div class="review-item" data-rating="3">
+        <div class="review-header">
+          <div class="reviewer"><div class="r-av" style="background:#e74c6f;">А</div><div><div class="r-name">Анна Колева</div><div class="r-date">преди 1 месец</div></div></div>
+          <div class="r-stars">★★★☆☆</div>
+        </div>
+        <div class="review-text">Добра база и квалифицирани преподаватели, но цените са малко високи за това което получаваме.</div>
+      </div>
+      <div class="review-item" data-rating="5">
+        <div class="review-header">
+          <div class="reviewer"><div class="r-av" style="background:var(--success);">П</div><div><div class="r-name">Петя Стоянова</div><div class="r-date">преди 1 месец</div></div></div>
+          <div class="r-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Прекрасно отношение и резултати. Дъщеря ми наваксва бързо и обича да ходи там.</div>
+      </div>
+      <div class="review-item" data-rating="5">
+        <div class="review-header">
+          <div class="reviewer"><div class="r-av" style="background:var(--accent);">К</div><div><div class="r-name">Калин Тодоров</div><div class="r-date">преди 6 седмици</div></div></div>
+          <div class="r-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Препоръчвам! Професионален екип, чисти помещения, разнообразни занимания.</div>
+      </div>
+      <div class="review-item" data-rating="2">
+        <div class="review-header">
+          <div class="reviewer"><div class="r-av" style="background:var(--muted);">Д</div><div><div class="r-name">Десислава М.</div><div class="r-date">преди 2 месеца</div></div></div>
+          <div class="r-stars">★★☆☆☆</div>
+        </div>
+        <div class="review-text">Очаквах повече за тази цена. Преподавателите са добри, но организацията куца.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('reviewsModal')">Затвори</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PROFILE MODAL ═══ -->
+<div class="modal-overlay" id="profileModal" onclick="if(event.target===this)closeModal('profileModal')">
+  <div class="modal modal--wide" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+    <div class="modal-header">
+      <h2 id="profileModalTitle">Профил на бизнеса</h2>
+      <button class="modal-close" onclick="closeModal('profileModal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="profile-card-preview">
+        <img src="https://placehold.co/128x128/7c4dff/white?text=УИ" alt="Учебен център Искра" loading="lazy" decoding="async">
+        <div>
+          <div class="pcp-name">Учебен център "Искра"</div>
+          <div class="pcp-tier">Доверен</div>
+        </div>
+      </div>
+
+      <div class="form-section-title">Изображения</div>
+
+      <!-- Square Logo -->
+      <div class="form-group">
+        <label>Квадратно лого</label>
+        <div class="hint">Препоръчителен размер: 200×200 px. Показва се на картите и профила. <span class="tier-na" data-tier="free">N/A за Безплатен план</span></div>
+        <div class="upload-slot" onclick="zdShowToast('Качването на файлове ще бъде налично скоро.')">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8m-4-4h8"/></svg>
+          <span>Качи лого (1:1)</span>
+        </div>
+      </div>
+
+      <!-- Horizontal Logo -->
+      <div class="form-group">
+        <label>Хоризонтално лого</label>
+        <div class="hint">Препоръчителен размер: 400×100 px. Използва се в заглавката на профила. <span class="tier-na" data-tier="free">N/A за Безплатен план</span></div>
+        <div class="upload-slot" onclick="zdShowToast('Качването на файлове ще бъде налично скоро.')">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="10" rx="3"/><path d="M12 10v4m-3-2h6"/></svg>
+          <span>Качи лого (4:1)</span>
+        </div>
+      </div>
+
+      <!-- Gallery Photos -->
+      <div class="form-group">
+        <label>Галерия снимки</label>
+        <div class="hint">Снимките се ротират на картата ви на всеки 5 секунди.</div>
+        <div class="tier-limits">
+          <span class="tier-limit tier-limit--active">Доверен / Премиум: до 5</span>
+          <span class="tier-limit">Проверен: до 3</span>
+          <span class="tier-limit">Стандартен: 1</span>
+          <span class="tier-limit">Безплатен: 1</span>
+        </div>
+        <div class="upload-grid">
+          <div class="upload-slot" onclick="zdShowToast('Качването на файлове ще бъде налично скоро.')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Снимка 1</span>
+          </div>
+          <div class="upload-slot" onclick="zdShowToast('Качването на файлове ще бъде налично скоро.')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Снимка 2</span>
+          </div>
+          <div class="upload-slot" onclick="zdShowToast('Качването на файлове ще бъде налично скоро.')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Снимка 3</span>
+          </div>
+          <div class="upload-slot" onclick="zdShowToast('Качването на файлове ще бъде налично скоро.')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Снимка 4</span>
+          </div>
+          <div class="upload-slot" onclick="zdShowToast('Качването на файлове ще бъде налично скоро.')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>Снимка 5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section-title">Публична информация (можете да редактирате)</div>
+      <div class="form-group">
+        <label>Tagline (кратко мото)</label>
+        <input type="text" value="Образование с грижа от първия ден." maxlength="45">
+        <div class="hint">До 45 символа. Показва се като заглавие на картата.</div>
+      </div>
+      <div class="form-group">
+        <label>Описание</label>
+        <textarea maxlength="150">Учебен център за деца от 3 до 12 години. Изграждаме умения за живота чрез игра, творчество и индивидуален подход към всяко дете.</textarea>
+        <div class="hint">До 150 символа. Показва се като допълнителен текст под заглавието на картата.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Възрастови групи</label>
+          <input type="text" value="3-6, 7-12">
+        </div>
+        <div class="form-group">
+          <label>Услуги (тагове, разделени със запетая)</label>
+          <input type="text" value="Подготовка за училище, Английски, Изкуства">
+        </div>
+      </div>
+
+      <div class="form-section-title">Контакти и социални мрежи</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Телефон</label>
+          <input type="tel" value="+359 88 123 4567">
+        </div>
+        <div class="form-group">
+          <label>Имейл</label>
+          <input type="email" value="info@iskra.bg">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Уебсайт</label>
+          <input type="url" value="https://iskra.bg">
+        </div>
+        <div class="form-group">
+          <label>Facebook</label>
+          <input type="url" value="https://facebook.com/iskra">
+        </div>
+      </div>
+
+      <div class="form-section-title">Местоположение и Google Maps</div>
+      <div class="form-group">
+        <label>Адрес</label>
+        <input type="text" value="ул. Витоша 25, гр. София">
+      </div>
+      <div class="form-group">
+        <label>Google Maps embed код</label>
+        <textarea placeholder='<iframe src="https://www.google.com/maps/embed?pb=..." width="600" height="450" style="border:0;" allowfullscreen=""></iframe>'></textarea>
+        <div class="hint">Поставете embed кода от Google Maps. От него извличаме координатите за функцията "Открий около мен".</div>
+        <div class="maps-preview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div>Картата ще се покаже тук след въвеждане на embed код</div>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="display:flex;align-items:center;gap:10px;">
+        <span>SEO и URL</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:linear-gradient(135deg, var(--purple), #a56cff);color:#fff;">Доверен и нагоре</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(124,77,255,0.06);border:1px solid rgba(124,77,255,0.15);border-radius:12px;margin-bottom:18px;font-size:13px;color:var(--text);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" style="flex-shrink:0;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <div>Тези функции са активни, защото имате <strong>Доверен</strong> абонамент.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Персонализиран URL (slug)</label>
+        <div style="display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:12px;background:var(--bg);overflow:hidden;">
+          <span style="padding:12px 14px;font-size:14px;color:var(--muted);background:var(--surface);border-right:1px solid var(--border);font-family:monospace;">zadeteto.com/</span>
+          <input type="text" value="iskra-uchebem-centyr" placeholder="bavachki" style="border:none;border-radius:0;flex:1;background:transparent;font-family:monospace;">
+        </div>
+        <div class="hint">Само малки букви, числа и тире. Профилът ви ще бъде достъпен на този адрес.</div>
+      </div>
+
+      <div class="form-group">
+        <label>SEO заглавие (title tag)</label>
+        <input type="text" value="Учебен център Искра — Подготовка за училище в София" maxlength="60">
+        <div class="hint">До 60 символа. Това се показва в Google резултати и в браузер таба.</div>
+      </div>
+
+      <div class="form-group">
+        <label>SEO описание (meta description)</label>
+        <textarea maxlength="160">Учебен център за деца от 3 до 12 години. Подготовка за училище, английски език и изкуства с индивидуален подход в София.</textarea>
+        <div class="hint">До 160 символа. Описанието под заглавието в Google резултати.</div>
+      </div>
+
+      <div class="form-group">
+        <label>SEO ключови думи</label>
+        <input type="text" value="детски център софия, подготовка за училище, английски за деца, занимания софия">
+        <div class="hint">Разделени със запетаи. Помагат на търсачката да разбере за какво е страницата.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Календар за резервации (embed код)</label>
+        <textarea placeholder='<iframe src="https://calendar.google.com/calendar/embed?src=..." width="800" height="600"></iframe>'></textarea>
+        <div class="hint">Поставете embed код от Google Calendar или друг календар. Родителите ще могат да виждат свободни часове в профила ви.</div>
+        <div class="maps-preview" style="margin-top:8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <div>Календарът ще се покаже тук след въвеждане на embed код</div>
+        </div>
+      </div>
+
+      <div class="form-section-title">Защитена информация</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:rgba(245,180,0,0.08);border:1px solid rgba(245,180,0,0.2);border-radius:12px;margin-bottom:18px;font-size:13px;color:var(--text);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Тези полета са защитени. За промяна подайте заявка към администратор.
+      </div>
+      <div class="form-group">
+        <label>Име на фирмата (юридическо лице)</label>
+        <input type="text" value="Искра ООД" class="field-locked" readonly>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>ЕИК / Булстат</label>
+          <input type="text" value="201234567" class="field-locked" readonly>
+        </div>
+        <div class="form-group">
+          <label>Адрес по регистрация</label>
+          <input type="text" value="ул. Главна 1, гр. София" class="field-locked" readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Материално отговорно лице (МОЛ)</label>
+        <input type="text" value="Иван Петров Иванов" class="field-locked" readonly>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Телефон на МОЛ</label>
+          <input type="tel" value="+359 88 555 0001" class="field-locked" readonly>
+        </div>
+        <div class="form-group">
+          <label>Имейл на МОЛ</label>
+          <input type="email" value="i.ivanov@iskra.bg" class="field-locked" readonly>
+        </div>
+      </div>
+      <button type="button" class="btn-secondary" style="width:100%;margin-top:8px;">Подай заявка за промяна</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('profileModal')">Отмяна</button>
+      <button class="btn-primary" onclick="zdShowToast('Тази функция предстои. Свържете се с нас за промени в профила.'); closeModal('profileModal');">Запази промените</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SYSTEM MESSAGES MODAL ═══ -->
+<div class="modal-overlay" id="messagesModal" onclick="if(event.target===this)closeModal('messagesModal')">
+  <div class="modal modal--wide" role="dialog" aria-modal="true" aria-labelledby="messagesModalTitle">
+    <div class="modal-header">
+      <h2 id="messagesModalTitle">Системни съобщения</h2>
+      <button class="modal-close" onclick="closeModal('messagesModal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="sys-msg sys-msg-unread">
+        <div class="sys-msg-icon sys-msg-icon--success"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div class="sys-msg-content">
+          <div class="sys-msg-title">Успешна верификация <span class="sys-msg-time">преди 2 часа</span></div>
+          <div class="sys-msg-desc">Вашият профил получи статус "Проверен". Вече се показва по-напред в резултатите от търсенето.</div>
+        </div>
+      </div>
+
+      <div class="sys-msg sys-msg-unread">
+        <div class="sys-msg-icon sys-msg-icon--warning"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="sys-msg-content">
+          <div class="sys-msg-title">Ресертификация след 30 дни <span class="sys-msg-time">вчера</span></div>
+          <div class="sys-msg-desc">Вашата годишна ресертификация изтича на 7 май 2026. Подновете преди 7 април за непрекъсваемост.</div>
+        </div>
+      </div>
+
+      <div class="sys-msg">
+        <div class="sys-msg-icon sys-msg-icon--info"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="sys-msg-content">
+          <div class="sys-msg-title">Нов 5-звезден отзив <span class="sys-msg-time">преди 3 дни</span></div>
+          <div class="sys-msg-desc">Мария Петрова остави 5-звезден отзив за вашия профил.</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('messagesModal')">Затвори</button>
+      <button class="btn-primary" onclick="markAllRead(this)">Маркирай всички като прочетени</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETTINGS MODAL ═══ -->
+<div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)closeModal('settingsModal')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal-header">
+      <h2 id="settingsModalTitle">Настройки</h2>
+      <button class="modal-close" onclick="closeModal('settingsModal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Тема на интерфейса</div>
+          <div class="setting-desc">Изберете светъл или тъмен режим на дашборда.</div>
+        </div>
+        <select id="themeSelect" onchange="setTheme(this.value)" style="padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;min-width:140px;">
+          <option value="light">☀️ Светъл</option>
+          <option value="dark">🌙 Тъмен</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Език</div>
+          <div class="setting-desc">Език на интерфейса в дашборда.</div>
+        </div>
+        <select disabled style="padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;min-width:140px;cursor:not-allowed;opacity:0.6;">
+          <option>🇧🇬 Български</option>
+        </select>
+      </div>
+
+      <div class="form-section-title" style="margin-top:24px;">Сигурност</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Парола</div>
+          <div class="setting-desc">Промяна на паролата за достъп до дашборда.</div>
+        </div>
+        <button type="button" onclick="alert('Тук ще се отвори формата за смяна на парола.')" style="padding:10px 18px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Промени</button>
+      </div>
+
+      <div class="setting-row" id="biometricRow">
+        <div class="setting-info">
+          <div class="setting-label">Отключване с пръстов отпечатък / лице</div>
+          <div class="setting-desc" id="biometricDesc">Влизайте по-бързо чрез биометрия. Изисква вече настроена парола.</div>
+        </div>
+        <button type="button" id="biometricBtn" onclick="setupBiometric()" style="padding:10px 18px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(124,77,255,0.2);">Настрой</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('settingsModal')">Затвори</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function setActiveNav(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.classList.remove('open');
+  document.body.style.overflow = '';
+  // Reset to "Табло" active state
+  setTimeout(() => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelector('.nav-item').classList.add('active');
+  }, 300);
+}
+
+function zdShowToast(msg) {
+  var t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text,#1a103c);color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);font-family:DM Sans,sans-serif;';
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.opacity='0'; t.style.transition='opacity 0.3s'; }, 2500);
+  setTimeout(function(){ t.remove(); }, 2800);
+}
+
+function markAllRead(btn) {
+  document.querySelectorAll('.sys-msg-unread').forEach(function(el) { el.classList.remove('sys-msg-unread'); });
+  btn.textContent = '\u2713 Маркирани като прочетени';
+  btn.disabled = true;
+}
+
+function closeAllModals() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  document.body.style.overflow = '';
+}
+
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('zd_dashboard_theme', theme);
+}
+
+// Load saved theme on init
+(function() {
+  const saved = localStorage.getItem('zd_dashboard_theme') || 'light';
+  setTheme(saved);
+  const sel = document.getElementById('themeSelect');
+  if (sel) sel.value = saved;
+})();
+
+/* === BIOMETRIC SETUP (mock for now) ===
+ * TODO: Replace with real WebAuthn registration:
+ *   navigator.credentials.create({
+ *     publicKey: { challenge: serverChallenge, rp: {...}, user: {...},
+ *                  pubKeyCredParams: [{alg:-7,type:'public-key'}],
+ *                  authenticatorSelection: {authenticatorAttachment:'platform', userVerification:'required'} }
+ *   })
+ * Then send credential.id + publicKey to backend for verification.
+ * Requires password to be set first (handled server-side).
+ */
+function setupBiometric() {
+  const enabled = localStorage.getItem('zd_biometric_enabled') === 'true';
+  const btn = document.getElementById('biometricBtn');
+  const desc = document.getElementById('biometricDesc');
+
+  if (enabled) {
+    // Disable
+    if (confirm('Сигурни ли сте, че искате да премахнете биометричното отключване?')) {
+      localStorage.removeItem('zd_biometric_enabled');
+      localStorage.removeItem('zd_webauthn_credential_id');
+      btn.textContent = 'Настрой';
+      btn.style.background = 'var(--accent)';
+      btn.style.color = '#fff';
+      desc.textContent = 'Влизайте по-бързо чрез биометрия. Изисква вече настроена парола.';
+    }
+    return;
+  }
+
+  // Mock setup (real flow would call navigator.credentials.create)
+  if (!confirm('Ще използваме сензора на устройството ви (Touch ID / Face ID / Windows Hello). Искате ли да продължите?')) return;
+
+  // Simulate success after brief delay
+  btn.textContent = 'Настройва се...';
+  btn.disabled = true;
+  setTimeout(() => {
+    localStorage.setItem('zd_biometric_enabled', 'true');
+    localStorage.setItem('zd_webauthn_credential_id', 'mock_' + Date.now());
+    btn.textContent = '✓ Активирано';
+    btn.style.background = 'var(--success)';
+    btn.disabled = false;
+    desc.innerHTML = '<strong style="color:var(--success);">Активирано.</strong> Следващия път можете да влезете с пръстов отпечатък или лице. Натиснете бутона за да го изключите.';
+  }, 800);
+}
+
+// Initialize biometric button state on dashboard load
+(function() {
+  const enabled = localStorage.getItem('zd_biometric_enabled') === 'true';
+  if (enabled) {
+    const btn = document.getElementById('biometricBtn');
+    const desc = document.getElementById('biometricDesc');
+    if (btn) {
+      btn.textContent = '✓ Активирано';
+      btn.style.background = 'var(--success)';
+    }
+    if (desc) {
+      desc.innerHTML = '<strong style="color:var(--success);">Активирано.</strong> Следващия път можете да влезете с пръстов отпечатък или лице. Натиснете бутона за да го изключите.';
+    }
+  }
+})();
+
+// ESC closes modals
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeAllModals();
+});
+
+// Reviews star filter
+document.querySelectorAll('#reviewsModal .filter-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('#reviewsModal .filter-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    const filter = pill.dataset.filter;
+    document.querySelectorAll('#reviewsModal .review-item').forEach(item => {
+      const rating = parseInt(item.dataset.rating, 10);
+      let show = false;
+      if (filter === 'all') show = true;
+      else if (filter === 'low') show = rating <= 2;
+      else show = rating === parseInt(filter, 10);
+      item.style.display = show ? '' : 'none';
+    });
+  });
+});
+</script>
+<script src="js/nav-inject.js"></script>
+<script src="js/cookie-banner.js"></script>
+<script src="js/analytics-loader.js"></script>
+<script src="js/supabase-init.js"></script>
+<script>
+/* ─────────── Auth gate ───────────
+   Redirect to login if there's no Supabase session.
+   Runs after js/supabase-init.js has had a chance to load the SDK. */
+(async function () {
+  // Wait up to 2.5s for ZdSupabase to be available
+  await new Promise(function (resolve) {
+    if (window.ZdSupabase) return resolve();
+    setTimeout(resolve, 2500);
+    window.addEventListener('zd-supabase-ready', resolve, { once: true });
+  });
+  if (!window.ZdSupabase) {
+    // Supabase failed to load — cannot verify auth, deny access
+    console.warn('[dashboard] Supabase not loaded, redirecting to login');
+    window.location.replace('business-login.html?error=offline');
+    return;
+  }
+  var { data: { session } } = await window.ZdSupabase.auth.getSession();
+  if (!session || !session.user) {
+    // Not logged in → redirect to login
+    window.location.replace('business-login.html');
+    return;
+  }
+  // Logged in — expose user globally for the dashboard code to use
+  window.ZdCurrentUser = session.user;
+  console.info('[dashboard] Logged in as', session.user.email);
+
+  // Listen for sign-out from another tab
+  window.ZdSupabase.auth.onAuthStateChange(function (event, sess) {
+    if (event === 'SIGNED_OUT' || !sess) {
+      window.location.replace('business-login.html');
+    }
+  });
+})();
+
+/* Sign-out helper, callable from any "Изход" button in the dashboard UI */
+window.zdDashboardSignOut = async function () {
+  if (window.ZdSupabase) {
+    try { await window.ZdSupabase.auth.signOut(); } catch (e) { console.warn(e); }
+  }
+  window.location.replace('business-login.html');
+};
+</script>
+</body>
+</html>

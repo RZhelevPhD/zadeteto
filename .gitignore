@@ -1,0 +1,11 @@
+.env
+tmp/
+temporary screenshots/
+node_modules/
+.claude/
+
+# TODO: If this repo ever goes public, also gitignore:
+# CLAUDE.md
+# CHATGPT.md
+# GEMINI.md
+# skills/

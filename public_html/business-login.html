@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вход за Бизнеси — За Детето</title>
+<meta name="description" content="Бизнес вход за партньори на За Детето — управлявайте профила си, отзивите и заявките.">
+<meta name="robots" content="noindex, nofollow">
+
+<!-- SEO -->
+<link rel="canonical" href="https://zadeteto.com/business-login.html">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<style>
+  :root { --accent:#7c4dff; --bg:#fdfcfb; --surface:#fff; --text:#1a103c; --border:#ece8f3; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; display:flex; flex-direction:column; min-height:100vh; }
+  .login-wrapper { flex:1; display:flex; align-items:center; justify-content:center; padding: 40px 20px; }
+  h1,h2 { font-family:'DM Serif Display',serif; }
+  
+  /* ═══ GLOBAL FOOTER ═══ */
+  .zd-footer { border-top:1px solid rgba(0,0,0,0.05); padding:32px 40px; background:var(--surface, #fff); text-align:center; position:relative; z-index:10; margin-top:auto; width: 100%; }
+  .zd-footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:12px; flex-wrap:wrap; }
+  .zd-footer-links a { color:var(--muted, #8b80b0); text-decoration:none; font-size:14px; font-weight:500; transition:color 0.2s; }
+  .zd-footer-links a:hover { color:var(--accent, #7c4dff); }
+  .zd-footer-copy { font-size:12px; color:var(--muted, #8b80b0); opacity:0.6; }
+  @media(max-width:768px){ .zd-footer{padding:24px;} .zd-footer-links{gap:16px;} }
+
+  .login-container { background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:48px 40px; width:100%; max-width:440px; box-shadow:0 24px 60px rgba(0,0,0,0.05); text-align:center; }
+  .logo { height:80px; margin-bottom:32px; }
+  .title { font-size:28px; margin-bottom:8px; }
+  .sub { font-size:14px; color:#8b80b0; margin-bottom:32px; }
+
+  .form-group { margin-bottom:20px; text-align:left; }
+  .form-group label { display:block; font-size:14px; font-weight:600; margin-bottom:8px; color:var(--text); }
+  .form-group input { width:100%; padding:14px 18px; border:1px solid var(--border); border-radius:12px; font-size:15px; font-family:'DM Sans',sans-serif; background:#fcfcfd; transition:border-color 0.2s, box-shadow 0.2s; outline:none; }
+  .form-group input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,77,255,0.1); background:#fff; }
+
+  .btn { display:block; width:100%; padding:16px; background:var(--accent); color:#fff; border:none; border-radius:12px; font-size:16px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; transition:transform 0.2s, box-shadow 0.3s; box-shadow:0 6px 20px rgba(124,77,255,0.25); margin-top:32px; }
+  .btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(124,77,255,0.35); }
+  .btn:active { transform:scale(0.97); }
+
+  .back-link { display:inline-block; margin-top:24px; font-size:13px; color:#8b80b0; text-decoration:none; font-weight:500; transition:color 0.2s; }
+  .back-link:hover { color:var(--text); }
+
+  /* Tab strip for Password / Magic link modes */
+  .login-tabs { display:flex; background:#f5f5fa; border:1px solid var(--border); border-radius:12px; padding:4px; margin-bottom:24px; }
+  .login-tab { flex:1; text-align:center; padding:10px; font-size:13px; font-weight:600; cursor:pointer; border-radius:8px; color:#8b80b0; transition:all 0.2s; user-select:none; }
+  .login-tab.active { background:#fff; color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .login-pane { display:none; }
+  .login-pane.active { display:block; }
+  .form-error { display:none; background:rgba(231,76,111,0.08); border:1px solid rgba(231,76,111,0.25); color:#c23a5d; padding:12px 14px; border-radius:10px; font-size:13px; margin-top:12px; text-align:left; }
+  .form-success { display:none; background:rgba(76,175,106,0.08); border:1px solid rgba(76,175,106,0.25); color:#1a6e34; padding:14px 16px; border-radius:12px; font-size:13px; margin-top:12px; text-align:center; }
+  .forgot-link { display:block; text-align:right; font-size:12px; color:var(--accent); text-decoration:none; margin-top:-12px; margin-bottom:8px; cursor:pointer; }
+  .forgot-link:hover { text-decoration:underline; }
+  .signup-prompt { font-size:13px; color:#8b80b0; margin-top:24px; padding-top:24px; border-top:1px solid var(--border); }
+  .signup-prompt a { color:var(--accent); text-decoration:none; font-weight:600; }
+  .signup-prompt a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<main id="zd-main-content">
+<div class="login-wrapper">
+<div class="login-container">
+  <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето" class="logo">
+  <h1 class="title">Портал за партньори</h1>
+  <p class="sub">Управлявайте вашия профил, следете статистиките и отговаряйте на отзиви.</p>
+
+  <button type="button" id="biometricLoginBtn" onclick="biometricLogin()" style="display:none;width:100%;padding:14px;background:#fff;border:2px solid var(--accent);color:var(--accent);border-radius:12px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:20px;align-items:center;justify-content:center;gap:10px;transition:background 0.2s;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 19.5C5.5 18 6 15 6 12c0-.7.12-1.37.34-2"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M12 2a10 10 0 0 0-7.07 17.07"/><path d="M14 8a4 4 0 0 0-7.96.6"/><path d="M9.5 21.74a8 8 0 0 0 4-4.74"/><path d="M16 17.99a3 3 0 0 1-1.5.01"/></svg>
+    Влез с пръстов отпечатък / лице
+  </button>
+  <div id="biometricError" style="display:none;color:#e74c6f;font-size:13px;margin:-12px 0 16px;text-align:center;"></div>
+
+  <div class="login-tabs">
+    <div class="login-tab active" data-mode="password" onclick="switchLoginMode('password')">С парола</div>
+    <div class="login-tab" data-mode="magic" onclick="switchLoginMode('magic')">С линк по имейл</div>
+  </div>
+
+  <!-- Mode 1: Email + password -->
+  <div class="login-pane active" id="loginPanePassword">
+    <form id="passwordLoginForm" novalidate>
+      <div class="form-group">
+        <label for="pwEmail">Служебен имейл</label>
+        <input type="email" id="pwEmail" required placeholder="name@yourbusiness.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="pwPassword">Парола</label>
+        <input type="password" id="pwPassword" required placeholder="Въведете паролата си" autocomplete="current-password">
+      </div>
+      <a class="forgot-link" id="forgotLink" onclick="sendPasswordReset()">Забравена парола?</a>
+      <div id="passwordError" class="form-error"></div>
+      <div id="passwordSuccess" class="form-success"></div>
+      <button type="submit" class="btn" id="passwordSubmitBtn">Влез в профила</button>
+    </form>
+  </div>
+
+  <!-- Mode 2: Magic link only -->
+  <div class="login-pane" id="loginPaneMagic">
+    <form id="magicLoginForm" novalidate>
+      <div class="form-group">
+        <label for="mlEmail">Служебен имейл</label>
+        <input type="email" id="mlEmail" required placeholder="name@yourbusiness.com" autocomplete="email">
+      </div>
+      <p style="font-size:12px;color:#8b80b0;margin-top:-8px;margin-bottom:8px;">Без парола. Ще получите еднократен линк за вход на имейла си.</p>
+      <div id="magicError" class="form-error"></div>
+      <div id="magicSuccess" class="form-success"></div>
+      <button type="submit" class="btn" id="magicSubmitBtn">Изпрати линк</button>
+    </form>
+  </div>
+
+  <div class="signup-prompt">
+    Все още не сте партньор?<br>
+    <a href="partners.html#apply">Кандидатствайте тук →</a>
+  </div>
+
+  <a href="index.html" class="back-link">← Обратно към сайта</a>
+</div>
+</div>
+
+<script>
+/* Show biometric button only if user previously enabled it from dashboard */
+(function() {
+  if (localStorage.getItem('zd_biometric_enabled') === 'true') {
+    var btn = document.getElementById('biometricLoginBtn');
+    if (btn) btn.style.display = 'flex';
+  }
+})();
+
+function biometricLogin() {
+  /* TODO: Real WebAuthn flow — separate bundle, kept as mock for now */
+  var btn = document.getElementById('biometricLoginBtn');
+  btn.disabled = true;
+  btn.textContent = 'Удостоверяване...';
+  setTimeout(function() {
+    btn.disabled = false;
+    btn.textContent = 'Влез с пръстов отпечатък / лице';
+    _showErr('biometricError', 'Биометричният вход все още не е наличен. Моля, използвайте имейл.');
+  }, 800);
+}
+
+/* ─────────────── Tab switching ─────────────── */
+function switchLoginMode(mode) {
+  document.querySelectorAll('.login-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  document.querySelectorAll('.login-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById(mode === 'password' ? 'loginPanePassword' : 'loginPaneMagic').classList.add('active');
+}
+
+/* ─────────────── Helpers ─────────────── */
+function _showErr(elId, msg) {
+  var e = document.getElementById(elId);
+  if (e) { e.textContent = msg; e.style.display = 'block'; }
+}
+function _showOk(elId, msg) {
+  var e = document.getElementById(elId);
+  if (e) { e.textContent = msg; e.style.display = 'block'; }
+}
+function _clearErr(elId) {
+  var e = document.getElementById(elId);
+  if (e) { e.textContent = ''; e.style.display = 'none'; }
+}
+function _waitForSupabase() {
+  return new Promise(function (resolve) {
+    if (window.ZdSupabase) return resolve();
+    setTimeout(resolve, 2000);
+    window.addEventListener('zd-supabase-ready', resolve, { once: true });
+  });
+}
+
+/* ─────────────── Password login ─────────────── */
+document.getElementById('passwordLoginForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  _clearErr('passwordError');
+  _clearErr('passwordSuccess');
+  var email = document.getElementById('pwEmail').value.trim();
+  var pw = document.getElementById('pwPassword').value;
+  if (!email || !pw) { _showErr('passwordError', 'Моля попълнете имейл и парола.'); return; }
+
+  await _waitForSupabase();
+  if (!window.ZdSupabase) { _showErr('passwordError', 'Системата за вход не е заредена. Опитайте отново.'); return; }
+
+  var btn = document.getElementById('passwordSubmitBtn');
+  var origText = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Влизане...'; btn.style.opacity = '0.7';
+
+  try {
+    var res = await window.ZdSupabase.auth.signInWithPassword({ email: email, password: pw });
+    if (res.error) throw res.error;
+    // Success → redirect to dashboard
+    window.location.href = 'business-dashboard.html';
+  } catch (err) {
+    console.error('[password login]', err);
+    var msg = (err.message || '').toLowerCase().includes('invalid')
+      ? 'Грешен имейл или парола.'
+      : 'Възникна грешка: ' + (err.message || 'неизвестна');
+    _showErr('passwordError', msg);
+    btn.disabled = false; btn.textContent = origText; btn.style.opacity = '1';
+  }
+});
+
+/* ─────────────── Magic link login ─────────────── */
+document.getElementById('magicLoginForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  _clearErr('magicError');
+  _clearErr('magicSuccess');
+  var email = document.getElementById('mlEmail').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    _showErr('magicError', 'Моля въведете валиден имейл адрес.');
+    return;
+  }
+
+  await _waitForSupabase();
+  if (!window.ZdSupabase) { _showErr('magicError', 'Системата за вход не е заредена.'); return; }
+
+  var btn = document.getElementById('magicSubmitBtn');
+  var origText = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Изпращане...'; btn.style.opacity = '0.7';
+
+  try {
+    var res = await window.ZdSupabase.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: window.location.origin + '/business-dashboard.html',
+        shouldCreateUser: false  // partners must already have an account
+      }
+    });
+    if (res.error) throw res.error;
+    _showOk('magicSuccess', 'Изпратихме линк за вход на ' + email + '. Провери имейла си.');
+    btn.textContent = '✓ Изпратено';
+  } catch (err) {
+    console.error('[magic link login]', err);
+    var msg = (err.message || '').toLowerCase().includes('signups not allowed')
+      ? 'Този имейл не е регистриран като партньор. Кандидатствайте първо.'
+      : 'Възникна грешка: ' + (err.message || 'неизвестна');
+    _showErr('magicError', msg);
+    btn.disabled = false; btn.textContent = origText; btn.style.opacity = '1';
+  }
+});
+
+/* ─────────────── Forgot password ─────────────── */
+async function sendPasswordReset() {
+  _clearErr('passwordError');
+  _clearErr('passwordSuccess');
+  var email = document.getElementById('pwEmail').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    _showErr('passwordError', 'Първо въведете имейла си горе, после кликнете "Забравена парола".');
+    return;
+  }
+  await _waitForSupabase();
+  if (!window.ZdSupabase) return;
+  try {
+    var res = await window.ZdSupabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/business-login.html?reset=1'
+    });
+    if (res.error) throw res.error;
+    _showOk('passwordSuccess', 'Изпратихме линк за смяна на парола на ' + email + '.');
+  } catch (err) {
+    _showErr('passwordError', 'Грешка: ' + (err.message || 'неизвестна'));
+  }
+}
+
+/* ─────────────── If user lands here already logged in, redirect ─────────────── */
+(async function () {
+  await _waitForSupabase();
+  if (!window.ZdSupabase) return;
+  var { data: { session } } = await window.ZdSupabase.auth.getSession();
+  if (session && session.user) {
+    // Already logged in → straight to dashboard
+    window.location.href = 'business-dashboard.html';
+  }
+})();
+
+/* ─────────────── Offline error banner (redirected from dashboard) ─────────────── */
+(function () {
+  if (new URLSearchParams(window.location.search).get('error') === 'offline') {
+    var banner = document.createElement('div');
+    banner.style.cssText = 'background:#fff3cd;color:#856404;border:1px solid #ffc107;border-radius:10px;padding:12px 16px;margin:0 0 16px;font-size:13px;text-align:center;';
+    banner.textContent = 'Порталът изисква интернет връзка. Моля, проверете мрежата си и опитайте отново.';
+    var container = document.querySelector('.login-container');
+    if (container) container.insertBefore(banner, container.querySelector('.login-tabs'));
+  }
+})();
+</script>
+</main>
+
+<footer class="zd-footer">
+  <div class="zd-footer-links">
+    <a href="index.html">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="report.html">Докладвай</a>
+    <a href="business-login.html">Бизнес Вход</a>
+  </div>
+  <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+<script src="js/nav-inject.js"></script>
+<script src="js/cookie-banner.js"></script>
+<script src="js/analytics-loader.js"></script>
+<script src="js/supabase-init.js"></script>
+</body>
+</html>

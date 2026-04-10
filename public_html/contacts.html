@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Контакти — За Детето</title>
+<meta name="description" content="Свържете се с екипа на За Детето. Ще ви отговорим до 24 часа.">
+
+<!-- SEO -->
+<link rel="canonical" href="https://zadeteto.com/contacts.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="За Детето">
+<meta property="og:locale" content="bg_BG">
+<meta property="og:url" content="https://zadeteto.com/contacts.html">
+<meta property="og:title" content="Контакти — За Детето">
+<meta property="og:description" content="Свържете се с екипа на За Детето. Ще ви отговорим до 24 часа.">
+<meta property="og:image" content="https://zadeteto.com/brand_assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="За Детето — национална директория за детски специалисти и услуги">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Контакти — За Детето">
+<meta name="twitter:description" content="Свържете се с екипа на За Детето. Ще ви отговорим до 24 часа.">
+<meta name="twitter:image" content="https://zadeteto.com/brand_assets/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<style>
+  :root { --accent:#7c4dff; --bg:#fdfcfb; --surface:#fff; --text:#1a103c; --muted:#8b80b0; --border:#ece8f3; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3 { font-family:'DM Serif Display',serif; }
+
+  /* NAV CSS */
+  nav { position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,0.05); }
+  .nav-logo img { height:80px; }
+  .nav-links { display:flex; align-items:center; gap:24px; }
+  .nav-links a { color:var(--text); text-decoration:none; font-size:13px; font-weight:600; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--accent); }
+  .nav-auth-btn { padding:8px 20px; background:var(--accent); border-radius:10px; color:#fff!important; font-weight:600; box-shadow:0 4px 12px rgba(124,77,255,0.2); }
+  @media(max-width:768px){ .nav-links{gap:16px;} .nav-links a:not(.nav-auth-btn){display:none;} nav{padding:12px 20px;} .nav-logo img{height:36px;} }
+
+  .page-hero { padding:140px 24px 80px; text-align:center; background:linear-gradient(180deg,#efe8ff 0%,var(--bg) 100%); }
+  .page-hero h1 { font-size:clamp(32px,5vw,52px); margin-bottom:16px; }
+  .page-hero h1 span { color:var(--accent); }
+  .page-hero p { font-size:18px; color:var(--muted); max-width:540px; margin:0 auto; line-height:1.6; }
+
+  .contact-grid { max-width:1000px; margin:0 auto; padding:60px 24px 40px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; }
+  .contact-card { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px; text-align:center; transition:transform 0.3s, box-shadow 0.3s; }
+  .contact-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(124,77,255,0.08); }
+  .contact-icon { width:52px; height:52px; border-radius:14px; background:rgba(124,77,255,0.08); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+  .contact-icon svg { width:24px; height:24px; stroke:var(--accent); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .contact-card h3 { font-size:18px; margin-bottom:8px; }
+  .contact-card p { font-size:14px; color:var(--muted); line-height:1.6; }
+  .contact-card a { color:var(--accent); text-decoration:none; font-weight:600; }
+  .contact-card a:hover { text-decoration:underline; }
+  @media(max-width:700px){ .contact-grid{grid-template-columns:1fr;} }
+
+  .form-section { max-width:580px; margin:0 auto; padding:40px 24px 100px; }
+  .form-section h2 { text-align:center; font-size:clamp(26px,4vw,36px); margin-bottom:8px; }
+  .form-sub { text-align:center; color:var(--muted); font-size:15px; margin-bottom:40px; }
+  .form-group { margin-bottom:20px; }
+  .form-group label { display:block; font-size:14px; font-weight:600; margin-bottom:6px; }
+  .form-group input, .form-group textarea { width:100%; padding:14px 18px; border:1px solid var(--border); border-radius:14px; font-size:15px; font-family:'DM Sans',sans-serif; background:var(--surface); color:var(--text); transition:border-color 0.2s, box-shadow 0.2s; outline:none; }
+  .form-group input:focus, .form-group textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,77,255,0.1); }
+  .form-group textarea { min-height:120px; resize:vertical; }
+  .submit-btn { display:block; width:100%; padding:16px; background:var(--accent); color:#fff; border:none; border-radius:14px; font-size:16px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; transition:transform 0.2s, box-shadow 0.3s; box-shadow:0 6px 20px rgba(124,77,255,0.25); }
+  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(124,77,255,0.35); }
+  .submit-btn:active { transform:scale(0.97); }
+
+  /* ═══ GLOBAL FOOTER ═══ */
+  .zd-footer { border-top:1px solid rgba(0,0,0,0.05); padding:48px 40px; background:var(--surface, #fff); text-align:center; position:relative; z-index:10; margin-top:auto; }
+  .zd-footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:16px; flex-wrap:wrap; }
+  .zd-footer-links a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:500; font-family:'DM Sans',sans-serif; transition:color 0.2s; }
+  .zd-footer-links a:hover { color:var(--accent); }
+  .zd-footer-copy { font-size:12px; color:var(--muted); opacity:0.6; }
+</style>
+</head>
+<body>
+
+<nav style="position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;z-index:900;background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #e8e8e8;">
+  <a href="index.html" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето" style="height:80px;">
+  </a>
+  <div class="nav-links">
+    <a href="index.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Начало</a>
+    <a href="partners.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">За партньори</a>
+    <a href="contacts.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Контакти</a>
+    <a href="pricing.html" class="nav-btn-partner">Стани партньор</a>
+    <a href="search.html?login=true" class="nav-btn-login">Вход</a>
+  </div>
+</nav>
+
+<main id="zd-main-content">
+<section class="page-hero">
+  <h1>Свържете се с <span>нас</span></h1>
+  <p>Имате въпрос, предложение или нужда от помощ? Ще ви отговорим до 24 часа.</p>
+</section>
+
+<section class="form-section">
+  <h2>Пишете ни</h2>
+  <p class="form-sub">Ще отговорим възможно най-бързо.</p>
+
+  <form id="contactForm" novalidate>
+    <div class="form-group">
+      <label for="cname">Вашето име *</label>
+      <input type="text" id="cname" name="name" required placeholder="Иван Иванов">
+    </div>
+    <div class="form-group">
+      <label for="cemail">Имейл *</label>
+      <input type="email" id="cemail" name="email" required placeholder="ivan@example.com">
+    </div>
+    <div class="form-group">
+      <label for="cmessage">Вашето съобщение *</label>
+      <textarea id="cmessage" name="message" required placeholder="Разкажете ни как можем да ви помогнем..."></textarea>
+    </div>
+    <div id="contactFormError" role="alert" aria-live="assertive" style="display:none;background:rgba(231,76,111,0.08);border:1px solid rgba(231,76,111,0.25);color:#c23a5d;padding:12px 16px;border-radius:12px;font-size:13px;margin-bottom:12px;"></div>
+    <button type="submit" class="submit-btn" id="contactSubmitBtn">Изпрати съобщение</button>
+  </form>
+  <script>
+    (function () {
+      var form = document.getElementById('contactForm');
+      var btn = document.getElementById('contactSubmitBtn');
+      var errBox = document.getElementById('contactFormError');
+      var originalBtnText = btn.textContent;
+
+      function showError(msg) {
+        errBox.textContent = msg;
+        errBox.style.display = 'block';
+      }
+      function clearError() {
+        errBox.style.display = 'none';
+        errBox.textContent = '';
+      }
+      function showSuccess() {
+        form.innerHTML = '<div style="text-align:center;padding:48px"><div style="width:64px;height:64px;border-radius:50%;background:rgba(76,175,106,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4caf6a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><h3 style="color:#4caf6a;margin-bottom:10px;font-family:DM Serif Display,serif;font-size:24px;">Съобщението е изпратено!</h3><p style="color:#8b80b0;font-size:14px;line-height:1.5;">Ще се свържем с вас в рамките на 24 часа.</p></div>';
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearError();
+
+        var name = document.getElementById('cname').value.trim();
+        var email = document.getElementById('cemail').value.trim();
+        var message = document.getElementById('cmessage').value.trim();
+
+        if (!name) return showError('Моля въведете вашето име.');
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Моля въведете валиден имейл адрес.');
+        if (message.length < 10) return showError('Съобщението трябва да съдържа поне 10 символа.');
+
+        btn.disabled = true;
+        btn.textContent = 'Изпращане...';
+        btn.style.opacity = '0.7';
+
+        ZdApi.submitForm('contact_messages', { name: name, email: email, message: message })
+          .then(function (res) {
+            if (res && res.ok) {
+              showSuccess();
+            } else {
+              throw new Error('Submission failed');
+            }
+          })
+          .catch(function (err) {
+            console.error('[contact form]', err);
+            showError('Възникна грешка при изпращането. Моля опитайте отново или ни пишете на info@zadeteto.bg.');
+            btn.disabled = false;
+            btn.textContent = originalBtnText;
+            btn.style.opacity = '1';
+          });
+      });
+    })();
+  </script>
+</section>
+</main>
+
+<footer class="zd-footer">
+  <div class="zd-footer-links">
+    <a href="index.html">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="report.html">Докладвай</a>
+    <a href="business-login.html">Бизнес Вход</a>
+  </div>
+  <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+<script src="js/nav-inject.js"></script>
+<script src="js/cookie-banner.js"></script>
+<script src="js/analytics-loader.js"></script>
+<script src="js/supabase-init.js"></script>
+<script src="js/api-stub.js"></script>
+</body>
+</html>
