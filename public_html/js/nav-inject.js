@@ -52,19 +52,26 @@
           'scroll-behavior:auto!important;' +
         '}' +
       '}' +
-      /* Shared nav button styles — injected globally so all pages are consistent */
-      /* Primary CTA — now Търсене (search button) */
-      '.nav-btn-search{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:#7c4dff;color:#fff!important;border-radius:10px;font-weight:600;text-decoration:none;font-size:13px;box-shadow:0 4px 14px rgba(124,77,255,0.2);transition:transform 0.2s,box-shadow 0.2s;}' +
-      '.nav-btn-search:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,77,255,0.3);}' +
-      '.nav-btn-search:active{transform:scale(0.97);}' +
-      '.nav-btn-search svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}' +
-      /* Partner link — text link with attention-grabbing wobble */
-      '.nav-btn-partner{display:inline-flex;align-items:center;color:#7c4dff!important;text-decoration:none;font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;transition:background 0.2s;animation:zdNavWobble 3s ease-in-out infinite;transform-origin:center;}' +
-      '.nav-btn-partner:hover{background:rgba(124,77,255,0.08);animation-play-state:paused;}' +
+      /* ═══ GLOBAL NAV LAYOUT — identical on every page ═══ */
+      'nav{position:sticky;top:0;z-index:900;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,0.06);min-height:80px;}' +
+      'nav .nav-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0;}' +
+      'nav .nav-logo img{height:56px;width:auto;display:block;}' +
+      'nav .nav-links{display:flex;align-items:center;gap:22px;}' +
+      'nav .nav-links a.nav-link{color:#1a103c;text-decoration:none;font-size:14px;font-weight:600;padding:8px 4px;transition:color 0.2s;}' +
+      'nav .nav-links a.nav-link:hover{color:#7c4dff;}' +
+      /* Primary CTA — Търсене (search button) */
+      'nav .nav-btn-search{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:#7c4dff;color:#fff!important;border-radius:10px;font-weight:600;text-decoration:none;font-size:14px;box-shadow:0 4px 14px rgba(124,77,255,0.2);transition:transform 0.2s,box-shadow 0.2s;}' +
+      'nav .nav-btn-search:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,77,255,0.3);}' +
+      'nav .nav-btn-search:active{transform:scale(0.97);}' +
+      'nav .nav-btn-search svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}' +
+      /* Partner — plain text link (like Контакти) + wobble animation */
+      'nav .nav-btn-partner{color:#1a103c!important;text-decoration:none;font-size:14px;font-weight:600;padding:8px 4px;background:none!important;border:none!important;box-shadow:none!important;display:inline-flex;align-items:center;animation:zdNavWobble 3s ease-in-out infinite;transform-origin:center;}' +
+      'nav .nav-btn-partner:hover{color:#7c4dff!important;animation-play-state:paused;}' +
       '@keyframes zdNavWobble{0%,88%,100%{transform:rotate(0deg)}90%{transform:rotate(-4deg)}92%{transform:rotate(3deg)}94%{transform:rotate(-3deg)}96%{transform:rotate(2deg)}98%{transform:rotate(-1deg)}}' +
-      '@media(prefers-reduced-motion:reduce){.nav-btn-partner{animation:none!important}}' +
-      '.nav-btn-login{display:inline-flex;align-items:center;padding:8px 18px;background:transparent;color:#1a103c!important;border:1.5px solid #ece8f3;border-radius:10px;font-weight:600;text-decoration:none;font-size:13px;transition:border-color 0.2s,background 0.2s;}' +
-      '.nav-btn-login:hover{border-color:#7c4dff;background:rgba(124,77,255,0.04);}' +
+      '@media(prefers-reduced-motion:reduce){nav .nav-btn-partner{animation:none!important}}' +
+      /* Login button */
+      'nav .nav-btn-login{display:inline-flex;align-items:center;padding:9px 18px;background:transparent;color:#1a103c!important;border:1.5px solid #ece8f3;border-radius:10px;font-weight:600;text-decoration:none;font-size:14px;transition:border-color 0.2s,background 0.2s;}' +
+      'nav .nav-btn-login:hover{border-color:#7c4dff;background:rgba(124,77,255,0.04);}' +
       /* Skip-to-content link — hidden until focused via Tab */
       '.zd-skip-link{position:absolute;top:-50px;left:0;background:#7c4dff;color:#fff;padding:10px 18px;z-index:10000;font-size:14px;font-weight:600;border-radius:0 0 10px 0;text-decoration:none;transition:top 0.2s;}' +
       '.zd-skip-link:focus{top:0;}' +

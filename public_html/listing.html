@@ -76,19 +76,7 @@ body {
 }
 h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 
-/* ═══ NAV ═══ */
-nav {
-  position: sticky; top: 0; display: flex; justify-content: space-between;
-  align-items: center; padding: 12px 24px; z-index: 900;
-  background: rgba(255,255,255,0.92); backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid #e8e8e8;
-}
-.nav-logo img { height: 80px; }
-.nav-links { display: flex; align-items: center; gap: 24px; }
-.nav-links a { color: var(--text); text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s; }
-.nav-links a:hover { color: var(--accent); }
-.nav-auth-btn { padding: 8px 20px; background: var(--zd-purple-600); border-radius: 10px; color: #fff !important; font-weight: 600; box-shadow: 0 4px 12px rgba(124,77,255,0.2); }
-@media(max-width:768px) { .nav-links { gap: 16px; } .nav-links a:not(.nav-auth-btn) { display: none; } nav { padding: 12px 20px; } .nav-logo img { height: 36px; } }
+/* Nav layout is provided by nav-inject.js — no per-page overrides needed */
 
 /* ═══ BREADCRUMB ═══ */
 .breadcrumb {

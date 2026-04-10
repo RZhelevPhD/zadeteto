@@ -38,14 +38,7 @@
   body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; }
   h1,h2,h3 { font-family:'DM Serif Display',serif; }
 
-  /* NAV CSS */
-  nav { position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,0.05); }
-  .nav-logo img { height:80px; }
-  .nav-links { display:flex; align-items:center; gap:24px; }
-  .nav-links a { color:var(--text); text-decoration:none; font-size:13px; font-weight:600; transition:color 0.2s; }
-  .nav-links a:hover { color:var(--accent); }
-  .nav-auth-btn { padding:8px 20px; background:var(--accent); border-radius:10px; color:#fff!important; font-weight:600; box-shadow:0 4px 12px rgba(124,77,255,0.2); }
-  @media(max-width:768px){ .nav-links{gap:16px;} .nav-links a:not(.nav-auth-btn){display:none;} nav{padding:12px 20px;} .nav-logo img{height:36px;} }
+  /* Nav layout is provided by nav-inject.js */
 
   .page-hero { padding:140px 24px 80px; text-align:center; background:linear-gradient(180deg,#efe8ff 0%,var(--bg) 100%); }
   .page-hero h1 { font-size:clamp(32px,5vw,52px); margin-bottom:16px; }
