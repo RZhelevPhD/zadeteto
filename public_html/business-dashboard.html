@@ -24,11 +24,11 @@
   --bg:#262633; --surface:#32323f; --text:#ebebf2; --border:#42424f; --muted:#9695a8; --accent-light:rgba(124,77,255,0.18);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; display:flex; min-height:100vh; transition:background 0.3s, color 0.3s; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; display:flex; min-height:100vh; min-height:100dvh; transition:background 0.3s, color 0.3s; }
 h1,h2,h3 { font-family:'DM Serif Display',serif; }
 
 /* SIDEBAR */
-.sidebar { width:260px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:24px 0; z-index:10; position:sticky; top:0; height:100vh; flex-shrink:0; transition:background 0.3s, border-color 0.3s; }
+.sidebar { width:260px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:24px 0; z-index:10; position:sticky; top:0; height:100vh; height:100dvh; flex-shrink:0; transition:background 0.3s, border-color 0.3s; }
 .logo-box { padding:0 24px 24px; border-bottom:1px solid var(--border); margin-bottom:16px; }
 .logo-box img { height:64px; }
 [data-theme="dark"] .logo-box img { filter:brightness(0) invert(1); }
@@ -180,6 +180,20 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
   .stats-grid { grid-template-columns:1fr; }
   .content-grid { grid-template-columns:1fr; }
   .form-row { grid-template-columns:1fr; }
+  .upload-grid { grid-template-columns:repeat(2,1fr); }
+  .sidebar { scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .sidebar::-webkit-scrollbar { display:none; }
+}
+@media(max-width:480px){
+  .main-area { padding:16px 12px; }
+  .panel { padding:20px 16px; }
+  .header h1 { font-size:24px; }
+  .stat-card { padding:16px; }
+  .upload-grid { grid-template-columns:1fr; }
+  .form-group input, .form-group textarea, .form-group select { font-size:16px; }
+  .modal { max-width:100%; margin:0 12px; }
+  .modal-body { padding:16px; }
+  .zd-footer { padding:24px 16px; }
 }
 </style>
 </head>

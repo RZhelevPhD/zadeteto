@@ -56,6 +56,7 @@
   --zd-online: #1976d2;
   --zd-font: 'DM Sans', sans-serif;
   --zd-card-h: calc((100vh - 100px) / 2);
+  --zd-card-h: calc((100dvh - 100px) / 2);
   --zd-heart: #e74c6f;
   --zd-nope: #c85050;
 }
@@ -70,7 +71,7 @@ body {
 
 /* ═══ LAYOUT ═══ */
 .directory-wrapper {
-  display: flex; gap: 0; align-items: flex-start; min-height: 100vh;
+  display: flex; gap: 0; align-items: flex-start; min-height: 100vh; min-height: 100dvh;
 }
 
 /* ═══ FILTER SIDEBAR ═══ */
@@ -78,7 +79,7 @@ body {
   width: 260px; min-width: 260px; position: sticky; top: 0;
   padding: 20px 18px; display: flex; flex-direction: column; gap: 20px;
   background: #fff; border-right: 1px solid var(--zd-gray-200);
-  height: 100vh; overflow-y: auto;
+  height: 100vh; height: 100dvh; overflow-y: auto;
   scrollbar-width: thin; scrollbar-color: var(--zd-gray-200) transparent;
 }
 #filters::-webkit-scrollbar { width: 4px; }
@@ -884,7 +885,7 @@ a.zd-name:hover { text-decoration: underline; }
 .tutorial-dismiss:active{background:rgba(255,255,255,.25)}
 
 /* ═══ MOBILE APP SHELL ═══ */
-.app{display:flex;flex-direction:column;min-height:100vh}
+.app{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 .top-bar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.05)}
 .top-row{display:flex;gap:8px;align-items:center}
 .city-btn{height:40px;padding:0 12px;border-radius:12px;border:1.5px solid var(--zd-gray-200);background:#fff;font:600 13px/1 var(--zd-font);color:var(--zd-gray-800);cursor:pointer;display:flex;align-items:center;gap:6px;flex-shrink:0;max-width:45%}
@@ -3006,6 +3007,23 @@ body.fb-active nav { filter:grayscale(0.6) brightness(0.95); transition:filter 0
   transition:transform 0.4s cubic-bezier(0.16,1,0.3,1); pointer-events:none;
 }
 .fb-toast.visible { transform:translateX(-50%) translateY(0); }
+
+/* ═══ SMALL PHONE FINE-TUNING ═══ */
+@media(max-width:480px) {
+  .top-bar { padding: 8px 10px; }
+  .city-btn { height: 36px; font-size: 12px; max-width: 40%; }
+  .search-wrap { height: 36px; }
+  .search-wrap input { font-size: 16px; }
+  .filter-btn { width: 36px; height: 36px; }
+  .stack-area { min-height: 400px; }
+  .stack-view { padding: 4px 10px 80px; }
+  .applied-chips { padding: 4px 10px; }
+  .fb-panel { left: 8px; right: 8px; border-radius: 16px; }
+  .fb-body { padding: 16px; }
+  .tutorial { padding: 16px; }
+  .tutorial-demos { gap: 20px; }
+  .tutorial-demo { width: 100px; }
+}
 </style>
 
 <div class="fb-overlay" id="fbOverlay" onclick="closeFeedbackWizard()"></div>

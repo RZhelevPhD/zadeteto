@@ -169,6 +169,17 @@ nav { position:sticky; top:0; display:flex; justify-content:space-between; align
 .zd-footer-links a:hover { color:var(--accent); }
 .zd-footer-copy { font-size:12px; color:var(--muted); opacity:0.6; }
 @media(max-width:768px){ .zd-footer{padding:24px;} .zd-footer-links{gap:16px;} }
+.comp-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:16px; }
+@media(max-width:480px){
+  .page-hero { padding:80px 16px 40px; }
+  .page-hero h1 { font-size:28px; }
+  .plans-section { padding:40px 16px; }
+  .plan { padding:24px 16px; }
+  .plan-cta { min-height:48px; }
+  .comp-table { font-size:10px; }
+  .comp-table th, .comp-table td { padding:6px 4px; }
+  .zd-footer { padding:24px 16px; }
+}
 </style>
 </head>
 <body>
@@ -306,6 +317,7 @@ nav { position:sticky; top:0; display:flex; justify-content:space-between; align
 <section class="comparison">
   <h2>Сравнение на плановете</h2>
   <p class="sub">Детайлен преглед на всички функции по план.</p>
+  <div class="comp-table-wrap">
   <table class="comp-table">
     <thead>
       <tr>
@@ -345,6 +357,7 @@ nav { position:sticky; top:0; display:flex; justify-content:space-between; align
       </tr>
     </tbody>
   </table>
+  </div>
 </section>
 </main>
 

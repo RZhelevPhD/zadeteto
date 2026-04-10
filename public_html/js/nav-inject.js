@@ -60,7 +60,25 @@
       '.nav-btn-login:hover{border-color:#7c4dff;background:rgba(124,77,255,0.04);}' +
       /* Skip-to-content link — hidden until focused via Tab */
       '.zd-skip-link{position:absolute;top:-50px;left:0;background:#7c4dff;color:#fff;padding:10px 18px;z-index:10000;font-size:14px;font-weight:600;border-radius:0 0 10px 0;text-decoration:none;transition:top 0.2s;}' +
-      '.zd-skip-link:focus{top:0;}';
+      '.zd-skip-link:focus{top:0;}' +
+      /* ---- HAMBURGER MENU (mobile ≤768px) ---- */
+      '.zd-hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:101;-webkit-tap-highlight-color:transparent;}' +
+      '.zd-hamburger svg{width:28px;height:28px;stroke:currentColor;stroke-width:2;stroke-linecap:round;}' +
+      '.zd-hamburger .bar1,.zd-hamburger .bar2,.zd-hamburger .bar3{transition:transform 0.3s cubic-bezier(0.16,1,0.3,1),opacity 0.2s;}' +
+      '@media(max-width:768px){' +
+        '.zd-hamburger{display:flex;align-items:center;justify-content:center;color:#fff;}' +
+        'nav.scrolled .zd-hamburger{color:#1a103c;}' +
+        '.nav-links{position:fixed;top:0;right:-100%;width:280px;height:100vh;height:100dvh;background:#fff;flex-direction:column;align-items:stretch;padding:80px 24px 32px;gap:8px!important;z-index:100;box-shadow:-4px 0 24px rgba(0,0,0,0.1);transition:right 0.35s cubic-bezier(0.16,1,0.3,1);}' +
+        '.nav-links.zd-open{right:0;}' +
+        '.nav-links a.nav-link{display:block!important;color:#1a103c!important;text-shadow:none!important;font-size:16px;padding:12px 0;border-bottom:1px solid #ece8f3;}' +
+        '.nav-links .nav-btn-partner,.nav-links .nav-btn-login{width:100%;justify-content:center;margin-top:8px;min-height:44px;font-size:14px;}' +
+        '.zd-nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:99;-webkit-tap-highlight-color:transparent;}' +
+        '.zd-nav-backdrop.zd-open{display:block;}' +
+      '}' +
+      /* Hamburger X animation when open */
+      '.zd-hamburger.zd-open .bar1{transform:translateY(7px) rotate(45deg);}' +
+      '.zd-hamburger.zd-open .bar2{opacity:0;}' +
+      '.zd-hamburger.zd-open .bar3{transform:translateY(-7px) rotate(-45deg);}';
     // Insert as early as possible — at the top of <head> if it exists, else <html>
     var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
     head.insertBefore(a11yStyle, head.firstChild);
@@ -81,6 +99,49 @@
     /* ---- HEADER: remove stale search icon if present from previous version ---- */
     var oldSearchIcon = document.querySelector('.nav-search-icon');
     if (oldSearchIcon) oldSearchIcon.remove();
+
+    /* ---- HAMBURGER MENU INJECTION ---- */
+    var nav = document.querySelector('nav');
+    var navLinks = nav ? nav.querySelector('.nav-links') : null;
+    if (nav && navLinks && !nav.querySelector('.zd-hamburger')) {
+      // Create hamburger button
+      var burger = document.createElement('button');
+      burger.className = 'zd-hamburger';
+      burger.setAttribute('aria-label', 'Меню');
+      burger.setAttribute('aria-expanded', 'false');
+      burger.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><line class="bar1" x1="4" y1="6" x2="20" y2="6"/><line class="bar2" x1="4" y1="12" x2="20" y2="12"/><line class="bar3" x1="4" y1="18" x2="20" y2="18"/></svg>';
+      nav.appendChild(burger);
+
+      // Create backdrop
+      var backdrop = document.createElement('div');
+      backdrop.className = 'zd-nav-backdrop';
+      document.body.appendChild(backdrop);
+
+      function toggleMenu() {
+        var isOpen = navLinks.classList.toggle('zd-open');
+        burger.classList.toggle('zd-open', isOpen);
+        backdrop.classList.toggle('zd-open', isOpen);
+        burger.setAttribute('aria-expanded', String(isOpen));
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      }
+      function closeMenu() {
+        navLinks.classList.remove('zd-open');
+        burger.classList.remove('zd-open');
+        backdrop.classList.remove('zd-open');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+      burger.addEventListener('click', toggleMenu);
+      backdrop.addEventListener('click', closeMenu);
+      // Close on nav link click
+      navLinks.querySelectorAll('a').forEach(function(a) {
+        a.addEventListener('click', closeMenu);
+      });
+      // Close on Escape
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+    }
 
     /* ---- FOOTER: red report button + legal links ---- */
     var footer = document.querySelector('.zd-footer');

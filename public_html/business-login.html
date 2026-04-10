@@ -18,7 +18,7 @@
 <style>
   :root { --accent:#7c4dff; --bg:#fdfcfb; --surface:#fff; --text:#1a103c; --border:#ece8f3; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; display:flex; flex-direction:column; min-height:100vh; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; display:flex; flex-direction:column; min-height:100vh; min-height:100dvh; }
   .login-wrapper { flex:1; display:flex; align-items:center; justify-content:center; padding: 40px 20px; }
   h1,h2 { font-family:'DM Serif Display',serif; }
   
@@ -60,6 +60,15 @@
   .signup-prompt { font-size:13px; color:#8b80b0; margin-top:24px; padding-top:24px; border-top:1px solid var(--border); }
   .signup-prompt a { color:var(--accent); text-decoration:none; font-weight:600; }
   .signup-prompt a:hover { text-decoration:underline; }
+  @media(max-width:480px) {
+    .login-container { padding:32px 20px; border-radius:20px; }
+    .logo { height:60px; margin-bottom:24px; }
+    .title { font-size:24px; }
+    .sub { font-size:13px; margin-bottom:24px; }
+    .form-group input { font-size:16px; padding:12px 14px; }
+    .btn { min-height:48px; }
+    .login-tab { padding:8px; font-size:12px; }
+  }
 </style>
 </head>
 <body>
