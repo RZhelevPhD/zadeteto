@@ -990,6 +990,100 @@ a.cf-name:active{text-decoration:underline}
 .swipe-label--nope{left:16px;background:rgba(200,80,80,.12);color:var(--zd-nope);border:2px solid var(--zd-nope);backdrop-filter:blur(4px)}
 .swipe-label--star{left:50%;transform:translateX(-50%);top:auto;bottom:24px;background:rgba(245,215,110,.15);color:#c89a00;border:2px solid var(--zd-gold-300);backdrop-filter:blur(4px)}
 .stack-counter{text-align:center;padding:4px 0;font-size:12px;font-weight:600;color:var(--zd-gray-400)}
+/* ═══ NEW CARD LAYOUT v4 — fixed containers ═══ */
+.card-wrap{height:630px}
+.card-front{justify-content:flex-start;background:#fff}
+.card-front .cf-hero{position:relative;inset:auto;height:380px;flex-shrink:0;border-radius:20px 20px 0 0}
+.card-front .cf-tray{background:#fff;padding:12px 18px;display:flex;flex-direction:column;align-items:center;text-align:center;height:250px;flex-shrink:0}
+.cf-text-box{width:100%;height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.cf-text-box .cf-tagline{font-size:15px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;padding:0;color:var(--accent,var(--zd-purple-600))}
+.cf-text-box .cf-oneliner{font-size:13px;color:var(--zd-gray-600);line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:340px;margin-top:2px;font-weight:400}
+.cf-soc-box{width:100%;height:78px;display:flex;justify-content:center;align-items:center;flex-shrink:0}
+.cf-socials-1row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.cf-socials-2row{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cf-soc-line{display:flex;gap:5px;justify-content:center}
+.cf-soc-box .cf-social{width:32px;height:32px;border-radius:8px;border:1px solid var(--zd-gray-200);background:var(--zd-gray-50);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .15s}
+.cf-soc-box .cf-social:active{transform:scale(1.15)}
+.cf-soc-box .cf-social img{width:17px;height:17px;display:block}
+.cf-free-socials{display:flex;align-items:center;justify-content:center;gap:10px}
+.cf-free-social{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(124,77,255,.08);border:1px solid rgba(124,77,255,.15);text-decoration:none;transition:transform .15s}
+.cf-free-social:active{transform:scale(1.15)}
+.cf-free-social img{width:20px;height:20px}
+.cf-cta-box{width:100%;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex-shrink:0}
+.cf-cta-box .cf-ctas{display:flex;gap:8px;width:100%;padding:0}
+.cf-cta-box .cf-cta{flex:1;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:600 13px/1 var(--zd-font);text-decoration:none;border:none;cursor:pointer}
+.cf-cta-box .cf-cta--primary{color:#fff;background:var(--accent,var(--zd-purple-600))}
+.cf-cta-box .cf-cta--secondary{background:#f5f5f5;border:1px solid var(--zd-gray-200);color:var(--zd-gray-800)}
+.cf-cta-box .cf-detail-btn{padding:0;font-size:12px;font-weight:600;color:var(--zd-gray-400);display:flex;align-items:center;gap:3px;cursor:pointer}
+.cf-cta-box .cf-detail-btn svg{width:12px;height:12px}
+
+/* Bigger logo */
+.card-front .cf-logo{width:72px!important;height:72px!important;top:14px!important;left:14px!important;border-radius:16px!important;border:3px solid rgba(255,255,255,.9)!important;box-shadow:0 4px 16px rgba(0,0,0,.2)!important}
+
+/* Bigger name, rating text */
+.card-front .cf-name{font-size:24px!important}
+.card-front .cf-hero-rating .stars{font-size:16px!important}
+.card-front .cf-hero-rating .num{font-size:16px!important}
+.card-front .cf-hero-rating .cnt{font-size:13px!important}
+.card-front .cf-hero-city{font-size:14px!important}
+
+/* Tier-specific tagline colors */
+.card-front.tier-standard .cf-tagline{color:#4a4a5a}
+.card-front.tier-verified .cf-tagline{color:#2e994d}
+.card-front.tier-elite .cf-tagline{color:var(--zd-purple-600)}
+.card-front.tier-premium .cf-tagline{color:#8a6800}
+.card-front.tier-free .cf-tagline{color:#666}
+
+/* Tier-specific primary CTA colors */
+.card-front.tier-verified .cf-cta--primary{background:#2e994d}
+.card-front.tier-elite .cf-cta--primary{background:var(--zd-purple-600)}
+.card-front.tier-premium .cf-cta--primary{background:linear-gradient(135deg,#f5d76e,#c89a00)}
+
+/* Tier-specific social icon backgrounds */
+.card-front.tier-standard .cf-soc-box .cf-social{background:#f0f0f4;border-color:#ccc}
+.card-front.tier-verified .cf-soc-box .cf-social{background:#e8f5e9;border-color:rgba(46,153,77,.2)}
+.card-front.tier-elite .cf-soc-box .cf-social{background:var(--zd-purple-50);border-color:rgba(124,77,255,.15)}
+.card-front.tier-premium .cf-soc-box .cf-social{background:linear-gradient(180deg,#fff,#fffaf0);border-color:#e6c660;box-shadow:0 1px 4px rgba(212,175,55,.1)}
+
+/* ═══ NEW BACK CARD LAYOUT v4 ═══ */
+.card-back{padding:20px 20px 14px;background:#fff;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}
+.card-back .cb-header{height:64px;text-align:center;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;margin:0}
+.card-back .cb-name{font:700 22px/1.2 var(--zd-display);color:var(--zd-gray-800);padding:0;background:none}
+.card-back .cb-city{font-size:14px;color:var(--zd-gray-400);margin-top:4px;padding:0}
+.card-back .cb-line{width:50px;height:2px;background:var(--zd-gray-200);margin:8px auto 12px;border-radius:2px;flex-shrink:0}
+.card-back .cb-info{height:270px;display:flex;flex-direction:column;gap:12px;flex-shrink:0;overflow-y:auto;padding:0 4px 0 0}
+.card-back .cb-info::-webkit-scrollbar{width:3px}
+.card-back .cb-info::-webkit-scrollbar-thumb{background:var(--zd-gray-200);border-radius:3px}
+.card-back .cb-sec{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.card-back .cb-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--zd-gray-400)}
+.card-back .cb-txt{font-size:14px;line-height:1.5;color:var(--zd-gray-800)}
+.card-back .cb-svcs{display:flex;flex-wrap:wrap;gap:4px}
+.card-back .cb-svc{font-size:11px;font-weight:600;padding:4px 10px;border-radius:7px;background:var(--zd-gray-50);color:var(--zd-gray-800);border:1px solid var(--zd-gray-200)}
+.card-back .cb-dist-box{height:40px;flex-shrink:0;margin-top:12px;display:flex;align-items:center;justify-content:center}
+.card-back .cb-dist{text-align:center;font-size:13px;color:var(--zd-gray-600)}
+.card-back .cb-dist b{color:var(--zd-gray-800)}
+.card-back .cb-dist a{color:var(--zd-purple-600);text-decoration:none;font-weight:600}
+.card-back .cb-actions{height:140px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.card-back .cb-cta{width:100%;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font:600 14px/1 var(--zd-font);color:#fff;border:none;cursor:pointer;flex-shrink:0;background:var(--zd-purple-600)}
+.card-back .cb-cta2{width:100%;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:600 13px/1 var(--zd-font);border:1px solid var(--zd-gray-200);background:var(--zd-gray-50);color:var(--zd-gray-800);cursor:pointer;text-decoration:none;flex-shrink:0}
+.card-back .cb-bottom{display:flex;justify-content:space-between;align-items:center;height:30px;flex-shrink:0;margin-top:4px}
+.card-back .cb-flip{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--zd-gray-400);cursor:pointer;text-decoration:none}
+.card-back .cb-flip svg{width:16px;height:16px}
+.card-back .cb-profile{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--zd-purple-600);cursor:pointer;text-decoration:none}
+.card-back .cb-profile svg{width:16px;height:16px}
+
+/* Tier-specific back CTA colors */
+.card-back.tier-standard .cb-cta{background:#4a4a5a}
+.card-back.tier-verified .cb-cta{background:#2e994d}
+.card-back.tier-elite .cb-cta{background:var(--zd-purple-600)}
+.card-back.tier-premium .cb-cta{background:linear-gradient(135deg,#f5d76e,#c89a00)}
+.card-back.tier-premium{background:linear-gradient(180deg,#fffdf5,#fff)}
+
+/* Remove blur on behind cards — just opacity */
+.card-wrap.behind .card-inner{transform:scale(.94) translateY(10px);opacity:.4;filter:none!important}
+
+/* ═══ END NEW CARD LAYOUT v4 ═══ */
+
 .tinder-actions{display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 0 4px}
 .tinder-btn{width:52px;height:52px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s;background:#fff;-webkit-tap-highlight-color:transparent}
 .tinder-btn:active{transform:scale(.9)}
@@ -1489,7 +1583,7 @@ const icons = {
   linkedin: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45f958ee9ecb86249762.svg",
   x: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933def5016cb73723d0adc.svg",
   youtube: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f88b5fe710.svg",
-  maps: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933df9ed9c8fc6588920f1.svg",
+  maps: "brand_assets/google-maps.svg",
   reviews: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68939cebd69f994a4dd582e5.png"
 };
 
@@ -1498,7 +1592,7 @@ const allowedIconsByTier = {
   "Доверен":   ["phone", "email", "website", "facebook", "instagram", "tiktok", "linkedin", "x", "youtube", "maps", "reviews"],
   "Проверен":  ["phone", "email", "website", "facebook", "instagram", "maps"],
   "Стандартен": ["phone", "email", "website", "facebook"],
-  "Безплатен": ["phone", "email"]
+  "Безплатен": ["phone", "email", "website"]
 };
 
 const tagLimits = { "Премиум": 5, "Доверен": 4, "Проверен": 3, "Стандартен": 2, "Безплатен": 1 };
@@ -1964,18 +2058,13 @@ const passOnline = d => !onlineFilter || d.city === "Онлайн";
 
 function buildFreeSocialsHTML(d) {
   const allowed = allowedIconsByTier["Безплатен"] || [];
-  let html = '<div class="zd-free-socials">';
+  let html = '<div class="cf-free-socials">';
   allowed.forEach(k => {
     if (d[k] && d[k] !== '#') {
       const href = k === 'phone' ? 'tel:' + d[k] : k === 'email' ? 'mailto:' + d[k] : ZdSec.sanitizeUrl(d[k]);
-      html += `<a class="zd-social-icn" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
+      html += `<a class="cf-free-social" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
     }
   });
-  // Always add maps pin
-  const mapsUrl = (d.lat && d.lng)
-    ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
-    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address || d.name) + ' ' + (d.city || ''))}`;
-  html += `<a class="zd-social-icn zd-social-icn--maps" href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps"><svg viewBox="0 0 64 64" width="14" height="14"><path d="M32 2C20.4 2 11 11.4 11 23c0 17.2 19 37.4 20 38.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4C53 11.4 43.6 2 32 2z" fill="#34A853"/><path d="M32 2v30l21-9C53 11.4 43.6 2 32 2z" fill="#4285F4"/><path d="M11 23c0-9 5.4-16.7 13.1-20.1L32 32 12 32.5C11.4 29.5 11 26.3 11 23z" fill="#FBBC05"/><path d="M12 32.5L32 32l-8 29c-7-7.7-13-16.2-13-16.2S11.5 34 12 32.5z" fill="#EA4335"/><path d="M32 32l-8 29c3 3.2 7 9.4 8 10.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4 0-1-.1-2-.1-3L32 32z" fill="#34A853"/><circle cx="32" cy="23" r="8" fill="#fff"/></svg></a>`;
   html += '</div>';
   return html;
 }
@@ -3300,50 +3389,99 @@ function _hl(t){const s=ZdSec.escapeHtml(t);if(!searchTerm||!t)return s;const e=
 function _getFilteredM(){return data.filter(d=>passSearch(d)&&passCity(d)&&passLevel(d)&&passCat(d)&&passAge(d)&&passSop(d)&&passOnline(d))}
 function _getSortedM(l){return[...l].sort((a,b)=>getTierScore(b)-getTierScore(a)||a.name.localeCompare(b.name,'bg'))}
 
-function _buildSocialsM(d){
-  const allowed = allowedIconsByTier[d.tier]||[];
-  // Build the regular social icons (skip 'maps' — we always append a custom Google Maps pin at the end)
-  let html = allowed.filter(k=>k!=='maps'&&d[k]&&d[k]!=='#').map(k=>{
-    const href=k==='phone'?'tel:'+d[k]:k==='email'?'mailto:'+d[k]:ZdSec.sanitizeUrl(d[k]);
-    return`<a class="cf-social" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
-  }).join('');
-  // Always append Google Maps pin (no embedded map on the card)
-  if (d.tier !== 'Безплатен') {
+function _buildSocialIcon(k, d) {
+  if (k === 'maps') {
     const mapsUrl = (d.lat && d.lng)
       ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address||d.name)+' '+(d.city||''))}`;
-    html += `<a class="cf-social cf-social--maps" href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps" style="background:transparent;border:none;padding:0"><svg viewBox="0 0 64 64" width="15" height="15"><path d="M32 2C20.4 2 11 11.4 11 23c0 17.2 19 37.4 20 38.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4C53 11.4 43.6 2 32 2z" fill="#34A853"/><path d="M32 2v30l21-9C53 11.4 43.6 2 32 2z" fill="#4285F4"/><path d="M11 23c0-9 5.4-16.7 13.1-20.1L32 32 12 32.5C11.4 29.5 11 26.3 11 23z" fill="#FBBC05"/><path d="M12 32.5L32 32l-8 29c-7-7.7-13-16.2-13-16.2S11.5 34 12 32.5z" fill="#EA4335"/><path d="M32 32l-8 29c3 3.2 7 9.4 8 10.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4 0-1-.1-2-.1-3L32 32z" fill="#34A853"/><circle cx="32" cy="23" r="8" fill="#fff"/></svg></a>`;
+    return `<a class="cf-social" href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps"><img src="${icons.maps}" alt="maps" loading="lazy"></a>`;
   }
-  return html;
+  if (!d[k] || d[k] === '#') return '';
+  const href = k==='phone' ? 'tel:'+d[k] : k==='email' ? 'mailto:'+d[k] : ZdSec.sanitizeUrl(d[k]);
+  return `<a class="cf-social" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
+}
+
+function _buildSocialsM(d){
+  const allowed = allowedIconsByTier[d.tier]||[];
+  // Only build icons that actually have data; maps is always rendered (uses address fallback)
+  const items = allowed.filter(k=>k==='maps' || (d[k]&&d[k]!=='#'));
+  const icons_html = items.map(k => _buildSocialIcon(k, d)).join('');
+  // Доверен and Премиум get 2-row layout; others get 1 row
+  if (d.tier === 'Доверен' || d.tier === 'Премиум') {
+    const mid = Math.ceil(items.length / 2);
+    const row1 = items.slice(0, mid).map(k => _buildSocialIcon(k, d)).join('');
+    const row2 = items.slice(mid).map(k => _buildSocialIcon(k, d)).join('');
+    return `<div class="cf-socials-2row"><div class="cf-soc-line">${row1}</div><div class="cf-soc-line">${row2}</div></div>`;
+  }
+  return `<div class="cf-socials-1row">${icons_html}</div>`;
 }
 function _buildCTAsM(d){
-  // Премиум gets the same dual-CTA layout as Доверен (the rare top tier)
-  if(d.tier==="Премиум"||d.tier==="Доверен")return`<div class="cf-ctas"><a class="cf-cta cf-cta--secondary" href="${ZdSec.sanitizeUrl(d.ctaUrl2)||'listing.html?id='+d.id}" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.ctaLabel2||'Профил')}</a><a class="cf-cta cf-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl1||'#')}" target="_blank" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.ctaLabel1||'Запази час')}</a></div>`;
-  if(d.tier==="Проверен"&&d.ctaLabel)return`<div class="cf-ctas single"><a class="cf-cta cf-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl||'#')}" target="_blank" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.ctaLabel)}</a></div>`;
-  return'';
+  // Only Доверен and Премиум get front CTAs (Профил secondary + primary booking CTA)
+  if(d.tier==="Премиум"||d.tier==="Доверен"){
+    const profUrl = 'listing.html?id='+d.id;
+    const primaryUrl = ZdSec.sanitizeUrl(d.ctaUrl1||'#');
+    const primaryLabel = ZdSec.escapeHtml(d.ctaLabel1||'Запази час');
+    return `<div class="cf-ctas"><a class="cf-cta cf-cta--secondary" href="${profUrl}" onclick="event.stopPropagation()">Профил</a><a class="cf-cta cf-cta--primary" href="${primaryUrl}" target="_blank" onclick="event.stopPropagation()">${primaryLabel}</a></div>`;
+  }
+  return '';
 }
 function _buildBackM(d){
-  let det='';
-  if(d.description)det+=`<div class="cb-glass"><div class="cb-section-label">Описание</div><div class="cb-desc">${ZdSec.escapeHtml(d.description)}</div></div>`;
-  if(d.ageGroups&&d.ageGroups.length)det+=`<div class="cb-glass"><div class="cb-detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div><div class="cb-section-label">Възраст</div><div class="cb-detail-text">${d.ageGroups.map(a=>ZdSec.escapeHtml(a)).join(', ')}</div></div></div></div>`;
-  if(d.address||d.city)det+=`<div class="cb-glass"><div class="cb-detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><div><div class="cb-section-label">Адрес</div><div class="cb-detail-text">${ZdSec.escapeHtml(d.address||d.city)}</div></div></div></div>`;
-  if(d.services&&d.services.length)det+=`<div class="cb-glass"><div class="cb-section-label">Всички услуги</div><div class="cb-services">${d.services.map(s=>`<span class="cb-service">${ZdSec.escapeHtml(s)}</span>`).join('')}</div></div>`;
-  const _mapsUrl = (d.lat && d.lng)
+  // Info sections
+  let info = '';
+  if (d.description) info += `<div class="cb-sec"><div class="cb-lbl">Описание</div><div class="cb-txt">${ZdSec.escapeHtml(d.description)}</div></div>`;
+  const wh = d.workingHours || d.working_hours;
+  if (wh && typeof wh === 'object') {
+    const mon = wh.mon, fri = wh.fri, sat = wh.sat, sun = wh.sun;
+    let hoursText = '';
+    if (mon || fri) {
+      const range = (mon && fri && mon === fri) ? mon : `${mon || ''}${mon && fri ? ' – ' : ''}${fri || ''}`;
+      hoursText += `Пон-Пет ${range === 'closed' ? 'затворено' : range}`;
+    }
+    if (sat) hoursText += ` · Съб ${sat === 'closed' ? 'затворено' : sat}`;
+    if (sun) hoursText += ` · Нед ${sun === 'closed' ? 'затворено' : sun}`;
+    if (hoursText) info += `<div class="cb-sec"><div class="cb-lbl">Работно време</div><div class="cb-txt">${ZdSec.escapeHtml(hoursText)}</div></div>`;
+  }
+  if (d.ageGroups && d.ageGroups.length) info += `<div class="cb-sec"><div class="cb-lbl">Възраст</div><div class="cb-txt">${d.ageGroups.map(a=>ZdSec.escapeHtml(a)).join(', ')}</div></div>`;
+  if (d.address || d.city) info += `<div class="cb-sec"><div class="cb-lbl">Адрес</div><div class="cb-txt">${ZdSec.escapeHtml(d.address||d.city)}</div></div>`;
+  if (d.services && d.services.length) info += `<div class="cb-sec"><div class="cb-lbl">Услуги</div><div class="cb-svcs">${d.services.map(s=>`<span class="cb-svc">${ZdSec.escapeHtml(s)}</span>`).join('')}</div></div>`;
+
+  // Distance + Google Maps link
+  const mapsUrl = (d.lat && d.lng)
     ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address||d.name)+' '+(d.city||''))}`;
-  const _tileLat = d.lat || 42.6977, _tileLng = d.lng || 23.3219;
-  det+=`<a class="cb-map cb-map--live" href="${_mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="https://maps.googleapis.com/maps/api/staticmap?center=${_tileLat},${_tileLng}&zoom=14&size=400x120&scale=2&maptype=roadmap&style=feature:all|saturation:-30&markers=color:red|${_tileLat},${_tileLng}&key=" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt="Карта"><div class="cb-map-fallback" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Отвори в Google Maps</div></a>`;
-  return`<div class="cb-name">${ZdSec.escapeHtml(d.name)}</div><div class="cb-city">${ZdSec.escapeHtml(d.city)}</div><div class="cb-line"></div><div class="cb-body">${det}</div><div class="cb-flip-back" onclick="event.stopPropagation();flipBack(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6"/><path d="M2.67 12A10 10 0 1 0 4.09 5.41L2.5 8"/></svg>Обратно</div>`;
+  const distKm = (typeof nearMeActive !== 'undefined' && nearMeActive) ? getDistanceKm(d) : null;
+  const distHTML = distKm !== null
+    ? `<b>${distKm.toFixed(1)} км</b> от вас · <a href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Отвори в Google Maps</a>`
+    : `<a href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Отвори в Google Maps</a>`;
+
+  // Primary CTA (all paid tiers) + optional secondary CTA (Доверен/Премиум)
+  const primaryLabel = ZdSec.escapeHtml(d.ctaLabel1 || d.ctaLabel || 'Запази час');
+  const primaryUrl = ZdSec.sanitizeUrl(d.ctaUrl1 || d.ctaUrl || '#');
+  let actionsHTML = `<button class="cb-cta" onclick="event.stopPropagation();window.open('${primaryUrl}','_blank')">${primaryLabel}</button>`;
+  if (d.tier === 'Доверен' || d.tier === 'Премиум') {
+    const secLabel = ZdSec.escapeHtml(d.ctaLabel2 || 'Обади се');
+    const secUrl = ZdSec.sanitizeUrl(d.ctaUrl2 || (d.phone ? 'tel:'+d.phone : '#'));
+    actionsHTML += `<a class="cb-cta2" href="${secUrl}" onclick="event.stopPropagation()">${secLabel}</a>`;
+  }
+
+  return `<div class="cb-header"><div class="cb-name">${ZdSec.escapeHtml(d.name)}</div><div class="cb-city">${ZdSec.escapeHtml(d.city)}</div></div>
+<div class="cb-line"></div>
+<div class="cb-info">${info}</div>
+<div class="cb-dist-box"><div class="cb-dist">${distHTML}</div></div>
+<div class="cb-actions">
+  ${actionsHTML}
+  <div class="cb-bottom">
+    <a class="cb-flip" href="#" onclick="event.preventDefault();event.stopPropagation();flipBack(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6"/><path d="M2.67 12A10 10 0 1 0 4.09 5.41L2.5 8"/></svg>Обратно</a>
+    <a class="cb-profile" href="listing.html?id=${d.id}" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Виж профила</a>
+  </div>
+</div>`;
 }
 
 function buildStackCard(d){
   const tc=TC_MAP[d.tier]||'free',col=tierColMap[d.tier]||'999';
   const isFree=d.tier==="Безплатен";
-  // Премиум gets the back panel like Доверен/Проверен (the rare top tier)
-  const isExpandable=d.tier==="Премиум"||d.tier==="Доверен"||d.tier==="Проверен";
   const auditScore=getTierScore(d);
   const tags=(d.services||[]).slice(0,tagLimits[d.tier]||1);
-  // Real ratings via shared _ratingsCache (populated by loadAllCardRatings)
   const _mRating=getCardRating(d);
   const _rc=_mRating.count;
   const _rt=_mRating.avg;
@@ -3351,13 +3489,41 @@ function buildStackCard(d){
   let badges=`<span class="cf-badge cf-badge--tier">${ZdSec.escapeHtml(d.tier)}</span>`;
   if(d.sop)badges+=`<span class="cf-badge cf-badge--sop">СОП</span>`;
   if(d.city==="Онлайн")badges+=`<span class="cf-badge cf-badge--online">Online</span>`;
-  const scoreHTML=`<div class="cf-score"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${auditScore}</div>`;
-  const nameHTML=isFree?`<div class="cf-name">${_hl(d.name)}</div>`:`<a class="cf-name" href="listing.html?id=${d.id}" onclick="event.stopPropagation()">${_hl(d.name)}</a>`;
-  const heroImg=getCardPhoto(d);
-  const hasRealLogo=d.logo&&d.logo!=='#'&&!d.logo.includes('placehold.co');
-  const logoHTML=hasRealLogo?`<div class="cf-logo"><img src="${ZdSec.escapeHtml(d.logo)}" alt="" loading="lazy"></div>`:'';
-  const _galleryJson=(Array.isArray(d.gallery_urls)&&d.gallery_urls.length>1)?ZdSec.escapeHtml(JSON.stringify(d.gallery_urls)):'';
-  return`<div class="card-wrap" data-id="${d.id}" data-name="${ZdSec.escapeHtml(d.name)}" data-logo="${ZdSec.escapeHtml(heroImg)}"${_galleryJson?` data-gallery="${_galleryJson}"`:``}><div class="card-inner">
+  // Free tier has NO score and NO rating on the hero overlay
+  const scoreHTML = isFree ? '' : `<div class="cf-score"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${auditScore}</div>`;
+  const ratingHTML = isFree ? '' : `<div class="cf-hero-rating"><span class="stars">★★★★★</span><span class="num">${_rt}</span><span class="cnt">(${_rc})${nudge}</span></div>`;
+  const nameHTML = isFree ? `<div class="cf-name">${_hl(d.name)}</div>` : `<a class="cf-name" href="listing.html?id=${d.id}" onclick="event.stopPropagation()">${_hl(d.name)}</a>`;
+  const heroImg = getCardPhoto(d);
+  const hasRealLogo = d.logo && d.logo !== '#' && !d.logo.includes('placehold.co');
+  const logoHTML = hasRealLogo ? `<div class="cf-logo"><img src="${ZdSec.escapeHtml(d.logo)}" alt="" loading="lazy"></div>` : '';
+  const _galleryJson = (Array.isArray(d.gallery_urls) && d.gallery_urls.length>1) ? ZdSec.escapeHtml(JSON.stringify(d.gallery_urls)) : '';
+
+  // Text block — tagline (1 line) + oneliner (3 lines max)
+  let textBlockHTML = '';
+  if (!isFree && d.description) {
+    const desc = d.description.trim();
+    let tagline = desc.length <= 45 ? desc : desc.slice(0, desc.lastIndexOf(' ', 44) || 44).trim() + '…';
+    let oneliner = '';
+    if (desc.length > 45) {
+      const rest = desc.slice(tagline.length - (tagline.endsWith('…') ? 1 : 0)).trim();
+      oneliner = rest.length <= 150 ? rest : rest.slice(0, rest.lastIndexOf(' ', 149) || 149).trim() + '…';
+    }
+    textBlockHTML = `<div class="cf-text-box"><div class="cf-tagline">${ZdSec.escapeHtml(tagline)}</div>${oneliner ? `<div class="cf-oneliner">${ZdSec.escapeHtml(oneliner)}</div>` : ''}</div>`;
+  }
+
+  // Socials block — free uses circular, others use framed
+  const socialsBlockHTML = isFree
+    ? `<div class="cf-soc-box">${buildFreeSocialsHTML(d)}</div>`
+    : `<div class="cf-soc-box">${_buildSocialsM(d)}</div>`;
+
+  // CTA block — Доверен/Премиум get dual CTAs; all non-free show Детайли; free shows nothing here
+  const ctasInner = _buildCTAsM(d);
+  const detailBtn = isFree ? '' : `<div class="cf-detail-btn" onclick="event.stopPropagation();flipCardMobile(this)"><span>Детайли</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></div>`;
+  const ctaBoxHTML = `<div class="cf-cta-box">${ctasInner}${detailBtn}</div>`;
+
+  const backHTML = isFree ? '' : `<div class="card-back tier-${tc}">${_buildBackM(d)}</div>`;
+
+  return `<div class="card-wrap" data-id="${d.id}" data-name="${ZdSec.escapeHtml(d.name)}" data-logo="${ZdSec.escapeHtml(heroImg)}"${_galleryJson?` data-gallery="${_galleryJson}"`:``}><div class="card-inner">
   <div class="card-front tier-${tc}">
     ${scoreHTML}
     ${logoHTML}
@@ -3367,30 +3533,18 @@ function buildStackCard(d){
         ${tags.length?`<div class="cf-hero-tags">${tags.map(t=>`<span class="cf-tag">${_hl(t)}</span>`).join('')}</div>`:''}
         <div class="cf-hero-top">
           ${nameHTML}
-          <div class="cf-hero-rating"><span class="stars">★★★★★</span><span class="num">${_rt}</span><span class="cnt">(${_rc})${nudge}</span></div>
+          ${ratingHTML}
         </div>
         <div class="cf-hero-bottom"><span class="cf-hero-city">${_hl(d.city)}</span>${badges}</div>
       </div>
     </div>
-    <div class="cf-content-tray">
-    ${isExpandable && d.description ? (() => {
-      const desc = d.description.trim();
-      let tagline = desc.length <= 45 ? desc : desc.slice(0, desc.lastIndexOf(' ', 44) || 44).trim() + '…';
-      let oneliner = '';
-      if (desc.length > 45) {
-        const rest = desc.slice(tagline.length - (tagline.endsWith('…') ? 1 : 0)).trim();
-        oneliner = rest.length <= 150 ? rest : rest.slice(0, rest.lastIndexOf(' ', 149) || 149).trim() + '…';
-      }
-      return `<div class="cf-tagline-block"><div class="cf-tagline">${ZdSec.escapeHtml(tagline)}</div>${oneliner ? `<div class="cf-oneliner">${ZdSec.escapeHtml(oneliner)}</div>` : ''}</div>`;
-    })() : ''}
-    <div class="cf-meta">
-      <div class="cf-socials">${_buildSocialsM(d)}</div>
-    </div>
-    ${_buildCTAsM(d)}
-    <div class="cf-detail-btn" onclick="event.stopPropagation();flipCardMobile(this)"><span>Детайли</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></div>
+    <div class="cf-tray">
+      ${textBlockHTML || '<div class="cf-text-box"></div>'}
+      ${socialsBlockHTML}
+      ${ctaBoxHTML}
     </div>
   </div>
-  <div class="card-back tier-${tc}">${_buildBackM(d)}</div>
+  ${backHTML}
   </div></div>`;
 }
 
