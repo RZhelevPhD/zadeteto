@@ -53,9 +53,16 @@
         '}' +
       '}' +
       /* Shared nav button styles — injected globally so all pages are consistent */
-      '.nav-btn-partner{display:inline-flex;align-items:center;padding:9px 20px;background:#7c4dff;color:#fff!important;border-radius:10px;font-weight:600;text-decoration:none;font-size:13px;box-shadow:0 4px 14px rgba(124,77,255,0.2);transition:transform 0.2s,box-shadow 0.2s;}' +
-      '.nav-btn-partner:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,77,255,0.3);}' +
-      '.nav-btn-partner:active{transform:scale(0.97);}' +
+      /* Primary CTA — now Търсене (search button) */
+      '.nav-btn-search{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:#7c4dff;color:#fff!important;border-radius:10px;font-weight:600;text-decoration:none;font-size:13px;box-shadow:0 4px 14px rgba(124,77,255,0.2);transition:transform 0.2s,box-shadow 0.2s;}' +
+      '.nav-btn-search:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,77,255,0.3);}' +
+      '.nav-btn-search:active{transform:scale(0.97);}' +
+      '.nav-btn-search svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}' +
+      /* Partner link — text link with attention-grabbing wobble */
+      '.nav-btn-partner{display:inline-flex;align-items:center;color:#7c4dff!important;text-decoration:none;font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;transition:background 0.2s;animation:zdNavWobble 3s ease-in-out infinite;transform-origin:center;}' +
+      '.nav-btn-partner:hover{background:rgba(124,77,255,0.08);animation-play-state:paused;}' +
+      '@keyframes zdNavWobble{0%,88%,100%{transform:rotate(0deg)}90%{transform:rotate(-4deg)}92%{transform:rotate(3deg)}94%{transform:rotate(-3deg)}96%{transform:rotate(2deg)}98%{transform:rotate(-1deg)}}' +
+      '@media(prefers-reduced-motion:reduce){.nav-btn-partner{animation:none!important}}' +
       '.nav-btn-login{display:inline-flex;align-items:center;padding:8px 18px;background:transparent;color:#1a103c!important;border:1.5px solid #ece8f3;border-radius:10px;font-weight:600;text-decoration:none;font-size:13px;transition:border-color 0.2s,background 0.2s;}' +
       '.nav-btn-login:hover{border-color:#7c4dff;background:rgba(124,77,255,0.04);}' +
       /* Skip-to-content link — hidden until focused via Tab */
