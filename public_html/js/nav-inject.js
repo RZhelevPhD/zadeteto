@@ -115,14 +115,17 @@
       // Create backdrop
       var backdrop = document.createElement('div');
       backdrop.className = 'zd-nav-backdrop';
+      backdrop.setAttribute('aria-hidden', 'true');
       document.body.appendChild(backdrop);
 
-      function toggleMenu() {
-        var isOpen = navLinks.classList.toggle('zd-open');
-        burger.classList.toggle('zd-open', isOpen);
-        backdrop.classList.toggle('zd-open', isOpen);
-        burger.setAttribute('aria-expanded', String(isOpen));
-        document.body.style.overflow = isOpen ? 'hidden' : '';
+      function handleEscape(e) { if (e.key === 'Escape') closeMenu(); }
+      function openMenu() {
+        navLinks.classList.add('zd-open');
+        burger.classList.add('zd-open');
+        backdrop.classList.add('zd-open');
+        burger.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', handleEscape);
       }
       function closeMenu() {
         navLinks.classList.remove('zd-open');
@@ -130,16 +133,15 @@
         backdrop.classList.remove('zd-open');
         burger.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
+        document.removeEventListener('keydown', handleEscape);
       }
-      burger.addEventListener('click', toggleMenu);
-      backdrop.addEventListener('click', closeMenu);
-      // Close on nav link click
-      navLinks.querySelectorAll('a').forEach(function(a) {
-        a.addEventListener('click', closeMenu);
+      burger.addEventListener('click', function() {
+        navLinks.classList.contains('zd-open') ? closeMenu() : openMenu();
       });
-      // Close on Escape
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeMenu();
+      backdrop.addEventListener('click', closeMenu);
+      // Close on nav link click (event delegation)
+      navLinks.addEventListener('click', function(e) {
+        if (e.target.closest('a')) closeMenu();
       });
     }
 
