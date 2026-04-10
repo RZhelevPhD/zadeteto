@@ -157,7 +157,11 @@
           '.zd-footer-report-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:14px;background:#e74c6f;color:#fff;font-weight:600;font-size:14px;font-family:DM Sans,sans-serif;text-decoration:none;box-shadow:0 6px 20px rgba(231,76,111,0.25);transition:transform 0.2s,box-shadow 0.2s;}' +
           '.zd-footer-report-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(231,76,111,0.35);}' +
           '.zd-footer-report-btn:active{transform:scale(0.97);}' +
-          '.zd-footer-report-btn svg{width:18px;height:18px;}';
+          '.zd-footer-report-btn svg{width:18px;height:18px;}' +
+          '.zd-footer-socials{display:flex;justify-content:center;gap:12px;margin-bottom:16px;}' +
+          '.zd-footer-socials a{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(124,77,255,0.06);border:1px solid rgba(124,77,255,0.12);transition:transform 0.2s,background 0.2s;}' +
+          '.zd-footer-socials a:hover{transform:translateY(-2px);background:rgba(124,77,255,0.12);}' +
+          '.zd-footer-socials img{width:18px;height:18px;}';
         document.head.appendChild(style);
       }
 
@@ -177,6 +181,22 @@
         // Append legal links
         var legalHTML = '<a href="terms.html">Условия за ползване</a><a href="privacy.html">Поверителност</a><a href="cookies.html">Бисквитки</a>';
         footerLinks.insertAdjacentHTML('beforeend', legalHTML);
+      }
+
+      // Add social icons row to footer
+      if (!footer.querySelector('.zd-footer-socials')) {
+        var socialsDiv = document.createElement('div');
+        socialsDiv.className = 'zd-footer-socials';
+        socialsDiv.innerHTML = '' +
+          '<a href="https://www.facebook.com/bgregzadeteto/" target="_blank" rel="noopener" title="Facebook"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg" alt="Facebook"></a>' +
+          '<a href="https://www.instagram.com/zade.teto/" target="_blank" rel="noopener" title="Instagram"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165b73b661619.svg" alt="Instagram"></a>' +
+          '<a href="https://tiktok.com/@zadeteto" target="_blank" rel="noopener" title="TikTok"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c80d255fe70e.svg" alt="TikTok"></a>' +
+          '<a href="https://linkedin.com/company/zadeteto" target="_blank" rel="noopener" title="LinkedIn"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45f958ee9ecb86249762.svg" alt="LinkedIn"></a>' +
+          '<a href="https://youtube.com/@zadeteto" target="_blank" rel="noopener" title="YouTube"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f88b5fe710.svg" alt="YouTube"></a>';
+        // Insert before the copyright line
+        var copyEl = footer.querySelector('.zd-footer-copy');
+        if (copyEl) footer.insertBefore(socialsDiv, copyEl);
+        else footer.appendChild(socialsDiv);
       }
     }
   }
