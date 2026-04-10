@@ -1,3 +1,13 @@
-/brand_assets/*  /brand_assets/:splat  200
-/maintenance.html  /maintenance.html  200
-/*  /maintenance.html  200
+/  /maintenance.html  200
+/index.html  /maintenance.html  200
+/search.html  /maintenance.html  200
+/listing.html  /maintenance.html  200
+/pricing.html  /maintenance.html  200
+/partners.html  /maintenance.html  200
+/contacts.html  /maintenance.html  200
+/report.html  /maintenance.html  200
+/privacy.html  /maintenance.html  200
+/terms.html  /maintenance.html  200
+/cookies.html  /maintenance.html  200
+/business-login.html  /maintenance.html  200
+/business-dashboard.html  /maintenance.html  200
