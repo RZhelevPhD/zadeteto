@@ -914,8 +914,8 @@ a.zd-name:hover { text-decoration: underline; }
 .zd-mode-mobile .results-count span{color:var(--zd-purple-600);font-weight:700}
 
 /* ═══ STACK ═══ */
-.stack-view{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 16px 80px;position:relative}
-.stack-area{position:relative;width:100%;max-width:380px;flex:1;min-height:480px;margin:0 auto}
+.stack-view{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 8px 80px;position:relative}
+.stack-area{position:relative;width:100%;max-width:100%;flex:1;min-height:480px;margin:0 auto}
 .card-wrap{position:absolute;inset:0;perspective:1200px}
 .card-wrap.behind{z-index:0;pointer-events:none}
 .card-wrap.behind .card-inner{transform:scale(.94) translateY(10px);opacity:.35;filter:blur(1px)}
@@ -937,13 +937,13 @@ a.zd-name:hover { text-decoration: underline; }
 .cf-hero-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px}
 .cf-hero-tags .cf-tag{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.2);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);text-shadow:0 1px 2px rgba(0,0,0,.3)}
 .cf-hero-top{display:flex;justify-content:space-between;align-items:flex-end}
-.cf-name{font:700 20px/1.15 var(--zd-display);letter-spacing:-.3px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3)}
+.cf-name{font:700 22px/1.15 var(--zd-display);letter-spacing:-.3px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3)}
 a.cf-name{text-decoration:none;color:#fff}
 a.cf-name:active{text-decoration:underline}
 .cf-hero-rating{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.cf-hero-rating .stars{color:var(--zd-gold-300);font-size:13px;letter-spacing:-1px}
-.cf-hero-rating .num{color:#fff;font-size:13px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.3)}
-.cf-hero-rating .cnt{color:rgba(255,255,255,.7);font-size:11px;font-weight:500}
+.cf-hero-rating .stars{color:var(--zd-gold-300);font-size:15px;letter-spacing:-1px}
+.cf-hero-rating .num{color:#fff;font-size:15px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.cf-hero-rating .cnt{color:rgba(255,255,255,.7);font-size:12px;font-weight:500}
 .cf-hero-bottom{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .cf-hero-city{font-size:11px;font-weight:500;color:rgba(255,255,255,.85)}
 .cf-badge{font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 7px;border-radius:5px}
@@ -1198,14 +1198,13 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
 </head>
 <body>
 
-<nav style="position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,0.05);">
-  <a href="index.html" class="nav-logo" style="display:flex;align-items:center;text-decoration:none;">
-    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето" style="height:80px;">
-  </a>
+<nav>
+  <a href="index.html" class="nav-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></a>
   <div class="nav-links">
-    <a href="index.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Начало</a>
-    <a href="partners.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">За партньори</a>
-    <a href="contacts.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Контакти</a>
+    <a href="index.html" class="nav-link">Начало</a>
+    <a href="search.html" class="nav-link">Търсачка</a>
+    <a href="partners.html" class="nav-link">За партньори</a>
+    <a href="contacts.html" class="nav-link">Контакти</a>
     <a href="pricing.html" class="nav-btn-partner">Стани партньор</a>
     <a href="#" class="nav-btn-login" onclick="openAuthModal(event); return false;">Вход</a>
   </div>
