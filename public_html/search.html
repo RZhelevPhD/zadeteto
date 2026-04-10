@@ -461,6 +461,10 @@ a.zd-name:hover { text-decoration: underline; }
 .zd-card-actions { display:flex; align-items:center; justify-content:center; margin-top:10px; }
 .zd-detail-btn { font-size:11px; font-weight:600; color:rgba(255,255,255,.8); cursor:pointer; display:inline-flex; align-items:center; gap:3px; transition:color .2s, gap .2s; text-shadow:0 1px 3px rgba(0,0,0,.3); }
 .zd-detail-btn:hover { color:#fff; gap:6px; }
+.zd-free-socials { display:flex; align-items:center; justify-content:center; gap:10px; }
+.zd-free-socials .zd-social-icn { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; transition:background 0.2s, transform 0.2s; }
+.zd-free-socials .zd-social-icn:hover { background:rgba(255,255,255,0.35); transform:scale(1.1); }
+.zd-free-socials .zd-social-icn img, .zd-free-socials .zd-social-icn svg { width:16px; height:16px; filter:brightness(0) invert(1); }
 .zd-profile-link-back { display:block; text-align:center; font-size:12px; font-weight:600; color:var(--zd-purple-600); text-decoration:none; padding:8px 16px; margin-top:8px; border-radius:10px; background:rgba(124,77,255,0.06); border:1px solid rgba(124,77,255,0.15); transition:background 0.2s, transform 0.15s; }
 .zd-profile-link-back:hover { background:rgba(124,77,255,0.12); transform:translateY(-1px); }
 .zd-cta--primary {
@@ -1959,6 +1963,24 @@ const passCity = d => !cityTerm || d.city.toLowerCase() === cityTerm;
 const passSop = d => sopFilter === null || d.sop === sopFilter;
 const passOnline = d => !onlineFilter || d.city === "Онлайн";
 
+function buildFreeSocialsHTML(d) {
+  const allowed = allowedIconsByTier["Безплатен"] || [];
+  let html = '<div class="zd-free-socials">';
+  allowed.forEach(k => {
+    if (d[k] && d[k] !== '#') {
+      const href = k === 'phone' ? 'tel:' + d[k] : k === 'email' ? 'mailto:' + d[k] : ZdSec.sanitizeUrl(d[k]);
+      html += `<a class="zd-social-icn" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
+    }
+  });
+  // Always add maps pin
+  const mapsUrl = (d.lat && d.lng)
+    ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address || d.name) + ' ' + (d.city || ''))}`;
+  html += `<a class="zd-social-icn zd-social-icn--maps" href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps"><svg viewBox="0 0 64 64" width="14" height="14"><path d="M32 2C20.4 2 11 11.4 11 23c0 17.2 19 37.4 20 38.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4C53 11.4 43.6 2 32 2z" fill="#34A853"/><path d="M32 2v30l21-9C53 11.4 43.6 2 32 2z" fill="#4285F4"/><path d="M11 23c0-9 5.4-16.7 13.1-20.1L32 32 12 32.5C11.4 29.5 11 26.3 11 23z" fill="#FBBC05"/><path d="M12 32.5L32 32l-8 29c-7-7.7-13-16.2-13-16.2S11.5 34 12 32.5z" fill="#EA4335"/><path d="M32 32l-8 29c3 3.2 7 9.4 8 10.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4 0-1-.1-2-.1-3L32 32z" fill="#34A853"/><circle cx="32" cy="23" r="8" fill="#fff"/></svg></a>`;
+  html += '</div>';
+  return html;
+}
+
 /* ═══ CARD HTML BUILDER (Tinder 3D flip — 5 tiers) ═══
  * Replaces the old white-body card with the Tinder mockup design.
  * Reference: temporary screenshots/flip-comparison.html
@@ -2068,7 +2090,7 @@ function buildCardHTML(d) {
         ${chipsHTML}
         ${ctaRowHTML}
         <div class="zd-card-actions">
-          <span class="zd-detail-btn" onclick="event.stopPropagation();flipCard(this.closest('.zd-card'))">Детайли <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></span>
+          ${isFree ? buildFreeSocialsHTML(d) : `<span class="zd-detail-btn" onclick="event.stopPropagation();flipCard(this.closest('.zd-card'))">Детайли <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></span>`}
         </div>
       </div>
     </div>`;
