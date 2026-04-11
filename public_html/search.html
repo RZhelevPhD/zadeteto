@@ -3430,8 +3430,8 @@ function _buildSocialsM(d){
   const allowed = allowedIconsByTier[d.tier]||[];
   // Only build icons that actually have data; maps is always rendered (uses address fallback)
   const items = allowed.filter(k=>k==='maps' || (d[k]&&d[k]!=='#'));
-  // Split into 2 rows when 6+ icons; keep bottom row ≥ 3 icons for visual balance
-  if (items.length >= 6) {
+  // 8 or fewer icons stay on 1 row; 9+ splits into 2 balanced rows (bottom ≥ 4)
+  if (items.length >= 9) {
     const mid = Math.ceil(items.length / 2);  // top row gets the extra when odd
     const row1 = items.slice(0, mid).map(k => _buildSocialIcon(k, d)).join('');
     const row2 = items.slice(mid).map(k => _buildSocialIcon(k, d)).join('');
