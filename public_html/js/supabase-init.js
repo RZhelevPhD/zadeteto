@@ -7,22 +7,25 @@
  *     ZdSupabase.auth.signInWithOtp({ email })
  *     ZdSupabase.auth.signOut()
  *
- * The anon key embedded below is the **public** Supabase anon key.
- * It is designed to be exposed in client-side code. It can ONLY do what
- * Row Level Security policies allow. NEVER paste a service_role key here.
+ * The publishable key embedded below is the **public** Supabase key
+ * (sb_publishable_...). It is designed to be exposed in client-side code
+ * and can ONLY do what Row Level Security policies allow.
+ * NEVER paste the sb_secret_... key here — that one bypasses RLS.
  *
- * If you regenerate the anon key (Supabase Dashboard → Settings → API),
- * update the SUPABASE_ANON_KEY constant below and redeploy.
+ * If you rotate the publishable key (Supabase Dashboard → Settings → API Keys),
+ * update the SUPABASE_PUBLISHABLE_KEY constant below and redeploy.
  */
 (function () {
   var SUPABASE_URL = 'https://erfndxmqitavqkfeohxh.supabase.co';
-  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVyZm5keG1xaXRhdnFrZmVvaHhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxNDc4OTcsImV4cCI6MjA5MDcyMzg5N30.q_1MyzvZFnFentGNYHHum1h54scHFQjdf_X3tZmdoR4';
+  var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_S6OcoJLzI0tF-tP_1DseTw__B4Zaz4n';
 
   // Expose URL/key right away so consumers can read them even before the
   // SDK script finishes loading
   window.ZdSupabaseConfig = {
     url: SUPABASE_URL,
-    anonKey: SUPABASE_ANON_KEY
+    publishableKey: SUPABASE_PUBLISHABLE_KEY,
+    // Backwards-compat alias for any code still reading the old name
+    anonKey: SUPABASE_PUBLISHABLE_KEY
   };
 
   // Inject the supabase-js UMD bundle from jsDelivr (browser-safe, no build step)
@@ -34,7 +37,7 @@
   sdkScript.async = false;  // ensure load order is preserved
   sdkScript.onload = function () {
     if (window.supabase && window.supabase.createClient) {
-      window.ZdSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      window.ZdSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
         auth: {
           persistSession: true,
           autoRefreshToken: true,

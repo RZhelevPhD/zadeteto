@@ -81,13 +81,15 @@
       '.zd-hamburger svg{width:28px;height:28px;stroke:currentColor;stroke-width:2;stroke-linecap:round;}' +
       '.zd-hamburger .bar1,.zd-hamburger .bar2,.zd-hamburger .bar3{transition:transform 0.3s cubic-bezier(0.16,1,0.3,1),opacity 0.2s;}' +
       '@media(max-width:768px){' +
-        '.zd-hamburger{display:flex;align-items:center;justify-content:center;color:#fff;}' +
-        'nav.scrolled .zd-hamburger{color:#1a103c;}' +
-        '.nav-links{position:fixed;top:0;right:-100%;width:280px;height:100vh;height:100dvh;background:#fff;flex-direction:column;align-items:stretch;padding:80px 24px 32px;gap:8px!important;z-index:100;box-shadow:-4px 0 24px rgba(0,0,0,0.1);transition:right 0.35s cubic-bezier(0.16,1,0.3,1);}' +
-        '.nav-links.zd-open{right:0;}' +
-        '.nav-links a.nav-link{display:block!important;color:#1a103c!important;text-shadow:none!important;font-size:16px;padding:12px 0;border-bottom:1px solid #ece8f3;}' +
-        '.nav-links .nav-btn-partner,.nav-links .nav-btn-login{width:100%;justify-content:center;margin-top:8px;min-height:44px;font-size:14px;}' +
-        '.zd-nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:99;-webkit-tap-highlight-color:transparent;}' +
+        '.zd-hamburger{display:flex!important;align-items:center;justify-content:center;color:#1a103c;}' +
+        '.nav-links{position:fixed!important;top:0!important;right:-100%!important;left:auto!important;width:300px!important;height:100vh!important;height:100dvh!important;background:#ffffff!important;flex-direction:column!important;align-items:stretch!important;padding:88px 28px 40px!important;gap:4px!important;z-index:10000!important;box-shadow:-8px 0 32px rgba(0,0,0,0.15)!important;transition:right 0.35s cubic-bezier(0.16,1,0.3,1)!important;}' +
+        '.nav-links.zd-open{right:0!important;}' +
+        '.nav-links a.nav-link{display:block!important;color:#1a103c!important;text-shadow:none!important;font-size:18px!important;font-weight:600!important;padding:16px 0!important;border-bottom:1px solid #ece8f3!important;background:transparent!important;}' +
+        '.nav-links a.nav-link:hover{color:#7c4dff!important;}' +
+        '.nav-links .nav-btn-partner{display:block!important;width:100%!important;color:#1a103c!important;text-shadow:none!important;text-align:center!important;padding:16px 0!important;margin-top:12px!important;min-height:48px!important;font-size:18px!important;font-weight:700!important;background:transparent!important;animation:zdNavWobble 3s ease-in-out infinite!important;}' +
+        '.nav-links .nav-btn-search{display:flex!important;width:100%!important;justify-content:center!important;margin-top:12px!important;min-height:52px!important;font-size:16px!important;padding:14px 20px!important;color:#ffffff!important;background:#7c4dff!important;}' +
+        '.nav-links .nav-btn-login{display:flex!important;width:100%!important;justify-content:center!important;margin-top:8px!important;min-height:48px!important;font-size:16px!important;color:#1a103c!important;background:transparent!important;border:1.5px solid #ece8f3!important;}' +
+        '.zd-nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:9999;-webkit-tap-highlight-color:transparent;}' +
         '.zd-nav-backdrop.zd-open{display:block;}' +
       '}' +
       /* Hamburger X animation when open */
