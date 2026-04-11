@@ -11,7 +11,7 @@
       var style = document.createElement('style');
       style.id = 'zd-cookie-banner-css';
       style.textContent = '' +
-        '.zd-cookie-banner{position:fixed;left:24px;right:24px;bottom:24px;max-width:520px;margin:0 auto;background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,0.18);padding:24px;z-index:9999;font-family:DM Sans,sans-serif;color:#1a103c;transform:translateY(40px);opacity:0;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1),opacity 0.4s;}' +
+        '.zd-cookie-banner{position:fixed;left:24px;right:24px;bottom:24px;max-width:520px;margin:0 auto;background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,0.18);padding:24px;z-index:150;font-family:DM Sans,sans-serif;color:#1a103c;transform:translateY(40px);opacity:0;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1),opacity 0.4s;}' +
         '.zd-cookie-banner.show{transform:translateY(0);opacity:1;}' +
         '.zd-cookie-banner-icon{width:48px;height:48px;border-radius:14px;background:rgba(124,77,255,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}' +
         '.zd-cookie-banner-icon svg{width:24px;height:24px;color:#7c4dff;}' +
