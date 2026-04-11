@@ -60,9 +60,9 @@
       'nav .nav-links{display:flex;align-items:center;gap:22px;}' +
       'nav .nav-links a.nav-link{color:#1a103c;text-decoration:none;font-size:14px;font-weight:600;padding:8px 4px;transition:color 0.2s;}' +
       'nav .nav-links a.nav-link:hover{color:#7c4dff;}' +
-      /* Primary CTA — Търсене (search button) */
-      'nav .nav-btn-search{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:#7c4dff;color:#fff!important;border-radius:10px;font-weight:600;text-decoration:none;font-size:14px;box-shadow:0 4px 14px rgba(124,77,255,0.2);transition:transform 0.2s,box-shadow 0.2s;}' +
-      'nav .nav-btn-search:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,77,255,0.3);}' +
+      /* Primary CTA — Търсене (search button) with subtle glow */
+      'nav .nav-btn-search{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:#7c4dff;color:#fff!important;border-radius:10px;font-weight:600;text-decoration:none;font-size:14px;box-shadow:0 4px 14px rgba(124,77,255,0.25),0 0 24px rgba(124,77,255,0.2);transition:transform 0.2s,box-shadow 0.2s;}' +
+      'nav .nav-btn-search:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,77,255,0.35),0 0 32px rgba(124,77,255,0.3);}' +
       'nav .nav-btn-search:active{transform:scale(0.97);}' +
       'nav .nav-btn-search svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}' +
       /* Partner — plain text link (like Контакти) + wobble animation */
@@ -207,9 +207,9 @@
         socialsDiv.innerHTML = '' +
           '<a href="https://www.facebook.com/bgregzadeteto/" target="_blank" rel="noopener" title="Facebook"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg" alt="Facebook"></a>' +
           '<a href="https://www.instagram.com/zade.teto/" target="_blank" rel="noopener" title="Instagram"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165b73b661619.svg" alt="Instagram"></a>' +
-          '<a href="https://tiktok.com/@zadeteto" target="_blank" rel="noopener" title="TikTok"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c80d255fe70e.svg" alt="TikTok"></a>' +
-          '<a href="https://linkedin.com/company/zadeteto" target="_blank" rel="noopener" title="LinkedIn"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45f958ee9ecb86249762.svg" alt="LinkedIn"></a>' +
-          '<a href="https://youtube.com/@zadeteto" target="_blank" rel="noopener" title="YouTube"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f88b5fe710.svg" alt="YouTube"></a>';
+          '<a href="tiktok.html" title="TikTok"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c80d255fe70e.svg" alt="TikTok"></a>' +
+          '<a href="https://www.linkedin.com/showcase/zadeteto-com/" target="_blank" rel="noopener" title="LinkedIn"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45f958ee9ecb86249762.svg" alt="LinkedIn"></a>' +
+          '<a href="youtube.html" title="YouTube"><img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f88b5fe710.svg" alt="YouTube"></a>';
         // Insert before the copyright line
         var copyEl = footer.querySelector('.zd-footer-copy');
         if (copyEl) footer.insertBefore(socialsDiv, copyEl);

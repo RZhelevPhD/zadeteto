@@ -845,10 +845,14 @@ a.zd-name:hover { text-decoration: underline; }
 .zd-mode-mobile { display: none; }
 .zd-mode-desktop { display: block; }
 @media (max-width: 899px) {
-  .zd-mode-mobile  { display: block; }
   .zd-mode-desktop { display: none !important; }
-  body { background: radial-gradient(ellipse at 50% 0%, #ece7ff 0%, #f5f3f0 55%); }
+  /* ── NO-SCROLL mobile app shell ── */
+  html, body { overflow: hidden !important; height: 100dvh !important; overscroll-behavior: none; }
+  body { background: radial-gradient(ellipse at 50% 0%, #ece7ff 0%, #f5f3f0 55%); position: fixed; inset: 0; width: 100%; }
   body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.025;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  /* Hide global nav and footer on mobile search — the .app shell has its own header/footer */
+  body > nav, body > footer.zd-footer { display: none !important; }
+  .zd-mode-mobile { display: flex; flex-direction: column; position: fixed; inset: 0; }
 }
 
 /* === Mobile CSS variables === */
@@ -889,9 +893,9 @@ a.zd-name:hover { text-decoration: underline; }
 .tutorial-dismiss{height:48px;padding:0 36px;border-radius:24px;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);color:#fff;font:700 15px/1 var(--zd-font);cursor:pointer;margin-top:8px;transition:background .15s}
 .tutorial-dismiss:active{background:rgba(255,255,255,.25)}
 
-/* ═══ MOBILE APP SHELL ═══ */
-.app{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
-.top-bar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.05)}
+/* ═══ MOBILE APP SHELL — no-scroll, fixed regions ═══ */
+.app{display:flex;flex-direction:column;height:100dvh;width:100%;position:relative;overflow:hidden}
+.top-bar{flex-shrink:0;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.05)}
 .top-row{display:flex;gap:8px;align-items:center}
 .city-btn{height:40px;padding:0 12px;border-radius:12px;border:1.5px solid var(--zd-gray-200);background:#fff;font:600 13px/1 var(--zd-font);color:var(--zd-gray-800);cursor:pointer;display:flex;align-items:center;gap:6px;flex-shrink:0;max-width:45%}
 .city-btn svg{width:16px;height:16px;color:var(--zd-purple-600);flex-shrink:0}
@@ -905,18 +909,18 @@ a.zd-name:hover { text-decoration: underline; }
 .filter-btn svg{width:18px;height:18px;color:var(--zd-gray-600)}
 .filter-badge{display:none;position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:var(--zd-purple-600);color:#fff;font-size:9px;font-weight:700;align-items:center;justify-content:center}
 .filter-badge.visible{display:flex}
-.applied-chips{display:flex;gap:6px;padding:6px 14px;overflow-x:auto;scrollbar-width:none}
+.applied-chips{display:flex;gap:6px;padding:6px 14px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .applied-chips::-webkit-scrollbar{display:none}
 .applied-chips:empty{display:none}
 .ap-chip{height:28px;padding:0 10px;border-radius:8px;background:var(--zd-purple-50);border:1px solid var(--zd-purple-200);font:600 11px/1 var(--zd-font);color:var(--zd-purple-800);display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;flex-shrink:0}
 .ap-chip .x{font-size:10px;opacity:.5}
-.results-info{display:flex;align-items:center;justify-content:center;padding:6px 14px 2px}
+.results-info{display:flex;align-items:center;justify-content:center;padding:4px 14px;flex-shrink:0}
 .zd-mode-mobile .results-count{font-size:13px;font-weight:600;color:var(--zd-gray-400)}
 .zd-mode-mobile .results-count span{color:var(--zd-purple-600);font-weight:700}
 
-/* ═══ STACK ═══ */
-.stack-view{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 14px 80px;position:relative}
-.stack-area{position:relative;width:100%;max-width:100%;aspect-ratio:1/2;margin:0 auto}
+/* ═══ STACK — fills remaining space, no scroll ═══ */
+.stack-view{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;padding:8px 8px 8px;position:relative;gap:8px}
+.stack-area{position:relative;width:100%;flex:1;min-height:0;margin:0 auto}
 .card-wrap{position:absolute;inset:0;perspective:1200px}
 .card-wrap.behind{z-index:0;pointer-events:none}
 .card-wrap.behind .card-inner{transform:scale(.94) translateY(10px);opacity:.35;filter:blur(1px)}
@@ -1087,7 +1091,14 @@ a.cf-name:active{text-decoration:underline}
 
 /* ═══ END NEW CARD LAYOUT v4 ═══ */
 
-.tinder-actions{display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 0 4px}
+.tinder-actions{display:flex;align-items:center;justify-content:center;gap:16px;padding:4px 0 0;flex-shrink:0}
+/* App footer (mobile search) — compact sticky bottom bar */
+.app-footer{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.05);gap:4px}
+.app-foot-link{flex:1;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;color:var(--zd-gray-600);text-decoration:none;padding:10px 8px;border-radius:10px;transition:color 0.2s,background 0.2s;-webkit-tap-highlight-color:transparent}
+.app-foot-link svg{width:22px;height:22px}
+.app-foot-link:hover,.app-foot-link:active{color:var(--zd-purple-600);background:rgba(124,77,255,0.06)}
+.app-foot-link--report{color:var(--zd-heart)}
+.app-foot-link--report:hover,.app-foot-link--report:active{color:var(--zd-heart);background:rgba(231,76,111,0.06)}
 .tinder-btn{width:52px;height:52px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s;background:#fff;-webkit-tap-highlight-color:transparent}
 .tinder-btn:active{transform:scale(.9)}
 .tinder-btn svg{width:22px;height:22px}
@@ -1299,10 +1310,10 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
   <a href="index.html" class="nav-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></a>
   <div class="nav-links">
     <a href="index.html" class="nav-link">Начало</a>
-    <a href="partners.html" class="nav-link">За партньори</a>
-    <a href="contacts.html" class="nav-link">Контакти</a>
-    <a href="pricing.html" class="nav-btn-partner">Стани партньор</a>
     <a href="search.html" class="nav-btn-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Търсене</a>
+    <a href="partners.html" class="nav-btn-partner">Стани партньор</a>
+    <a href="pricing.html" class="nav-link">Абонаменти</a>
+    <a href="contacts.html" class="nav-link">Контакти</a>
     <a href="#" class="nav-btn-login" onclick="openAuthModal(event); return false;">Вход</a>
   </div>
 </nav>
@@ -1462,6 +1473,14 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
         <button class="tinder-btn tinder-btn--like" onclick="btnLike()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
       </div>
     </div>
+    <!-- Mobile app footer — compact, sticky bottom -->
+    <nav class="app-footer" aria-label="Долна навигация">
+      <a href="index.html" class="app-foot-link" aria-label="Начало"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a>
+      <a href="partners.html" class="app-foot-link" aria-label="Партньори"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></a>
+      <a href="report.html" class="app-foot-link app-foot-link--report" aria-label="Подай сигнал за нарушение"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></a>
+      <a href="contacts.html" class="app-foot-link" aria-label="Контакти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+      <a href="#" class="app-foot-link" aria-label="Вход" onclick="openAuthModal(event); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+    </nav>
   </div>
 
   <!-- Mobile filter panel -->
@@ -3419,12 +3438,18 @@ function _buildSocialsM(d){
   return `<div class="cf-socials-1row">${icons_html}</div>`;
 }
 function _buildCTAsM(d){
-  // Only Доверен and Премиум get front CTAs (Профил secondary + primary booking CTA)
+  // Доверен and Премиум get dual CTAs (Профил + primary booking)
   if(d.tier==="Премиум"||d.tier==="Доверен"){
     const profUrl = 'listing.html?id='+d.id;
     const primaryUrl = ZdSec.sanitizeUrl(d.ctaUrl1||'#');
     const primaryLabel = ZdSec.escapeHtml(d.ctaLabel1||'Запази час');
     return `<div class="cf-ctas"><a class="cf-cta cf-cta--secondary" href="${profUrl}" onclick="event.stopPropagation()">Профил</a><a class="cf-cta cf-cta--primary" href="${primaryUrl}" target="_blank" onclick="event.stopPropagation()">${primaryLabel}</a></div>`;
+  }
+  // Проверен gets a single full-width primary CTA
+  if(d.tier==="Проверен"){
+    const primaryUrl = ZdSec.sanitizeUrl(d.ctaUrl1||d.ctaUrl||'#');
+    const primaryLabel = ZdSec.escapeHtml(d.ctaLabel1||d.ctaLabel||'Запази час');
+    return `<div class="cf-ctas single"><a class="cf-cta cf-cta--primary" href="${primaryUrl}" target="_blank" onclick="event.stopPropagation()">${primaryLabel}</a></div>`;
   }
   return '';
 }
