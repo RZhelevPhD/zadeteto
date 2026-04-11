@@ -886,14 +886,8 @@ a.zd-name:hover { text-decoration: underline; }
 
   /* Hide the old search-page top-bar on mobile — filter pill in nav takes over */
   .top-bar { display: none !important; }
-  /* Reclaim bottom padding now that app-footer is gone */
-  .stack-view { padding: 8px 10px 10px !important; }
-  .stack-area { max-height: 720px; }
-  .card-wrap { max-width: 370px; margin: 0 auto; }
-}
-/* Only enforce a card-area floor on phones tall enough to fit it without clipping the tinder buttons */
-@media (max-width: 899px) and (min-height: 720px) {
-  .stack-area { min-height: 540px; }
+  /* Feed container: full-bleed scroll area; card-wrap handles its own padding */
+  .stack-view { padding: 0 !important; }
 }
 
 /* === Mobile CSS variables === */
@@ -907,25 +901,25 @@ a.zd-name:hover { text-decoration: underline; }
 .tutorial-demos{display:flex;gap:32px;justify-content:center}
 .tutorial-demo{display:flex;flex-direction:column;align-items:center;gap:12px;width:120px}
 .tutorial-card-ghost{width:80px;height:100px;border-radius:14px;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.15)}
-.tutorial-demo--like .tutorial-card-ghost{animation:tut-like 2.5s ease-in-out infinite}
-.tutorial-demo--nope .tutorial-card-ghost{animation:tut-nope 2.5s ease-in-out infinite}
-@keyframes tut-like{0%,100%{transform:translateX(0) rotate(0);box-shadow:0 2px 12px rgba(0,0,0,.15)}40%{transform:translateX(30px) rotate(6deg);box-shadow:0 0 24px rgba(46,153,77,.5)}60%{transform:translateX(30px) rotate(6deg);box-shadow:0 0 24px rgba(46,153,77,.5)}80%{transform:translateX(0) rotate(0)}}
-@keyframes tut-nope{0%,100%{transform:translateX(0) rotate(0);filter:none}40%{transform:translateX(-30px) rotate(-6deg);filter:grayscale(.8)}60%{transform:translateX(-30px) rotate(-6deg);filter:grayscale(.8)}80%{transform:translateX(0) rotate(0);filter:none}}
 .tut-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.tut-icon--like{background:rgba(46,153,77,.2)}
-.tut-icon--like svg{width:22px;height:22px;color:var(--zd-mint-400)}
-.tut-icon--nope{background:rgba(200,80,80,.2)}
-.tut-icon--nope svg{width:22px;height:22px;color:#e88}
-.tutorial-demo--like .tut-icon{animation:tut-icon-up 2.5s ease-in-out infinite}
-.tutorial-demo--nope .tut-icon{animation:tut-icon-down 2.5s ease-in-out infinite}
-@keyframes tut-icon-up{0%,80%,100%{transform:translateY(0);opacity:.5}40%,60%{transform:translateY(-14px);opacity:1}}
-@keyframes tut-icon-down{0%,80%,100%{transform:translateY(0);opacity:.5}40%,60%{transform:translateY(14px);opacity:1}}
-/* Tap-to-flip demo (3rd tutorial step) */
+/* Scroll-down demo (1st step) */
+.tutorial-demo--scroll .tutorial-card-ghost{animation:tut-scroll 2.5s ease-in-out infinite}
+@keyframes tut-scroll{0%,100%{transform:translateY(0)}40%,60%{transform:translateY(-14px)}}
+.tut-icon--scroll{background:rgba(124,77,255,.25);color:#c4abff}
+.tut-icon--scroll svg{width:22px;height:22px}
+.tutorial-demo--scroll .tut-icon{animation:tut-icon-down 2.5s ease-in-out infinite}
+@keyframes tut-icon-down{0%,80%,100%{transform:translateY(0);opacity:.5}40%,60%{transform:translateY(6px);opacity:1}}
+/* Tap-to-flip demo (2nd step) */
 .tutorial-demo--flip{perspective:600px}
 .tutorial-demo--flip .tutorial-card-ghost{animation:tut-flip 2.5s ease-in-out infinite;transform-style:preserve-3d}
 @keyframes tut-flip{0%,80%,100%{transform:rotateY(0)}40%,60%{transform:rotateY(180deg)}}
 .tut-icon--flip{background:rgba(124,77,255,.25);color:#c4abff;font-size:24px;font-weight:900;animation:tut-icon-spin 2.5s ease-in-out infinite}
 @keyframes tut-icon-spin{0%,80%,100%{transform:rotate(0);opacity:.5}40%,60%{transform:rotate(180deg);opacity:1}}
+/* Hide-from-back demo (3rd step) */
+.tutorial-demo--hide .tutorial-card-ghost{animation:tut-hide 2.5s ease-in-out infinite}
+@keyframes tut-hide{0%,100%{opacity:1;transform:scale(1)}40%,60%{opacity:.25;transform:scale(.88)}}
+.tut-icon--hide{background:rgba(200,80,80,.2)}
+.tut-icon--hide svg{width:22px;height:22px;color:#e88}
 .tutorial-label{font:600 12px/1.3 var(--zd-font);color:rgba(255,255,255,.85);text-align:center}
 .tutorial-filter-hint{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:14px 18px;max-width:300px}
 .tutorial-filter-hint svg{flex-shrink:0}
@@ -959,13 +953,11 @@ a.zd-name:hover { text-decoration: underline; }
 .zd-mode-mobile .results-count{font-size:13px;font-weight:600;color:var(--zd-gray-400)}
 .zd-mode-mobile .results-count span{color:var(--zd-purple-600);font-weight:700}
 
-/* ═══ STACK — fills remaining space, no scroll ═══ */
-.stack-view{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;padding:20px 20px 8px;position:relative;gap:12px}
-.stack-area{position:relative;width:100%;flex:1;min-height:0;margin:0 auto}
-.card-wrap{position:absolute;inset:0;perspective:1200px}
-.card-wrap.behind{z-index:0;pointer-events:none}
-.card-wrap.behind .card-inner{transform:scale(.94) translateY(10px);opacity:.35;filter:blur(1px)}
-.card-wrap.on-top{z-index:1}
+/* ═══ FEED — scroll-snap vertical list, one card per viewport ═══ */
+.stack-view{flex:1;min-height:0;display:flex;flex-direction:column;align-items:stretch;padding:0;position:relative}
+.stack-area{position:relative;width:100%;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-behavior:smooth}
+.stack-area::-webkit-scrollbar{display:none}
+.card-wrap{position:relative;width:100%;max-width:370px;margin:0 auto;scroll-snap-align:start;scroll-snap-stop:always;padding:8px 10px;box-sizing:border-box;height:100%;perspective:1200px}
 .card-inner{width:100%;height:100%;position:relative;transition:transform .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
 .card-inner.flipped{transform:rotateY(180deg)}
 .card-inner.flipped .card-front{pointer-events:none}
@@ -1001,11 +993,6 @@ a.cf-name:active{text-decoration:underline}
 .cf-logo{position:absolute;top:12px;left:12px;width:36px;height:36px;border-radius:10px;overflow:hidden;z-index:3;border:2px solid rgba(255,255,255,.8);box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .cf-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .cf-nudge{font-size:10px;font-weight:600;color:var(--zd-gold-300);text-decoration:none;margin-left:2px}
-.on-top .cf-hero{animation:revealScale .4s cubic-bezier(.2,.8,.3,1) both}
-.on-top .cf-meta{animation:revealUp .35s cubic-bezier(.2,.8,.3,1) .15s both}
-.on-top .cf-actions{animation:revealUp .3s cubic-bezier(.2,.8,.3,1) .25s both}
-@keyframes revealScale{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes revealUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 .cf-tagline-block{padding:5px 14px 0}
 .cf-tagline{font-size:13px;font-weight:700;color:var(--accent,var(--zd-purple-600));line-height:1.3;letter-spacing:-0.1px}
 .cf-oneliner{font-size:11px;font-weight:400;color:var(--zd-gray-600);line-height:1.4;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -1031,12 +1018,6 @@ a.cf-name:active{text-decoration:underline}
 .cf-detail-btn{display:flex;align-items:center;justify-content:center;gap:4px;padding:3px 0 5px;font:600 11px/1 var(--zd-font);color:var(--accent,var(--zd-gray-600));cursor:pointer;transition:gap .2s}
 .cf-detail-btn:active{gap:8px}
 .cf-detail-btn svg{width:14px;height:14px;transition:transform .2s}
-.swipe-label{position:absolute;top:36px;z-index:10;padding:18px;border-radius:50%;opacity:0;pointer-events:none;transition:opacity .12s;display:flex;align-items:center;justify-content:center;font:800 24px/1 var(--zd-font)}
-.swipe-label svg{width:42px;height:42px}
-.swipe-label--like{right:24px;background:rgba(255,255,255,.95);color:var(--zd-mint-600);border:4px solid var(--zd-mint-600);box-shadow:0 4px 24px rgba(46,153,77,.5),0 0 0 6px rgba(46,153,77,.15)}
-.swipe-label--nope{left:24px;background:rgba(255,255,255,.95);color:var(--zd-nope);border:4px solid var(--zd-nope);box-shadow:0 4px 24px rgba(200,80,80,.5),0 0 0 6px rgba(200,80,80,.15)}
-.swipe-label--star{left:50%;transform:translateX(-50%);top:auto;bottom:36px;background:rgba(255,255,255,.95);color:#c89a00;border:4px solid #c89a00;box-shadow:0 4px 24px rgba(200,154,0,.5),0 0 0 6px rgba(245,215,110,.25);padding:18px 28px;border-radius:16px}
-.stack-counter{text-align:center;padding:4px 0;font-size:12px;font-weight:600;color:var(--zd-gray-400)}
 /* ═══ NEW CARD LAYOUT v4 — 2:1 aspect, fixed containers ═══ */
 .card-front{justify-content:flex-start;background:#fff}
 .card-front .cf-hero{position:relative;inset:auto;height:60%;flex-shrink:0;border-radius:20px 20px 0 0}
@@ -1114,11 +1095,14 @@ a.cf-name:active{text-decoration:underline}
 .card-back .cb-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
 .card-back .cb-cta{width:100%;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font:600 15px/1 var(--zd-font);color:#fff;border:none;cursor:pointer;flex-shrink:0;background:var(--zd-purple-600)}
 .card-back .cb-cta2{width:100%;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:600 14px/1 var(--zd-font);border:1px solid var(--zd-gray-200);background:var(--zd-gray-50);color:var(--zd-gray-800);cursor:pointer;text-decoration:none;flex-shrink:0}
-.card-back .cb-bottom{display:flex;justify-content:space-between;align-items:center;flex-shrink:0;margin-top:6px;padding:4px 2px}
-.card-back .cb-flip{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--zd-gray-400);cursor:pointer;text-decoration:none}
-.card-back .cb-flip svg{width:18px;height:18px}
-.card-back .cb-profile{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--zd-purple-600);cursor:pointer;text-decoration:none}
-.card-back .cb-profile svg{width:18px;height:18px}
+.card-back .cb-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-shrink:0;margin-top:6px;padding:4px 2px}
+.card-back .cb-flip{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--zd-gray-400);cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.card-back .cb-flip svg{width:16px;height:16px}
+.card-back .cb-hide{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--zd-nope,#c85050);cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.card-back .cb-hide svg{width:16px;height:16px}
+.card-back .cb-hide:active{opacity:0.6}
+.card-back .cb-profile{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--zd-purple-600);cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.card-back .cb-profile svg{width:16px;height:16px}
 
 /* Tier-specific back CTA colors */
 .card-back.tier-standard .cb-cta{background:#4a4a5a}
@@ -1127,25 +1111,7 @@ a.cf-name:active{text-decoration:underline}
 .card-back.tier-premium .cb-cta{background:linear-gradient(135deg,#f5d76e,#c89a00)}
 .card-back.tier-premium{background:linear-gradient(180deg,#fffdf5,#fff)}
 
-/* Remove blur on behind cards — just opacity */
-.card-wrap.behind .card-inner{transform:scale(.94) translateY(10px);opacity:.4;filter:none!important}
-
 /* ═══ END NEW CARD LAYOUT v4 ═══ */
-
-.tinder-actions{display:flex;align-items:center;justify-content:center;gap:24px;padding:6px 0 0;flex-shrink:0}
-.tinder-btn{width:78px;height:78px;border-radius:50%;border:3px solid;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s;background:#fff;-webkit-tap-highlight-color:transparent}
-.tinder-btn:active{transform:scale(.9)}
-.tinder-btn svg{width:33px;height:33px}
-.tinder-btn--nope{border-color:var(--zd-nope);color:var(--zd-nope);box-shadow:0 3px 15px rgba(200,80,80,.18)}
-.tinder-btn--nope:active{box-shadow:0 0 30px rgba(200,80,80,.4)}
-.tinder-btn--star{border-color:var(--zd-gold-300);color:#c89a00;width:66px;height:66px;box-shadow:0 3px 15px rgba(245,215,110,.2)}
-.tinder-btn--star svg{width:27px;height:27px}
-.tinder-btn--star:active{box-shadow:0 0 30px rgba(245,215,110,.5)}
-.tinder-btn--like{border-color:var(--zd-mint-400);color:var(--zd-mint-600);box-shadow:0 3px 15px rgba(46,153,77,.18)}
-.tinder-btn--like:active{box-shadow:0 0 30px rgba(46,153,77,.4)}
-.tinder-btn--profile{border-color:var(--zd-purple-400);color:var(--zd-purple-600);width:66px;height:66px;box-shadow:0 3px 15px rgba(124,77,255,.18)}
-.tinder-btn--profile svg{width:27px;height:27px}
-.tinder-btn--profile:active{box-shadow:0 0 30px rgba(124,77,255,.4)}
 
 /* Review bottom sheet */
 .review-sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;z-index:9999;border-radius:24px 24px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.15);max-height:75vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.16,1,.3,1);padding:24px 20px calc(20px + var(--safe-b))}
@@ -1289,9 +1255,6 @@ input:checked+.t-slider:before{transform:translateX(32px)}
 #savedBarMobile .saved-count{font:600 12px/1 var(--zd-font);color:var(--zd-gray-600)}
 #savedBarMobile .saved-view-btn{height:34px;padding:0 16px;border-radius:10px;border:none;background:var(--zd-purple-600);color:#fff;font:600 12px/1 var(--zd-font);cursor:pointer}
 
-.undo-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--zd-gray-800);color:#fff;padding:10px 20px;border-radius:14px;font:600 13px/1 var(--zd-font);display:flex;align-items:center;gap:10px;z-index:90;opacity:0;transition:transform .3s,opacity .3s;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.25)}
-.undo-toast.visible{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
-.undo-toast button{background:none;border:none;color:var(--zd-purple-200);font:700 13px/1 var(--zd-font);cursor:pointer;text-decoration:underline}
 .empty-state{display:flex;flex-direction:column;align-items:center;padding:48px 24px;text-align:center;gap:14px}
 .empty-state svg{width:48px;height:48px;color:var(--zd-gray-200)}
 .empty-state h3{font:700 18px/1 var(--zd-display);color:var(--zd-gray-800)}
@@ -1469,20 +1432,20 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
   <div class="tutorial hidden" id="tutorial">
     <div class="tutorial-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></div>
     <div class="tutorial-demos">
-      <div class="tutorial-demo tutorial-demo--nope">
+      <div class="tutorial-demo tutorial-demo--scroll">
         <div class="tutorial-card-ghost"></div>
-        <div class="tut-icon tut-icon--nope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
-        <div class="tutorial-label">Плъзни наляво<br>= Пропусни</div>
-      </div>
-      <div class="tutorial-demo tutorial-demo--like">
-        <div class="tutorial-card-ghost"></div>
-        <div class="tut-icon tut-icon--like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg></div>
-        <div class="tutorial-label">Плъзни надясно<br>= Харесвам</div>
+        <div class="tut-icon tut-icon--scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><polyline points="19 12 12 19 5 12"/></svg></div>
+        <div class="tutorial-label">Скролни надолу<br>за следваща карта</div>
       </div>
       <div class="tutorial-demo tutorial-demo--flip">
         <div class="tutorial-card-ghost"></div>
         <div class="tut-icon tut-icon--flip">↻</div>
-        <div class="tutorial-label">Натисни картата<br>= Детайли</div>
+        <div class="tutorial-label">„Детайли"<br>обръща картата</div>
+      </div>
+      <div class="tutorial-demo tutorial-demo--hide">
+        <div class="tutorial-card-ghost"></div>
+        <div class="tut-icon tut-icon--hide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a19.77 19.77 0 0 1 5.06-5.94"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a19.8 19.8 0 0 1-3.17 4.16"/><path d="M1 1l22 22"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/></svg></div>
+        <div class="tutorial-label">„Скрий" на гърба<br>крие картата</div>
       </div>
     </div>
     <div class="tutorial-filter-hint">
@@ -1505,16 +1468,6 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
     <div class="results-info"><div class="results-count"><span id="resultCount">0</span> резултата</div></div>
     <div class="stack-view">
       <div class="stack-area" id="stackArea"></div>
-      <div class="swipe-label swipe-label--like" id="lblLike"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-      <div class="swipe-label swipe-label--nope" id="lblNope"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
-      <div class="swipe-label swipe-label--star" id="lblStar">Оцени</div>
-      <div class="stack-counter" id="stackCounter"></div>
-      <div class="tinder-actions">
-        <button class="tinder-btn tinder-btn--nope" onclick="btnDismiss()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-        <button class="tinder-btn tinder-btn--star" onclick="btnReview()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>
-        <button class="tinder-btn tinder-btn--profile" id="btnProfile" onclick="btnViewProfile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-        <button class="tinder-btn tinder-btn--like" onclick="btnLike()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
-      </div>
     </div>
   </div>
 
@@ -1529,7 +1482,6 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
 
   <!-- Mobile saved bar -->
   <div id="savedBarMobile"><div class="saved-avatars" id="savedAvatarsMobile"></div><div class="saved-count"><span id="savedCountMobile">0</span> запазени</div><button class="saved-view-btn">Виж списък</button></div>
-  <div class="undo-toast" id="undoToast">Отхвърлено <button onclick="undoLast()">Върни</button></div>
 
   <!-- Review bottom sheet (mobile) -->
   <div class="review-sheet-overlay" id="reviewOverlay" onclick="closeReview()"></div>
@@ -3446,13 +3398,9 @@ window.dismissCard = function(id) {
    ═══════════════════════════════════════════════════════════════ */
 
 /* Mobile-only state */
-let stackIdx = 0;
-let lastDismissedId = null;
-let undoTimer = null;
 let pendingF = null;
 const tierColMap = {"Премиум":"d4af37","Доверен":"7c4dff","Проверен":"2e994d","Стандартен":"999","Безплатен":"bbb"};
 const TC_MAP = {"Премиум":"premium","Доверен":"elite","Проверен":"verified","Стандартен":"standard","Безплатен":"free"};
-const SWIPE_TH_M = 80;
 
 function _initials(n){return n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()}
 function _hl(t){const s=ZdSec.escapeHtml(t);if(!searchTerm||!t)return s;const e=searchTerm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return s.replace(new RegExp(`(${e})`,'gi'),'<mark>$1</mark>')}
@@ -3544,7 +3492,8 @@ ${_buildSocialsBack(d)}
   ${actionsHTML}
   <div class="cb-bottom">
     <a class="cb-flip" href="#" onclick="event.preventDefault();event.stopPropagation();flipBack(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6"/><path d="M2.67 12A10 10 0 1 0 4.09 5.41L2.5 8"/></svg>Обратно</a>
-    <a class="cb-profile" href="listing.html?id=${d.id}" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Виж профила</a>
+    <a class="cb-hide" href="#" data-hide-id="${ZdSec.escapeHtml(String(d.id))}" title="Скрий тази карта"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a19.77 19.77 0 0 1 5.06-5.94"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a19.8 19.8 0 0 1-3.17 4.16"/><path d="M1 1l22 22"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/></svg>Скрий</a>
+    <a class="cb-profile" href="listing.html?id=${d.id}" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Профил</a>
   </div>
 </div>`;
 }
@@ -3622,138 +3571,56 @@ function renderMobile(){
   const filtered = _getFilteredM(), sorted = _getSortedM(filtered);
   const act = sorted.filter(d => !dismissedIds.has(d.id));
   const rc = document.getElementById('resultCount'); if (rc) rc.textContent = act.length;
-  updateBadgeMobile(); updateSavedBarMobile(); renderAppliedMobile(); renderStack(act);
+  updateBadgeMobile(); updateSavedBarMobile(); renderAppliedMobile(); renderFeed(act);
+  _initFeedInteractions();
 }
-function renderStack(cards){
+/* Scroll-snap feed renderer — renders all filtered cards vertically */
+function renderFeed(cards){
   const area = document.getElementById('stackArea'); if (!area) return;
-  if (stackIdx >= cards.length) stackIdx = Math.max(0, cards.length - 1);
-  if (!cards.length) { area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`; document.getElementById('stackCounter').textContent=''; return; }
-  let h = '';
-  if (stackIdx + 1 < cards.length) h += buildStackCard(cards[stackIdx + 1]).replace('card-wrap', 'card-wrap behind');
-  h += buildStackCard(cards[stackIdx]).replace('card-wrap', 'card-wrap on-top');
-  area.innerHTML = h;
-  document.getElementById('stackCounter').textContent = `${stackIdx + 1} / ${cards.length}`;
-  const top = area.querySelector('.on-top'); if (top) { initStackSwipe(top, cards); _startGalleryRotation(top); }
-}
-
-/* Gallery rotation — crossfade through gallery_urls every 5s */
-var _galleryTimer = null;
-function _startGalleryRotation(wrap) {
-  if (_galleryTimer) { clearInterval(_galleryTimer); _galleryTimer = null; }
-  var raw = wrap.getAttribute('data-gallery'); if (!raw) return;
-  try { var urls = JSON.parse(raw); } catch(e) { return; }
-  if (!Array.isArray(urls) || urls.length < 2) return;
-  var img = wrap.querySelector('.cf-hero img'); if (!img) return;
-  var idx = 0;
-  _galleryTimer = setInterval(function() {
-    idx = (idx + 1) % urls.length;
-    img.style.opacity = '0';
-    setTimeout(function() { img.src = urls[idx]; img.style.opacity = '1'; }, 300);
-  }, 5000);
-}
-
-function initStackSwipe(wrap, cards){
-  const card = wrap.querySelector('.card-front'); if (!card) return;
-  let sx=0, sy=0, cx=0, cy=0, dragging=false, axis=null;
-  const inter = e => e.target.closest('.cf-social,.cf-cta,.cf-detail-btn,.card-back,.cb-flip-back,.cf-action-btn,.tinder-btn');
-  function clearLabels(){ const a=document.getElementById('lblLike'),b=document.getElementById('lblNope'),c=document.getElementById('lblStar'); if(a)a.style.opacity=0; if(b)b.style.opacity=0; if(c)c.style.opacity=0; }
-  function end(){
-    clearLabels();
-    if (axis === 'y' && cy < -SWIPE_TH_M) {
-      card.style.transition='transform .3s'; card.style.transform='translateY(-30%) scale(.95)';
-      setTimeout(() => { card.style.transition='transform .3s'; card.style.transform=''; openReviewSheet(cards); }, 300);
-    } else if (axis === 'x' && cx > SWIPE_TH_M) {
-      card.style.transition='transform .3s'; card.style.transform='translateX(120%) rotate(12deg)';
-      setTimeout(() => doLike(cards), 280);
-    } else if (axis === 'x' && cx < -SWIPE_TH_M) {
-      card.style.transition='transform .3s'; card.style.transform='translateX(-120%) rotate(-12deg)';
-      setTimeout(() => doDismiss(cards), 280);
-    } else { card.style.transition='transform .3s'; card.style.transform=''; }
-    cx=0; cy=0; axis=null;
+  if (!cards.length) {
+    area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`;
+    return;
   }
-  function move(x, y){
-    cx = x - sx; cy = y - sy;
-    if (!axis && (Math.abs(cx) > 10 || Math.abs(cy) > 10)) { axis = Math.abs(cx) > Math.abs(cy) ? 'x' : 'y'; }
-    if (axis === 'x') {
-      card.style.transform = `translateX(${cx}px) rotate(${cx * .05}deg)`;
-      const r = Math.min(Math.abs(cx) / SWIPE_TH_M, 1);
-      const lL=document.getElementById('lblLike'),lN=document.getElementById('lblNope'),lS=document.getElementById('lblStar');
-      if (cx > 15) { lL.style.opacity=r; lN.style.opacity=0; lS.style.opacity=0; }
-      else if (cx < -15) { lN.style.opacity=r; lL.style.opacity=0; lS.style.opacity=0; }
-      else clearLabels();
-    } else if (axis === 'y' && cy < 0) {
-      const upPx = Math.min(Math.abs(cy), 120);
-      card.style.transform = `translateY(${cy * .4}px) scale(${1 - upPx * .001})`;
-      const r = Math.min(Math.abs(cy) / SWIPE_TH_M, 1);
-      document.getElementById('lblStar').style.opacity = r;
-      document.getElementById('lblLike').style.opacity = 0;
-      document.getElementById('lblNope').style.opacity = 0;
+  area.innerHTML = cards.map(buildStackCard).join('');
+  area.scrollTop = 0;
+}
+
+/* Delegated click handler on the feed container.
+   Handles tap-to-advance gallery + the "Скрий" card-back link. Attached once. */
+function _initFeedInteractions(){
+  const area = document.getElementById('stackArea');
+  if (!area || area.dataset.interactionsBound) return;
+  area.dataset.interactionsBound = '1';
+  area.addEventListener('click', e => {
+    // Card-back "Скрий" link → dismiss
+    const hideBtn = e.target.closest('.cb-hide');
+    if (hideBtn) {
+      e.preventDefault(); e.stopPropagation();
+      const id = hideBtn.dataset.hideId;
+      const d = id && data.find(x => String(x.id) === id);
+      if (d) doDismiss(d);
+      return;
     }
-  }
-  card.addEventListener('touchstart', e => { if (inter(e)) return; sx = e.touches[0].clientX; sy = e.touches[0].clientY; dragging = true; axis = null; card.style.transition = 'none'; }, { passive: true });
-  card.addEventListener('touchmove', e => { if (!dragging) return; move(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-  card.addEventListener('touchend', () => { if (!dragging) return; dragging = false; end(); });
-  card.addEventListener('mousedown', e => {
-    if (inter(e)) return;
-    sx = e.clientX; sy = e.clientY; dragging = true; axis = null; card.style.transition = 'none';
-    const mm = ev => { if (!dragging) return; move(ev.clientX, ev.clientY); };
-    const mu = () => { document.removeEventListener('mousemove', mm); document.removeEventListener('mouseup', mu); if (!dragging) return; dragging = false; end(); };
-    document.addEventListener('mousemove', mm); document.addEventListener('mouseup', mu);
+    // Tap-to-advance gallery — skip interactive elements, but allow taps
+    // on empty padding inside the overlay (the overlay's own children still
+    // handle their own clicks since they're excluded by the anchor/button check).
+    if (e.target.closest('a, button, .cf-detail-btn, .cf-logo, .cf-score, .cf-tray, .card-back')) return;
+    const hero = e.target.closest('.cf-hero'); if (!hero) return;
+    const wrap = hero.closest('.card-wrap'); if (!wrap) return;
+    const raw = wrap.getAttribute('data-gallery'); if (!raw) return;
+    let urls;
+    try { urls = JSON.parse(raw); } catch(err) { return; }
+    if (!Array.isArray(urls) || urls.length < 2) return;
+    const img = hero.querySelector('img'); if (!img) return;
+    const nextIdx = ((+wrap.dataset.galleryIdx || 0) + 1) % urls.length;
+    wrap.dataset.galleryIdx = nextIdx;
+    img.src = urls[nextIdx];
   });
 }
 
-/* Tinder buttons */
-function _topCardsM(){ const f=_getFilteredM(),s=_getSortedM(f); return s.filter(d=>!dismissedIds.has(d.id)); }
-function getCurrentCard(){ return _topCardsM()[stackIdx] || null; }
-function btnLike(){ const cards = _topCardsM(); const card = document.querySelector('.zd-mode-mobile .on-top .card-front'); if (card) { card.style.transition='transform .3s'; card.style.transform='translateX(120%) rotate(12deg)'; setTimeout(() => doLike(cards), 280); } }
-function btnDismiss(){ const cards = _topCardsM(); const card = document.querySelector('.zd-mode-mobile .on-top .card-front'); if (card) { card.style.transition='transform .3s'; card.style.transform='translateX(-120%) rotate(-12deg)'; setTimeout(() => doDismiss(cards), 280); } }
-function btnReview(){ openReviewSheet(_topCardsM()); }
-function btnViewProfile(){ const d = getCurrentCard(); if (d && d.tier !== 'Безплатен') window.location.href = 'listing.html?id=' + d.id; }
-
-/* Review bottom sheet */
-let reviewCardId = null, reviewStarVal = 0;
-function openReviewSheet(cards){
-  const d = cards[stackIdx]; if (!d) return;
-  reviewCardId = d.id; reviewStarVal = 0;
-  document.getElementById('reviewLogo').innerHTML = `<img src="${d.logo||`https://placehold.co/88x88/${tierColMap[d.tier]||'999'}/white?text=${_initials(d.name)}`}" alt="">`;
-  document.getElementById('reviewName').textContent = d.name;
-  document.getElementById('reviewText').value = '';
-  document.querySelectorAll('.review-star').forEach(s => s.classList.remove('filled'));
-  document.getElementById('reviewOverlay').classList.add('open');
-  document.getElementById('reviewSheet').classList.add('open');
-}
-function closeReview(){
-  document.getElementById('reviewOverlay').classList.remove('open');
-  document.getElementById('reviewSheet').classList.remove('open');
-  reviewCardId = null;
-}
-function setReviewStars(n){
-  reviewStarVal = n;
-  document.querySelectorAll('.review-star').forEach((s, i) => s.classList.toggle('filled', i < n));
-}
-function submitReview(){
-  const text = document.getElementById('reviewText').value.trim();
-  if (reviewCardId && reviewStarVal > 0) {
-    const entry = { business_id: reviewCardId, stars: reviewStarVal, text, timestamp: new Date().toISOString() };
-    localStorage.setItem(`zd_review_${reviewCardId}`, JSON.stringify(entry));
-    const log = JSON.parse(localStorage.getItem('zd_review_log') || '[]'); log.push(entry);
-    localStorage.setItem('zd_review_log', JSON.stringify(log));
-    // Fire-and-forget to backend stub
-    if (window.ZdApi) {
-      ZdApi.submitForm('reviews', entry).catch(function (err) { console.warn('[submitReview] backend sync failed (kept locally):', err); });
-    }
-  }
-  closeReview();
-  const t = document.getElementById('mfbToast'); if (t) { t.textContent='Благодарим за оценката!'; t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 2500); }
-}
-
-function doLike(cards){ const d = cards[stackIdx]; if (!d) return; likedIds.add(d.id); if (!savedItems.find(s => s.id === d.id)) savedItems.push({ id: d.id, img: d.logo || `https://placehold.co/64x64/${tierColMap[d.tier]||'999'}/white?text=${_initials(d.name)}`, name: d.name }); _maybePromptAuth('like'); _syncLikeDismissToSupabase(d.id, 'like'); stackIdx++; render(); }
-function doDismiss(cards){ const d = cards[stackIdx]; if (!d) return; dismissedIds.add(d.id); lastDismissedId = d.id; _sessionDismissCount++; _maybePromptAuth('dismiss'); _syncLikeDismissToSupabase(d.id, 'dismiss'); showUndo(); stackIdx++; render(); }
+function doDismiss(d){ if (!d) return; dismissedIds.add(d.id); _sessionDismissCount++; _maybePromptAuth('dismiss'); _syncLikeDismissToSupabase(d.id, 'dismiss'); render(); }
 function flipCardMobile(btn){ btn.closest('.card-inner').classList.add('flipped'); }
 function flipBack(btn){ btn.closest('.card-inner').classList.remove('flipped'); }
-function showUndo(){ clearTimeout(undoTimer); document.getElementById('undoToast').classList.add('visible'); undoTimer = setTimeout(hideUndo, 4000); }
-function hideUndo(){ clearTimeout(undoTimer); document.getElementById('undoToast').classList.remove('visible'); }
-function undoLast(){ if (lastDismissedId !== null) { _syncLikeDismissToSupabase(lastDismissedId, 'undismiss'); dismissedIds.delete(lastDismissedId); lastDismissedId = null; hideUndo(); if (stackIdx > 0) stackIdx--; render(); } }
 
 function updateSavedBarMobile(){
   const bar = document.getElementById('savedBarMobile'), av = document.getElementById('savedAvatarsMobile'), ct = document.getElementById('savedCountMobile');
@@ -3781,8 +3648,8 @@ function renderAppliedMobile(){
 
 // Bumped to v2 when the 3rd "tap to flip" demo was added (Tinder card refactor).
 // Existing users will see the new tutorial once.
-function showTutorial(){ if (localStorage.getItem('zd_tutorial_seen_v2')) return; const t = document.getElementById('tutorial'); if (t) t.classList.remove('hidden'); }
-function dismissTutorial(){ const t = document.getElementById('tutorial'); if (t) t.classList.add('hidden'); localStorage.setItem('zd_tutorial_seen_v2', '1'); }
+function showTutorial(){ if (localStorage.getItem('zd_tutorial_seen_v3')) return; const t = document.getElementById('tutorial'); if (t) t.classList.remove('hidden'); }
+function dismissTutorial(){ const t = document.getElementById('tutorial'); if (t) t.classList.add('hidden'); localStorage.setItem('zd_tutorial_seen_v3', '1'); }
 
 /* Mobile filter panel */
 function openMobileFilters(){
@@ -3815,7 +3682,7 @@ function buildFP(){
   const dl = document.getElementById('fpCityDl');
   [...new Set(data.map(d => d.city))].forEach(c => { const o = document.createElement('option'); o.value = c; dl.appendChild(o); });
   const listen = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('input', debounce(fn, 200)); };
-  listen('fpSearch', e => { searchTerm = e.target.value.toLowerCase().trim(); stackIdx = 0; render(); fpUpdateCount(); });
+  listen('fpSearch', e => { searchTerm = e.target.value.toLowerCase().trim(); render(); fpUpdateCount(); });
   listen('fpCity', e => { pendingF.cityTerm = e.target.value.toLowerCase().trim(); fpUpdateCount(); });
   listen('fpAgeFrom', e => { pendingF.ageFrom = e.target.value ? +e.target.value : null; fpUpdateCount(); });
   listen('fpAgeTo', e => { pendingF.ageTo = e.target.value ? +e.target.value : null; fpUpdateCount(); });
@@ -3835,7 +3702,7 @@ function fpApply(){
   active.level.include = pendingF.level.include; active.level.exclude = pendingF.level.exclude;
   ageFrom = pendingF.ageFrom; ageTo = pendingF.ageTo; cityTerm = pendingF.cityTerm; sopFilter = pendingF.sopFilter; onlineFilter = pendingF.onlineFilter;
   document.getElementById('cityLabel').textContent = cityTerm || 'Всички';
-  stackIdx = 0; closeMobileFilters(); render();
+  closeMobileFilters(); render();
 }
 function fpClearAll(){
   pendingF = { category: { include: new Set(), exclude: new Set() }, level: { include: new Set(), exclude: new Set() }, ageFrom: null, ageTo: null, cityTerm: '', sopFilter: null, onlineFilter: false };
