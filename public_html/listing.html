@@ -195,7 +195,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
   padding: 20px; background: var(--zd-gray-50); border-radius: 14px;
   margin-bottom: 24px;
 }
-.reviews-big-num { font-size: 42px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+.reviews-big-num { font-size: clamp(32px, 6vw, 42px); font-weight: 700; letter-spacing: -1px; line-height: 1; }
 .reviews-stars-col { display: flex; flex-direction: column; gap: 2px; }
 .reviews-stars-col .stars { color: var(--zd-gold-300); font-size: 20px; letter-spacing: -1px; }
 .reviews-stars-col .count { font-size: 13px; color: var(--muted); }
@@ -217,11 +217,12 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .review-text { font-size: 14px; line-height: 1.6; color: var(--zd-gray-600); }
 .write-review-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  margin-top: 16px; padding: 12px 24px; background: var(--accent);
+  margin-top: 16px; min-height: 48px; padding: 12px 24px; background: var(--accent);
   color: #fff; border: none; border-radius: 12px; font-family: var(--zd-font);
   font-size: 14px; font-weight: 600; cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 4px 16px rgba(124,77,255,0.2);
+  -webkit-tap-highlight-color: transparent;
 }
 .write-review-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,77,255,0.3); }
 .write-review-btn:active { transform: scale(0.97); }
@@ -295,6 +296,14 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 
 /* ═══ RELATED SPECIALISTS ═══ */
 .related-section { margin-top: 24px; }
+/* Wrap lets us put a right-edge fade-out gradient on top of the scroll track
+   as a scroll affordance; pointer-events:none so the fade never blocks a tap. */
+.related-scroll-wrap { position: relative; }
+.related-scroll-wrap::after {
+  content: ""; position: absolute; top: 0; right: 0; bottom: 16px; width: 32px;
+  pointer-events: none; background: linear-gradient(to right, transparent, var(--surface, #fff));
+  border-radius: 0 14px 14px 0;
+}
 .related-scroll {
   display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr);
   gap: 16px; overflow-x: auto; overflow-y: hidden;
@@ -504,6 +513,90 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
   .auth-email-input, .otp-input { font-size:16px; }
   .zd-footer { padding:24px 16px; }
 }
+
+/* ═══ REVIEW SHEET — mobile-first bottom sheet with a low-rating feedback state ═══ */
+.rv-overlay {
+  position: fixed; inset: 0; background: rgba(10,5,30,0.5);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.rv-overlay.open { opacity: 1; pointer-events: auto; }
+.rv-sheet {
+  position: fixed; left: 50%; bottom: 0; transform: translate(-50%, 100%);
+  width: 100%; max-width: 520px;
+  background: #fff; border-radius: 24px 24px 0 0;
+  box-shadow: 0 -12px 48px rgba(10,5,30,0.25);
+  z-index: 9999; padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 90vh; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.rv-sheet.open { transform: translate(-50%, 0); }
+.rv-grabber {
+  width: 44px; height: 4px; border-radius: 2px;
+  background: var(--zd-gray-200); margin: 0 auto 16px;
+}
+.rv-title { font: 700 20px/1.2 'DM Serif Display', serif; color: var(--zd-gray-800); margin: 0 0 4px; }
+.rv-sub { font-size: 13px; color: var(--muted); margin: 0 0 18px; }
+.rv-stars-row {
+  display: flex; justify-content: center; gap: 10px;
+  padding: 12px 0 20px;
+}
+.rv-star {
+  width: 48px; height: 48px; border: none; background: none;
+  padding: 0; cursor: pointer; color: var(--zd-gray-200);
+  font-size: 44px; line-height: 1;
+  transition: transform 0.15s, color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.rv-star:hover, .rv-star:focus-visible { transform: scale(1.1); color: var(--zd-gold-300); outline: none; }
+.rv-star.filled { color: var(--zd-gold-300); }
+.rv-star:active { transform: scale(0.95); }
+.rv-field { margin-bottom: 14px; }
+.rv-label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--zd-gray-600); margin-bottom: 6px;
+}
+.rv-textarea {
+  width: 100%; min-height: 92px; padding: 12px 14px; border-radius: 12px;
+  border: 1.5px solid var(--zd-gray-200); font: 400 15px/1.5 var(--zd-font);
+  color: var(--zd-gray-800); background: #fff; resize: vertical;
+  box-sizing: border-box; font-family: var(--zd-font);
+}
+.rv-textarea:focus { outline: none; border-color: var(--accent); }
+.rv-textarea::placeholder { color: var(--zd-gray-400); }
+.rv-actions { display: flex; gap: 10px; margin-top: 6px; }
+.rv-btn {
+  flex: 1; min-height: 48px; padding: 12px 18px;
+  border-radius: 12px; border: none; cursor: pointer;
+  font: 700 15px/1 var(--zd-font); transition: transform 0.15s, opacity 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.rv-btn:active { transform: scale(0.97); }
+.rv-btn--primary { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(124,77,255,0.3); }
+.rv-btn--primary[disabled] { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+.rv-btn--ghost { background: var(--zd-gray-50); color: var(--zd-gray-800); border: 1.5px solid var(--zd-gray-200); }
+.rv-error { font-size: 12px; color: #c85050; margin-top: 8px; min-height: 16px; }
+.rv-note {
+  background: rgba(231,76,111,0.08); border-left: 3px solid #e74c6f;
+  padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5;
+  color: var(--zd-gray-800); margin-bottom: 14px;
+}
+.rv-note b { color: #c1264c; }
+.rv-toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 40px);
+  background: var(--zd-gray-800); color: #fff; padding: 12px 20px;
+  border-radius: 14px; font: 600 14px/1 var(--zd-font);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25); z-index: 10000;
+  opacity: 0; transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+.rv-toast.visible { opacity: 1; transform: translate(-50%, 0); }
+@media(max-width:480px){
+  .rv-sheet { padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .rv-star { width: 44px; height: 44px; font-size: 40px; }
+  .rv-title { font-size: 18px; }
+}
 </style>
 </head>
 <body>
@@ -590,7 +683,9 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
     <!-- Related specialists ("You might also like") -->
     <div class="listing-section listing-anim related-section" id="relatedSection" style="display:none;">
       <h2>Подобни специалисти</h2>
-      <div class="related-scroll" id="relatedScroll"></div>
+      <div class="related-scroll-wrap">
+        <div class="related-scroll" id="relatedScroll"></div>
+      </div>
     </div>
   </div>
 
@@ -758,6 +853,11 @@ function confirmAuth() {
   localStorage.setItem('zd_parent_logged_in', 'true');
   closeAuthModal();
   updateAuthUI();
+  // If the user started this login to write a review, replay that intent now.
+  if (localStorage.getItem('zd_review_intent')) {
+    localStorage.removeItem('zd_review_intent');
+    setTimeout(() => openReviewSheet(window._currentBusinessData), 400);
+  }
 }
 
 function updateAuthUI() {
@@ -955,6 +1055,9 @@ function hydratePage(d) {
     <a class="phone-btn" href="${phoneHref}"><img src="${icons.phone}" alt="Обади се"></a>
   `;
 
+  // Stash the business for the review sheet (needs id + name for the prompt copy)
+  window._currentBusinessData = d;
+
   // Show content, hide loading
   document.getElementById('listingLoading').style.display = 'none';
   document.getElementById('listingContent').style.display = 'grid';
@@ -1144,12 +1247,13 @@ function renderReviewsBlock(d, isMock, realReviews, rand, rating, starsHTML, rev
       for (let j = 0; j < 5; j++) rStars += j < rRating ? '★' : '☆';
       // Anonymous reviews have no parent_id → show "Анонимен родител"
       // (Future: join parents table to get display_name)
-      const rName = r.parent_display_name || 'Анонимен родител';
-      const initials = rName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      const rNameRaw = r.parent_display_name || 'Анонимен родител';
+      const rName = ZdSec.escapeHtml(rNameRaw);
+      const initials = ZdSec.escapeHtml(rNameRaw.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase());
       const rDate = r.created_at
         ? new Date(r.created_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })
         : '';
-      const rText = (r.text || '').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+      const rText = ZdSec.escapeHtml(r.text || '');
       html += `
         <div class="review-card">
           <div class="review-header">
@@ -1167,7 +1271,7 @@ function renderReviewsBlock(d, isMock, realReviews, rand, rating, starsHTML, rev
   }
 
   if (isExpandable) {
-    html += `<button class="write-review-btn" onclick="openAuthModal(event)">
+    html += `<button class="write-review-btn" onclick="triggerWriteReview(event)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       Напиши отзив
     </button>`;
@@ -1392,8 +1496,209 @@ async function init() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+/* ═══ REVIEW SHEET ═══
+   Two-view bottom sheet: pick stars → optional comment → submit.
+   If stars ≤ 3, Submit routes to a mandatory-feedback view (rvViewLow)
+   before the POST to Supabase.                                          */
+let _rvStars = 0;
+let _rvBusiness = null;
+let _rvLastOpener = null;
+const LOW_RATING_THRESHOLD = 3;
+
+function openReviewSheet(businessData) {
+  _rvBusiness = businessData || window._currentBusinessData || null;
+  if (!_rvBusiness) { console.warn('[openReviewSheet] no business in context'); return; }
+  _rvStars = 0;
+  _rvRenderStars();
+  document.getElementById('rvViewRating').style.display = '';
+  document.getElementById('rvViewLow').style.display = 'none';
+  document.getElementById('rvText').value = '';
+  document.getElementById('rvLowText').value = '';
+  document.getElementById('rvError').textContent = '';
+  document.getElementById('rvLowError').textContent = '';
+  document.getElementById('rvSubmitBtn').disabled = true;
+  document.getElementById('rvLowSubmitBtn').disabled = true;
+  document.getElementById('rvSub').textContent = _rvBusiness.name
+    ? `Сподели опита си с ${_rvBusiness.name}.`
+    : 'Твоят отзив помага на други родители.';
+  _rvLastOpener = document.activeElement;
+  document.getElementById('rvOverlay').classList.add('open');
+  document.getElementById('rvSheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Move focus into the dialog so AT announces the sheet and keyboard nav works.
+  setTimeout(() => {
+    const firstStar = document.querySelector('#rvViewRating .rv-star');
+    if (firstStar) firstStar.focus();
+  }, 50);
+}
+function closeReviewSheet() {
+  document.getElementById('rvOverlay').classList.remove('open');
+  document.getElementById('rvSheet').classList.remove('open');
+  document.body.style.overflow = '';
+  if (_rvLastOpener && typeof _rvLastOpener.focus === 'function') {
+    _rvLastOpener.focus();
+  }
+}
+function _rvSetStars(n) {
+  _rvStars = n;
+  _rvRenderStars();
+  document.getElementById('rvSubmitBtn').disabled = n === 0;
+  document.getElementById('rvError').textContent = '';
+}
+function _rvRenderStars() {
+  document.querySelectorAll('#rvViewRating .rv-star').forEach((el, i) => {
+    const on = i < _rvStars;
+    el.classList.toggle('filled', on);
+    el.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+}
+function rvBackToRating() {
+  document.getElementById('rvViewLow').style.display = 'none';
+  document.getElementById('rvViewRating').style.display = '';
+}
+async function submitReview() {
+  if (!_rvStars) {
+    document.getElementById('rvError').textContent = 'Моля избери оценка.';
+    return;
+  }
+  if (_rvStars <= LOW_RATING_THRESHOLD) {
+    // Route to the mandatory-feedback view — no immediate submit.
+    document.getElementById('rvViewRating').style.display = 'none';
+    document.getElementById('rvViewLow').style.display = '';
+    return;
+  }
+  await _rvPostReview({ stars: _rvStars, text: document.getElementById('rvText').value.trim() });
+}
+async function submitReviewLow() {
+  const text = document.getElementById('rvLowText').value.trim();
+  if (text.length < 10) {
+    document.getElementById('rvLowError').textContent = 'Моля опиши с поне няколко думи какво се случи (поне 10 символа).';
+    return;
+  }
+  await _rvPostReview({ stars: _rvStars, text });
+}
+async function _rvPostReview({ stars, text }) {
+  const btnA = document.getElementById('rvSubmitBtn');
+  const btnB = document.getElementById('rvLowSubmitBtn');
+  btnA.disabled = true; btnB.disabled = true;
+  const biz = _rvBusiness;
+  const entry = {
+    business_id: biz && biz.id,
+    stars,
+    text: text || null,
+    approved: false,
+    created_at: new Date().toISOString()
+  };
+  // Local shadow log + fire-and-forget backend sync.
+  try {
+    const log = JSON.parse(localStorage.getItem('zd_review_log') || '[]');
+    log.push(entry);
+    localStorage.setItem('zd_review_log', JSON.stringify(log));
+  } catch (e) { /* quota / disabled — ignore */ }
+  try {
+    if (window.ZdSupabase && biz && biz.id) {
+      const { error } = await window.ZdSupabase.from('reviews').insert([entry]);
+      if (error) console.warn('[submitReview] supabase insert failed (kept locally):', error);
+    }
+  } catch (e) {
+    console.warn('[submitReview] exception (kept locally):', e);
+  }
+  closeReviewSheet();
+  _rvToast('Благодарим за отзива! Ще го прегледаме преди да бъде публикуван.');
+  btnA.disabled = false; btnB.disabled = false;
+}
+function _rvToast(msg) {
+  const t = document.getElementById('rvToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('visible');
+  setTimeout(() => t.classList.remove('visible'), 3200);
+}
+/* Writer entry point — called by the "Напиши отзив" button in the reviews
+   section. Gates on auth: if not logged in, open the auth modal, which on
+   successful login should call `updateAuthUI` → then re-open the sheet. */
+function triggerWriteReview(event) {
+  if (event) { event.preventDefault(); event.stopPropagation(); }
+  const isLoggedIn = !!localStorage.getItem('zd_parent_logged_in');
+  if (!isLoggedIn) {
+    localStorage.setItem('zd_review_intent', '1');
+    if (typeof openAuthModal === 'function') openAuthModal(event);
+    return;
+  }
+  openReviewSheet(window._currentBusinessData);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+  // Wire star buttons (event delegation keeps it cheap).
+  document.querySelectorAll('#rvViewRating .rv-star').forEach(btn => {
+    btn.addEventListener('click', () => _rvSetStars(+btn.dataset.star));
+  });
+  // Enable low-view submit only when user types something meaningful.
+  const lowText = document.getElementById('rvLowText');
+  if (lowText) {
+    lowText.addEventListener('input', e => {
+      document.getElementById('rvLowSubmitBtn').disabled = e.target.value.trim().length < 10;
+    });
+  }
+  // Escape key closes the sheet if open.
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('rvSheet').classList.contains('open')) {
+      closeReviewSheet();
+    }
+  });
+  // If the user just logged in and had a pending review intent, auto-open the sheet.
+  if (localStorage.getItem('zd_review_intent') && localStorage.getItem('zd_parent_logged_in')) {
+    localStorage.removeItem('zd_review_intent');
+    setTimeout(() => openReviewSheet(window._currentBusinessData), 400);
+  }
+});
 </script>
+
+<!-- ═══ REVIEW SHEET ═══ -->
+<div class="rv-overlay" id="rvOverlay" onclick="closeReviewSheet()" aria-hidden="true"></div>
+<div class="rv-sheet" id="rvSheet" role="dialog" aria-modal="true" aria-labelledby="rvTitle">
+  <div class="rv-grabber" aria-hidden="true"></div>
+  <!-- View 1 — rating + optional comment -->
+  <div id="rvViewRating">
+    <h2 class="rv-title" id="rvTitle">Оцени този партньор</h2>
+    <p class="rv-sub" id="rvSub">Твоят отзив помага на други родители.</p>
+    <div class="rv-stars-row" role="radiogroup" aria-label="Оценка">
+      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="1" aria-label="1 звезда">★</button>
+      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="2" aria-label="2 звезди">★</button>
+      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="3" aria-label="3 звезди">★</button>
+      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="4" aria-label="4 звезди">★</button>
+      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="5" aria-label="5 звезди">★</button>
+    </div>
+    <div class="rv-field">
+      <label class="rv-label" for="rvText">Коментар <span style="font-weight:400;color:var(--zd-gray-400)">(по избор)</span></label>
+      <textarea id="rvText" class="rv-textarea" placeholder="Разкажи накратко за твоя опит..." maxlength="2000"></textarea>
+    </div>
+    <div class="rv-error" id="rvError"></div>
+    <div class="rv-actions">
+      <button type="button" class="rv-btn rv-btn--ghost" onclick="closeReviewSheet()">Отказ</button>
+      <button type="button" class="rv-btn rv-btn--primary" id="rvSubmitBtn" onclick="submitReview()" disabled>Изпрати</button>
+    </div>
+  </div>
+  <!-- View 2 — low-rating follow-up prompt (stars ≤ 3) -->
+  <div id="rvViewLow" style="display:none;">
+    <h2 class="rv-title">Съжаляваме, че опитът ти не е бил добър</h2>
+    <p class="rv-sub">Помогни ни да разберем какво се случи — това ще насочи други родители.</p>
+    <div class="rv-note">
+      <b>Моля, опиши какъв беше проблемът.</b> Отзиви с ниска оценка без описание не се публикуват, за да защитим партньорите от несправедливи оценки.
+    </div>
+    <div class="rv-field">
+      <label class="rv-label" for="rvLowText">Какво не беше наред?</label>
+      <textarea id="rvLowText" class="rv-textarea" placeholder="Например: неточна информация, лошо отношение, закъснение, липса на отговор..." maxlength="2000" required></textarea>
+    </div>
+    <div class="rv-error" id="rvLowError"></div>
+    <div class="rv-actions">
+      <button type="button" class="rv-btn rv-btn--ghost" onclick="rvBackToRating()">Назад</button>
+      <button type="button" class="rv-btn rv-btn--primary" id="rvLowSubmitBtn" onclick="submitReviewLow()" disabled>Изпрати</button>
+    </div>
+  </div>
+</div>
+<div class="rv-toast" id="rvToast" role="status" aria-live="polite"></div>
 
 <script src="js/cookie-banner.js"></script>
 <script src="js/analytics-loader.js"></script>
