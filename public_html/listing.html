@@ -528,7 +528,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
   box-shadow: 0 -12px 48px rgba(10,5,30,0.25);
   z-index: 9999; padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  max-height: 90vh; overflow-y: auto;
+  max-height: 90vh; max-height: 90dvh; overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 .rv-sheet.open { transform: translate(-50%, 0); }
@@ -1374,14 +1374,17 @@ async function loadRelatedSpecialists(d) {
       const score = r.audit_score || '';
       // Synthesize a star rating from audit_score (real reviews would override later)
       const stars = score >= 100 ? '★★★★★' : score >= 70 ? '★★★★☆' : '★★★☆☆';
+      const rName = ZdSec.escapeHtml(r.name || '');
+      const rTier = ZdSec.escapeHtml(r.tier || '');
+      const rLogo = r.logo ? ZdSec.sanitizeUrl(r.logo) : '';
       return `
         <a class="related-card related-card--${cls}" href="${href}">
           <div class="related-card-top">
-            <div class="related-card-logo">${r.logo ? `<img src="${r.logo}" alt="${r.name}" loading="lazy">` : ''}</div>
-            <div class="related-card-name"><div class="related-card-name-text">${r.name}</div></div>
+            <div class="related-card-logo">${rLogo ? `<img src="${rLogo}" alt="${rName}" loading="lazy">` : ''}</div>
+            <div class="related-card-name"><div class="related-card-name-text">${rName}</div></div>
           </div>
           <div class="related-card-meta">
-            <span class="related-card-tier">${r.tier}</span>
+            <span class="related-card-tier">${rTier}</span>
             <span class="related-card-rating"><span class="stars">${stars}</span></span>
           </div>
         </a>
