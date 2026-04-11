@@ -69,6 +69,7 @@
   --border: #ece8f3;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { overflow-x: hidden; }
 body {
   font-family: var(--zd-font);
   background: var(--bg);
@@ -94,11 +95,12 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 /* ═══ TWO-COLUMN LAYOUT ═══ */
 .listing-layout {
   max-width: 1280px; margin: 0 auto; padding: 32px 40px 80px;
-  display: grid; grid-template-columns: 1fr 320px; gap: 32px;
+  display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px;
   align-items: start;
 }
+.listing-main { min-width: 0; }
 @media(max-width:900px) {
-  .listing-layout { grid-template-columns: 1fr; padding: 20px 16px 120px; }
+  .listing-layout { grid-template-columns: minmax(0, 1fr); padding: 20px 16px 120px; }
 }
 
 /* ═══ HERO SECTION ═══ */
@@ -295,10 +297,10 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .demo-data-badge::before { content: '◉'; font-size: 8px; }
 
 /* ═══ RELATED SPECIALISTS ═══ */
-.related-section { margin-top: 24px; }
+.related-section { margin-top: 24px; min-width: 0; }
 /* Wrap lets us put a right-edge fade-out gradient on top of the scroll track
    as a scroll affordance; pointer-events:none so the fade never blocks a tap. */
-.related-scroll-wrap { position: relative; }
+.related-scroll-wrap { position: relative; min-width: 0; max-width: 100%; }
 .related-scroll-wrap::after {
   content: ""; position: absolute; top: 0; right: 0; bottom: 16px; width: 32px;
   pointer-events: none; background: linear-gradient(to right, transparent, var(--surface, #fff));

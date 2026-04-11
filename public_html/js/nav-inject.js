@@ -90,8 +90,8 @@
       '@media(max-width:768px){' +
         '.zd-hamburger{display:flex!important;align-items:center;justify-content:center;color:#1a103c!important;background:rgba(255,255,255,0.9)!important;border:1.5px solid #ece8f3!important;box-shadow:0 2px 8px rgba(0,0,0,0.08);}' +
         '.zd-hamburger svg line{stroke:#1a103c!important;}' +
-        '.nav-links{position:fixed!important;top:0!important;right:-100%!important;left:auto!important;width:300px!important;height:100vh!important;height:100dvh!important;background:#ffffff!important;flex-direction:column!important;align-items:stretch!important;padding:88px 28px 40px!important;gap:4px!important;z-index:10000!important;box-shadow:-8px 0 32px rgba(0,0,0,0.15)!important;transition:right 0.35s cubic-bezier(0.16,1,0.3,1)!important;}' +
-        '.nav-links.zd-open{right:0!important;}' +
+        '.nav-links{position:fixed!important;top:0!important;right:0!important;left:auto!important;width:300px!important;height:100vh!important;height:100dvh!important;background:#ffffff!important;flex-direction:column!important;align-items:stretch!important;padding:88px 28px 40px!important;gap:4px!important;z-index:10000!important;box-shadow:-8px 0 32px rgba(0,0,0,0.15)!important;transform:translateX(100%)!important;transition:transform 0.35s cubic-bezier(0.16,1,0.3,1)!important;will-change:transform;}' +
+        '.nav-links.zd-open{transform:translateX(0)!important;}' +
         '.nav-links a.nav-link{display:block!important;color:#1a103c!important;text-shadow:none!important;font-size:18px!important;font-weight:600!important;padding:16px 0!important;border-bottom:1px solid #ece8f3!important;background:transparent!important;}' +
         '.nav-links a.nav-link:hover{color:#7c4dff!important;}' +
         '.nav-links .nav-btn-partner{display:block!important;width:100%!important;color:#1a103c!important;text-shadow:none!important;text-align:center!important;padding:16px 0!important;margin-top:12px!important;min-height:48px!important;font-size:18px!important;font-weight:700!important;background:transparent!important;animation:zdNavWobble 3s ease-in-out infinite!important;}' +
