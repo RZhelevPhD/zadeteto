@@ -73,6 +73,13 @@
       /* Login button */
       'nav .nav-btn-login{display:inline-flex;align-items:center;padding:9px 18px;background:transparent;color:#1a103c!important;border:1.5px solid #ece8f3;border-radius:10px;font-weight:600;text-decoration:none;font-size:14px;transition:border-color 0.2s,background 0.2s;}' +
       'nav .nav-btn-login:hover{border-color:#7c4dff;background:rgba(124,77,255,0.04);}' +
+      /* Report button — red warning CTA with soft pulsing glow */
+      'nav .nav-btn-report{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;background:linear-gradient(180deg,#f05a78,#e23e62)!important;color:#fff!important;border:1px solid rgba(226,62,98,0.6);border-radius:10px;font-weight:700;text-decoration:none;font-size:14px;box-shadow:0 0 0 0 rgba(231,76,111,0.55),0 4px 14px rgba(231,76,111,0.35);transition:transform 0.2s,box-shadow 0.2s,filter 0.2s;animation:zdReportGlow 2.8s ease-in-out infinite;}' +
+      'nav .nav-btn-report svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.3;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}' +
+      'nav .nav-btn-report:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 0 0 6px rgba(231,76,111,0.18),0 8px 22px rgba(231,76,111,0.5);}' +
+      'nav .nav-btn-report:active{transform:scale(0.97);}' +
+      '@keyframes zdReportGlow{0%,100%{box-shadow:0 0 0 0 rgba(231,76,111,0.45),0 4px 14px rgba(231,76,111,0.3);}50%{box-shadow:0 0 0 5px rgba(231,76,111,0.12),0 6px 18px rgba(231,76,111,0.45);}}' +
+      '@media(prefers-reduced-motion:reduce){nav .nav-btn-report{animation:none!important}}' +
       /* Skip-to-content link — hidden until focused via Tab */
       '.zd-skip-link{position:absolute;top:-50px;left:0;background:#7c4dff;color:#fff;padding:10px 18px;z-index:10000;font-size:14px;font-weight:600;border-radius:0 0 10px 0;text-decoration:none;transition:top 0.2s;}' +
       '.zd-skip-link:focus{top:0;}' +
@@ -90,6 +97,8 @@
         '.nav-links .nav-btn-partner{display:block!important;width:100%!important;color:#1a103c!important;text-shadow:none!important;text-align:center!important;padding:16px 0!important;margin-top:12px!important;min-height:48px!important;font-size:18px!important;font-weight:700!important;background:transparent!important;animation:zdNavWobble 3s ease-in-out infinite!important;}' +
         '.nav-links .nav-btn-search{display:flex!important;width:100%!important;justify-content:center!important;margin-top:12px!important;min-height:52px!important;font-size:16px!important;padding:14px 20px!important;color:#ffffff!important;background:#7c4dff!important;}' +
         '.nav-links .nav-btn-login{display:flex!important;width:100%!important;justify-content:center!important;margin-top:8px!important;min-height:48px!important;font-size:16px!important;color:#1a103c!important;background:transparent!important;border:1.5px solid #ece8f3!important;}' +
+        '.nav-links .nav-btn-report{display:flex!important;width:100%!important;justify-content:center!important;gap:8px!important;margin-top:12px!important;min-height:48px!important;font-size:16px!important;padding:12px 20px!important;color:#ffffff!important;background:linear-gradient(180deg,#f05a78,#e23e62)!important;border:1px solid rgba(226,62,98,0.6)!important;box-shadow:0 6px 18px rgba(231,76,111,0.35)!important;animation:none!important;}' +
+        '.nav-links .nav-btn-report svg{width:18px!important;height:18px!important;}' +
         '.zd-nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:9999;-webkit-tap-highlight-color:transparent;}' +
         '.zd-nav-backdrop.zd-open{display:block;}' +
       '}' +
@@ -119,6 +128,25 @@
     /* ---- HEADER: remove stale search icon if present from previous version ---- */
     var oldSearchIcon = document.querySelector('.nav-search-icon');
     if (oldSearchIcon) oldSearchIcon.remove();
+
+    /* ---- REPORT BUTTON INJECTION (top nav, before login) ---- */
+    var _nav = document.querySelector('nav');
+    var _navLinks = _nav ? _nav.querySelector('.nav-links') : null;
+    if (_navLinks && !_navLinks.querySelector('.nav-btn-report')) {
+      var reportBtn = document.createElement('a');
+      reportBtn.href = 'report.html';
+      reportBtn.className = 'nav-btn-report';
+      reportBtn.setAttribute('aria-label', 'Подай сигнал за нарушение');
+      reportBtn.innerHTML =
+        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+          '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>' +
+          '<line x1="12" y1="9" x2="12" y2="13"/>' +
+          '<line x1="12" y1="17" x2="12.01" y2="17"/>' +
+        '</svg><span>Подай сигнал</span>';
+      var loginBtn = _navLinks.querySelector('.nav-btn-login');
+      if (loginBtn) _navLinks.insertBefore(reportBtn, loginBtn);
+      else _navLinks.appendChild(reportBtn);
+    }
 
     /* ---- HAMBURGER MENU INJECTION ---- */
     var nav = document.querySelector('nav');

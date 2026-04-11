@@ -844,17 +844,56 @@ a.zd-name:hover { text-decoration: underline; }
 /* Viewport-mode visibility switch */
 .zd-mode-mobile { display: none; }
 .zd-mode-desktop { display: block; }
+
+/* Filter pill injected into global nav (search.html only) — hidden on desktop */
+.zd-search-filter-pill { display: none; }
+
 @media (max-width: 899px) {
   .zd-mode-desktop { display: none !important; }
   /* ── NO-SCROLL mobile app shell — body is flex column, global nav at top, app shell fills rest ── */
   html, body { overflow: hidden !important; height: 100dvh !important; overscroll-behavior: none; }
   body { background: radial-gradient(ellipse at 50% 0%, #ece7ff 0%, #f5f3f0 55%); display: flex; flex-direction: column; min-height: 0; }
   body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.025;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  /* Global nav stays at top, global footer is hidden (app-footer takes over) */
-  body > nav { flex-shrink: 0; position: relative; }
+  /* Global nav stays at top + tightened; global footer is hidden */
+  body > nav { flex-shrink: 0; position: relative; min-height: 0 !important; padding: 8px 12px !important; }
+  body > nav .nav-logo img { height: 40px !important; }
   body > footer.zd-footer { display: none !important; }
   .zd-mode-mobile { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .app { flex: 1; min-height: 0; height: auto !important; }
+
+  /* Filter pill visible on mobile, sits to the left of the logo */
+  .zd-search-filter-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 38px; padding: 0 12px 0 10px;
+    border-radius: 999px;
+    border: 1.5px solid var(--zd-purple-200);
+    background: linear-gradient(135deg, #fff, var(--zd-purple-50));
+    color: var(--zd-purple-800);
+    font: 700 13px/1 var(--zd-font);
+    cursor: pointer;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .zd-search-filter-pill:active { transform: scale(0.97); }
+  .zd-search-filter-pill svg { width: 16px; height: 16px; flex-shrink: 0; stroke: currentColor; fill: none; }
+  .zd-search-filter-pill .zd-search-filter-chev { width: 14px; height: 14px; opacity: 0.7; }
+  .zd-search-filter-pill .zd-search-filter-label { white-space: nowrap; }
+  /* Very narrow screens: collapse label, keep just the magnifying glass + chevron */
+  @media (max-width: 359px) {
+    .zd-search-filter-pill .zd-search-filter-label { display: none; }
+    .zd-search-filter-pill { padding: 0 10px; }
+  }
+
+  /* Hide the old search-page top-bar on mobile — filter pill in nav takes over */
+  .top-bar { display: none !important; }
+  /* Reclaim bottom padding now that app-footer is gone */
+  .stack-view { padding: 8px 10px 10px !important; }
+  .stack-area { max-height: 720px; }
+  .card-wrap { max-width: 370px; margin: 0 auto; }
+}
+/* Only enforce a card-area floor on phones tall enough to fit it without clipping the tinder buttons */
+@media (max-width: 899px) and (min-height: 720px) {
+  .stack-area { min-height: 540px; }
 }
 
 /* === Mobile CSS variables === */
@@ -944,16 +983,16 @@ a.zd-name:hover { text-decoration: underline; }
 .cf-hero-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px}
 .cf-hero-tags .cf-tag{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.2);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);text-shadow:0 1px 2px rgba(0,0,0,.3)}
 .cf-hero-top{display:flex;justify-content:space-between;align-items:flex-end}
-.cf-name{font:700 22px/1.15 var(--zd-display);letter-spacing:-.3px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3)}
+.cf-name{font:700 15px/1.15 var(--zd-display);letter-spacing:-.3px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3)}
 a.cf-name{text-decoration:none;color:#fff}
 a.cf-name:active{text-decoration:underline}
 .cf-hero-rating{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.cf-hero-rating .stars{color:var(--zd-gold-300);font-size:15px;letter-spacing:-1px}
-.cf-hero-rating .num{color:#fff;font-size:15px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.3)}
-.cf-hero-rating .cnt{color:rgba(255,255,255,.7);font-size:12px;font-weight:500}
+.cf-hero-rating .stars{color:var(--zd-gold-300);font-size:11px;letter-spacing:-1px}
+.cf-hero-rating .num{color:#fff;font-size:11px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.cf-hero-rating .cnt{color:rgba(255,255,255,.7);font-size:8px;font-weight:500}
 .cf-hero-bottom{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-.cf-hero-city{font-size:11px;font-weight:500;color:rgba(255,255,255,.85)}
-.cf-badge{font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 7px;border-radius:5px}
+.cf-hero-city{font-size:8px;font-weight:500;color:rgba(255,255,255,.85)}
+.cf-badge{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 7px;border-radius:5px}
 .cf-badge--tier{background:rgba(255,255,255,.2);color:#fff;backdrop-filter:blur(4px)}
 .cf-badge--sop{background:rgba(156,39,176,.3);color:#fff}
 .cf-badge--online{background:rgba(25,118,210,.3);color:#fff}
@@ -1002,40 +1041,35 @@ a.cf-name:active{text-decoration:underline}
 .card-front{justify-content:flex-start;background:#fff}
 .card-front .cf-hero{position:relative;inset:auto;height:60%;flex-shrink:0;border-radius:20px 20px 0 0}
 .card-front .cf-tray{background:#fff;padding:14px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;height:40%;flex-shrink:0}
-.cf-text-box{width:100%;flex:1.1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0}
-.cf-text-box .cf-tagline{font-size:23px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;padding:0;color:var(--accent,var(--zd-purple-600))}
-.cf-text-box .cf-oneliner{font-size:21px;color:var(--zd-gray-600);line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:100%;margin-top:5px;font-weight:400}
+.cf-text-box{width:100%;flex:1.3;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0}
+.cf-text-box .cf-tagline{font-size:16px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;padding:0;color:var(--accent,var(--zd-purple-600))}
+.cf-text-box .cf-oneliner{font-size:15px;color:var(--zd-gray-600);line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:100%;margin-top:4px;font-weight:400}
 .cf-soc-box{width:100%;flex:1;display:flex;justify-content:center;align-items:center;min-height:0}
-.cf-socials-1row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.cf-socials-2row{display:flex;flex-direction:column;align-items:center;gap:8px}
-.cf-soc-line{display:flex;gap:8px;justify-content:center}
-.cf-soc-box .cf-social{width:51px;height:51px;border-radius:13px;border:1.5px solid var(--zd-gray-200);background:var(--zd-gray-50);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .15s}
-.cf-soc-box .cf-social:active{transform:scale(1.15)}
-.cf-soc-box .cf-social img{width:27px;height:27px;display:block}
 .cf-free-socials{display:flex;align-items:center;justify-content:center;gap:18px}
 .cf-free-social{width:65px;height:65px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(124,77,255,.08);border:1.5px solid rgba(124,77,255,.15);text-decoration:none;transition:transform .15s}
 .cf-free-social:active{transform:scale(1.15)}
 .cf-free-social img{width:32px;height:32px}
 .cf-cta-box{width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;min-height:0}
-.cf-cta-box .cf-ctas{display:flex;gap:11px;width:100%;padding:0}
-.cf-cta-box .cf-cta{flex:1;height:59px;border-radius:13px;display:flex;align-items:center;justify-content:center;font:600 19px/1 var(--zd-font);text-decoration:none;border:none;cursor:pointer}
+.cf-cta-box .cf-ctas{display:flex;gap:8px;width:100%;padding:0}
+.cf-cta-box .cf-cta{flex:1;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font:600 13px/1 var(--zd-font);text-decoration:none;border:none;cursor:pointer}
 .cf-cta-box .cf-cta--primary{color:#fff;background:var(--accent,var(--zd-purple-600))}
 .cf-cta-box .cf-cta--secondary{background:#f5f5f5;border:1.5px solid var(--zd-gray-200);color:var(--zd-gray-800)}
-.cf-cta-box .cf-detail-btn{padding:0;font-size:18px;font-weight:600;color:var(--zd-gray-400);display:flex;align-items:center;gap:4px;cursor:pointer}
-.cf-cta-box .cf-detail-btn svg{width:18px;height:18px}
+.cf-cta-box .cf-detail-btn{padding:0;font-size:13px;font-weight:600;color:var(--zd-gray-400);display:flex;align-items:center;gap:4px;cursor:pointer}
+.cf-cta-box .cf-detail-btn svg{width:14px;height:14px}
 
 /* Logo */
-.card-front .cf-logo{width:108px!important;height:108px!important;top:16px!important;left:16px!important;border-radius:20px!important;border:3px solid rgba(255,255,255,.9)!important;box-shadow:0 4px 16px rgba(0,0,0,.2)!important}
+.card-front .cf-logo{width:76px!important;height:76px!important;top:14px!important;left:14px!important;border-radius:16px!important;border:2.5px solid rgba(255,255,255,.9)!important;box-shadow:0 3px 12px rgba(0,0,0,.2)!important}
 
-/* Name, rating text */
-.card-front .cf-name{font-size:38px!important;line-height:1.1}
-.card-front .cf-hero-rating .stars{font-size:24px!important}
-.card-front .cf-hero-rating .num{font-size:24px!important}
-.card-front .cf-hero-rating .cnt{font-size:19px!important}
-.card-front .cf-hero-city{font-size:21px!important}
-.card-front .cf-tag{font-size:15px!important;padding:5px 13px!important}
-.card-front .cf-score{font-size:19px!important;padding:8px 14px!important}
-.card-front .cf-score svg{width:22px!important;height:22px!important}
+/* Name, rating text — 30% smaller than the v4 large state */
+.card-front .cf-name{font-size:27px!important;line-height:1.1}
+.card-front .cf-hero-rating .stars{font-size:17px!important}
+.card-front .cf-hero-rating .num{font-size:17px!important}
+.card-front .cf-hero-rating .cnt{font-size:13px!important}
+.card-front .cf-hero-city{font-size:15px!important}
+.card-front .cf-tag{font-size:11px!important;padding:4px 10px!important}
+.card-front .cf-score{font-size:13px!important;padding:6px 10px!important}
+.card-front .cf-score svg{width:16px!important;height:16px!important}
+.card-front .cf-badge{font-size:11px!important;padding:2px 6px!important}
 
 /* Tier-specific tagline colors */
 .card-front.tier-standard .cf-tagline{color:#4a4a5a}
@@ -1050,10 +1084,6 @@ a.cf-name:active{text-decoration:underline}
 .card-front.tier-premium .cf-cta--primary{background:linear-gradient(135deg,#f5d76e,#c89a00)}
 
 /* Tier-specific social icon backgrounds */
-.card-front.tier-standard .cf-soc-box .cf-social{background:#f0f0f4;border-color:#ccc}
-.card-front.tier-verified .cf-soc-box .cf-social{background:#e8f5e9;border-color:rgba(46,153,77,.2)}
-.card-front.tier-elite .cf-soc-box .cf-social{background:var(--zd-purple-50);border-color:rgba(124,77,255,.15)}
-.card-front.tier-premium .cf-soc-box .cf-social{background:linear-gradient(180deg,#fff,#fffaf0);border-color:#e6c660;box-shadow:0 1px 4px rgba(212,175,55,.1)}
 
 /* ═══ NEW BACK CARD LAYOUT v4 — flex-proportional ═══ */
 .card-back{padding:22px 22px 14px;background:#fff;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}
@@ -1069,6 +1099,14 @@ a.cf-name:active{text-decoration:underline}
 .card-back .cb-txt{font-size:15px;line-height:1.5;color:var(--zd-gray-800)}
 .card-back .cb-svcs{display:flex;flex-wrap:wrap;gap:5px}
 .card-back .cb-svc{font-size:12px;font-weight:600;padding:5px 11px;border-radius:7px;background:var(--zd-gray-50);color:var(--zd-gray-800);border:1px solid var(--zd-gray-200)}
+/* Socials row on the back of the card — half the size of the old front socials */
+.card-back .cb-socials{flex-shrink:0;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
+.card-back .cb-socials .cf-social{width:25px;height:25px;border-radius:7px;border:1px solid var(--zd-gray-200);background:var(--zd-gray-50);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .15s}
+.card-back .cb-socials .cf-social:active{transform:scale(1.15)}
+.card-back .cb-socials .cf-social img{width:14px;height:14px;display:block}
+.card-back.tier-verified .cb-socials .cf-social{background:#e8f5e9;border-color:rgba(46,153,77,.2)}
+.card-back.tier-elite .cb-socials .cf-social{background:var(--zd-purple-50);border-color:rgba(124,77,255,.15)}
+.card-back.tier-premium .cb-socials .cf-social{background:linear-gradient(180deg,#fff,#fffaf0);border-color:#e6c660}
 .card-back .cb-dist-box{flex-shrink:0;margin-top:14px;display:flex;align-items:center;justify-content:center;padding:10px 0}
 .card-back .cb-dist{text-align:center;font-size:14px;color:var(--zd-gray-600)}
 .card-back .cb-dist b{color:var(--zd-gray-800)}
@@ -1095,13 +1133,6 @@ a.cf-name:active{text-decoration:underline}
 /* ═══ END NEW CARD LAYOUT v4 ═══ */
 
 .tinder-actions{display:flex;align-items:center;justify-content:center;gap:24px;padding:6px 0 0;flex-shrink:0}
-/* App footer (mobile search) — compact sticky bottom bar */
-.app-footer{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.05);gap:4px}
-.app-foot-link{flex:1;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;color:var(--zd-gray-600);text-decoration:none;padding:10px 8px;border-radius:10px;transition:color 0.2s,background 0.2s;-webkit-tap-highlight-color:transparent}
-.app-foot-link svg{width:22px;height:22px}
-.app-foot-link:hover,.app-foot-link:active{color:var(--zd-purple-600);background:rgba(124,77,255,0.06)}
-.app-foot-link--report{color:var(--zd-heart)}
-.app-foot-link--report:hover,.app-foot-link--report:active{color:var(--zd-heart);background:rgba(231,76,111,0.06)}
 .tinder-btn{width:78px;height:78px;border-radius:50%;border:3px solid;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s;background:#fff;-webkit-tap-highlight-color:transparent}
 .tinder-btn:active{transform:scale(.9)}
 .tinder-btn svg{width:33px;height:33px}
@@ -1314,6 +1345,11 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
 <body>
 
 <nav>
+  <button class="zd-search-filter-pill" aria-label="Филтри" onclick="openMobileFilters()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <span class="zd-search-filter-label">Филтри</span>
+    <svg class="zd-search-filter-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
   <a href="index.html" class="nav-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></a>
   <div class="nav-links">
     <a href="index.html" class="nav-link">Начало</a>
@@ -1480,14 +1516,6 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
         <button class="tinder-btn tinder-btn--like" onclick="btnLike()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
       </div>
     </div>
-    <!-- Mobile app footer — compact, sticky bottom -->
-    <nav class="app-footer" aria-label="Долна навигация">
-      <a href="index.html" class="app-foot-link" aria-label="Начало"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a>
-      <a href="partners.html" class="app-foot-link" aria-label="Партньори"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></a>
-      <a href="report.html" class="app-foot-link app-foot-link--report" aria-label="Подай сигнал за нарушение"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></a>
-      <a href="contacts.html" class="app-foot-link" aria-label="Контакти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
-      <a href="#" class="app-foot-link" aria-label="Вход" onclick="openAuthModal(event); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
-    </nav>
   </div>
 
   <!-- Mobile filter panel -->
@@ -2917,13 +2945,6 @@ function updateAuthUI(session) {
       btn.title = session.user.email || '';
       btn.onclick = handleLogoutClick;
     });
-    // Mobile app-footer login icon — swap to a filled "logged in" avatar
-    document.querySelectorAll('.app-foot-link[aria-label="Вход"]').forEach(btn => {
-      btn.setAttribute('aria-label', 'Профил (' + (session.user.email || '') + ')');
-      btn.style.color = 'var(--zd-purple-600)';
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0116 0v1z"/></svg>';
-      btn.onclick = handleLogoutClick;
-    });
   } else {
     localStorage.removeItem('zd_parent_logged_in');
     // Restore default "Вход" button (only matters after sign-out)
@@ -2936,13 +2957,6 @@ function updateAuthUI(session) {
       btn.style.border = '';
       btn.title = '';
       btn.onclick = openAuthModal;
-    });
-    // Restore mobile app-footer login icon
-    document.querySelectorAll('.app-foot-link[aria-label^="Профил"]').forEach(btn => {
-      btn.setAttribute('aria-label', 'Вход');
-      btn.style.color = '';
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
-      btn.onclick = (e) => openAuthModal(e);
     });
   }
 }
@@ -3184,13 +3198,6 @@ body.fb-active nav { filter:grayscale(0.6) brightness(0.95); transition:filter 0
 
 /* ═══ SMALL PHONE FINE-TUNING ═══ */
 @media(max-width:480px) {
-  .top-bar { padding: 8px 10px; }
-  .city-btn { height: 36px; font-size: 12px; max-width: 40%; }
-  .search-wrap { height: 36px; }
-  .search-wrap input { font-size: 16px; }
-  .filter-btn { width: 36px; height: 36px; }
-  .stack-area { min-height: 400px; }
-  .stack-view { padding: 4px 10px 80px; }
   .applied-chips { padding: 4px 10px; }
   .fb-panel { left: 8px; right: 8px; border-radius: 16px; }
   .fb-body { padding: 16px; }
@@ -3465,19 +3472,13 @@ function _buildSocialIcon(k, d) {
   return `<a class="cf-social" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
 }
 
-function _buildSocialsM(d){
+/* Card-back socials — half-size layout for the flipped (details) side */
+function _buildSocialsBack(d){
   const allowed = allowedIconsByTier[d.tier]||[];
-  // Only build icons that actually have data; maps is always rendered (uses address fallback)
   const items = allowed.filter(k=>k==='maps' || (d[k]&&d[k]!=='#'));
-  // 8 or fewer icons stay on 1 row; 9+ splits into 2 balanced rows (bottom ≥ 4)
-  if (items.length >= 9) {
-    const mid = Math.ceil(items.length / 2);  // top row gets the extra when odd
-    const row1 = items.slice(0, mid).map(k => _buildSocialIcon(k, d)).join('');
-    const row2 = items.slice(mid).map(k => _buildSocialIcon(k, d)).join('');
-    return `<div class="cf-socials-2row"><div class="cf-soc-line">${row1}</div><div class="cf-soc-line">${row2}</div></div>`;
-  }
+  if (!items.length) return '';
   const icons_html = items.map(k => _buildSocialIcon(k, d)).join('');
-  return `<div class="cf-socials-1row">${icons_html}</div>`;
+  return `<div class="cb-socials">${icons_html}</div>`;
 }
 function _buildCTAsM(d){
   // Доверен and Премиум get dual CTAs (Профил + primary booking)
@@ -3537,6 +3538,7 @@ function _buildBackM(d){
   return `<div class="cb-header"><div class="cb-name">${ZdSec.escapeHtml(d.name)}</div><div class="cb-city">${ZdSec.escapeHtml(d.city)}</div></div>
 <div class="cb-line"></div>
 <div class="cb-info">${info}</div>
+${_buildSocialsBack(d)}
 <div class="cb-dist-box"><div class="cb-dist">${distHTML}</div></div>
 <div class="cb-actions">
   ${actionsHTML}
@@ -3581,10 +3583,8 @@ function buildStackCard(d){
     textBlockHTML = `<div class="cf-text-box"><div class="cf-tagline">${ZdSec.escapeHtml(tagline)}</div>${oneliner ? `<div class="cf-oneliner">${ZdSec.escapeHtml(oneliner)}</div>` : ''}</div>`;
   }
 
-  // Socials block — free uses circular, others use framed
-  const socialsBlockHTML = isFree
-    ? `<div class="cf-soc-box">${buildFreeSocialsHTML(d)}</div>`
-    : `<div class="cf-soc-box">${_buildSocialsM(d)}</div>`;
+  // Free tier still shows a minimal socials row on the front (no flippable back)
+  const freeSocialsHTML = isFree ? `<div class="cf-soc-box">${buildFreeSocialsHTML(d)}</div>` : '';
 
   // CTA block — Доверен/Премиум get dual CTAs; all non-free show Детайли; free shows nothing here
   const ctasInner = _buildCTAsM(d);
@@ -3610,7 +3610,7 @@ function buildStackCard(d){
     </div>
     <div class="cf-tray">
       ${textBlockHTML || '<div class="cf-text-box"></div>'}
-      ${socialsBlockHTML}
+      ${freeSocialsHTML}
       ${ctaBoxHTML}
     </div>
   </div>
@@ -3797,6 +3797,7 @@ function closeMobileFilters(){
 }
 function buildFP(){
   let h = '';
+  h += `<div class="fp-section"><div class="fp-label">Търсене</div><input class="fp-input" id="fpSearch" type="search" placeholder="Име, категория, услуга..." value="${ZdSec.escapeHtml(searchTerm)}" autocomplete="off"></div>`;
   h += `<div class="fp-section"><div class="fp-label">Населено място</div><input class="fp-input" id="fpCity" placeholder="Въведи град..." value="${pendingF.cityTerm}" list="fpCityDl"><datalist id="fpCityDl"></datalist></div>`;
   h += `<div class="fp-section"><div class="fp-label">Възраст</div><div class="fp-row"><input class="fp-input" id="fpAgeFrom" type="number" placeholder="От..." value="${pendingF.ageFrom??''}"><span style="font-weight:600;color:var(--zd-gray-400)">—</span><input class="fp-input" id="fpAgeTo" type="number" placeholder="До..." value="${pendingF.ageTo??''}"></div></div>`;
   h += `<div class="fp-section"><div class="fp-label">Категория</div>`;
@@ -3814,6 +3815,7 @@ function buildFP(){
   const dl = document.getElementById('fpCityDl');
   [...new Set(data.map(d => d.city))].forEach(c => { const o = document.createElement('option'); o.value = c; dl.appendChild(o); });
   const listen = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('input', debounce(fn, 200)); };
+  listen('fpSearch', e => { searchTerm = e.target.value.toLowerCase().trim(); stackIdx = 0; render(); fpUpdateCount(); });
   listen('fpCity', e => { pendingF.cityTerm = e.target.value.toLowerCase().trim(); fpUpdateCount(); });
   listen('fpAgeFrom', e => { pendingF.ageFrom = e.target.value ? +e.target.value : null; fpUpdateCount(); });
   listen('fpAgeTo', e => { pendingF.ageTo = e.target.value ? +e.target.value : null; fpUpdateCount(); });
@@ -3900,11 +3902,6 @@ function mfbSubmit(){
   const t = document.getElementById('mfbToast'); t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 2500);
 }
 
-/* Wire mobile search input */
-document.addEventListener('DOMContentLoaded', () => {
-  const inp = document.getElementById('appSearch');
-  if (inp) inp.addEventListener('input', debounce(e => { searchTerm = e.target.value.toLowerCase().trim(); stackIdx = 0; render(); }, 200));
-});
 </script>
 
 <footer class="zd-footer">
