@@ -761,13 +761,20 @@ function confirmAuth() {
 
 function updateAuthUI() {
   if (localStorage.getItem('zd_parent_logged_in') === 'true') {
-    document.querySelectorAll('.nav-auth-btn').forEach(btn => {
-      btn.innerHTML = '<span style="font-size:16px;">👤</span> Профил';
-      btn.style.background = 'transparent';
-      btn.style.color = '#333';
+    document.querySelectorAll('.nav-btn-login').forEach(btn => {
+      btn.innerHTML = '<span style="font-size:16px;margin-right:4px;">👤</span>Профил';
+      btn.style.background = 'rgba(124,77,255,0.08)';
+      btn.style.color = 'var(--zd-purple-700, #5a2ecf)';
       btn.style.boxShadow = 'none';
-      btn.style.border = '1px solid #ccc';
-      btn.onclick = () => { alert("Тук ще се отваря профила на родителя."); };
+      btn.style.border = '1.5px solid var(--zd-purple-200, #d4b6ff)';
+      btn.onclick = (e) => {
+        e && e.preventDefault();
+        if (confirm('Излез от профила?')) {
+          localStorage.removeItem('zd_parent_logged_in');
+          if (window.ZdSupabase) { try { window.ZdSupabase.auth.signOut(); } catch(err) {} }
+          location.reload();
+        }
+      };
     });
   }
 }

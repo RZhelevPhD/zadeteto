@@ -2883,31 +2883,63 @@ function updateAuthUI(session) {
   const isLoggedIn = !!(session && session.user);
   // Track the current user id for the like/dismiss sync helper
   _currentUserId = isLoggedIn ? session.user.id : null;
+
+  // Extract display name from OAuth user metadata (Google/Facebook fill these)
+  let displayName = 'Профил';
+  if (isLoggedIn) {
+    const meta = session.user.user_metadata || {};
+    const full = meta.full_name || meta.name || meta.given_name || '';
+    if (full) {
+      // Take first word only so the button doesn't grow too wide
+      displayName = full.trim().split(/\s+/)[0];
+    } else if (session.user.email) {
+      displayName = session.user.email.split('@')[0];
+    }
+  }
+
+  const handleLogoutClick = (e) => {
+    e && e.preventDefault();
+    if (confirm('Излез от профила?')) parentSignOut();
+  };
+
   if (isLoggedIn) {
     localStorage.setItem('zd_parent_logged_in', 'true');
-    document.querySelectorAll('.nav-auth-btn').forEach(btn => {
-      btn.innerHTML = '<span style="font-size:16px;">👤</span> Профил';
-      btn.style.background = 'transparent';
-      btn.style.color = '#333';
+    // Desktop/tablet nav login button
+    document.querySelectorAll('.nav-btn-login').forEach(btn => {
+      btn.innerHTML = '<span style="font-size:16px;margin-right:4px;">👤</span>' + ZdSec.escapeHtml(displayName);
+      btn.style.background = 'rgba(124,77,255,0.08)';
+      btn.style.color = 'var(--zd-purple-700)';
       btn.style.boxShadow = 'none';
-      btn.style.border = '1px solid #ccc';
-      btn.onclick = (e) => {
-        e && e.preventDefault();
-        if (confirm('Излез от профила?')) parentSignOut();
-      };
+      btn.style.border = '1.5px solid var(--zd-purple-200)';
+      btn.title = session.user.email || '';
+      btn.onclick = handleLogoutClick;
+    });
+    // Mobile app-footer login icon — swap to a filled "logged in" avatar
+    document.querySelectorAll('.app-foot-link[aria-label="Вход"]').forEach(btn => {
+      btn.setAttribute('aria-label', 'Профил (' + (session.user.email || '') + ')');
+      btn.style.color = 'var(--zd-purple-600)';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0116 0v1z"/></svg>';
+      btn.onclick = handleLogoutClick;
     });
   } else {
     localStorage.removeItem('zd_parent_logged_in');
     // Restore default "Вход" button (only matters after sign-out)
-    document.querySelectorAll('.nav-auth-btn').forEach(btn => {
-      // Skip if button already shows "Вход" — avoid clobbering on every render
-      if ((btn.textContent || '').includes('Вход')) return;
+    document.querySelectorAll('.nav-btn-login').forEach(btn => {
+      if ((btn.textContent || '').trim() === 'Вход') return;
       btn.innerHTML = 'Вход';
       btn.style.background = '';
       btn.style.color = '';
       btn.style.boxShadow = '';
       btn.style.border = '';
+      btn.title = '';
       btn.onclick = openAuthModal;
+    });
+    // Restore mobile app-footer login icon
+    document.querySelectorAll('.app-foot-link[aria-label^="Профил"]').forEach(btn => {
+      btn.setAttribute('aria-label', 'Вход');
+      btn.style.color = '';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+      btn.onclick = (e) => openAuthModal(e);
     });
   }
 }
