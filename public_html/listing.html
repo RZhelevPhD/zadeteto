@@ -621,10 +621,10 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
       <h3 class="auth-title" id="authTitle">Добре дошли отново</h3>
       <p class="auth-sub" id="authSub">Влезте, за да запазвате специалисти и да оставяте отзиви от опит.</p>
       <button class="auth-btn" onclick="triggerAuthOTP()">
-        <img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688ee41ecef9f25cb7394cba.png" alt="Google" loading="lazy" decoding="async"> Продължи с Google
+        <img src="https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da7b02a4e6aa34cbca2b37.png" alt="Google" loading="lazy" decoding="async"> Продължи с Google
       </button>
       <button class="auth-btn" onclick="triggerAuthOTP()">
-        <img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg" alt="Facebook" loading="lazy" decoding="async"> Продължи с Facebook
+        <img src="https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779aa4e6aa34cbc97684.svg" alt="Facebook" loading="lazy" decoding="async"> Продължи с Facebook
       </button>
       <div class="auth-email-wrap">
         <p style="font-size:13px;color:var(--muted);margin-bottom:8px;text-align:center;">Или продължете с имейл:</p>
@@ -663,25 +663,26 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 const tierClassMap = { "Доверен": "elite", "Проверен": "verified", "Стандартен": "standard", "Безплатен": "free" };
 
 const icons = {
-  phone: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165ce6566161a.svg",
-  email: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f3b45fe711.svg",
-  website: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e39f520486ca465431130.svg",
-  facebook: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg",
-  instagram: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165b73b661619.svg",
-  tiktok: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c80d255fe70e.svg",
-  linkedin: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45f958ee9ecb86249762.svg",
-  x: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933def5016cb73723d0adc.svg",
-  youtube: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f88b5fe710.svg",
-  maps: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933df9ed9c8fc6588920f1.svg",
-  reviews: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68939cebd69f994a4dd582e5.png"
+  phone: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da92e1a4e6aa34cbd04ee4.png",
+  viber: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da78d6ecab277f79b90e7b.svg",
+  email: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a77bcdd31bb6f4160.png",
+  website: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da79cc019dc508d34359a1.gif",
+  facebook: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779aa4e6aa34cbc97684.svg",
+  instagram: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a77bcdd31bb6f417b.svg",
+  tiktok: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779aa4e6aa34cbc976a8.svg",
+  linkedin: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a019dc508d342f768.svg",
+  x: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a982fd67a3560f3e4.png",
+  youtube: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779b982fd67a3560f3e6.svg",
+  maps: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779ad7871cddf74e837d.png",
+  reviews: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da907c019dc508d349407b.png"
 };
 
-const allContactKeys = ["phone","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps"];
+const allContactKeys = ["phone","viber","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps"];
 
 const allowedIconsByTier = {
-  "Доверен": ["phone","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps","reviews"],
-  "Проверен": ["phone","email","website","facebook","instagram","maps"],
-  "Стандартен": ["phone","email","website","facebook"],
+  "Доверен": ["phone","viber","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps","reviews"],
+  "Проверен": ["phone","viber","email","website","facebook","instagram","maps"],
+  "Стандартен": ["phone","viber","email","website","facebook"],
   "Безплатен": ["phone","email"]
 };
 
