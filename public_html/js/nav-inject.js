@@ -99,7 +99,7 @@
         '.nav-links .nav-btn-login{display:flex!important;width:100%!important;justify-content:center!important;margin-top:8px!important;min-height:48px!important;font-size:16px!important;color:#1a103c!important;background:transparent!important;border:1.5px solid #ece8f3!important;}' +
         '.nav-links .nav-btn-report{display:flex!important;width:100%!important;justify-content:center!important;gap:8px!important;margin-top:12px!important;min-height:48px!important;font-size:16px!important;padding:12px 20px!important;color:#ffffff!important;background:linear-gradient(180deg,#f05a78,#e23e62)!important;border:1px solid rgba(226,62,98,0.6)!important;box-shadow:0 6px 18px rgba(231,76,111,0.35)!important;animation:none!important;}' +
         '.nav-links .nav-btn-report svg{width:18px!important;height:18px!important;}' +
-        '.zd-nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:9999;-webkit-tap-highlight-color:transparent;}' +
+        '.zd-nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:899;-webkit-tap-highlight-color:transparent;}' +
         '.zd-nav-backdrop.zd-open{display:block;}' +
       '}' +
       /* Hamburger X animation when open */
