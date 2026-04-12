@@ -938,7 +938,7 @@ a.zd-name:hover { text-decoration: underline; }
 /* White content tray — overlaps bottom of image */
 .cf-content-tray{position:relative;z-index:2;background:#fff;border-radius:0;padding:10px 0 10px;margin-top:auto}
 .cf-hero-overlay{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 12px;z-index:2;display:flex;flex-direction:column;gap:4px}
-.cf-hero-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px}
+.cf-hero-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
 .cf-hero-tags .cf-tag{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.2);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);text-shadow:0 1px 2px rgba(0,0,0,.3)}
 .cf-hero-top{display:flex;justify-content:space-between;align-items:flex-end}
 .cf-name{font:700 15px/1.15 var(--zd-display);letter-spacing:-.3px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3)}
@@ -3487,12 +3487,12 @@ function buildStackCard(d){
     <div class="cf-hero">
       <img src="${heroImg}" alt="${ZdSec.escapeHtml(d.name)}" loading="lazy">
       <div class="cf-hero-overlay">
-        ${tags.length?`<div class="cf-hero-tags">${tags.map(t=>`<span class="cf-tag">${_hl(t)}</span>`).join('')}</div>`:''}
         <div class="cf-hero-top">
           ${nameHTML}
           ${ratingHTML}
         </div>
         <div class="cf-hero-bottom"><span class="cf-hero-city">${_hl(d.city)}</span>${badges}</div>
+        ${tags.length?`<div class="cf-hero-tags">${tags.map(t=>`<span class="cf-tag">${_hl(t)}</span>`).join('')}</div>`:''}
       </div>
     </div>
     <div class="cf-tray">
