@@ -601,7 +601,7 @@
 // STICKY NARRATIVE
 (function(){
   var cards=document.querySelectorAll('.feature-card'), states=document.querySelectorAll('.mockup-state');
-  cards.forEach(function(card){ ScrollTrigger.create({ trigger:card, start:'top 50%', end:'bottom 50%', onEnter:function(){activate(card.dataset.feature);}, onEnterBack:function(){activate(card.dataset.feature);} }); });
+  cards.forEach(function(card){ ScrollTrigger.create({ trigger:card, start:'top 80%', end:'bottom 20%', onEnter:function(){activate(card.dataset.feature);}, onEnterBack:function(){activate(card.dataset.feature);} }); });
   function activate(n){ cards.forEach(function(c){c.classList.toggle('active',c.dataset.feature===n);}); states.forEach(function(s){s.classList.toggle('active',s.dataset.state===n);}); }
 })();
 </script>
