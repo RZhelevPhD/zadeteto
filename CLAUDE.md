@@ -26,12 +26,21 @@ ZaDeteto 2.0 Claude/
 │   ├── js/                    ← browser JS modules
 │   ├── video/                 ← hero videos
 │   └── brand_assets/          ← logos, fonts, images
+├── docs/
+│   ├── reference-index.md     ← AHDM library catalog (domain tags, frameworks, routing)
+│   ├── cheatsheets/           ← extracted framework summaries (gitignored)
+│   └── AH+DM reference docs/ ← private source PDFs/DOCX (gitignored, never publish)
 ├── skills/                    ← reusable AI skill definitions
 ├── supabase/                  ← DB schema & migrations
 ├── tmp/                       ← agent scratchpad, checkpoints, test output
 ├── serve.mjs                  ← local dev server (localhost:3000)
 ├── screenshot.mjs             ← Puppeteer screenshot tool
 └── .claude/agents/            ← sub-agent definitions
+    ├── ahdm.md                ← AHDM orchestrator (routes to domain subagents)
+    ├── ahdm-{domain}.md       ← 8 domain subagents (offers, leads, ads, closing, proof, brand, launch, ops)
+    ├── doc-sync.md
+    ├── script-reviewer.md
+    └── frontend-reviewer.md
 ```
 
 ---
@@ -166,6 +175,7 @@ Do not ask the user for help on the first error. Diagnose, fix, verify first.
 - `cards_insp/` and `docs/` — do not read, reference, or use these folders unless the user explicitly asks you to.
 
 ## Hard Rules
+- Do not add `Co-Authored-By` lines to git commit messages
 - Do not add sections, features, or content not in the reference
 - Do not "improve" a reference design — match it
 - Do not stop after one screenshot pass
