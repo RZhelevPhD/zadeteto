@@ -39,6 +39,15 @@ All tasks related to the lead generation pipeline, data enrichment, and agentic 
 |-------|----------|---------|---------|
 | `script-reviewer` | `~/.claude/agents/script-reviewer.md` | After any .py is created/modified | Audit for correctness, error handling, logic, safety |
 | `doc-sync` | `.claude/agents/doc-sync.md` | After script-reviewer passes | Update directives to match script changes |
+| `ahdm` | `.claude/agents/ahdm.md` | When improving marketing/copy/offers | AHDM Orchestrator — routes to domain subagents, synthesizes Bulgarian improvement plan |
+| `ahdm-offers` | `.claude/agents/ahdm-offers.md` | Called by AHDM orchestrator | Offer construction, pricing, Value Equation, Grand Slam Offer |
+| `ahdm-leads` | `.claude/agents/ahdm-leads.md` | Called by AHDM orchestrator | Lead generation, Core Four, lead magnets, nurture |
+| `ahdm-ads` | `.claude/agents/ahdm-ads.md` | Called by AHDM orchestrator | Ad copy, hooks, attention mechanics, Marketing Machine |
+| `ahdm-closing` | `.claude/agents/ahdm-closing.md` | Called by AHDM orchestrator | Sales closing, Blame Framework, objection handling |
+| `ahdm-proof` | `.claude/agents/ahdm-proof.md` | Called by AHDM orchestrator | Social proof, testimonials, retention, 5 Horsemen |
+| `ahdm-brand` | `.claude/agents/ahdm-brand.md` | Called by AHDM orchestrator | StoryBrand SB7, brand narrative, positioning |
+| `ahdm-launch` | `.claude/agents/ahdm-launch.md` | Called by AHDM orchestrator | Funnel architecture, VSL scripts, launch sequences |
+| `ahdm-ops` | `.claude/agents/ahdm-ops.md` | Called by AHDM orchestrator | Scaling SOPs, Leila's 5 Frameworks |
 
 ### Trigger Sequence (mandatory, no exceptions)
 1. Create or modify any execution script (`.py`)

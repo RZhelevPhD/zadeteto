@@ -4,6 +4,10 @@ temporary screenshots/
 node_modules/
 .claude/
 
+# Private reference library (never commit)
+docs/AH+DM reference docs/
+docs/cheatsheets/
+
 # TODO: If this repo ever goes public, also gitignore:
 # CLAUDE.md
 # CHATGPT.md
