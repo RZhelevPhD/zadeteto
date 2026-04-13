@@ -58,7 +58,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 /* Plans grid */
 .plans { max-width:1200px; margin:0 auto; padding:0 24px 60px; display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
 @media(max-width:1000px){ .plans{grid-template-columns:repeat(2,1fr);} }
-@media(max-width:600px){ .plans{grid-template-columns:1fr; max-width:400px;} }
+@media(max-width:600px){ .plans{grid-template-columns:1fr; max-width:400px;} .plan-subtitle{min-height:auto;} }
 
 .plans { align-items:stretch; }
 .plan { background:var(--surface); border:1.5px solid var(--border); border-radius:24px; padding:32px 24px; display:flex; flex-direction:column; position:relative; transition:transform .3s, box-shadow .3s; height:100%; }
@@ -77,13 +77,13 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 .plan-name--premium { color:var(--gold); }
 
 .plan-title { font-size:clamp(22px,3vw,28px); margin-bottom:4px; }
-.plan-subtitle { font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.4; }
+.plan-subtitle { font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.4; min-height:54px; }
 
 .plan-price { margin-bottom:6px; }
 .plan-price .amount { font-size:36px; font-weight:700; letter-spacing:-1px; }
 .plan-price .period { font-size:14px; color:var(--muted); font-weight:500; }
 .plan-price .original { font-size:14px; color:var(--muted); text-decoration:line-through; margin-left:6px; }
-.plan-setup { font-size:13px; color:var(--muted); margin-bottom:24px; }
+.plan-setup { font-size:13px; color:var(--muted); margin-bottom:4px; }
 .plan-setup strong { color:var(--text); }
 
 .plan-features { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:28px; flex:1; }
@@ -175,7 +175,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 .founders-badge { display:inline-block; background:var(--accent); color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; padding:6px 18px; border-radius:20px; margin-bottom:14px; box-shadow:0 4px 12px rgba(124,77,255,0.3); }
 .founders-banner h2 { font-size:clamp(22px,3vw,30px); margin-bottom:10px; }
 .founders-banner p { color:var(--muted); font-size:15px; line-height:1.6; max-width:600px; margin:0 auto; }
-.founder-lock { font-size:11px; font-weight:600; color:var(--accent); background:rgba(124,77,255,0.06); padding:6px 12px; border-radius:8px; margin-bottom:16px; text-align:center; }
+.founder-lock { font-size:11px; font-weight:600; color:var(--accent); background:rgba(124,77,255,0.06); padding:6px 12px; border-radius:8px; margin-bottom:20px; margin-top:12px; text-align:center; }
 .founders-deadline { text-align:center; font-size:12px; color:var(--accent); font-weight:600; margin-bottom:32px; }
 .founders-cta { max-width:700px; margin:0 auto; padding:60px 24px; text-align:center; }
 .founders-cta h2 { font-size:clamp(24px,3vw,32px); margin-bottom:16px; }
@@ -246,8 +246,17 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 
 <div class="founders-banner">
   <div class="founders-badge">Основателски кръг</div>
-  <h2>Основателски кръг: цена, заключена завинаги</h2>
-  <p>Партньорите, които се присъединят преди <strong>1 юни 2026</strong>, запазват текущите цени за целия срок на членството си. След тази дата: <strong>Проверен: от €29 → €49/мес. Доверен: от €49 → €79/мес.</strong> Спестявате до €648 за 3 години.</p>
+  <h2>Заключете цената. Заключете позицията. Завинаги.</h2>
+  <p>Първите 50 партньори получават статут на основател — заключена цена, приоритетна позиция и бонуси на стойност над <strong>1,200€</strong>:</p>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:560px;margin:20px auto 0;text-align:left;">
+    <div style="font-size:13px;color:var(--text);"><span style="color:var(--accent);font-weight:700;">✦</span> Пълен маркетинг одит (150€)</div>
+    <div style="font-size:13px;color:var(--text);"><span style="color:var(--accent);font-weight:700;">✦</span> Стратегическа сесия 1-на-1 (200€)</div>
+    <div style="font-size:13px;color:var(--text);"><span style="color:var(--accent);font-weight:700;">✦</span> Приоритетна видимост 90 дни (300€)</div>
+    <div style="font-size:13px;color:var(--text);"><span style="color:var(--accent);font-weight:700;">✦</span> 30 дни соц. медия шаблони (250€)</div>
+    <div style="font-size:13px;color:var(--text);"><span style="color:var(--accent);font-weight:700;">✦</span> Затворена група + обучения (200€)</div>
+    <div style="font-size:13px;color:var(--text);"><span style="color:var(--accent);font-weight:700;">✦</span> Сертификат „Основател" (100€)</div>
+  </div>
+  <p style="font-size:13px;margin-top:16px;font-weight:600;color:var(--muted);">Когато кръгът се затвори, няма втора покана.</p>
 </div>
 
 <div class="billing-toggle">

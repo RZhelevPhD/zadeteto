@@ -142,6 +142,12 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 .zd-footer-links a:hover { color:var(--accent); }
 .zd-footer-copy { font-size:12px; color:var(--muted); opacity:0.6; }
 
+/* Impact items */
+.impact-item { display:flex; gap:16px; padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:16px; margin-bottom:12px; align-items:flex-start; }
+.impact-icon { width:40px; height:40px; border-radius:10px; background:rgba(217,87,87,0.08); color:var(--red); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px; font-weight:700; }
+.impact-text h4 { font-size:15px; font-family:'DM Sans',sans-serif; font-weight:700; margin-bottom:4px; color:var(--red); }
+.impact-text p { font-size:13px; color:var(--muted); line-height:1.5; }
+
 /* RESPONSIVE */
 @media(max-width:768px) {
   .audit-hero { padding:100px 24px 40px; }
@@ -235,45 +241,45 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
     </div>
 
     <div class="checklist-grid" id="checklistGrid">
-      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="photos" data-weight="20" onclick="toggleCheck(this)">
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="photos" data-weight="18" onclick="toggleCheck(this)">
         <div class="check-toggle"></div>
         <div class="check-content">
           <h3>Снимки на бизнеса</h3>
           <p>Имате ли поне 10 качествени снимки в Google профила? Родителите първо гледат снимките.</p>
         </div>
-        <div class="check-weight">20%</div>
+        <div class="check-weight">18%</div>
       </div>
-      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="hours" data-weight="10" onclick="toggleCheck(this)">
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="hours" data-weight="8" onclick="toggleCheck(this)">
         <div class="check-toggle"></div>
         <div class="check-content">
           <h3>Работно време</h3>
           <p>Попълнено ли е работното ви време? Родителите искат да знаят кога сте отворени.</p>
         </div>
-        <div class="check-weight">10%</div>
+        <div class="check-weight">8%</div>
       </div>
-      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="description" data-weight="15" onclick="toggleCheck(this)">
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="description" data-weight="13" onclick="toggleCheck(this)">
         <div class="check-toggle"></div>
         <div class="check-content">
           <h3>Описание на бизнеса</h3>
           <p>Имате ли описание в Google профила? То помага на родителите да разберат какво предлагате.</p>
         </div>
-        <div class="check-weight">15%</div>
+        <div class="check-weight">13%</div>
       </div>
-      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="category" data-weight="10" onclick="toggleCheck(this)">
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="category" data-weight="8" onclick="toggleCheck(this)">
         <div class="check-toggle"></div>
         <div class="check-content">
           <h3>Правилна категория</h3>
           <p>Правилна ли е основната ви категория? Грешна категория = невидимост в търсенето.</p>
         </div>
-        <div class="check-weight">10%</div>
+        <div class="check-weight">8%</div>
       </div>
-      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="website" data-weight="15" onclick="toggleCheck(this)">
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="website" data-weight="13" onclick="toggleCheck(this)">
         <div class="check-toggle"></div>
         <div class="check-content">
           <h3>Уебсайт</h3>
           <p>Свързан ли е уебсайт към профила ви? Без сайт, родителите нямат къде да научат повече.</p>
         </div>
-        <div class="check-weight">15%</div>
+        <div class="check-weight">13%</div>
       </div>
       <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="phone" data-weight="5" onclick="toggleCheck(this)">
         <div class="check-toggle"></div>
@@ -283,25 +289,41 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
         </div>
         <div class="check-weight">5%</div>
       </div>
-      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="reviews" data-weight="15" onclick="toggleCheck(this)">
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="reviews" data-weight="13" onclick="toggleCheck(this)">
         <div class="check-toggle"></div>
         <div class="check-content">
           <h3>Поне 10 отзива</h3>
           <p>Имате ли поне 10 отзива? Под 10 — родителите не се доверяват на оценката.</p>
         </div>
-        <div class="check-weight">15%</div>
+        <div class="check-weight">13%</div>
       </div>
-      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="replies" data-weight="10" onclick="toggleCheck(this)">
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="replies" data-weight="8" onclick="toggleCheck(this)">
         <div class="check-toggle"></div>
         <div class="check-content">
           <h3>Отговори на отзиви</h3>
           <p>Отговаряте ли на всички отзиви? 89% от родителите предпочитат бизнеси, които отговарят.</p>
         </div>
-        <div class="check-weight">10%</div>
+        <div class="check-weight">8%</div>
+      </div>
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="facebook" data-weight="7" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Facebook страница</h3>
+          <p>Имате ли активна Facebook страница с актуална информация? Родителите проверяват и там.</p>
+        </div>
+        <div class="check-weight">7%</div>
+      </div>
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="instagram" data-weight="7" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Instagram профил</h3>
+          <p>Имате ли Instagram с реални снимки от дейността ви? Визуалното присъствие гради доверие.</p>
+        </div>
+        <div class="check-weight">7%</div>
       </div>
     </div>
 
-    <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:24px;" id="checkHint">Натиснете веднъж за Да (✓), повторно за Не (✕). Отговорете на всички 8 въпроса.</p>
+    <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:24px;" id="checkHint">Натиснете веднъж за Да (✓), повторно за Не (✕). Отговорете на всички 10 въпроса.</p>
     <button type="button" class="submit-btn" id="generateBtn" style="max-width:400px;margin:24px auto 0;display:block;" disabled onclick="generateReport()">Виж резултата</button>
   </section>
 </div>
@@ -335,11 +357,17 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
       <div class="profile-cards" id="profileCards"></div>
     </div>
 
-    <!-- Parent Perspective -->
+    <!-- Parent Perspective — side-by-side comparison -->
     <div class="parent-section">
       <h2>Какво виждат родителите</h2>
       <p>Когато родител търси услуга за детето си, ето какво вижда в Google за вашия бизнес:</p>
       <div class="parent-stats" id="parentStats"></div>
+    </div>
+
+    <!-- Missing items impact -->
+    <div class="impact-section" id="impactSection" style="margin-bottom:48px;">
+      <h2 style="font-size:24px;text-align:center;margin-bottom:24px;">Какво ви липсва и какво губите</h2>
+      <div id="impactList"></div>
     </div>
 
     <!-- CTA -->
@@ -393,6 +421,14 @@ document.getElementById('auditForm').addEventListener('submit', function(e) {
   var name = document.getElementById('bizName').value.trim();
   var email = document.getElementById('auditEmail').value.trim();
   var phone = document.getElementById('auditPhone').value.trim();
+
+  // Rate limiting — 1 audit per day via localStorage
+  var lastAudit = localStorage.getItem('zd_audit_last');
+  if (lastAudit && (Date.now() - parseInt(lastAudit)) < 86400000) {
+    errBox.textContent = 'Вече генерирахте одит днес. Опитайте отново утре.';
+    errBox.style.display = 'block';
+    return;
+  }
 
   if (!url || !/^https?:\/\/(www\.)?(google\.\w+\/maps|maps\.google\.\w+|maps\.app\.goo\.gl\/)/.test(url)) { errBox.textContent = 'Моля въведете валиден Google Maps линк.'; errBox.style.display = 'block'; return; }
   if (!name) { errBox.textContent = 'Моля въведете името на бизнеса.'; errBox.style.display = 'block'; return; }
@@ -473,6 +509,9 @@ function generateReport() {
   });
   auditData.score = score;
 
+  // Rate limit: mark audit as done for today
+  try { localStorage.setItem('zd_audit_last', String(Date.now())); } catch(e) {}
+
   // Save to Supabase
   if (typeof ZdApi !== 'undefined') {
     ZdApi.submitForm('audit_leads', {
@@ -511,10 +550,11 @@ function renderReport(score) {
 
   // Breakdown
   var items = [
-    { name:'Визуално присъствие', keys:['photos'], max:20 },
-    { name:'Информация за контакт', keys:['phone','hours'], max:15 },
-    { name:'Профил и описание', keys:['description','category','website'], max:40 },
-    { name:'Репутация и отзиви', keys:['reviews','replies'], max:25 }
+    { name:'Визуално присъствие', keys:['photos'], max:18 },
+    { name:'Информация за контакт', keys:['phone','hours'], max:13 },
+    { name:'Профил и описание', keys:['description','category','website'], max:34 },
+    { name:'Репутация и отзиви', keys:['reviews','replies'], max:21 },
+    { name:'Социални мрежи', keys:['facebook','instagram'], max:14 }
   ];
   var html = '';
   items.forEach(function(cat) {
@@ -538,7 +578,9 @@ function renderReport(score) {
     { key:'website', title:'Уебсайт', pass:'Уебсайтът е свързан — допълнително доверие и информация.', fail:'Без уебсайт родителите нямат къде да проверят информацията. Доверието пада.' },
     { key:'phone', title:'Телефон', pass:'Телефонът е видим — родителите могат да ви се обадят веднага.', fail:'Без телефон контактът е затруднен. Родителите искат бърза връзка.' },
     { key:'reviews', title:'Брой отзиви', pass:'Имате достатъчно отзиви — социалното доказателство работи за вас.', fail:'Под 10 отзива — родителите не се доверяват на оценката. Нужни са повече.' },
-    { key:'replies', title:'Отговори на отзиви', pass:'Отговаряте на отзивите — показвате, че ви е грижа.', fail:'Без отговори на отзивите изглежда, че не ви е грижа за обратната връзка.' }
+    { key:'replies', title:'Отговори на отзиви', pass:'Отговаряте на отзивите — показвате, че ви е грижа.', fail:'Без отговори на отзивите изглежда, че не ви е грижа за обратната връзка.' },
+    { key:'facebook', title:'Facebook страница', pass:'Имате активна Facebook страница — допълнителна точка на доверие.', fail:'Без Facebook страница губите канал, където 70% от родителите проверяват бизнеси.' },
+    { key:'instagram', title:'Instagram профил', pass:'Имате Instagram с реални снимки — визуалното присъствие работи за вас.', fail:'Без Instagram пропускате визуалния канал, който най-бързо гради доверие при младите родители.' }
   ];
   var cardsHtml = '';
   cardData.forEach(function(c) {
@@ -551,13 +593,41 @@ function renderReport(score) {
 
   // Parent stats
   var yesCount = Object.values(auditData.answers).filter(function(v){ return v; }).length;
-  var noCount = 8 - yesCount;
-  var trust = yesCount >= 6 ? 'Висока' : yesCount >= 4 ? 'Средна' : 'Ниска';
-  var trustClass = yesCount >= 6 ? 'good' : 'bad';
+  var noCount = 10 - yesCount;
+  var trust = yesCount >= 8 ? 'Висока' : yesCount >= 5 ? 'Средна' : 'Ниска';
+  var trustClass = yesCount >= 8 ? 'good' : 'bad';
   document.getElementById('parentStats').innerHTML =
-    '<div class="parent-stat"><div class="num good">' + yesCount + '/8</div><div class="desc">Попълнени елементи на профила</div></div>' +
+    '<div class="parent-stat"><div class="num good">' + yesCount + '/10</div><div class="desc">Попълнени елементи на профила</div></div>' +
     '<div class="parent-stat"><div class="num bad">' + noCount + '</div><div class="desc">Липсващи елементи, видими за родителите</div></div>' +
     '<div class="parent-stat"><div class="num ' + trustClass + '">' + trust + '</div><div class="desc">Степен на доверие от родителска гледна точка</div></div>';
+
+  // Impact items — what they're missing and what it costs them
+  var impactData = [
+    { key:'photos', title:'Липсват снимки', impact:'Родителите прескачат профили без снимки. Губите до 60% от потенциалните запитвания.' },
+    { key:'hours', title:'Няма работно време', impact:'Родителите не звънят, ако не знаят дали сте отворени. Конкурент с попълнено време печели.' },
+    { key:'description', title:'Празно описание', impact:'Google показва профила ви без контекст. Родителят не разбира какво правите и продължава.' },
+    { key:'category', title:'Грешна категория', impact:'Не се показвате при търсене за вашата услуга. Невидими сте за точните клиенти.' },
+    { key:'website', title:'Няма уебсайт', impact:'Без сайт Google ви класира по-ниско. Родителите нямат къде да проверят легитимността ви.' },
+    { key:'phone', title:'Скрит телефон', impact:'Родителите искат бърз контакт. Без телефон минават към следващия.' },
+    { key:'reviews', title:'Малко отзиви', impact:'Под 10 отзива — родителите не вярват на оценката. Нужни са поне 10 за доверие.' },
+    { key:'replies', title:'Без отговори на отзиви', impact:'89% от потребителите предпочитат бизнеси, които отговарят. Мълчанието сигнализира безразличие.' },
+    { key:'facebook', title:'Няма Facebook страница', impact:'70% от родителите проверяват бизнеси във Facebook преди да се свържат. Без страница — невидими сте за тях.' },
+    { key:'instagram', title:'Няма Instagram профил', impact:'Instagram е визуалният канал №1 за млади родители. Без него губите най-бързо растящата аудитория.' }
+  ];
+  var impactHtml = '';
+  var hasImpact = false;
+  impactData.forEach(function(item) {
+    if (!auditData.answers[item.key]) {
+      hasImpact = true;
+      impactHtml += '<div class="impact-item"><div class="impact-icon">!</div>' +
+        '<div class="impact-text"><h4>' + item.title + '</h4><p>' + item.impact + '</p></div></div>';
+    }
+  });
+  if (hasImpact) {
+    document.getElementById('impactList').innerHTML = impactHtml;
+  } else {
+    document.getElementById('impactSection').style.display = 'none';
+  }
 }
 </script>
 
