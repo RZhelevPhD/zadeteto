@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>За партньори — За Детето</title>
-<meta name="description" content="Станете партньор на За Детето. Кандидатствайте за верификация и достигнете до хиляди родители, които търсят качество.">
+<meta name="description" content="Стартираме на 1 юни 2026. Запишете се в листата на чакащите и заключете цената си завинаги като основател на За Детето.">
 
 <!-- SEO -->
 <link rel="canonical" href="https://zadeteto.com/partners.html">
@@ -15,7 +15,7 @@
 <meta property="og:locale" content="bg_BG">
 <meta property="og:url" content="https://zadeteto.com/partners.html">
 <meta property="og:title" content="За партньори — За Детето">
-<meta property="og:description" content="Станете партньор на За Детето. Кандидатствайте за верификация и достигнете до хиляди родители, които търсят качество.">
+<meta property="og:description" content="Стартираме на 1 юни 2026. Запишете се в листата на чакащите и заключете цената си завинаги като основател на За Детето.">
 <meta property="og:image" content="https://zadeteto.com/brand_assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -24,7 +24,7 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="За партньори — За Детето">
-<meta name="twitter:description" content="Станете партньор на За Детето. Кандидатствайте за верификация и достигнете до хиляди родители.">
+<meta name="twitter:description" content="Стартираме на 1 юни 2026. Запишете се в листата на чакащите и станете основател на За Детето.">
 <meta name="twitter:image" content="https://zadeteto.com/brand_assets/og-image.png">
 
 <!-- Favicon -->
@@ -94,7 +94,13 @@
   .form-group input, .form-group select { width:100%; padding:16px; border:1px solid var(--border); border-radius:12px; font-family:'DM Sans',sans-serif; font-size:15px; outline:none; transition:border-color 0.2s; background:#fcfcfd; }
   .form-group input:focus, .form-group select:focus { border-color:var(--accent); background:#fff; box-shadow:0 0 0 4px rgba(124,77,255,0.1); }
   .submit-btn { width:100%; padding:18px; background:var(--accent); color:#fff; border:none; border-radius:12px; font-weight:600; font-size:16px; cursor:pointer; margin-top:24px; box-shadow:0 6px 20px rgba(124,77,255,0.25); transition:transform 0.2s; }
-  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(124,77,255,0.35); }
+  .submit-btn:hover, .submit-btn:focus-visible { transform:translateY(-2px); box-shadow:0 10px 28px rgba(124,77,255,0.35); }
+  .submit-btn:active { transform:scale(0.97); }
+
+  /* LAUNCH BADGE */
+  .launch-badge { display:inline-block; background:var(--accent); color:#fff; padding:10px 28px; border-radius:40px; font-size:14px; font-weight:700; letter-spacing:0.5px; margin-bottom:28px; box-shadow:0 4px 16px rgba(124,77,255,0.3); }
+  .waitlist-success { text-align:center; padding:48px 24px; }
+  .success-check { width:72px; height:72px; border-radius:50%; background:#4caf6a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:36px; margin:0 auto 24px; box-shadow:0 8px 24px rgba(76,175,106,0.3); }
 
   /* FOOTER */
   .zd-footer { border-top:1px solid rgba(0,0,0,0.05); padding:48px 40px; background:var(--surface, #fff); text-align:center; position:relative; z-index:10; margin-top:80px; }
@@ -143,10 +149,12 @@
 
 <main id="zd-main-content">
 <section class="p-hero">
+  <div class="launch-badge">Стартираме на 1 юни 2026</div>
   <h1>Влезте в единствената <span>верифицирана общност</span> за специалисти, </h1>
   <p style="font-size:24px;font-family:'DM Serif Display',serif;color:var(--text);margin-bottom:24px;">които отказват да се конкурират с аматьорите.</p>
   <p>Регистърът е отворен за професионалисти и организации, които работят с деца и родители и поемат отговорност за качеството, безопасността и стойността на това, което предлагат.</p>
-  <button class="submit-btn" style="width:auto;padding:16px 40px;border-radius:40px;font-size:16px;" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Кандидатствай сега</button>
+  <button class="submit-btn" style="width:auto;padding:16px 40px;border-radius:40px;font-size:16px;" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Запази място</button>
+  <p style="font-size:14px;color:var(--muted);margin-top:16px;">Капацитетът е ограничен. Първите в листата получават ранен достъп.</p>
 </section>
 
 <section class="section" style="background:#fff;border-radius:40px;box-shadow:0 24px 80px rgba(0,0,0,0.03);">
@@ -223,6 +231,7 @@
     </div>
   </div>
   <p style="text-align:center;color:var(--muted);font-size:14px;margin-top:24px;">Когато квотата се запълни, следващият шанс е при освобождаване на място от настоящ член.</p>
+  <p style="text-align:center;color:var(--accent);font-size:14px;font-weight:600;margin-top:12px;">Листата на чакащите определя реда на достъп след старта на 1 юни.</p>
 </section>
 
 <section class="section">
@@ -254,35 +263,20 @@
 <section class="section" id="apply">
   <div class="form-section">
 
-    <!-- STEP 1: Application form -->
-    <div id="partnerStep1">
-      <h2 style="font-size:36px;text-align:center;margin-bottom:12px;">Кандидатствай за присъединяване</h2>
-      <p class="form-sub">Попълнете формуляра и ние ще се свържем с вас със следващите стъпки.</p>
+    <!-- WAITLIST SIGNUP -->
+    <div id="partnerWaitlist">
+      <h2 style="font-size:36px;text-align:center;margin-bottom:12px;">Запишете се в листата на чакащите</h2>
+      <p class="form-sub">Ще се свържем с вас преди 1 юни с детайли за старта.</p>
 
       <form id="partnerForm" novalidate>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="name">Вашето име и фамилия</label>
-            <input type="text" id="name" name="contact_name" required placeholder="Иван Иванов">
-          </div>
-          <div class="form-group">
-            <label for="company">Име на фирмата (юридическо лице)</label>
-            <input type="text" id="company" name="company" required placeholder="Напр. Искра ООД">
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-top:8px;">
-          <label for="brand">Име на бранда / практиката</label>
-          <input type="text" id="brand" name="brand" required placeholder="Напр. Учебен център Искра">
-          <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted);font-weight:500;cursor:pointer;">
-            <input type="checkbox" id="brandSame" onchange="if(this.checked){const c=document.getElementById('company').value;document.getElementById('brand').value=c;document.getElementById('brand').setAttribute('readonly','readonly');}else{document.getElementById('brand').removeAttribute('readonly');document.getElementById('brand').value='';}" style="width:auto;margin:0;">
-            Името на бранда съвпада с това на фирмата
-          </label>
+        <div class="form-group" style="margin-bottom:24px;">
+          <label for="name">Вашето име и фамилия</label>
+          <input type="text" id="name" name="contact_name" required placeholder="Иван Иванов">
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="email">Служебен имейл</label>
+            <label for="email">Имейл</label>
             <input type="email" id="email" name="email" required placeholder="office@example.com">
           </div>
           <div class="form-group">
@@ -310,17 +304,9 @@
             </select>
           </div>
         </div>
-        <div class="form-group" style="margin-top:24px;">
-          <label for="link">Линк към уебсайт / Фейсбук страница</label>
-          <input type="url" id="link" name="website" placeholder="https://...">
-          <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted);font-weight:500;cursor:pointer;">
-            <input type="checkbox" id="noWebsite" onchange="const l=document.getElementById('link');if(this.checked){l.setAttribute('disabled','disabled');l.value='';l.style.opacity='0.4';}else{l.removeAttribute('disabled');l.style.opacity='1';}" style="width:auto;margin:0;">
-            Все още нямам уебсайт
-          </label>
-        </div>
         <div id="partnerFormError" style="display:none;background:rgba(231,76,111,0.08);border:1px solid rgba(231,76,111,0.25);color:#c23a5d;padding:12px 16px;border-radius:12px;font-size:13px;margin-top:24px;"></div>
-        <button type="submit" class="submit-btn" id="partnerSubmitBtn" style="margin-top:40px;">Кандидатствай</button>
-        <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:16px;">Вашите данни са защитени. Без обвързване или автоматични такси преди старта на одита.</p>
+        <button type="submit" class="submit-btn" id="partnerSubmitBtn" style="margin-top:40px;">Запази място в листата</button>
+        <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:16px;">Без обвързване и без такси до официалния старт.</p>
       </form>
       <script>
         (function () {
@@ -329,6 +315,7 @@
           var errBox = document.getElementById('partnerFormError');
           var originalBtnText = btn.textContent;
 
+          function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
           function showError(msg) { errBox.textContent = msg; errBox.style.display = 'block'; errBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
           function clearError() { errBox.style.display = 'none'; errBox.textContent = ''; }
 
@@ -337,93 +324,39 @@
             clearError();
 
             var contact_name = document.getElementById('name').value.trim();
-            var company = document.getElementById('company').value.trim();
-            var brand = document.getElementById('brand').value.trim();
             var email = document.getElementById('email').value.trim();
             var phone = document.getElementById('phone').value.trim();
             var city = document.getElementById('city').value.trim();
             var category = document.getElementById('category').value;
-            var website = document.getElementById('link').value.trim();
-            var noWebsite = document.getElementById('noWebsite').checked;
 
             if (!contact_name) return showError('Моля въведете вашето име.');
-            if (!company) return showError('Моля въведете името на фирмата.');
-            if (!brand) return showError('Моля въведете името на бранда.');
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Моля въведете валиден служебен имейл.');
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Моля въведете валиден имейл.');
             if (!phone || phone.replace(/[^\d]/g, '').length < 9) return showError('Моля въведете валиден телефон.');
             if (!city) return showError('Моля въведете населено място.');
             if (!category) return showError('Моля изберете категория.');
-            if (!noWebsite && website && !/^https?:\/\//i.test(website)) return showError('Линкът към сайта трябва да започва с http:// или https://');
 
             btn.disabled = true;
             btn.textContent = 'Запазване...';
             btn.style.opacity = '0.7';
 
-            // 1. Always log the application (admin can review even if signup fails later)
-            //    This row exists independent of whether the auth user gets created.
             ZdApi.submitForm('partner_applications', {
               contact_name: contact_name,
-              company: company,
-              brand: brand,
               email: email,
               phone: phone,
               city: city,
               category: category,
-              website: noWebsite ? null : (website || null),
-              status: 'pending'
+              status: 'waitlist'
             })
-              .then(async function (res) {
+              .then(function (res) {
                 if (!res || !res.ok) throw new Error('Submission failed');
 
-                // Persist application id so step 2 can link the chosen plan to it
-                if (res.id) {
-                  try { sessionStorage.setItem('zd_partner_application_id', res.id); } catch (e) {}
-                }
-
-                // 2. Try to auto-create the partner's auth user + magic link.
-                //    This is best-effort: if it fails (email already exists, Supabase
-                //    not loaded, etc), the application is still in partner_applications
-                //    and admin can manually create the user later.
-                if (window.ZdSupabase) {
-                  try {
-                    var { data: signUpData, error: signUpErr } = await window.ZdSupabase.auth.signUp({
-                      email: email,
-                      // Random throwaway password — partner will use magic link or reset
-                      password: 'tmp-' + Math.random().toString(36).slice(2) + '-' + Date.now().toString(36),
-                      options: {
-                        emailRedirectTo: window.location.origin + '/business-dashboard.html',
-                        data: {
-                          display_name: contact_name,
-                          role: 'business_owner',
-                          company: company,
-                          brand: brand
-                        }
-                      }
-                    });
-                    if (signUpErr && !(signUpErr.message || '').toLowerCase().includes('already')) {
-                      console.warn('[partner signUp]', signUpErr);
-                    } else if (signUpData && signUpData.user) {
-                      console.info('[partner signUp] auth user created:', signUpData.user.id);
-                      // 3. Send a magic link explicitly (signUp may or may not have sent
-                      //    a confirmation email depending on dashboard settings).
-                      try {
-                        await window.ZdSupabase.auth.signInWithOtp({
-                          email: email,
-                          options: { emailRedirectTo: window.location.origin + '/business-dashboard.html' }
-                        });
-                      } catch (e) { console.warn('[partner magic link]', e); }
-                    }
-                  } catch (e) {
-                    console.warn('[partner auth setup]', e);
-                  }
-                }
-
-                // 4. Advance to step 2 (plan picker) regardless of auth result —
-                //    application is recorded, partner can complete signup via the
-                //    magic link they'll receive in their inbox.
-                document.getElementById('partnerStep1').style.display = 'none';
-                document.getElementById('partnerStep2').style.display = 'block';
-                window.scrollTo({ top: document.getElementById('partnerStep2').offsetTop - 80, behavior: 'smooth' });
+                document.getElementById('partnerWaitlist').innerHTML =
+                  '<div class="waitlist-success">' +
+                    '<div class="success-check">&#10003;</div>' +
+                    '<h2 style="font-size:32px;margin-bottom:16px;">Вие сте в листата!</h2>' +
+                    '<p style="font-size:18px;color:var(--muted);line-height:1.6;max-width:500px;margin:0 auto 12px;">Ще се свържем с вас преди 1 юни 2026 г. с всичко необходимо за старта.</p>' +
+                    '<p style="font-size:14px;color:var(--muted);opacity:0.7;">Потвърждение беше изпратено на ' + esc(email) + '</p>' +
+                  '</div>';
               })
               .catch(function (err) {
                 console.error('[partner form]', err);
@@ -435,41 +368,6 @@
           });
         })();
       </script>
-    </div>
-
-    <!-- STEP 2: Choose audit level -->
-    <div id="partnerStep2" style="display:none;">
-      <h2 style="font-size:36px;text-align:center;margin-bottom:12px;">Изберете ниво на одит</h2>
-      <p class="form-sub">Изберете плана, който отговаря на нуждите на вашия бизнес.</p>
-
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:32px;">
-        <a href="pricing.html#standard" style="text-decoration:none;display:block;padding:24px;border:2px solid var(--border);border-radius:18px;background:#fff;transition:all .2s;color:var(--text);">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#777;margin-bottom:8px;">Стандартен</div>
-          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">95€</div>
-          <div style="font-size:12px;color:var(--muted);">+ 49€/год. ресертификация</div>
-        </a>
-        <a href="pricing.html#verified" style="text-decoration:none;display:block;padding:24px;border:2px solid #2e994d;border-radius:18px;background:#fff;transition:all .2s;color:var(--text);position:relative;">
-          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#2e994d;color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px;">Популярен</div>
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2e994d;margin-bottom:8px;">Проверен</div>
-          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">147€</div>
-          <div style="font-size:12px;color:var(--muted);">+ 29€/мес. или 348€/год.</div>
-        </a>
-        <a href="pricing.html#elite" style="text-decoration:none;display:block;padding:24px;border:2px solid #d4b6ff;border-radius:18px;background:#fff;transition:all .2s;color:var(--text);">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7c4dff;margin-bottom:8px;">Доверен</div>
-          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">197€</div>
-          <div style="font-size:12px;color:var(--muted);">+ 49€/мес. или 588€/год.</div>
-        </a>
-        <a href="contacts.html" style="text-decoration:none;display:block;padding:24px;border:2px solid #f5d76e;border-radius:18px;background:linear-gradient(180deg,#fffdf5 0%,#fff 100%);transition:all .2s;color:var(--text);">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#c89a00;margin-bottom:8px;">Премиум</div>
-          <div style="font-size:18px;font-weight:700;margin-bottom:4px;">Свържете се с нас</div>
-          <div style="font-size:12px;color:var(--muted);">Персонализирана оферта</div>
-        </a>
-      </div>
-
-      <div style="text-align:center;margin-top:32px;">
-        <a href="pricing.html" style="display:inline-block;padding:14px 32px;background:var(--accent);color:#fff;border-radius:14px;font-weight:600;text-decoration:none;box-shadow:0 4px 16px rgba(124,77,255,.2);">Виж пълно сравнение на плановете</a>
-      </div>
-      <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:16px;">Не сте сигурни? Свържете се с нас за консултация.</p>
     </div>
 
   </div>
