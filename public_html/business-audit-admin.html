@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="bg" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Одит панел — За Детето (Администрация)</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<script src="js/nav-inject.js"></script>
+<style>
+:root {
+  --accent:#7c4dff; --accent-light:#efe8ff; --bg:#f5f6f8; --surface:#fff; --text:#1a103c;
+  --border:#e2e4ea; --muted:#8b80b0; --danger:#e74c6f; --success:#4caf6a; --gold:#c89a00;
+}
+[data-theme="dark"] {
+  --bg:#262633; --surface:#32323f; --text:#ebebf2; --border:#42424f; --muted:#9695a8; --accent-light:rgba(124,77,255,0.18);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; display:flex; min-height:100vh; min-height:100dvh; transition:background 0.3s, color 0.3s; }
+h1,h2,h3 { font-family:'DM Serif Display',serif; }
+
+/* SIDEBAR */
+.sidebar { width:260px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:24px 0; z-index:10; position:sticky; top:0; height:100vh; height:100dvh; flex-shrink:0; transition:background 0.3s, border-color 0.3s; }
+.logo-box { padding:0 24px 24px; border-bottom:1px solid var(--border); margin-bottom:16px; }
+.logo-box img { height:64px; }
+[data-theme="dark"] .logo-box img { filter:brightness(0) invert(1); }
+.nav-item { padding:12px 24px; display:flex; align-items:center; gap:12px; color:var(--muted); text-decoration:none; font-weight:600; font-size:14px; cursor:pointer; border-left:3px solid transparent; background:none; border-top:none; border-right:none; border-bottom:none; width:100%; text-align:left; font-family:inherit; transition:color 0.2s, background 0.2s, border-color 0.2s; }
+.nav-item svg { width:18px; height:18px; stroke:currentColor; stroke-width:2; fill:none; flex-shrink:0; }
+.nav-item:hover { color:var(--text); background:rgba(0,0,0,0.02); }
+[data-theme="dark"] .nav-item:hover { background:rgba(255,255,255,0.04); }
+.nav-item.active { color:var(--accent); background:var(--accent-light); border-left-color:var(--accent); }
+.nav-badge { margin-left:auto; background:var(--danger); color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; }
+.sidebar-bottom { margin-top:auto; padding:24px; border-top:1px solid var(--border); }
+.logout { color:var(--danger); text-decoration:none; font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
+.admin-badge { display:inline-block; padding:3px 10px; border-radius:8px; background:rgba(231,76,111,0.1); color:var(--danger); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-left:8px; }
+
+/* MAIN */
+.main-area { flex:1; padding:40px; min-width:0; overflow-x:hidden; }
+.header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:32px; flex-wrap:wrap; gap:16px; }
+.header h1 { font-size:28px; margin-bottom:4px; }
+.header p { color:var(--muted); font-size:14px; }
+
+/* STATS ROW */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+.stat-mini { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px 20px; transition:background 0.3s, border-color 0.3s; }
+.stat-mini-val { font-size:28px; font-weight:700; font-family:'DM Serif Display',serif; margin-bottom:2px; }
+.stat-mini-label { font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
+
+/* FILTERS */
+.filter-bar { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; align-items:center; }
+.filter-pill { padding:8px 16px; border-radius:20px; border:1px solid var(--border); background:var(--bg); cursor:pointer; font-size:13px; font-weight:600; color:var(--muted); transition:color 0.2s, background 0.2s, border-color 0.2s; font-family:inherit; }
+.filter-pill:hover { color:var(--text); border-color:var(--text); }
+.filter-pill.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+.filter-search { padding:8px 14px; border:1px solid var(--border); border-radius:20px; font-size:13px; font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); outline:none; min-width:200px; transition:border-color 0.2s; margin-left:auto; }
+.filter-search:focus { border-color:var(--accent); }
+
+/* TABLE */
+.submissions-table { width:100%; border-collapse:separate; border-spacing:0; }
+.submissions-table th { text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); padding:12px 16px; border-bottom:2px solid var(--border); }
+.submissions-table td { padding:14px 16px; border-bottom:1px solid var(--border); font-size:14px; vertical-align:middle; }
+.submissions-table tbody tr { cursor:pointer; transition:background 0.15s; }
+.submissions-table tbody tr:hover { background:var(--accent-light); }
+.submissions-table .company-name { font-weight:600; }
+.submissions-table .tier-badge { display:inline-block; padding:3px 10px; border-radius:8px; font-size:11px; font-weight:700; }
+.tier--free { background:rgba(139,128,176,0.1); color:var(--muted); }
+.tier--standard { background:rgba(124,77,255,0.1); color:var(--accent); }
+.tier--verified { background:rgba(76,175,106,0.1); color:var(--success); }
+.tier--trusted { background:rgba(200,154,0,0.1); color:var(--gold); }
+.tier--enterprise { background:rgba(231,76,111,0.1); color:var(--danger); }
+.status-dot { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; }
+.status-dot::before { content:''; width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.status--draft::before { background:var(--muted); }
+.status--submitted::before { background:var(--gold); }
+.status--under_review::before { background:var(--accent); }
+.status--scored::before { background:#4fc3f7; }
+.status--approved::before { background:var(--success); }
+.status--rejected::before { background:var(--danger); }
+
+.empty-state { text-align:center; padding:60px 20px; color:var(--muted); }
+.empty-state svg { width:48px; height:48px; margin-bottom:16px; opacity:0.3; }
+.empty-state p { font-size:15px; }
+
+/* DETAIL PANEL (right side / overlay) */
+.detail-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.35); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:100; visibility:hidden; pointer-events:none; opacity:0; transition:opacity 0.3s, visibility 0.3s; }
+.detail-overlay.open { visibility:visible; pointer-events:auto; opacity:1; }
+.detail-panel { position:fixed; top:0; right:0; width:680px; max-width:100%; height:100vh; height:100dvh; background:var(--surface); border-left:1px solid var(--border); z-index:101; overflow-y:auto; transform:translateX(100%); transition:transform 0.35s cubic-bezier(0.16,1,0.3,1); box-shadow:-8px 0 40px rgba(0,0,0,0.1); }
+.detail-overlay.open + .detail-panel,
+.detail-panel.open { transform:translateX(0); }
+
+.detail-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:var(--surface); z-index:5; }
+.detail-header h2 { font-size:22px; }
+.detail-close { width:36px; height:36px; border-radius:10px; border:none; background:var(--bg); cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text); transition:background 0.2s; font-size:18px; }
+.detail-close:hover { background:var(--border); }
+.detail-body { padding:28px; }
+
+/* ANSWER CARD */
+.answer-card { border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:16px; transition:border-color 0.2s; }
+.answer-card:hover { border-color:var(--accent); }
+.answer-q { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.03em; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.answer-q .q-num { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:6px; background:var(--accent); color:#fff; font-size:11px; }
+.answer-val { font-size:14px; line-height:1.6; margin-bottom:12px; word-break:break-word; }
+.answer-val a { color:var(--accent); text-decoration:none; }
+.answer-val a:hover { text-decoration:underline; }
+.answer-file { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; font-size:12px; font-weight:600; color:var(--accent); text-decoration:none; margin-right:6px; margin-bottom:6px; transition:background 0.2s; }
+.answer-file:hover { background:var(--accent-light); }
+.answer-file svg { width:14px; height:14px; }
+
+/* SCORE INPUT */
+.score-row { display:flex; align-items:center; gap:10px; margin-top:8px; padding-top:10px; border-top:1px dashed var(--border); }
+.score-row label { font-size:12px; font-weight:700; color:var(--muted); white-space:nowrap; }
+.score-select { padding:6px 10px; border:1px solid var(--border); border-radius:8px; font-size:13px; font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); outline:none; min-width:70px; }
+.score-select:focus { border-color:var(--accent); }
+.score-note { flex:1; padding:6px 10px; border:1px solid var(--border); border-radius:8px; font-size:12px; font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); outline:none; }
+.score-note:focus { border-color:var(--accent); }
+.score-note::placeholder { color:var(--muted); }
+
+/* ACTION BAR */
+.action-bar { position:sticky; bottom:0; background:var(--surface); border-top:1px solid var(--border); padding:16px 28px; display:flex; gap:12px; justify-content:flex-end; z-index:5; }
+.btn-primary { padding:12px 24px; background:var(--accent); color:#fff; border:none; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; box-shadow:0 4px 12px rgba(124,77,255,0.2); transition:transform 0.2s, box-shadow 0.2s; }
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(124,77,255,0.3); }
+.btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+.btn-success { padding:12px 24px; background:var(--success); color:#fff; border:none; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; box-shadow:0 4px 12px rgba(76,175,106,0.2); transition:transform 0.2s; }
+.btn-success:hover { transform:translateY(-1px); }
+.btn-danger { padding:12px 24px; background:var(--danger); color:#fff; border:none; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:transform 0.2s; }
+.btn-danger:hover { transform:translateY(-1px); }
+.btn-secondary { padding:12px 24px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
+
+/* TOAST */
+.toast { position:fixed; bottom:24px; right:24px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 24px; box-shadow:0 8px 30px rgba(0,0,0,0.12); display:flex; align-items:center; gap:12px; font-size:14px; font-weight:600; z-index:9999; transform:translateY(120%); transition:transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+.toast.show { transform:translateY(0); }
+.toast--success { border-left:4px solid var(--success); }
+.toast--error { border-left:4px solid var(--danger); }
+
+/* FOOTER */
+.zd-footer { border-top:1px solid var(--border); padding:32px 40px; background:var(--surface); text-align:center; margin-top:40px; border-radius:20px; }
+.zd-footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:12px; flex-wrap:wrap; }
+.zd-footer-links a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:500; transition:color 0.2s; }
+.zd-footer-links a:hover { color:var(--accent); }
+.zd-footer-copy { font-size:12px; color:var(--muted); opacity:0.6; }
+
+/* RANKED LIST (read-only display) */
+.ranked-display { list-style:none; display:flex; flex-wrap:wrap; gap:6px; }
+.ranked-display li { display:inline-flex; align-items:center; gap:4px; padding:4px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; font-size:13px; font-weight:500; }
+.ranked-display .rank-num { width:18px; height:18px; border-radius:4px; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; }
+
+/* GALLERY */
+.answer-gallery { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.answer-gallery img { width:80px; height:80px; object-fit:cover; border-radius:8px; border:1px solid var(--border); cursor:pointer; transition:transform 0.2s; }
+.answer-gallery img:hover { transform:scale(1.05); }
+
+@media(max-width:900px){
+  body { flex-direction:column; }
+  .sidebar { width:100%; height:auto; position:relative; padding:16px 0; flex-direction:row; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .sidebar::-webkit-scrollbar { display:none; }
+  .logo-box, .sidebar-bottom { display:none; }
+  .nav-item { white-space:nowrap; padding:10px 16px; border-left:none; border-bottom:3px solid transparent; }
+  .nav-item.active { border-left:none; border-bottom-color:var(--accent); }
+  .main-area { padding:20px; }
+  .stats-row { grid-template-columns:repeat(2,1fr); }
+  .detail-panel { width:100%; }
+}
+@media(max-width:480px){
+  .main-area { padding:16px 12px; }
+  .header h1 { font-size:22px; }
+  .stats-row { grid-template-columns:1fr; }
+  .zd-footer { padding:24px 16px; }
+  .action-bar { flex-wrap:wrap; }
+  .action-bar button { flex:1; min-width:120px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-box">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето">
+  </div>
+  <a href="business-dashboard.html" class="nav-item">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Табло
+  </a>
+  <a href="business-audit-admin.html" class="nav-item active">
+    <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Одит панел <span class="admin-badge">Admin</span>
+  </a>
+  <div class="sidebar-bottom">
+    <a href="#" class="logout" onclick="event.preventDefault(); zdSignOut();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Изход</a>
+  </div>
+</aside>
+
+<main class="main-area">
+  <div class="header">
+    <div>
+      <h1>Одит панел</h1>
+      <p>Преглед и оценяване на партньорски въпросници.</p>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-mini"><div class="stat-mini-val" id="statTotal">—</div><div class="stat-mini-label">Общо подадени</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" id="statPending" style="color:var(--gold);">—</div><div class="stat-mini-label">Чакат преглед</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" id="statScored" style="color:var(--accent);">—</div><div class="stat-mini-label">Оценени</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" id="statApproved" style="color:var(--success);">—</div><div class="stat-mini-label">Одобрени</div></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <button class="filter-pill active" data-filter="all" onclick="setFilter(this)">Всички</button>
+    <button class="filter-pill" data-filter="submitted" onclick="setFilter(this)">Нови</button>
+    <button class="filter-pill" data-filter="under_review" onclick="setFilter(this)">В преглед</button>
+    <button class="filter-pill" data-filter="scored" onclick="setFilter(this)">Оценени</button>
+    <button class="filter-pill" data-filter="approved" onclick="setFilter(this)">Одобрени</button>
+    <button class="filter-pill" data-filter="rejected" onclick="setFilter(this)">Отхвърлени</button>
+    <button class="filter-pill" data-filter="draft" id="draftFilterPill" style="display:none;" onclick="setFilter(this)">Чернови</button>
+    <input type="search" class="filter-search" placeholder="Търси по име или ЕИК..." id="searchInput" oninput="applyFilters()">
+  </div>
+
+  <!-- Submissions table -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;">
+    <table class="submissions-table">
+      <thead>
+        <tr>
+          <th>Партньор</th>
+          <th>Ниво</th>
+          <th>Статус</th>
+          <th>Изпратен на</th>
+          <th>Оценка</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="5" class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><p>Зареждане...</p></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Superadmin: Partner Profile Browser -->
+  <div id="profileSection" style="display:none;margin-top:40px;">
+    <h2 style="font-size:22px;margin-bottom:20px;">Партньорски профили</h2>
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">
+      <select id="profileSelect" style="flex:1;min-width:260px;padding:12px 16px;border:1px solid var(--border);border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);outline:none;" onchange="loadProfile(this.value)">
+        <option value="">— Изберете партньор —</option>
+      </select>
+      <button class="btn-primary" onclick="saveProfile()" id="profileSaveBtn" style="display:none;">Запази промените</button>
+    </div>
+    <div id="profileEditor" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;"></div>
+  </div>
+
+  <footer class="zd-footer">
+    <div class="zd-footer-links">
+      <a href="terms.html">Общи условия</a>
+      <a href="privacy.html">Поверителност</a>
+      <a href="contacts.html">Контакти</a>
+    </div>
+    <p class="zd-footer-copy">&copy; 2025–2026 За Детето. Всички права запазени.</p>
+  </footer>
+</main>
+
+<!-- Detail slide-out panel -->
+<div class="detail-overlay" id="detailOverlay" role="presentation" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detailPanel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+  <div class="detail-header">
+    <h2 id="detailTitle">Преглед на въпросник</h2>
+    <button class="detail-close" onclick="closeDetail()" aria-label="Затвори">&times;</button>
+  </div>
+  <div class="detail-body" id="detailBody">
+    <!-- Populated by JS -->
+  </div>
+  <div class="action-bar" id="actionBar">
+    <button class="btn-secondary" onclick="closeDetail()">Затвори</button>
+    <button class="btn-primary" id="btnSaveScores" onclick="saveScores()">Запази оценки</button>
+    <button class="btn-success" id="btnApprove" onclick="changeStatus('approved')">Одобри</button>
+    <button class="btn-danger" id="btnReject" onclick="changeStatus('rejected')">Отхвърли</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="alert" aria-live="assertive"><span id="toastMsg"></span></div>
+
+<script src="js/cookie-banner.js"></script>
+<script src="js/supabase-init.js"></script>
+<script src="js/zd-security.js"></script>
+<script>
+/* ─────────── State ─────────── */
+var allSubmissions = [];
+var currentFilter = 'all';
+var currentSubmission = null; // the one open in detail panel
+
+/* ─────────── Question definitions ─────────── */
+var QUESTIONS = {
+  L1_Q01: 'Юридическо наименование',
+  L1_Q02: 'ЕИК / БУЛСТАТ',
+  L1_Q03: 'Упълномощен представител (МОЛ)',
+  L1_Q04: 'Документ за представителство',
+  L1_Q05: 'Градове на дейност',
+  L1_Q06: 'Категории услуги',
+  L1_Q07: 'Мисия и ценности',
+  L1_Q08: 'Лого',
+  L1_Q09: 'Онлайн присъствие',
+  L1_Q10: 'Възрастови групи',
+  L2_Q01: 'Специалисти и дипломи',
+  L2_Q02: 'Допълнителни специализации',
+  L2_Q03: 'Описание на услуги',
+  L2_Q04: 'Ценова листа',
+  L2_Q05: 'Работно време',
+  L2_Q06: 'Общи условия / договор',
+  L2_Q07: 'Начини на плащане',
+  L2_Q08: 'Снимки на пространството',
+  L2_Q09: 'Среден брой клиенти/месец',
+  L2_Q10: 'Приход за предходната година',
+  L2_Q11: 'Договор за наем',
+  L2_Q12: 'Политика за отказ',
+  L2_Q13: 'Гаранция',
+  L3_Q01: 'Пожарна безопасност',
+  L3_Q02: 'Безопасност за деца',
+  L3_Q03: 'Удостоверение от РЗИ',
+  L3_Q04: 'Застраховка проф. отговорност',
+  L3_Q05: 'Процедура при спешен случай',
+  L3_Q06: 'Достъп за хора с увреждания',
+  L3_Q07: 'Google Maps профил',
+  L3_Q08: 'Facebook страница',
+  L3_Q09: 'Обратна връзка от родители',
+  L3_Q10: 'Управление на жалби',
+  L3_Q11: 'Система за записване',
+  L3_Q12: 'Брой служители',
+  L4_Q01: 'Методология',
+  L4_Q02: 'Проследяване на напредък',
+  L4_Q03: 'Комуникация с родители',
+  L4_Q04: 'Обучения / супервизия',
+  L4_Q05: 'Защита на лични данни (GDPR)',
+  L4_Q06: 'Закрила на детето',
+  L4_Q07: 'Сътрудничество с външни специалисти',
+  L4_Q08: 'Продължаващо проф. развитие (CPD)',
+  L4_Q09: 'Маркетингови материали',
+  L4_Q10: 'Бизнес план / стратегия',
+  L4_Q11: 'Регистрация по ДДС',
+  L4_Q12: 'Членство в организация',
+  L5_Q01: 'Локации',
+  L5_Q02: 'Управленска структура',
+  L5_Q03: 'Вътрешни стандарти / SOP',
+  L5_Q04: 'Система за качество (ISO)',
+  L5_Q05: 'HR политики',
+  L5_Q06: 'Съотношение специалист:деца',
+  L5_Q07: 'Централизирани системи (CRM/ERP)',
+  L5_Q08: 'Вътрешни одити',
+  L5_Q09: 'Социално въздействие',
+  L5_Q10: 'Одитиран финансов отчет',
+  L5_Q11: 'Брандова консистентност',
+  L5_Q12: 'Стратегически цели 3–5 г.'
+};
+
+var TIER_MAP = {
+  'Безплатен': 'tier--free',
+  'Стандартен': 'tier--standard',
+  'Проверен': 'tier--verified',
+  'Доверен': 'tier--trusted',
+  'Ентърпрайз': 'tier--enterprise'
+};
+
+var STATUS_LABELS = {
+  draft: 'Чернова',
+  submitted: 'Нов',
+  under_review: 'В преглед',
+  scored: 'Оценен',
+  approved: 'Одобрен',
+  rejected: 'Отхвърлен'
+};
+
+/* ─────────── Load submissions ─────────── */
+async function loadSubmissions() {
+  if (!window.ZdSupabase) return;
+  var sb = window.ZdSupabase;
+
+  // Superadmin sees everything including drafts; regular admin sees non-drafts only
+  var query = sb.from('audit_submissions')
+    .select('id, business_id, tier, status, submitted_at, created_at, businesses(name, slug, logo)')
+    .order('submitted_at', { ascending: false, nullsFirst: false });
+
+  if (!window.ZdIsSuperadmin) {
+    query = query.neq('status', 'draft');
+  }
+
+  var { data, error } = await query;
+
+  if (error) { console.error(error); return; }
+  allSubmissions = data || [];
+
+  // Load scores for each submission
+  var ids = allSubmissions.map(function(s) { return s.id; });
+  if (ids.length > 0) {
+    var { data: scores } = await sb.from('audit_scores')
+      .select('submission_id, score')
+      .in('submission_id', ids);
+
+    // Compute average per submission
+    var scoreMap = {};
+    (scores || []).forEach(function(s) {
+      if (!scoreMap[s.submission_id]) scoreMap[s.submission_id] = [];
+      scoreMap[s.submission_id].push(s.score);
+    });
+    allSubmissions.forEach(function(sub) {
+      var arr = scoreMap[sub.id];
+      if (arr && arr.length > 0) {
+        sub._avgScore = (arr.reduce(function(a,b){return a+b;},0) / arr.length).toFixed(1);
+        sub._scoreCount = arr.length;
+      }
+    });
+  }
+
+  updateStats();
+  renderTable();
+}
+
+/* ─────────── Stats ─────────── */
+function updateStats() {
+  document.getElementById('statTotal').textContent = allSubmissions.length;
+  document.getElementById('statPending').textContent = allSubmissions.filter(function(s) { return s.status === 'submitted'; }).length;
+  document.getElementById('statScored').textContent = allSubmissions.filter(function(s) { return s.status === 'scored'; }).length;
+  document.getElementById('statApproved').textContent = allSubmissions.filter(function(s) { return s.status === 'approved'; }).length;
+}
+
+/* ─────────── Filter ─────────── */
+function setFilter(btn) {
+  document.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  currentFilter = btn.dataset.filter;
+  applyFilters();
+}
+
+function applyFilters() {
+  var search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  var filtered = allSubmissions.filter(function(s) {
+    if (currentFilter !== 'all' && s.status !== currentFilter) return false;
+    if (search) {
+      var name = (s.businesses && s.businesses.name || '').toLowerCase();
+      if (name.indexOf(search) === -1) return false;
+    }
+    return true;
+  });
+  renderTable(filtered);
+}
+
+/* ─────────── Render table ─────────── */
+function renderTable(list) {
+  list = list || allSubmissions;
+  var tbody = document.getElementById('tableBody');
+
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><p>Няма намерени въпросници.</p></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map(function(s) {
+    var name = s.businesses ? ZdSec.escapeHtml(s.businesses.name) : '(изтрит бизнес)';
+    var tierClass = TIER_MAP[s.tier] || 'tier--free';
+    var safeStatus = STATUS_LABELS.hasOwnProperty(s.status) ? s.status : 'draft';
+    var statusLabel = STATUS_LABELS[safeStatus];
+    var date = s.submitted_at ? new Date(s.submitted_at).toLocaleDateString('bg-BG') : '—';
+    var score = s._avgScore ? s._avgScore + ' <span style="color:var(--muted);font-size:11px;">(' + s._scoreCount + ' въпр.)</span>' : '—';
+
+    return '<tr onclick="openDetail(\'' + ZdSec.escapeHtml(s.id) + '\')">' +
+      '<td class="company-name">' + name + '</td>' +
+      '<td><span class="tier-badge ' + tierClass + '">' + ZdSec.escapeHtml(s.tier) + '</span></td>' +
+      '<td><span class="status-dot status--' + safeStatus + '">' + statusLabel + '</span></td>' +
+      '<td>' + date + '</td>' +
+      '<td>' + score + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+/* ─────────── Open detail panel ─────────── */
+async function openDetail(submissionId) {
+  if (!window.ZdSupabase) return;
+  var sb = window.ZdSupabase;
+  currentSubmission = allSubmissions.find(function(s) { return s.id === submissionId; });
+  if (!currentSubmission) return;
+
+  // Update status to under_review if it was submitted
+  if (currentSubmission.status === 'submitted') {
+    await sb.from('audit_submissions').update({ status: 'under_review' }).eq('id', submissionId);
+    currentSubmission.status = 'under_review';
+    updateStats();
+    renderTable();
+  }
+
+  // Load answers
+  var { data: answers } = await sb.from('audit_answers')
+    .select('question_key, answer_value')
+    .eq('submission_id', submissionId)
+    .order('question_key');
+
+  // Load files
+  var { data: files } = await sb.from('audit_files')
+    .select('question_key, storage_path, original_name, mime_type')
+    .eq('submission_id', submissionId);
+
+  // Load existing scores
+  var { data: scores } = await sb.from('audit_scores')
+    .select('question_key, score, auditor_note')
+    .eq('submission_id', submissionId);
+
+  var scoreMap = {};
+  (scores || []).forEach(function(s) { scoreMap[s.question_key] = s; });
+
+  var fileMap = {};
+  (files || []).forEach(function(f) {
+    if (!fileMap[f.question_key]) fileMap[f.question_key] = [];
+    fileMap[f.question_key].push(f);
+  });
+
+  // Render
+  var name = currentSubmission.businesses ? ZdSec.escapeHtml(currentSubmission.businesses.name) : '';
+  document.getElementById('detailTitle').textContent = name + ' — ' + currentSubmission.tier;
+
+  var body = document.getElementById('detailBody');
+  var html = '';
+
+  // Status info
+  html += '<div style="margin-bottom:20px;padding:12px 16px;border-radius:10px;background:var(--bg);font-size:13px;color:var(--muted);">';
+  var detailSafeStatus = STATUS_LABELS.hasOwnProperty(currentSubmission.status) ? currentSubmission.status : 'draft';
+  html += '<strong>Статус:</strong> <span class="status-dot status--' + detailSafeStatus + '">' + STATUS_LABELS[detailSafeStatus] + '</span>';
+  if (currentSubmission.submitted_at) html += ' &bull; <strong>Изпратен:</strong> ' + new Date(currentSubmission.submitted_at).toLocaleString('bg-BG');
+  html += '</div>';
+
+  // Answers
+  (answers || []).forEach(function(a) {
+    var qLabel = QUESTIONS[a.question_key] || a.question_key;
+    var qNum = a.question_key.replace(/L\d+_Q/, '');
+    var existing = scoreMap[a.question_key];
+
+    html += '<div class="answer-card" data-qkey="' + a.question_key + '">';
+    html += '<div class="answer-q"><span class="q-num">' + qNum + '</span> ' + ZdSec.escapeHtml(qLabel) + '</div>';
+    html += '<div class="answer-val">' + renderAnswerValue(a.question_key, a.answer_value) + '</div>';
+
+    // Files
+    var qFiles = fileMap[a.question_key];
+    if (qFiles && qFiles.length > 0) {
+      qFiles.forEach(function(f) {
+        var downloadUrl = getFileUrl(f.storage_path);
+        html += '<a href="' + downloadUrl + '" target="_blank" rel="noopener noreferrer" class="answer-file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' + ZdSec.escapeHtml(f.original_name) + '</a>';
+      });
+    }
+
+    // Score input
+    html += '<div class="score-row">';
+    html += '<label for="score_' + a.question_key + '">Оценка:</label>';
+    html += '<select class="score-select" id="score_' + a.question_key + '" data-qkey="' + a.question_key + '">';
+    html += '<option value="">—</option>';
+    [0,4,6,8,10].forEach(function(v) {
+      var sel = (existing && existing.score === v) ? ' selected' : '';
+      var labels = {0:'0 — Липсват свидетелства', 4:'4 — Критични пропуски', 6:'6 — Малки пропуски', 8:'8 — Отговаря на стандарта', 10:'10 — Над стандарта'};
+      html += '<option value="' + v + '"' + sel + '>' + labels[v] + '</option>';
+    });
+    html += '</select>';
+    html += '<input type="text" class="score-note" id="note_' + a.question_key + '" placeholder="Бележка..." value="' + ZdSec.escapeHtml((existing && existing.auditor_note) || '') + '">';
+    html += '</div>';
+
+    html += '</div>';
+  });
+
+  body.innerHTML = html;
+
+  // Show/hide action buttons based on status
+  var btnApprove = document.getElementById('btnApprove');
+  var btnReject = document.getElementById('btnReject');
+  if (currentSubmission.status === 'approved' || currentSubmission.status === 'rejected') {
+    btnApprove.style.display = 'none';
+    btnReject.style.display = 'none';
+  } else {
+    btnApprove.style.display = '';
+    btnReject.style.display = '';
+  }
+
+  // Open panel
+  document.getElementById('detailOverlay').classList.add('open');
+  document.getElementById('detailPanel').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('open');
+  document.getElementById('detailPanel').classList.remove('open');
+  currentSubmission = null;
+}
+
+/* ─────────── Render answer values ─────────── */
+function renderAnswerValue(key, val) {
+  if (!val) return '<span style="color:var(--muted);">—</span>';
+
+  // Text
+  if (val.text != null) return ZdSec.escapeHtml(val.text);
+
+  // Ranked items
+  if (val.items && val.items.length > 0 && val.items[0].rank != null) {
+    return '<ul class="ranked-display">' + val.items.map(function(it) {
+      return '<li><span class="rank-num">' + it.rank + '</span> ' + ZdSec.escapeHtml(it.value || it.url || '') +
+        (it.type ? ' <span style="color:var(--muted);font-size:11px;">(' + ZdSec.escapeHtml(it.type) + ')</span>' : '') + '</li>';
+    }).join('') + '</ul>';
+  }
+
+  // URL items (Q9)
+  if (val.items && val.items.length > 0 && val.items[0].url != null) {
+    return val.items.map(function(it) {
+      var safeUrl = ZdSec.sanitizeUrl(it.url);
+      return '<span style="margin-right:12px;"><strong>' + ZdSec.escapeHtml(it.type) + ':</strong> <a href="' + safeUrl + '" target="_blank" rel="noopener">' + ZdSec.escapeHtml(it.url) + '</a></span>';
+    }).join('<br>');
+  }
+
+  // Range (age)
+  if (val.from != null && val.to != null) {
+    return 'от <strong>' + val.from + '</strong> г. до <strong>' + val.to + '</strong> г.';
+  }
+
+  // Group (Q3 — МОЛ)
+  if (val.name != null) {
+    return '<strong>' + ZdSec.escapeHtml(val.name) + '</strong> — ' + ZdSec.escapeHtml(val.role || '') +
+      '<br>Тел: ' + ZdSec.escapeHtml(val.phone || '') + ' &bull; ' + ZdSec.escapeHtml(val.email || '');
+  }
+
+  // Checkbox selected
+  if (val.selected) {
+    return val.selected.map(function(s) { return ZdSec.escapeHtml(s); }).join(', ');
+  }
+
+  // Repeater entries
+  if (val.entries) {
+    return val.entries.map(function(e, i) {
+      return '<div style="padding:6px 0;' + (i > 0 ? 'border-top:1px solid var(--border);margin-top:6px;' : '') + '">' +
+        Object.keys(e).filter(function(k) { return k !== 'file_id'; }).map(function(k) {
+          return '<strong>' + ZdSec.escapeHtml(k) + ':</strong> ' + ZdSec.escapeHtml(String(e[k]));
+        }).join(' &bull; ') + '</div>';
+    }).join('');
+  }
+
+  // Time grid
+  if (val.mon != null || val.tue != null) {
+    var days = {mon:'Пон',tue:'Вт',wed:'Ср',thu:'Чет',fri:'Пет',sat:'Съб',sun:'Нед'};
+    return Object.keys(days).map(function(d) {
+      return '<span style="margin-right:10px;"><strong>' + days[d] + ':</strong> ' + ZdSec.escapeHtml(val[d] || '—') + '</span>';
+    }).join('');
+  }
+
+  // Fallback
+  return '<pre style="font-size:12px;white-space:pre-wrap;color:var(--muted);">' + ZdSec.escapeHtml(JSON.stringify(val, null, 2)) + '</pre>';
+}
+
+/* ─────────── File URL helper ─────────── */
+function getFileUrl(storagePath) {
+  if (!window.ZdSupabase) return '#';
+  var { data } = window.ZdSupabase.storage.from('audit-files').getPublicUrl(storagePath);
+  return data ? data.publicUrl : '#';
+}
+
+/* ─────────── Save scores ─────────── */
+async function saveScores() {
+  if (!window.ZdSupabase || !currentSubmission) return;
+  if (!window.ZdCurrentUser) { showToast('Сесията ви е изтекла. Моля, влезте отново.', 'error'); return; }
+  var sb = window.ZdSupabase;
+  var userId = window.ZdCurrentUser.id;
+  var btn = document.getElementById('btnSaveScores');
+  btn.disabled = true;
+  btn.textContent = 'Запазва се...';
+
+  try {
+    var scoreRows = [];
+    document.querySelectorAll('.score-select').forEach(function(sel) {
+      var qkey = sel.dataset.qkey;
+      var val = sel.value;
+      if (val === '') return;
+      scoreRows.push({
+        submission_id: currentSubmission.id,
+        question_key: qkey,
+        score: parseInt(val, 10),
+        auditor_note: document.getElementById('note_' + qkey).value.trim() || null,
+        scored_by: userId,
+        scored_at: new Date().toISOString()
+      });
+    });
+
+    if (scoreRows.length === 0) {
+      showToast('Моля, поставете поне една оценка.', 'error');
+      return;
+    }
+
+    var { error } = await sb.from('audit_scores')
+      .upsert(scoreRows, { onConflict: 'submission_id,question_key' });
+    if (error) throw error;
+
+    // Update submission status to 'scored' if it was under_review
+    if (currentSubmission.status === 'under_review') {
+      await sb.from('audit_submissions').update({ status: 'scored' }).eq('id', currentSubmission.id);
+      currentSubmission.status = 'scored';
+    }
+
+    // Re-query all scores for this submission to compute true cumulative average
+    var { data: allScores } = await sb.from('audit_scores')
+      .select('score')
+      .eq('submission_id', currentSubmission.id);
+    if (allScores && allScores.length > 0) {
+      var totalAvg = allScores.reduce(function(a,b){return a+b.score;}, 0) / allScores.length;
+      await sb.from('businesses').update({ audit_score: Math.round(totalAvg) }).eq('id', currentSubmission.business_id);
+    }
+
+    showToast('Оценките са запазени (' + scoreRows.length + ' въпроса).', 'success');
+    loadSubmissions(); // refresh list
+  } catch(e) {
+    console.error(e);
+    showToast('Грешка при запазване: ' + (e.message || e), 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Запази оценки';
+  }
+}
+
+/* ─────────── Change status (approve/reject) ─────────── */
+async function changeStatus(newStatus) {
+  if (!window.ZdSupabase || !currentSubmission) return;
+  var sb = window.ZdSupabase;
+
+  var labels = { approved: 'одобрите', rejected: 'отхвърлите' };
+  if (!confirm('Сигурни ли сте, че искате да ' + labels[newStatus] + ' този въпросник?')) return;
+
+  try {
+    var { error } = await sb.from('audit_submissions')
+      .update({ status: newStatus })
+      .eq('id', currentSubmission.id);
+    if (error) throw error;
+
+    // If approved, update the business tier
+    if (newStatus === 'approved') {
+      await sb.from('businesses')
+        .update({ tier: currentSubmission.tier, published: true })
+        .eq('id', currentSubmission.business_id);
+    }
+
+    currentSubmission.status = newStatus;
+    showToast(newStatus === 'approved' ? 'Партньорът е одобрен! Профилът е активиран.' : 'Въпросникът е отхвърлен.', newStatus === 'approved' ? 'success' : 'error');
+    closeDetail();
+    loadSubmissions();
+  } catch(e) {
+    console.error(e);
+    showToast('Грешка: ' + (e.message || e), 'error');
+  }
+}
+
+/* ─────────── Toast ─────────── */
+function showToast(msg, type) {
+  var toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.className = 'toast toast--' + (type || 'success') + ' show';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function() { toast.classList.remove('show'); }, 4000);
+}
+
+/* ─────────── ESC closes detail ─────────── */
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDetail(); });
+
+/* ─────────── Auth gate (admin only) ─────────── */
+(async function () {
+  await new Promise(function (resolve) {
+    if (window.ZdSupabase) return resolve();
+    setTimeout(resolve, 5000);
+    window.addEventListener('zd-supabase-ready', resolve, { once: true });
+  });
+  if (!window.ZdSupabase) {
+    window.location.replace('business-login.html?error=offline');
+    return;
+  }
+  var { data: { session } } = await window.ZdSupabase.auth.getSession();
+  if (!session || !session.user) {
+    window.location.replace('business-login.html');
+    return;
+  }
+  window.ZdCurrentUser = session.user;
+
+  // Check if admin or superadmin
+  var { data: owner } = await window.ZdSupabase.from('business_owners')
+    .select('is_admin, is_superadmin')
+    .eq('id', session.user.id)
+    .single();
+
+  if (!owner || (!owner.is_admin && !owner.is_superadmin)) {
+    showToast('Нямате администраторски достъп.', 'error');
+    setTimeout(function() { window.location.replace('business-dashboard.html'); }, 2000);
+    return;
+  }
+
+  window.ZdIsSuperadmin = owner.is_superadmin || false;
+
+  window.ZdSupabase.auth.onAuthStateChange(function (event, sess) {
+    if (event === 'SIGNED_OUT' || !sess) {
+      window.location.replace('business-login.html');
+    }
+  });
+
+  loadSubmissions();
+
+  // Superadmin gets profile management section + draft filter
+  if (window.ZdIsSuperadmin) {
+    document.getElementById('profileSection').style.display = '';
+    document.getElementById('draftFilterPill').style.display = '';
+    loadProfileList();
+  }
+})();
+
+/* ─────────── Profile management (superadmin) ─────────── */
+var currentProfileId = null;
+
+async function loadProfileList() {
+  if (!window.ZdSupabase) return;
+  var { data } = await window.ZdSupabase.from('businesses')
+    .select('id, name, tier, city, published')
+    .order('name');
+  if (!data) return;
+
+  var sel = document.getElementById('profileSelect');
+  sel.innerHTML = '<option value="">— Изберете партньор (' + data.length + ' профила) —</option>';
+  data.forEach(function(b) {
+    var status = b.published ? '' : ' [неактивен]';
+    var opt = document.createElement('option');
+    opt.value = b.id;
+    opt.textContent = b.name + ' — ' + (b.tier || 'Безплатен') + ', ' + (b.city || '?') + status;
+    sel.appendChild(opt);
+  });
+}
+
+async function loadProfile(businessId) {
+  var editor = document.getElementById('profileEditor');
+  var saveBtn = document.getElementById('profileSaveBtn');
+  if (!businessId) { editor.style.display = 'none'; saveBtn.style.display = 'none'; return; }
+  if (!window.ZdSupabase) return;
+
+  var { data: biz, error } = await window.ZdSupabase.from('businesses')
+    .select('*')
+    .eq('id', businessId)
+    .single();
+
+  if (error || !biz) { showToast('Грешка при зареждане на профил.', 'error'); return; }
+  currentProfileId = businessId;
+
+  var tiers = ['Безплатен','Стандартен','Проверен','Доверен','Ентърпрайз'];
+  var tierOptions = tiers.map(function(t) {
+    return '<option value="' + t + '"' + (biz.tier === t ? ' selected' : '') + '>' + t + '</option>';
+  }).join('');
+
+  editor.innerHTML = '' +
+    '<div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border);">' +
+      (biz.logo ? '<img src="' + ZdSec.escapeHtml(biz.logo) + '" style="width:56px;height:56px;border-radius:12px;object-fit:cover;border:2px solid var(--accent);">' : '') +
+      '<div><h3 style="font-size:20px;margin-bottom:2px;">' + ZdSec.escapeHtml(biz.name) + '</h3>' +
+      '<span style="font-size:12px;color:var(--muted);">ID: ' + biz.id + ' &bull; Slug: ' + ZdSec.escapeHtml(biz.slug || '') + '</span></div>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">' +
+      fieldHtml('pe_name', 'Име', biz.name, 'text') +
+      fieldHtml('pe_tier', 'Ниво', '', 'select', tierOptions) +
+      fieldHtml('pe_city', 'Град', biz.city || '', 'text') +
+      fieldHtml('pe_address', 'Адрес', biz.address || '', 'text') +
+      fieldHtml('pe_phone', 'Телефон', biz.phone || '', 'text') +
+      fieldHtml('pe_email', 'Имейл', biz.email || '', 'email') +
+      fieldHtml('pe_website', 'Уебсайт', biz.website || '', 'url') +
+      fieldHtml('pe_facebook', 'Facebook', biz.facebook || '', 'url') +
+      fieldHtml('pe_instagram', 'Instagram', biz.instagram || '', 'url') +
+      fieldHtml('pe_audit_score', 'Одит оценка', biz.audit_score || '', 'number') +
+    '</div>' +
+    '<div style="margin-top:16px;">' +
+      fieldHtml('pe_description', 'Описание', biz.description || '', 'textarea') +
+    '</div>' +
+    '<div style="display:flex;gap:16px;margin-top:16px;align-items:center;">' +
+      '<label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer;">' +
+        '<input type="checkbox" id="pe_published" ' + (biz.published ? 'checked' : '') + ' style="accent-color:var(--accent);width:18px;height:18px;"> Публикуван' +
+      '</label>' +
+      '<label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer;">' +
+        '<input type="checkbox" id="pe_sop" ' + (biz.sop ? 'checked' : '') + ' style="accent-color:var(--accent);width:18px;height:18px;"> SOP' +
+      '</label>' +
+    '</div>';
+
+  editor.style.display = '';
+  saveBtn.style.display = '';
+}
+
+function fieldHtml(id, label, value, type, options) {
+  var safe = ZdSec.escapeHtml(String(value));
+  if (type === 'textarea') {
+    return '<div style="grid-column:1/-1;"><label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:var(--muted);">' + label + '</label>' +
+      '<textarea id="' + id + '" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:\'DM Sans\',sans-serif;background:var(--bg);color:var(--text);min-height:80px;resize:vertical;outline:none;" onfocus="this.style.borderColor=\'var(--accent)\'" onblur="this.style.borderColor=\'var(--border)\'">' + safe + '</textarea></div>';
+  }
+  if (type === 'select') {
+    return '<div><label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:var(--muted);">' + label + '</label>' +
+      '<select id="' + id + '" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:\'DM Sans\',sans-serif;background:var(--bg);color:var(--text);outline:none;">' + options + '</select></div>';
+  }
+  return '<div><label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:var(--muted);">' + label + '</label>' +
+    '<input type="' + type + '" id="' + id + '" value="' + safe + '" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:\'DM Sans\',sans-serif;background:var(--bg);color:var(--text);outline:none;" onfocus="this.style.borderColor=\'var(--accent)\'" onblur="this.style.borderColor=\'var(--border)\'"></div>';
+}
+
+async function saveProfile() {
+  if (!window.ZdSupabase || !currentProfileId) return;
+  if (!window.ZdCurrentUser) { showToast('Сесията ви е изтекла.', 'error'); return; }
+
+  var btn = document.getElementById('profileSaveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Запазва се...';
+
+  try {
+    var updates = {
+      name: document.getElementById('pe_name').value.trim(),
+      tier: document.getElementById('pe_tier').value,
+      city: document.getElementById('pe_city').value.trim(),
+      address: document.getElementById('pe_address').value.trim(),
+      phone: document.getElementById('pe_phone').value.trim(),
+      email: document.getElementById('pe_email').value.trim(),
+      website: document.getElementById('pe_website').value.trim() || null,
+      facebook: document.getElementById('pe_facebook').value.trim() || null,
+      instagram: document.getElementById('pe_instagram').value.trim() || null,
+      audit_score: parseInt(document.getElementById('pe_audit_score').value, 10) || null,
+      description: document.getElementById('pe_description').value.trim(),
+      published: document.getElementById('pe_published').checked,
+      sop: document.getElementById('pe_sop').checked
+    };
+
+    var { error } = await window.ZdSupabase.from('businesses')
+      .update(updates)
+      .eq('id', currentProfileId);
+
+    if (error) throw error;
+
+    showToast('Профилът е обновен.', 'success');
+    // Refresh dropdown label
+    loadProfileList().then(function() {
+      document.getElementById('profileSelect').value = currentProfileId;
+    });
+  } catch(e) {
+    console.error(e);
+    showToast('Грешка: ' + (e.message || e), 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Запази промените';
+  }
+}
+
+window.zdSignOut = async function () {
+  if (window.ZdSupabase) {
+    try { await window.ZdSupabase.auth.signOut(); } catch (e) { console.warn(e); }
+  }
+  window.location.replace('business-login.html');
+};
+</script>
+</body>
+</html>
