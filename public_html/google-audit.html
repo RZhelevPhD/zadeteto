@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Безплатен одит на Google профил — За Детето</title>
+<meta name="description" content="Вижте какво виждат родителите, когато ви търсят в Google. Безплатен одит на вашия Google Business профил.">
+
+<!-- SEO -->
+<link rel="canonical" href="https://zadeteto.com/google-audit.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="За Детето">
+<meta property="og:locale" content="bg_BG">
+<meta property="og:url" content="https://zadeteto.com/google-audit.html">
+<meta property="og:title" content="Безплатен одит на Google профил — За Детето">
+<meta property="og:description" content="Вижте какво виждат родителите, когато ви търсят в Google. Безплатен одит.">
+<meta property="og:image" content="https://zadeteto.com/brand_assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<script src="js/nav-inject.js"></script>
+<style>
+:root { --accent:#7c4dff; --bg:#fdfcfb; --surface:#fff; --text:#1a103c; --muted:#8b80b0; --border:#ece8f3; --green:#4caf6a; --red:#d95757; --orange:#e8a317; --yellow:#f5d76e; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+h1,h2,h3 { font-family:'DM Serif Display',serif; }
+
+/* HERO */
+.audit-hero { padding:140px 24px 60px; text-align:center; background:linear-gradient(180deg,#efe8ff 0%,var(--bg) 100%); }
+.audit-hero h1 { font-size:clamp(32px,5vw,48px); line-height:1.1; margin-bottom:16px; }
+.audit-hero h1 span { color:var(--accent); }
+.audit-hero p { font-size:18px; color:var(--muted); max-width:560px; margin:0 auto; line-height:1.6; }
+
+/* FORM CARD */
+.audit-form-card { background:var(--surface); border:1px solid var(--border); border-radius:32px; padding:48px; max-width:640px; margin:-20px auto 60px; box-shadow:0 24px 60px rgba(0,0,0,0.05); position:relative; z-index:2; }
+.form-group { margin-bottom:20px; }
+.form-group label { display:block; font-size:14px; font-weight:600; margin-bottom:8px; }
+.form-group input { width:100%; padding:16px; border:1px solid var(--border); border-radius:12px; font-family:'DM Sans',sans-serif; font-size:15px; outline:none; transition:border-color 0.2s; background:#fcfcfd; }
+.form-group input:focus { border-color:var(--accent); background:#fff; box-shadow:0 0 0 4px rgba(124,77,255,0.1); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.form-hint { font-size:12px; color:var(--muted); margin-top:6px; }
+.submit-btn { width:100%; padding:18px; background:var(--accent); color:#fff; border:none; border-radius:12px; font-weight:600; font-size:16px; cursor:pointer; margin-top:8px; box-shadow:0 6px 20px rgba(124,77,255,0.25); transition:transform 0.2s, box-shadow 0.2s; }
+.submit-btn:hover, .submit-btn:focus-visible { transform:translateY(-2px); box-shadow:0 10px 28px rgba(124,77,255,0.35); }
+.submit-btn:active { transform:scale(0.97); }
+.submit-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+.form-error { display:none; background:rgba(217,87,87,0.08); border:1px solid rgba(217,87,87,0.25); color:#c23a5d; padding:12px 16px; border-radius:12px; font-size:13px; margin-top:16px; }
+
+/* STEP INDICATOR */
+.steps-bar { display:flex; justify-content:center; gap:8px; margin-bottom:32px; }
+.step-dot { width:10px; height:10px; border-radius:50%; background:var(--border); transition:background 0.3s, transform 0.3s; }
+.step-dot.active { background:var(--accent); transform:scale(1.3); }
+.step-dot.done { background:var(--green); }
+
+/* SECTIONS VISIBILITY */
+.audit-step { display:none; }
+.audit-step.visible { display:block; }
+
+/* CHECKLIST */
+.checklist-section { max-width:800px; margin:0 auto; padding:0 24px 60px; }
+.checklist-section h2 { font-size:32px; text-align:center; margin-bottom:8px; }
+.checklist-sub { text-align:center; color:var(--muted); font-size:16px; margin-bottom:40px; }
+.map-embed { width:100%; height:300px; border-radius:20px; border:1px solid var(--border); margin-bottom:40px; overflow:hidden; background:var(--border); }
+.map-embed iframe { width:100%; height:100%; border:0; }
+.checklist-grid { display:grid; gap:16px; }
+.check-item { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px 24px; display:flex; align-items:flex-start; gap:16px; cursor:pointer; transition:border-color 0.2s, box-shadow 0.2s; user-select:none; }
+.check-item:hover { border-color:rgba(124,77,255,0.3); box-shadow:0 4px 16px rgba(0,0,0,0.04); }
+.check-item.checked { border-color:var(--green); background:rgba(76,175,106,0.03); }
+.check-item.unchecked { border-color:var(--red); background:rgba(217,87,87,0.02); }
+.check-toggle { width:28px; height:28px; border-radius:8px; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; transition:all 0.2s; font-size:14px; font-weight:700; color:transparent; }
+.check-item.checked .check-toggle { background:var(--green); border-color:var(--green); color:#fff; }
+.check-item.unchecked .check-toggle { background:var(--red); border-color:var(--red); color:#fff; }
+.check-content h3 { font-size:16px; font-family:'DM Sans',sans-serif; font-weight:700; margin-bottom:4px; }
+.check-content p { font-size:13px; color:var(--muted); line-height:1.5; }
+.check-weight { font-size:11px; font-weight:600; color:var(--muted); background:rgba(0,0,0,0.04); padding:3px 8px; border-radius:6px; flex-shrink:0; margin-top:4px; }
+
+/* REPORT */
+.report-section { max-width:900px; margin:0 auto; padding:0 24px 80px; }
+
+/* Overall score */
+.score-hero { text-align:center; margin-bottom:48px; }
+.score-hero h2 { font-size:36px; margin-bottom:24px; }
+.score-ring { width:180px; height:180px; margin:0 auto 24px; position:relative; }
+.score-ring svg { width:100%; height:100%; transform:rotate(-90deg); }
+.score-ring .track { fill:none; stroke:var(--border); stroke-width:12; }
+.score-ring .progress { fill:none; stroke-width:12; stroke-linecap:round; transition:stroke-dashoffset 1s ease, stroke 0.5s; }
+.score-value { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:48px; font-weight:700; font-family:'DM Serif Display',serif; }
+.score-label { font-size:18px; color:var(--muted); font-weight:600; }
+
+/* Score breakdown */
+.score-breakdown { background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:32px; margin-bottom:48px; }
+.score-breakdown h3 { font-size:22px; margin-bottom:24px; text-align:center; }
+.breakdown-row { display:flex; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid var(--border); }
+.breakdown-row:last-child { border-bottom:none; }
+.breakdown-name { flex:1; font-size:15px; font-weight:500; }
+.breakdown-bar { width:120px; height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
+.breakdown-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+.breakdown-pct { font-size:14px; font-weight:700; width:40px; text-align:right; }
+
+/* Profile cards zigzag */
+.profile-section h2 { font-size:28px; text-align:center; margin-bottom:32px; }
+.profile-cards { display:grid; gap:20px; margin-bottom:48px; }
+.profile-card { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:28px 32px; display:flex; align-items:flex-start; gap:20px; position:relative; overflow:hidden; }
+.profile-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; }
+.profile-card.pass::before { background:var(--green); }
+.profile-card.fail::before { background:var(--red); }
+.card-badge { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:20px; font-weight:700; }
+.pass .card-badge { background:rgba(76,175,106,0.1); color:var(--green); }
+.fail .card-badge { background:rgba(217,87,87,0.1); color:var(--red); }
+.card-body h3 { font-size:17px; font-family:'DM Sans',sans-serif; font-weight:700; margin-bottom:6px; }
+.card-body p { font-size:14px; color:var(--muted); line-height:1.55; }
+
+/* Parent perspective */
+.parent-section { background:linear-gradient(135deg,rgba(124,77,255,0.04),rgba(124,77,255,0.08)); border:1px solid rgba(124,77,255,0.15); border-radius:24px; padding:40px 32px; margin-bottom:48px; text-align:center; }
+.parent-section h2 { font-size:28px; margin-bottom:16px; }
+.parent-section > p { color:var(--muted); font-size:15px; line-height:1.6; max-width:600px; margin:0 auto 32px; }
+.parent-stats { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; }
+.parent-stat { background:var(--surface); border-radius:16px; padding:24px 16px; }
+.parent-stat .num { font-size:32px; font-family:'DM Serif Display',serif; margin-bottom:4px; }
+.parent-stat .num.good { color:var(--green); }
+.parent-stat .num.bad { color:var(--red); }
+.parent-stat .desc { font-size:13px; color:var(--muted); line-height:1.4; }
+
+/* CTA */
+.report-cta { text-align:center; padding:48px 32px; background:var(--surface); border:1px solid var(--border); border-radius:24px; }
+.report-cta h2 { font-size:28px; margin-bottom:12px; }
+.report-cta p { color:var(--muted); font-size:16px; margin-bottom:24px; max-width:500px; margin-left:auto; margin-right:auto; line-height:1.6; }
+.report-cta a { display:inline-block; padding:16px 40px; background:linear-gradient(135deg,var(--accent),#a56cff); color:#fff; border-radius:14px; font-weight:600; font-size:16px; text-decoration:none; box-shadow:0 6px 24px rgba(124,77,255,0.3); transition:transform 0.2s, box-shadow 0.2s; }
+.report-cta a:hover, .report-cta a:focus-visible { transform:translateY(-2px); box-shadow:0 10px 32px rgba(124,77,255,0.4); }
+.report-cta a:active { transform:scale(0.97); }
+
+/* Footer */
+.zd-footer { border-top:1px solid rgba(0,0,0,0.05); padding:48px 40px; background:var(--surface); text-align:center; margin-top:80px; }
+.zd-footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:16px; flex-wrap:wrap; }
+.zd-footer-links a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:500; transition:color 0.2s; }
+.zd-footer-links a:hover { color:var(--accent); }
+.zd-footer-copy { font-size:12px; color:var(--muted); opacity:0.6; }
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+  .audit-hero { padding:100px 24px 40px; }
+  .audit-form-card { padding:32px 24px; margin:-10px 16px 40px; border-radius:24px; }
+  .form-row { grid-template-columns:1fr; }
+  .parent-stats { grid-template-columns:1fr; }
+  .profile-card { padding:20px; }
+  .zd-footer { padding:32px 24px; }
+}
+@media(max-width:480px) {
+  .audit-hero { padding:80px 16px 32px; }
+  .audit-hero h1 { font-size:28px; }
+  .audit-form-card { padding:24px 16px; margin:-10px 12px 32px; }
+  .checklist-section { padding:0 16px 40px; }
+  .report-section { padding:0 16px 60px; }
+  .score-ring { width:140px; height:140px; }
+  .score-value { font-size:36px; }
+  .score-breakdown { padding:20px 16px; }
+  .parent-section { padding:28px 16px; }
+  .report-cta { padding:32px 16px; }
+  .zd-footer { padding:24px 16px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Начало</a>
+    <a href="search.html" class="nav-btn-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Търсене</a>
+    <a href="partners.html" class="nav-btn-partner">Стани партньор</a>
+    <a href="pricing.html" class="nav-link">Абонаменти</a>
+    <a href="contacts.html" class="nav-link">Контакти</a>
+    <a href="search.html?login=true" class="nav-btn-login">Вход</a>
+  </div>
+</nav>
+
+<main id="zd-main-content">
+
+<!-- ═══ STEP INDICATOR ═══ -->
+<div class="steps-bar" style="padding-top:100px;">
+  <div class="step-dot active" id="dot1"></div>
+  <div class="step-dot" id="dot2"></div>
+  <div class="step-dot" id="dot3"></div>
+</div>
+
+<!-- ═══ STEP 1: INPUT FORM ═══ -->
+<div class="audit-step visible" id="step1">
+  <section class="audit-hero">
+    <h1>Безплатен одит на вашия <span>Google профил</span></h1>
+    <p>Вижте какво виждат родителите, когато ви търсят. Получете персонализиран доклад за 2 минути.</p>
+  </section>
+
+  <div class="audit-form-card">
+    <form id="auditForm" novalidate>
+      <div class="form-group">
+        <label for="gmapsUrl">Линк към Google Maps профила ви</label>
+        <input type="url" id="gmapsUrl" required placeholder="https://maps.google.com/maps/place/...">
+        <div class="form-hint">Отворете Google Maps → намерете бизнеса си → копирайте линка от адресната лента</div>
+      </div>
+      <div class="form-group">
+        <label for="bizName">Име на бизнеса</label>
+        <input type="text" id="bizName" required placeholder="напр. Детска градина Слънчице">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="auditEmail">Имейл</label>
+          <input type="email" id="auditEmail" required placeholder="office@example.com">
+        </div>
+        <div class="form-group">
+          <label for="auditPhone">Телефон</label>
+          <input type="tel" id="auditPhone" required placeholder="+359 88 123 4567">
+        </div>
+      </div>
+      <div class="form-error" id="auditError"></div>
+      <button type="submit" class="submit-btn" id="auditSubmitBtn">Генерирай одит</button>
+      <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px;">1 безплатен одит на ден. Без спам.</p>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ STEP 2: CHECKLIST ═══ -->
+<div class="audit-step" id="step2">
+  <section class="checklist-section">
+    <h2>Оценете Google профила си</h2>
+    <p class="checklist-sub">Отговорете честно — точността на одита зависи от вашите отговори.</p>
+
+    <div class="map-embed" id="mapEmbed">
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:14px;">Зареждане на картата...</div>
+    </div>
+
+    <div class="checklist-grid" id="checklistGrid">
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="photos" data-weight="20" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Снимки на бизнеса</h3>
+          <p>Имате ли поне 10 качествени снимки в Google профила? Родителите първо гледат снимките.</p>
+        </div>
+        <div class="check-weight">20%</div>
+      </div>
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="hours" data-weight="10" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Работно време</h3>
+          <p>Попълнено ли е работното ви време? Родителите искат да знаят кога сте отворени.</p>
+        </div>
+        <div class="check-weight">10%</div>
+      </div>
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="description" data-weight="15" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Описание на бизнеса</h3>
+          <p>Имате ли описание в Google профила? То помага на родителите да разберат какво предлагате.</p>
+        </div>
+        <div class="check-weight">15%</div>
+      </div>
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="category" data-weight="10" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Правилна категория</h3>
+          <p>Правилна ли е основната ви категория? Грешна категория = невидимост в търсенето.</p>
+        </div>
+        <div class="check-weight">10%</div>
+      </div>
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="website" data-weight="15" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Уебсайт</h3>
+          <p>Свързан ли е уебсайт към профила ви? Без сайт, родителите нямат къде да научат повече.</p>
+        </div>
+        <div class="check-weight">15%</div>
+      </div>
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="phone" data-weight="5" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Телефонен номер</h3>
+          <p>Показва ли се телефон в профила? Родителите искат бърз контакт.</p>
+        </div>
+        <div class="check-weight">5%</div>
+      </div>
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="reviews" data-weight="15" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Поне 10 отзива</h3>
+          <p>Имате ли поне 10 отзива? Под 10 — родителите не се доверяват на оценката.</p>
+        </div>
+        <div class="check-weight">15%</div>
+      </div>
+      <div class="check-item" tabindex="0" role="button" aria-pressed="false" data-key="replies" data-weight="10" onclick="toggleCheck(this)">
+        <div class="check-toggle"></div>
+        <div class="check-content">
+          <h3>Отговори на отзиви</h3>
+          <p>Отговаряте ли на всички отзиви? 89% от родителите предпочитат бизнеси, които отговарят.</p>
+        </div>
+        <div class="check-weight">10%</div>
+      </div>
+    </div>
+
+    <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:24px;" id="checkHint">Натиснете веднъж за Да (✓), повторно за Не (✕). Отговорете на всички 8 въпроса.</p>
+    <button type="button" class="submit-btn" id="generateBtn" style="max-width:400px;margin:24px auto 0;display:block;" disabled onclick="generateReport()">Виж резултата</button>
+  </section>
+</div>
+
+<!-- ═══ STEP 3: REPORT ═══ -->
+<div class="audit-step" id="step3">
+  <section class="report-section">
+
+    <!-- Overall Score -->
+    <div class="score-hero">
+      <h2>Одит на <span id="reportBizName"></span></h2>
+      <div class="score-ring">
+        <svg viewBox="0 0 180 180">
+          <circle class="track" cx="90" cy="90" r="78"/>
+          <circle class="progress" id="scoreArc" cx="90" cy="90" r="78" stroke-dasharray="490" stroke-dashoffset="490"/>
+        </svg>
+        <div class="score-value" id="scoreNum">0%</div>
+      </div>
+      <div class="score-label" id="scoreLabel">Изчисляване...</div>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="score-breakdown">
+      <h3>Резултат по категории</h3>
+      <div id="breakdownList"></div>
+    </div>
+
+    <!-- Profile Cards -->
+    <div class="profile-section">
+      <h2>Google Business профил</h2>
+      <div class="profile-cards" id="profileCards"></div>
+    </div>
+
+    <!-- Parent Perspective -->
+    <div class="parent-section">
+      <h2>Какво виждат родителите</h2>
+      <p>Когато родител търси услуга за детето си, ето какво вижда в Google за вашия бизнес:</p>
+      <div class="parent-stats" id="parentStats"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="report-cta">
+      <h2>Искате по-висок резултат?</h2>
+      <p>Верифицираните партньори на За Детето получават професионален профил, видимост пред хиляди родители и доверие, което Google не може да даде.</p>
+      <a href="partners.html#apply">Запишете се в листата на чакащите</a>
+      <p style="font-size:13px;margin-top:16px;color:var(--accent);font-weight:600;">Founder's Round: заключете цената си завинаги преди 1 юни 2026</p>
+    </div>
+
+  </section>
+</div>
+
+</main>
+
+<footer class="zd-footer">
+  <div class="zd-footer-links">
+    <a href="index.html">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="report.html">Докладвай</a>
+  </div>
+  <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+<script>
+/* ═══ STATE ═══ */
+var auditData = { bizName:'', gmapsUrl:'', email:'', phone:'', answers:{}, score:0 };
+var answeredCount = 0;
+
+/* ═══ STEP NAVIGATION ═══ */
+function goToStep(n) {
+  document.querySelectorAll('.audit-step').forEach(function(s){ s.classList.remove('visible'); });
+  document.getElementById('step' + n).classList.add('visible');
+  document.querySelectorAll('.step-dot').forEach(function(d, i){
+    d.classList.remove('active','done');
+    if (i < n - 1) d.classList.add('done');
+    if (i === n - 1) d.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ═══ FORM SUBMIT ═══ */
+document.getElementById('auditForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var errBox = document.getElementById('auditError');
+  errBox.style.display = 'none';
+
+  var url = document.getElementById('gmapsUrl').value.trim();
+  var name = document.getElementById('bizName').value.trim();
+  var email = document.getElementById('auditEmail').value.trim();
+  var phone = document.getElementById('auditPhone').value.trim();
+
+  if (!url || !/^https?:\/\/(www\.)?(google\.\w+\/maps|maps\.google\.\w+|maps\.app\.goo\.gl\/)/.test(url)) { errBox.textContent = 'Моля въведете валиден Google Maps линк.'; errBox.style.display = 'block'; return; }
+  if (!name) { errBox.textContent = 'Моля въведете името на бизнеса.'; errBox.style.display = 'block'; return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errBox.textContent = 'Моля въведете валиден имейл.'; errBox.style.display = 'block'; return; }
+  if (!phone || phone.replace(/[^\d]/g, '').length < 9) { errBox.textContent = 'Моля въведете валиден телефон.'; errBox.style.display = 'block'; return; }
+
+  auditData.bizName = name;
+  auditData.gmapsUrl = url;
+  auditData.email = email;
+  auditData.phone = phone;
+
+  // Embed Google Maps
+  var embedUrl = url;
+  // Try to build a search embed from the URL
+  if (url.includes('/place/')) {
+    var placeName = decodeURIComponent(url.split('/place/')[1].split('/')[0]).replace(/\+/g, ' ');
+    embedUrl = 'https://www.google.com/maps?q=' + encodeURIComponent(placeName) + '&output=embed';
+  } else {
+    embedUrl = 'https://www.google.com/maps?q=' + encodeURIComponent(name) + '&output=embed';
+  }
+  var mapEl = document.getElementById('mapEmbed');
+  mapEl.innerHTML = '';
+  var iframe = document.createElement('iframe');
+  iframe.src = embedUrl;
+  iframe.allowFullscreen = true;
+  iframe.loading = 'lazy';
+  iframe.referrerPolicy = 'no-referrer-when-downgrade';
+  iframe.title = 'Google Maps — ' + name;
+  mapEl.appendChild(iframe);
+
+  goToStep(2);
+});
+
+/* ═══ CHECKLIST TOGGLE ═══ */
+function toggleCheck(el) {
+  if (!el.classList.contains('checked') && !el.classList.contains('unchecked')) {
+    el.classList.add('checked');
+    el.querySelector('.check-toggle').textContent = '✓';
+    answeredCount++;
+  } else if (el.classList.contains('checked')) {
+    el.classList.remove('checked');
+    el.classList.add('unchecked');
+    el.querySelector('.check-toggle').textContent = '✕';
+  } else {
+    el.classList.remove('unchecked');
+    el.classList.add('checked');
+    el.querySelector('.check-toggle').textContent = '✓';
+  }
+
+  auditData.answers[el.dataset.key] = el.classList.contains('checked');
+  el.setAttribute('aria-pressed', String(el.classList.contains('checked')));
+
+  // Enable generate button when all answered
+  var total = document.querySelectorAll('.check-item').length;
+  var answered = document.querySelectorAll('.check-item.checked, .check-item.unchecked').length;
+  document.getElementById('generateBtn').disabled = (answered < total);
+  if (answered >= total) {
+    document.getElementById('checkHint').textContent = 'Всички въпроси са отговорени. Натиснете бутона по-долу.';
+  }
+}
+
+/* ═══ KEYBOARD A11Y ═══ */
+document.getElementById('checklistGrid').addEventListener('keydown', function(e) {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('check-item')) {
+    e.preventDefault();
+    toggleCheck(e.target);
+  }
+});
+
+/* ═══ GENERATE REPORT ═══ */
+function generateReport() {
+  // Calculate score
+  var score = 0;
+  document.querySelectorAll('.check-item').forEach(function(el) {
+    if (el.classList.contains('checked')) {
+      score += parseInt(el.dataset.weight);
+    }
+  });
+  auditData.score = score;
+
+  // Save to Supabase
+  if (typeof ZdApi !== 'undefined') {
+    ZdApi.submitForm('audit_leads', {
+      business_name: auditData.bizName,
+      google_maps_url: auditData.gmapsUrl,
+      email: auditData.email,
+      phone: auditData.phone,
+      score: score,
+      answers: auditData.answers
+    }).catch(function(e) { console.warn('[audit save]', e); });
+  }
+
+  // Render report
+  renderReport(score);
+  goToStep(3);
+}
+
+function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function renderReport(score) {
+  // Business name
+  document.getElementById('reportBizName').textContent = auditData.bizName;
+
+  // Score ring
+  var circumference = 2 * Math.PI * 78; // ~490
+  var offset = circumference - (score / 100) * circumference;
+  var arc = document.getElementById('scoreArc');
+  var color = score <= 40 ? 'var(--red)' : score <= 60 ? 'var(--orange)' : score <= 80 ? 'var(--yellow)' : 'var(--green)';
+  arc.style.stroke = color;
+  setTimeout(function() { arc.style.strokeDashoffset = offset; }, 100);
+  document.getElementById('scoreNum').textContent = score + '%';
+
+  var labels = { 0:'Критично ниско', 20:'Критично ниско', 40:'Под средното', 60:'Средно', 80:'Добро', 100:'Отлично' };
+  var bucket = Math.min(Math.floor(score / 20) * 20, 100);
+  document.getElementById('scoreLabel').textContent = labels[bucket] || 'Средно';
+
+  // Breakdown
+  var items = [
+    { name:'Визуално присъствие', keys:['photos'], max:20 },
+    { name:'Информация за контакт', keys:['phone','hours'], max:15 },
+    { name:'Профил и описание', keys:['description','category','website'], max:40 },
+    { name:'Репутация и отзиви', keys:['reviews','replies'], max:25 }
+  ];
+  var html = '';
+  items.forEach(function(cat) {
+    var earned = 0;
+    cat.keys.forEach(function(k) { if (auditData.answers[k]) earned += parseInt(document.querySelector('[data-key="'+k+'"]').dataset.weight); });
+    var pct = Math.round((earned / cat.max) * 100);
+    var c = pct <= 40 ? 'var(--red)' : pct <= 70 ? 'var(--orange)' : 'var(--green)';
+    html += '<div class="breakdown-row">' +
+      '<div class="breakdown-name">' + cat.name + '</div>' +
+      '<div class="breakdown-bar"><div class="breakdown-fill" style="width:' + pct + '%;background:' + c + ';"></div></div>' +
+      '<div class="breakdown-pct" style="color:' + c + ';">' + pct + '%</div></div>';
+  });
+  document.getElementById('breakdownList').innerHTML = html;
+
+  // Profile cards
+  var cardData = [
+    { key:'photos', title:'Снимки на бизнеса', pass:'Имате качествени снимки — родителите виждат реална картина.', fail:'Без снимки родителите минават. 90% от решенията започват с визуално впечатление.' },
+    { key:'hours', title:'Работно време', pass:'Работното ви време е видимо — родителите знаят кога да ви посетят.', fail:'Без работно време родителите не знаят дали сте отворени. Това ги отблъсква.' },
+    { key:'description', title:'Описание на бизнеса', pass:'Имате описание — родителите разбират какво предлагате.', fail:'Без описание профилът ви е празен. Родителите не разбират какво правите.' },
+    { key:'category', title:'Категория', pass:'Категорията е правилна — показвате се в релевантните търсения.', fail:'Грешна категория = невидимост. Родителите няма да ви намерят при търсене.' },
+    { key:'website', title:'Уебсайт', pass:'Уебсайтът е свързан — допълнително доверие и информация.', fail:'Без уебсайт родителите нямат къде да проверят информацията. Доверието пада.' },
+    { key:'phone', title:'Телефон', pass:'Телефонът е видим — родителите могат да ви се обадят веднага.', fail:'Без телефон контактът е затруднен. Родителите искат бърза връзка.' },
+    { key:'reviews', title:'Брой отзиви', pass:'Имате достатъчно отзиви — социалното доказателство работи за вас.', fail:'Под 10 отзива — родителите не се доверяват на оценката. Нужни са повече.' },
+    { key:'replies', title:'Отговори на отзиви', pass:'Отговаряте на отзивите — показвате, че ви е грижа.', fail:'Без отговори на отзивите изглежда, че не ви е грижа за обратната връзка.' }
+  ];
+  var cardsHtml = '';
+  cardData.forEach(function(c) {
+    var ok = auditData.answers[c.key];
+    cardsHtml += '<div class="profile-card ' + (ok ? 'pass' : 'fail') + '">' +
+      '<div class="card-badge">' + (ok ? '✓' : '✕') + '</div>' +
+      '<div class="card-body"><h3>' + c.title + '</h3><p>' + (ok ? c.pass : c.fail) + '</p></div></div>';
+  });
+  document.getElementById('profileCards').innerHTML = cardsHtml;
+
+  // Parent stats
+  var yesCount = Object.values(auditData.answers).filter(function(v){ return v; }).length;
+  var noCount = 8 - yesCount;
+  var trust = yesCount >= 6 ? 'Висока' : yesCount >= 4 ? 'Средна' : 'Ниска';
+  var trustClass = yesCount >= 6 ? 'good' : 'bad';
+  document.getElementById('parentStats').innerHTML =
+    '<div class="parent-stat"><div class="num good">' + yesCount + '/8</div><div class="desc">Попълнени елементи на профила</div></div>' +
+    '<div class="parent-stat"><div class="num bad">' + noCount + '</div><div class="desc">Липсващи елементи, видими за родителите</div></div>' +
+    '<div class="parent-stat"><div class="num ' + trustClass + '">' + trust + '</div><div class="desc">Степен на доверие от родителска гледна точка</div></div>';
+}
+</script>
+
+<script src="js/cookie-banner.js"></script>
+<script src="js/analytics-loader.js"></script>
+<script src="js/supabase-init.js"></script>
+<script src="js/api-stub.js"></script>
+</body>
+</html>
