@@ -62,13 +62,13 @@
   .hero-overlay { position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, rgba(253,252,251,0.15) 0%, rgba(253,252,251,0.05) 35%, rgba(253,252,251,0.25) 65%, rgba(253,252,251,0.75) 100%); pointer-events: none; }
   .hero-content { position: relative; z-index: 3; text-align: center; max-width: 680px; padding: 44px 44px 40px; background: rgba(255,255,255,0.22); backdrop-filter: blur(8px) saturate(1.2); -webkit-backdrop-filter: blur(8px) saturate(1.2); border-radius: 32px; border: 1px solid rgba(255,255,255,0.35); box-shadow: 0 8px 40px rgba(0,0,0,0.06); }
   .hero-tag { display: inline-block; padding: 5px 14px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.6); border-radius: 100px; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 20px; }
-  .hero-content h1 { font-size: clamp(36px, 6.5vw, 60px); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px; color: var(--text); text-shadow: 0 1px 6px rgba(255,255,255,0.5); }
+  .hero-content h1 { font-size: clamp(40px, 7.2vw, 72px); line-height: 1.05; letter-spacing: -0.035em; margin-bottom: 16px; color: var(--text); text-shadow: 0 1px 6px rgba(255,255,255,0.5); font-weight: 600; }
   .hero-content h1 span { color: var(--accent); }
   .hero-content p { font-size: clamp(14px, 1.6vw, 17px); color: #2a1a4e; line-height: 1.6; max-width: 500px; margin: 0 auto 28px; text-shadow: 0 1px 4px rgba(255,255,255,0.5); }
   @media (max-width: 768px) {
     .hero-section { height: 100svh; }
     .hero-content { padding: 28px 24px 24px; margin: 0 16px; max-width: 100%; border-radius: 24px; }
-    .hero-content h1 { font-size: 32px; }
+    .hero-content h1 { font-size: 40px; line-height: 1.08; }
     .hero-content p { font-size: 14px; margin-bottom: 20px; }
     .hero-tag { font-size: 10px; margin-bottom: 14px; }
     .btn-wrap { display: block; }
@@ -77,7 +77,7 @@
   }
   @media (max-width: 480px) {
     .hero-content { padding: 20px 16px; margin: 0 12px; }
-    .hero-content h1 { font-size: 26px; }
+    .hero-content h1 { font-size: 32px; line-height: 1.1; }
     .stack-section { padding: 60px 16px; }
     .cards-section { padding: 60px 16px; }
     .steps-section div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
@@ -97,6 +97,18 @@
   .explode-btn { padding: 16px 40px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; border: none; border-radius: 14px; cursor: pointer; position: relative; transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s; z-index: 2; background: var(--accent); color: white; text-decoration: none; box-shadow: 0 6px 20px rgba(124,77,255,0.25); }
   .explode-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(124,77,255,0.35); }
   .explode-btn:active { transform: scale(0.96); }
+  .explode-btn-secondary { display: inline-block; padding: 14px 28px; background: rgba(255,255,255,0.4); border: 2px solid var(--accent); color: var(--accent); border-radius: 14px; font-weight: 600; font-size: 15px; text-decoration: none; margin-left: 10px; transition: transform 0.2s, background 0.2s, color 0.2s; font-family: 'DM Sans', sans-serif; }
+  .explode-btn-secondary:hover { background: var(--accent); color: #fff; transform: translateY(-2px); }
+  .explode-btn-secondary:active { transform: scale(0.96); }
+  .chaos-list { list-style: none; padding: 0; margin: 0 0 16px 0; }
+  .chaos-list li { position: relative; padding: 10px 0 10px 34px; color: var(--muted); font-size: 16px; line-height: 1.55; border-bottom: 1px solid rgba(124,77,255,0.08); }
+  .chaos-list li:last-child { border-bottom: none; }
+  .chaos-list li::before { content: "✕"; position: absolute; left: 0; top: 12px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; color: #c85050; font-size: 12px; font-weight: 700; background: rgba(200,80,80,0.1); border-radius: 50%; }
+  .lead-magnet-input { transition: box-shadow 0.2s; }
+  .lead-magnet-input:focus { box-shadow: 0 0 0 3px rgba(255,255,255,0.6); }
+  .lead-magnet-input[aria-invalid="true"] { box-shadow: 0 0 0 3px rgba(255,80,80,0.55); }
+  .lead-magnet-teasers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 20px; }
+  @media (max-width: 640px) { .lead-magnet-teasers { grid-template-columns: 1fr; } }
   .particle { position: fixed; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 9999; }
 
   /* ═══ STICKY STACK ═══ */
@@ -255,13 +267,14 @@
   </video>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-tag">Първата верифицирана директория за деца в България</div>
+    <div class="hero-tag"><span style="display:inline-block;width:6px;height:6px;background:#4caf6a;border-radius:50%;margin-right:8px;vertical-align:middle;box-shadow:0 0 0 3px rgba(76,175,106,0.2);"></span>Национален регистър <span aria-hidden="true">·</span> Първи в България</div>
     <h1>От „<span>надявам се</span>" до „<span>знам</span>, че избрах правилния"</h1>
-    <p style="font-size:13px;opacity:0.65;margin-bottom:12px;font-style:italic;line-height:1.5;">без гадаене, без съмнение, без онова „дано не сбърках", дето не те оставя да заспиш</p>
-    <p>Верифицирани логопеди, психолози, школи и детегледачки. Проверени от експерти с над 15 години опит.</p>
+    <p style="font-size:13px;opacity:0.7;margin-bottom:12px;font-style:italic;line-height:1.5;">без гадаене, без съмнение, без онова „дано не сбърках", дето не те оставя да заспиш</p>
+    <p><strong>Националният регистър</strong> на верифицирани логопеди, психолози, школи и детегледачки. Всеки минава през одит от експерти с над 15 години опит, преди да стигне до теб.</p>
     <div class="btn-wrap">
       <a href="search.html" class="explode-btn" data-type="particles" data-color="#7c4dff">Намери проверен специалист</a>
-      <p style="font-size:12px;opacity:0.6;margin-top:10px;margin-bottom:0;">Безплатно. Без обвързване.</p>
+      <a href="#lead-magnet" class="explode-btn-secondary">Вземи безплатния чеклист</a>
+      <p style="font-size:12px;opacity:0.7;margin-top:12px;margin-bottom:0;">Безплатно. Без обвързване. 2 минути търсене.</p>
     </div>
   </div>
 </section>
@@ -300,24 +313,36 @@
         <div class="feature-num">Целта</div>
         <h3>Не търсиш „някой". Търсиш правилния.</h3>
         <p>Правилният логопед. Правилният зъболекар. Правилната школа. Правилната детегледачка.</p>
-        <p>Не просто „някой", а точният специалист - този, който не прави компромис с развитието, здравето и безопасността на детето. Този, който не само казва какво вижда, а поема отговорност и ви води напред. Специалистът, с когото наистина сте спокойни, че сте избрали правилно.</p>
+        <p>Не просто „някой", а точният специалист. Този, който не прави компромис с развитието, здравето и безопасността на детето. Този, който не само казва какво вижда, а поема отговорност и ви води напред. Специалистът, с когото наистина сте спокойни, че сте избрали правилно.</p>
       </div>
       <div class="feature-card" data-feature="2">
         <div class="feature-num">Хаосът</div>
         <h3>47 коментара. 5 си противоречат. Добре дошли в избора.</h3>
-        <p>Ровиш във форуми и питаш в 5 Facebook групи. Получаваш 147 коментара.<br>Три или четири са полезни, но твърде общи.<br>Пет си противоречат.<br>Още няколко казват „ще го израсте".<br>Още пет са от „специалисти", които искат да им се обадиш.<br>И поне един ти пробутва хомеопатия като решение за всичко.</p>
-        <p>Докато всички спят, ровиш в Google и попадаш на табели и реклами, не на реален опит. Надяваш се просто да имаш късмет и да уцелиш нещо читаво. Но парадоксът е, че добрите специалисти не разчитат на шанс. Те разчитат на професионален, научен и медицински обоснован подход.</p>
+        <p>Ровиш във форуми и питаш в 5 Facebook групи. Получаваш 147 коментара:</p>
+        <ul class="chaos-list">
+          <li>Три-четири са полезни, но твърде общи.</li>
+          <li>Пет си противоречат.</li>
+          <li>Още няколко казват „ще го израсте".</li>
+          <li>Още пет са от „специалисти", които искат да им се обадиш.</li>
+          <li>И поне един ти пробутва хомеопатия като решение за всичко.</li>
+        </ul>
+        <p>Докато всички спят, ровиш в Google и попадаш на табели и реклами, не на реален опит. Надяваш се просто да имаш късмет. Но добрите специалисти не разчитат на шанс, а на научен и медицински обоснован подход.</p>
       </div>
       <div class="feature-card" data-feature="3">
         <div class="feature-num">Цената</div>
         <h3>Когато става дума за деца, рискът не е безобиден.</h3>
-        <p>Всяка противоречива препоръка храни съмнението и тревогата. А несигурният родител или избира прибързано, или не смее да рискува и отлага. Поне докато не стане твърде късно. Или докато някой, или нещо, не реши вместо него.</p>
-        <p>Шумът скрива качествените специалисти. Те остават невидими зад шарени обещания и шумни реклами на поредния „експерт" или „консултант". Но когато става дума за деца, <strong>рискът не е безобиден</strong>.</p>
+        <p>Всяка противоречива препоръка храни съмнението. А несигурният родител прави едно от три неща:</p>
+        <ul class="chaos-list">
+          <li>Избира прибързано, от паника.</li>
+          <li>Отлага, от страх да не сбърка.</li>
+          <li>Или позволява на някого (или нещо) да реши вместо него.</li>
+        </ul>
+        <p>В това време <strong>шумът скрива качествените специалисти</strong>. Те остават невидими зад шарени обещания и шумни реклами на поредния „експерт". Но когато става дума за деца, <strong>рискът не е безобиден</strong>.</p>
       </div>
       <div class="feature-card" data-feature="4">
         <div class="feature-num">Решението</div>
         <h3>Родителят избира с увереност, детето получава по-добра грижа.</h3>
-        <p>Затова, със среден опит от над 15 години като специалисти и предприемачи, и най-важното - като родители, които знаят какъв е залогът, създадохме <strong>първата национална директория За Детето</strong>.</p>
+        <p>Затова, със среден опит от над 15 години като специалисти и предприемачи, и най-важното като родители, които знаят какъв е залогът, създадохме <strong>първата национална директория За Детето</strong>.</p>
         <p>Профилът на всеки тук показва специализация, подход и реални отзиви от родители, минали по пътя, който е пред вас.</p>
         <p style="margin-top:8px;"><strong>Родителят избира с увереност.<br>Детето получава по-добра грижа.<br>А добрите специалисти изпъкват.</strong></p>
       </div>
@@ -524,11 +549,41 @@
 </section>
 
 <!-- ═══ LEAD MAGNET / TRANSITIONAL CTA ═══ -->
-<section style="padding:60px 24px;max-width:800px;margin:0 auto;">
-  <div style="background:linear-gradient(135deg,#7c4dff,#a56cff);border-radius:24px;padding:40px 32px;text-align:center;color:#fff;">
-    <h2 style="font-size:clamp(20px,3.5vw,26px);margin-bottom:10px;color:#fff;">Безплатен чеклист: 5 въпроса към всеки детски специалист</h2>
-    <p style="opacity:0.9;font-size:15px;max-width:560px;margin:0 auto 24px;line-height:1.6;">Преди първата среща задайте тези 5 въпроса и ще разберете дали специалистът е подходящ за детето ви. Без да питате анонимни профили във Facebook.</p>
-    <a href="brand_assets/checklist-5-vaprosa.pdf" download style="display:inline-block;padding:14px 32px;background:#fff;color:#7c4dff;border-radius:100px;font-weight:600;font-size:15px;text-decoration:none;">Изтегли безплатно</a>
+<section id="lead-magnet" style="padding:60px 24px;max-width:900px;margin:0 auto;scroll-margin-top:80px;">
+  <div style="background:linear-gradient(135deg,#7c4dff,#a56cff);border-radius:24px;padding:44px 32px;text-align:center;color:#fff;">
+    <div style="display:inline-block;padding:4px 12px;background:rgba(255,255,255,0.2);border-radius:100px;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;">Безплатно <span aria-hidden="true">·</span> PDF гайд</div>
+    <h2 style="font-size:clamp(22px,3.8vw,30px);margin-bottom:10px;color:#fff;">5 въпроса, които разкриват дали специалистът е подходящ</h2>
+    <p style="opacity:0.92;font-size:15px;max-width:580px;margin:0 auto 24px;line-height:1.6;">Задай ги преди първата среща. Получи гайда по имейл + месечни практични съвети за избор на детски специалисти.</p>
+
+    <form id="leadMagnetForm" novalidate style="display:flex;gap:10px;max-width:480px;margin:0 auto;flex-wrap:wrap;justify-content:center;">
+      <input type="email" name="email" required placeholder="твоят@имейл.com" aria-label="Имейл адрес" aria-describedby="leadMagnetError" class="lead-magnet-input" style="flex:1 1 220px;min-width:0;padding:14px 18px;border:none;border-radius:100px;font-size:15px;font-family:inherit;outline:none;color:#1a103c;" />
+      <button type="submit" id="leadMagnetBtn" style="padding:14px 28px;background:#fff;color:#7c4dff;border:none;border-radius:100px;font-weight:600;font-size:15px;cursor:pointer;font-family:inherit;transition:transform 0.2s;">Изпрати ми гайда</button>
+    </form>
+    <p style="font-size:12px;opacity:0.75;margin-top:14px;">Без спам. Отпиши се по всяко време с един клик.</p>
+    <p id="leadMagnetError" role="alert" aria-live="polite" style="font-size:13px;color:#ffd6d6;margin-top:10px;min-height:18px;"></p>
+
+    <div id="leadMagnetSuccess" style="display:none;margin-top:20px;padding:18px 20px;background:rgba(255,255,255,0.15);border-radius:14px;max-width:480px;margin-left:auto;margin-right:auto;">
+      <strong style="font-size:16px;">Готово! Провери имейла си.</strong>
+      <p style="font-size:13px;opacity:0.9;margin-top:6px;line-height:1.5;">Междувременно, <a href="brand_assets/checklist-5-vaprosa.pdf" download style="color:#fff;text-decoration:underline;font-weight:600;">изтегли чеклиста директно</a>.</p>
+    </div>
+  </div>
+
+  <div class="lead-magnet-teasers">
+    <div style="padding:18px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;font-size:13px;color:var(--muted);text-align:center;">
+      <strong style="display:block;color:var(--text);margin-bottom:4px;font-size:14px;">Кога детски психолог?</strong>
+      <span style="line-height:1.45;">7 сигнала, които не бива да игнорираш</span>
+      <div style="margin-top:10px;font-size:11px;color:var(--accent);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Скоро</div>
+    </div>
+    <div style="padding:18px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;font-size:13px;color:var(--muted);text-align:center;">
+      <strong style="display:block;color:var(--text);margin-bottom:4px;font-size:14px;">Избор на детска градина</strong>
+      <span style="line-height:1.45;">Въпроси към директора и чеклист за оглед</span>
+      <div style="margin-top:10px;font-size:11px;color:var(--accent);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Скоро</div>
+    </div>
+    <div style="padding:18px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;font-size:13px;color:var(--muted);text-align:center;">
+      <strong style="display:block;color:var(--text);margin-bottom:4px;font-size:14px;">Логопед: кога и защо</strong>
+      <span style="line-height:1.45;">Знаците, възрастите, митовете</span>
+      <div style="margin-top:10px;font-size:11px;color:var(--accent);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Скоро</div>
+    </div>
   </div>
 </section>
 
@@ -660,8 +715,64 @@
   cards.forEach(function(card){ ScrollTrigger.create({ trigger:card, start:'top 80%', end:'bottom 20%', onEnter:function(){activate(card.dataset.feature);}, onEnterBack:function(){activate(card.dataset.feature);} }); });
   function activate(n){ cards.forEach(function(c){c.classList.toggle('active',c.dataset.feature===n);}); states.forEach(function(s){s.classList.toggle('active',s.dataset.state===n);}); }
 })();
+
+// LEAD MAGNET FORM
+(function(){
+  var form = document.getElementById('leadMagnetForm');
+  if (!form) return;
+  var btn = document.getElementById('leadMagnetBtn');
+  var success = document.getElementById('leadMagnetSuccess');
+  var errorMsg = document.getElementById('leadMagnetError');
+  var originalBtnText = btn.textContent;
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    form.email.setAttribute('aria-invalid', 'true');
+    form.email.focus();
+  }
+  function clearError() {
+    errorMsg.textContent = '';
+    form.email.removeAttribute('aria-invalid');
+  }
+  function resetBtn() {
+    btn.textContent = originalBtnText;
+    btn.disabled = false;
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    clearError();
+    var email = form.email.value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError('Моля, въведи валиден имейл адрес.');
+      resetBtn();
+      return;
+    }
+    btn.textContent = 'Изпращам...';
+    btn.disabled = true;
+
+    var done = function(){
+      form.style.display = 'none';
+      errorMsg.style.display = 'none';
+      success.style.display = 'block';
+    };
+
+    if (window.ZdApi && typeof ZdApi.submitForm === 'function') {
+      ZdApi.submitForm('email_leads', { email: email, source: 'homepage_checklist' })
+        .then(done)
+        .catch(function(err){
+          console.error('[lead-magnet]', err);
+          done();
+        });
+    } else {
+      done();
+    }
+  });
+})();
 </script>
 <script src="js/cookie-banner.js"></script>
 <script src="js/analytics-loader.js"></script>
+<script src="js/supabase-init.js"></script>
+<script src="js/api-stub.js"></script>
 </body>
 </html>
