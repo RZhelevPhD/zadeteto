@@ -183,7 +183,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
   <!-- Status banner — JS switches class based on submission status -->
   <div id="statusBanner" class="status-banner status--draft" style="display:none;">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-    <span id="statusText">Чернова — попълвайте и запазвайте колкото пъти искате.</span>
+    <span id="statusText">Чернова - попълвайте и запазвайте колкото пъти искате.</span>
   </div>
 
   <!-- Progress -->
@@ -191,7 +191,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 
   <div class="audit-card">
     <h2>Ниво 1 — Безплатен</h2>
-    <p class="subtitle">Базова регистрация и идентификация на бизнеса. Попълва се изцяло онлайн — без среща.</p>
+    <p class="subtitle">Базова регистрация и идентификация на бизнеса. Попълва се изцяло онлайн, без среща.</p>
 
     <form id="auditForm" novalidate>
       <!-- Q1: Company name -->
@@ -230,7 +230,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
         <div class="upload-zone" id="uploadQ04" tabindex="0" role="button" onclick="this.querySelector('input').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.querySelector('input').click();}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           Натиснете или пуснете файл тук
-          <span style="font-size:11px;font-weight:400;">PDF, JPG или PNG — макс. 5 MB</span>
+          <span style="font-size:11px;font-weight:400;">PDF, JPG или PNG (макс. 5 MB)</span>
           <input type="file" name="L1_Q04" accept=".pdf,.jpg,.jpeg,.png" data-max-size="5242880">
         </div>
         <div id="previewQ04"></div>
@@ -287,7 +287,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
         <div class="upload-zone" id="uploadQ08" tabindex="0" role="button" onclick="this.querySelector('input').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.querySelector('input').click();}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           Качете лого
-          <span style="font-size:11px;font-weight:400;">PNG, SVG или JPG — мин. 400×400 px, макс. 5 MB</span>
+          <span style="font-size:11px;font-weight:400;">PNG, SVG или JPG (мин. 400×400 px, макс. 5 MB)</span>
           <input type="file" name="L1_Q08" accept=".png,.svg,.jpg,.jpeg" data-max-size="5242880">
         </div>
         <div id="previewQ08"></div>
@@ -874,19 +874,19 @@ function showStatusBanner(status) {
   switch(status) {
     case 'draft':
       banner.classList.add('status--draft');
-      text.textContent = 'Чернова — попълвайте и запазвайте колкото пъти искате.';
+      text.textContent = 'Чернова - попълвайте и запазвайте колкото пъти искате.';
       break;
     case 'submitted':
       banner.classList.add('status--submitted');
-      text.textContent = 'Изпратен за преглед — наш одитор ще прегледа данните ви в рамките на 2 работни дни.';
+      text.textContent = 'Изпратен за преглед. Наш одитор ще прегледа данните ви в рамките на 2 работни дни.';
       break;
     case 'under_review':
       banner.classList.add('status--submitted');
-      text.textContent = 'В процес на преглед — одиторът разглежда вашите данни.';
+      text.textContent = 'В процес на преглед. Одиторът разглежда данните ви.';
       break;
     case 'scored':
       banner.classList.add('status--submitted');
-      text.textContent = 'Оценен — очаква финално одобрение.';
+      text.textContent = 'Оценен. Очаква финално одобрение.';
       break;
     case 'approved':
       banner.classList.add('status--approved');
@@ -894,7 +894,7 @@ function showStatusBanner(status) {
       break;
     case 'rejected':
       banner.classList.add('status--rejected');
-      text.textContent = 'Не е одобрен — моля, прегледайте бележките от одитора и коригирайте данните си.';
+      text.textContent = 'Не е одобрен. Моля, прегледайте бележките от одитора и коригирайте данните си.';
       break;
   }
 }
