@@ -8,6 +8,10 @@
 
 Before using this index, agents must first read `docs/zd-context.md` — the ZaDeteto business bible (mission, vision, values, audience, offer mechanics, brand voice). All recommendations must be grounded in the actual business context, not generic frameworks.
 
+## Competitor Watch List
+
+`docs/competitors.md` is the persistent record of direct, adjacent, authority, and ambient competitors — with overlap analysis, threat assessment, and "do NOT accidentally copy" rules per entry. **Read it whenever an audit touches positioning, offer framing, brand voice, or partner outreach copy.** It prevents us from drifting into a competitor's wording and surfaces reputation/context we'd otherwise miss (e.g. a prospect's prior history with a competitor).
+
 ## How to Use This Index
 
 - Search by **domain tag** or **"use when"** trigger to find the right source
@@ -384,3 +388,33 @@ Before using this index, agents must first read `docs/zd-context.md` — the ZaD
 | Fast revenue/cash injection | `ahdm-offers` | Fast Cash Plays |
 | Scale operations/SOPs | `ahdm-ops` | 5 Scaling Frameworks |
 | Full website audit | ALL | Each agent audits its domain |
+| Research a competitor / avatar / market target from web + socials | `prospect-research` → then feed dossier into `ahdm-brand` / `ahdm-offers` / `ahdm-ads` for framework analysis | Raw intel first, framework interpretation second |
+| Validate the avatar / voice-of-customer before a brand or offer audit | `bd-inbound` in avatar-extract mode → then feed extract into `ahdm-brand` / `ahdm-offers` / `ahdm-leads` / `ahdm-closing` | Real buyer-psychology intel from BD's BC3 Inbound Leads course, NOT sales coaching |
+
+## Cross-cutting subagent: `prospect-research`
+
+`prospect-research` is shared between AHDM and the BD sales-coaching orchestrator. It takes any combination of name, company, website, Facebook / Instagram / LinkedIn / X / YouTube URL and returns a structured dossier (identity, company snapshot, positioning, trigger events, proof elements, injectable snippets, sources + staleness). It owns no frameworks — it produces raw intel; framework analysis is done by the calling orchestrator's domain subagents.
+
+**When AHDM should call it:**
+- Competitor audit (read a competitor's public site / socials before comparing positioning).
+- Avatar / ICP validation (pull real examples of the target audience from public profiles).
+- Market research before choosing a starving crowd.
+- Any task where a specific named external target needs analysis before framework scoring.
+
+The returned dossier's *Competitor-copy note* and *Public positioning* sections are the most useful for AHDM — feed them into `ahdm-brand`, `ahdm-offers`, or `ahdm-ads` as additional input.
+
+## Cross-cutting subagent: `bd-inbound` (avatar-extract mode)
+
+`bd-inbound` is primarily a BD sales-coaching subagent (owned by the `bd` orchestrator) covering Benjamin Dennehy's BC3 Inbound Leads course. It runs in a second mode — **avatar-extract mode** — when called by AHDM, producing voice-of-customer / buyer-psychology intel instead of sales coaching.
+
+- **Source folder (read-only scope for the subagent):** `docs/Benjamin Dennehy reference docs/Dennehy transcripts/bc3 inbound leads/`
+- **Output in avatar-extract mode:** buyer emotional state at reach-out, beliefs already formed, fears/objections carried in, language patterns (paraphrased), decision-stage taxonomy, direct handoff lines for `ahdm-brand` (SB7 Character / Problem), `ahdm-offers` (Value Equation inputs), `ahdm-leads` (first 3 nurture touches), `ahdm-closing` (top recurring objection).
+- **How to invoke:** use the trigger phrase **"avatar extract"** (or similar: "customer psychology", "voice of customer", "VOC", "for StoryBrand", "for brand audit", "for offer validation") in the delegation prompt. The subagent detects mode from this signal; if unclear, it will ask before producing output.
+
+**When AHDM should call it:**
+- Before a brand / SB7 audit — pull real buyer language instead of assuming it.
+- Before an offer audit — validate Value Equation gaps against how inbound leads actually phrase their hesitation.
+- Before writing a nurture sequence — match the emotional register inbound leads arrive in.
+- Before a closing-page objection-handling audit — surface which objections inbound leads carry most often.
+
+**What it is NOT:** a sales-coaching call. Do not invoke it to write copy or scripts directly — feed its extract into the relevant `ahdm-*` subagent, which then produces framework-grounded output.

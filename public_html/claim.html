@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Заявете профила си — За Детето</title>
+<meta name="description" content="Потвърдете, че сте собственик на бизнеса и активирайте безплатния си профил в ZaDeteto.bg.">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="canonical" href="https://zadeteto.com/claim.html">
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<script src="js/nav-inject.js"></script>
+
+<style>
+  :root {
+    --accent:#7c4dff;
+    --accent-dark:#5a2ee6;
+    --bg:#fdfcfb;
+    --surface:#fff;
+    --text:#1a103c;
+    --muted:#8b80b0;
+    --border:#ece8f3;
+    --ok:#1a6e34;
+    --err:#c23a5d;
+    --founders:#d4a017;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { min-height:100vh; min-height:100dvh; }
+  body {
+    overflow-x: hidden;
+    background: var(--bg);
+    background-image:
+      radial-gradient(at 20% 0%, rgba(124,77,255,0.08) 0, transparent 45%),
+      radial-gradient(at 90% 100%, rgba(212,160,23,0.06) 0, transparent 50%);
+    color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex; flex-direction:column;
+  }
+  h1,h2,h3 { font-family:'DM Serif Display',serif; letter-spacing:-0.02em; }
+
+  main#zd-main-content { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+
+  .card {
+    background: var(--surface);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:44px 40px;
+    width:100%;
+    max-width:480px;
+    box-shadow: 0 24px 60px rgba(26,16,60,0.06), 0 2px 8px rgba(26,16,60,0.03);
+  }
+  .logo { height:64px; margin-bottom:28px; display:block; }
+  h1 { font-size:28px; line-height:1.2; margin-bottom:10px; }
+  .sub { font-size:15px; color:var(--muted); line-height:1.55; margin-bottom:28px; }
+
+  /* Business preview card */
+  .preview {
+    display:flex; align-items:center; gap:16px;
+    padding:18px;
+    background: #faf9ff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    margin-bottom:24px;
+  }
+  .preview-logo {
+    width:56px; height:56px;
+    border-radius:12px;
+    background: #ede8fb center/cover no-repeat;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:700; color:var(--accent);
+    flex-shrink:0;
+  }
+  .preview-body { flex:1; min-width:0; }
+  .preview-name {
+    font-family:'DM Serif Display',serif;
+    font-size:19px; line-height:1.25;
+    margin-bottom:4px;
+    word-wrap:break-word;
+  }
+  .preview-meta { font-size:13px; color:var(--muted); }
+
+  /* Founders banner */
+  .founders-banner {
+    display:flex; align-items:center; gap:10px;
+    padding:12px 16px;
+    background: linear-gradient(135deg, #fff8e6 0%, #ffefc7 100%);
+    border:1px solid rgba(212,160,23,0.3);
+    border-radius:12px;
+    margin-bottom:22px;
+    font-size:13px; line-height:1.45;
+  }
+  .founders-banner strong { color:#9a7209; }
+
+  /* Form */
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--text); }
+  .form-group input {
+    width:100%; padding:14px 16px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    font-size:15px;
+    font-family:'DM Sans',sans-serif;
+    background:#fcfcfd;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline:none;
+  }
+  .form-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124,77,255,0.1);
+    background:#fff;
+  }
+  .form-hint { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .btn {
+    display:block; width:100%;
+    padding:15px 20px;
+    background: var(--accent);
+    color:#fff; border:none;
+    border-radius:12px;
+    font-size:16px; font-weight:600;
+    font-family:'DM Sans',sans-serif;
+    cursor:pointer;
+    box-shadow: 0 8px 22px rgba(124,77,255,0.28);
+    transition: transform 0.15s ease-out, box-shadow 0.2s, background 0.2s;
+    margin-top:8px;
+  }
+  .btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 30px rgba(124,77,255,0.35);
+    background: var(--accent-dark);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { opacity:0.6; cursor:not-allowed; }
+  .btn.secondary {
+    background:#fff;
+    color: var(--accent);
+    border:1.5px solid var(--accent);
+    box-shadow:none;
+  }
+  .btn.secondary:hover:not(:disabled) { background:#faf9ff; }
+
+  .divider {
+    display:flex; align-items:center; gap:12px;
+    margin: 20px 0;
+    font-size:12px; color:var(--muted);
+  }
+  .divider::before, .divider::after {
+    content:''; flex:1; height:1px; background: var(--border);
+  }
+
+  .msg-err, .msg-ok {
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:13px;
+    margin-top:14px;
+    line-height:1.5;
+    display:none;
+  }
+  .msg-err {
+    background: rgba(194,58,93,0.08);
+    border:1px solid rgba(194,58,93,0.25);
+    color: var(--err);
+  }
+  .msg-ok {
+    background: rgba(26,110,52,0.08);
+    border:1px solid rgba(26,110,52,0.25);
+    color: var(--ok);
+  }
+
+  /* State containers */
+  .state { display:none; }
+  .state.active { display:block; }
+
+  /* Loading spinner */
+  .spinner {
+    width:32px; height:32px;
+    border:3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius:50%;
+    animation: spin 0.8s linear infinite;
+    margin: 24px auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { text-align:center; color:var(--muted); font-size:14px; }
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation: none; border-top-color: var(--border); }
+    .loading-text::after { content: ' …'; }
+  }
+
+  .session-notice {
+    background: rgba(124,77,255,0.06);
+    border:1px solid rgba(124,77,255,0.2);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:13px;
+    line-height:1.5;
+    margin-bottom:16px;
+  }
+  .session-notice strong { color: var(--accent-dark); word-break:break-all; }
+  .btn-row { display:flex; gap:10px; flex-direction:column; }
+  @media (min-width: 420px) { .btn-row { flex-direction:row; } .btn-row .btn { flex:1; } }
+
+  /* Small auxiliary links */
+  .aux-link {
+    display:block; text-align:center;
+    font-size:13px; color: var(--muted);
+    text-decoration:none;
+    margin-top:20px; padding-top:20px;
+    border-top:1px solid var(--border);
+  }
+  .aux-link a { color: var(--accent); font-weight:600; text-decoration:none; }
+  .aux-link a:hover { text-decoration:underline; }
+
+  /* Footer */
+  .zd-footer { border-top:1px solid rgba(0,0,0,0.05); padding:24px 40px; text-align:center; }
+  .zd-footer-copy { font-size:12px; color:var(--muted); opacity:0.7; }
+
+  @media (max-width:480px) {
+    .card { padding:32px 22px; border-radius:20px; }
+    .logo { height:52px; margin-bottom:22px; }
+    h1 { font-size:24px; }
+    .sub { font-size:14px; margin-bottom:22px; }
+    .form-group input { font-size:16px; }  /* prevent iOS zoom */
+    .btn { padding:14px; }
+  }
+</style>
+</head>
+<body>
+
+<main id="zd-main-content">
+  <div class="card">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето" class="logo">
+
+    <!-- ══════ STATE: LOADING ══════ -->
+    <div id="stateLoading" class="state active">
+      <h1>Проверяваме линка...</h1>
+      <div class="spinner"></div>
+      <p class="loading-text">Моля изчакайте малко.</p>
+    </div>
+
+    <!-- ══════ STATE: INVALID TOKEN ══════ -->
+    <div id="stateInvalid" class="state">
+      <h1>Линкът не е валиден</h1>
+      <p class="sub" id="invalidMsg">Този линк за заявяване не е разпознат или вече е използван.</p>
+      <a href="business-login.html" class="btn secondary" style="text-decoration:none;text-align:center;">Вход за съществуващи партньори</a>
+      <div class="aux-link">
+        Нямате профил още?<br>
+        <a href="partners.html#apply">Кандидатствайте тук →</a>
+      </div>
+    </div>
+
+    <!-- ══════ STATE: ALREADY CLAIMED BY YOU ══════ -->
+    <div id="stateAlreadyMine" class="state">
+      <h1>Вече сте собственик</h1>
+      <p class="sub">Този профил вече е заявен от вашия акаунт. Може да го управлявате директно от таблото.</p>
+      <a href="business-dashboard.html" class="btn" style="text-decoration:none;text-align:center;">Към таблото <span aria-hidden="true">→</span></a>
+    </div>
+
+    <!-- ══════ STATE: CONFIRMING EMAIL (after email confirmation redirect) ══════ -->
+    <div id="stateConfirming" class="state">
+      <h1>Потвърждаваме имейла ви...</h1>
+      <div class="spinner" role="progressbar" aria-label="Потвърждаване"></div>
+      <p class="loading-text">Секунда — активираме профила ви.</p>
+    </div>
+
+    <!-- ══════ STATE: VALID TOKEN — READY TO CLAIM ══════ -->
+    <div id="stateClaim" class="state">
+      <h1>Вашият профил е готов</h1>
+      <p class="sub">Потвърдете, че сте собственик, и активирайте безплатния си профил в За Детето.</p>
+
+      <div class="preview">
+        <div class="preview-logo" id="previewLogo" aria-hidden="true">?</div>
+        <div class="preview-body">
+          <div class="preview-name" id="previewName">—</div>
+          <div class="preview-meta" id="previewMeta">—</div>
+        </div>
+      </div>
+
+      <div class="founders-banner">
+        <span style="font-size:18px;" aria-hidden="true">★</span>
+        <div>
+          <strong>Кръг на основателите</strong> — ако активирате профила преди <strong>1 юни 2026</strong>, запазвате специалните условия завинаги.
+        </div>
+      </div>
+
+      <!-- EXISTING SESSION CONFIRMATION (shown when user is already signed in) -->
+      <div id="sessionConfirm" style="display:none;">
+        <div class="session-notice">
+          Влезли сте като <strong id="sessionEmail"></strong>.<br>
+          Искате ли да активирате профила с този акаунт?
+        </div>
+        <div id="sessionClaimError" class="msg-err"></div>
+        <div class="btn-row">
+          <button type="button" class="btn" id="sessionClaimBtn" onclick="handleSessionClaim()">Активирай с този акаунт</button>
+          <button type="button" class="btn secondary" onclick="handleSwitchAccount()">Изход и друг имейл</button>
+        </div>
+      </div>
+
+      <!-- SIGN-UP FORM (new user) -->
+      <form id="signupForm" novalidate onsubmit="handleClaim(); return false;">
+        <div class="form-group">
+          <label for="claimEmail">Вашият имейл</label>
+          <input type="email" id="claimEmail" autocomplete="email" placeholder="name@yourbusiness.com" required>
+          <p class="form-hint" id="emailHint"></p>
+        </div>
+        <div class="form-group">
+          <label for="claimPassword">Изберете парола</label>
+          <input type="password" id="claimPassword" autocomplete="new-password" placeholder="Поне 8 символа" minlength="8" required>
+        </div>
+
+        <div id="claimError" class="msg-err" role="alert" aria-live="polite"></div>
+        <div id="claimOk" class="msg-ok" role="status" aria-live="polite"></div>
+
+        <button type="submit" class="btn" id="claimBtn">Активирайте профила си</button>
+
+        <div class="aux-link">
+          Вече имате акаунт в За Детето?<br>
+          <a href="#" id="existingUserLink" onclick="showExistingUserFlow(event)">Влезте и заявете този профил <span aria-hidden="true">→</span></a>
+        </div>
+      </form>
+
+      <!-- SIGN-IN INSTEAD (existing user) -->
+      <form id="signinForm" novalidate onsubmit="handleSignIn(); return false;" style="display:none;">
+        <p class="sub" style="margin-bottom:18px;">Влезте с акаунта, който имате в За Детето, за да заявите този профил.</p>
+        <div class="form-group">
+          <label for="signinEmail">Имейл</label>
+          <input type="email" id="signinEmail" autocomplete="email" placeholder="name@yourbusiness.com" required>
+        </div>
+        <div class="form-group">
+          <label for="signinPassword">Парола</label>
+          <input type="password" id="signinPassword" autocomplete="current-password" placeholder="Вашата парола" required>
+        </div>
+
+        <div id="signinError" class="msg-err" role="alert" aria-live="polite"></div>
+
+        <button type="submit" class="btn" id="signinBtn">Влез и заяви</button>
+
+        <div class="aux-link">
+          <a href="#" onclick="showSignupFlow(event)"><span aria-hidden="true">←</span> Нямам акаунт, искам да създам</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- ══════ STATE: SUCCESS ══════ -->
+    <div id="stateSuccess" class="state">
+      <h1>Готово! 🎉</h1>
+      <p class="sub" id="successMsg">Профилът е активиран. Пренасочваме ви към таблото...</p>
+      <div class="spinner"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="zd-footer">
+  <div class="zd-footer-copy">© За Детето. Всички права запазени.</div>
+</footer>
+
+<script src="js/supabase-init.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   claim.html — Phase 1: token flow only
+   - Reads ?token=<uuid>
+   - Calls preview_claim_token RPC to render preview + status
+   - Sign-up (or sign-in) then calls claim_profile_with_token RPC
+   - Redirects to business-dashboard.html on success
+   ═══════════════════════════════════════════════════════════════════ */
+(function () {
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const TOKEN = (new URLSearchParams(window.location.search).get('token') || '').trim();
+  const RETURNING_FROM_EMAIL = /access_token=|type=signup|type=magiclink/.test(window.location.hash);
+  let previewData = null;
+  let claimInFlight = false;
+
+  function $(id) { return document.getElementById(id); }
+  function show(id) {
+    document.querySelectorAll('.state').forEach(el => el.classList.remove('active'));
+    $(id).classList.add('active');
+  }
+  function showErr(id, msg) { const el = $(id); if (!el) return; el.textContent = msg; el.style.display = 'block'; }
+  function clearErr(id) { const el = $(id); if (!el) return; el.textContent = ''; el.style.display = 'none'; }
+
+  function waitForSupabase() {
+    return new Promise(function (resolve) {
+      if (window.ZdSupabase) return resolve();
+      const fallback = setTimeout(resolve, 5000);
+      window.addEventListener('zd-supabase-ready', function () { clearTimeout(fallback); resolve(); }, { once: true });
+    });
+  }
+
+  function mapClaimError(err) {
+    const blob = [err && err.message, err && err.details, err && err.hint, err && err.code]
+      .filter(Boolean).join(' ').toLowerCase();
+    if (blob.includes('token_used')) return 'Този линк вече е използван.';
+    if (blob.includes('token_expired')) return 'Линкът е изтекъл. Свържете се с нас на hello@zadeteto.com.';
+    if (blob.includes('token_revoked')) return 'Линкът е деактивиран. Свържете се с нас на hello@zadeteto.com.';
+    if (blob.includes('token_not_found')) return 'Линкът не е разпознат.';
+    if (blob.includes('already_claimed')) return 'Профилът вече е зает от друг акаунт. Свържете се с нас, ако това е грешка.';
+    if (blob.includes('not_authenticated')) return 'Сесията изтече. Презаредете страницата.';
+    if (blob.includes('business_not_found')) return 'Профилът вече не съществува.';
+    return 'Възникна грешка. Опитайте отново или ни пишете на hello@zadeteto.com.';
+  }
+
+  function renderPreview(data) {
+    const name = data.name || 'Вашият бизнес';
+    $('previewName').textContent = name;
+    const meta = [data.city, data.address].filter(Boolean).join(' · ');
+    $('previewMeta').textContent = meta || 'Безплатен профил';
+
+    const logoEl = $('previewLogo');
+    // Reset
+    while (logoEl.firstChild) logoEl.removeChild(logoEl.firstChild);
+    logoEl.style.backgroundImage = '';
+    // Only trust https:// URLs; render via <img> so the browser sanitizes
+    if (data.logo && typeof data.logo === 'string' && /^https:\/\//i.test(data.logo)) {
+      const img = document.createElement('img');
+      img.src = data.logo;
+      img.alt = '';
+      img.style.width = '100%'; img.style.height = '100%';
+      img.style.objectFit = 'cover'; img.style.borderRadius = '12px';
+      img.onerror = function () {
+        logoEl.removeChild(img);
+        logoEl.textContent = (name[0] || '?').toUpperCase();
+      };
+      logoEl.appendChild(img);
+    } else {
+      logoEl.textContent = (name[0] || '?').toUpperCase();
+    }
+
+    if (data.sent_to_hint) {
+      $('emailHint').textContent = 'Изпратихме линка до ' + data.sent_to_hint + '. Може да се регистрирате с този имейл или с друг, ако предпочитате.';
+    }
+  }
+
+  async function showSessionConfirm(session) {
+    $('signupForm').style.display = 'none';
+    $('signinForm').style.display = 'none';
+    $('sessionConfirm').style.display = 'block';
+    $('sessionEmail').textContent = (session.user && session.user.email) || '';
+  }
+
+  async function init() {
+    if (!TOKEN || !UUID_RE.test(TOKEN)) {
+      show('stateInvalid');
+      $('invalidMsg').textContent = 'Липсва валиден токен в линка. Отворете пълния линк от имейла/съобщението, без отрязани символи.';
+      return;
+    }
+
+    // If we arrived from an email-confirmation redirect, show a confirming
+    // state until onAuthStateChange fires with SIGNED_IN — then the listener
+    // below will continue the flow.
+    if (RETURNING_FROM_EMAIL) {
+      show('stateConfirming');
+    }
+
+    await waitForSupabase();
+    if (!window.ZdSupabase) {
+      show('stateInvalid');
+      $('invalidMsg').textContent = 'Не успяхме да се свържем със системата. Опитайте отново след малко.';
+      return;
+    }
+
+    // Register auth listener BEFORE fetching preview — this way, when the
+    // hash-based session is processed async by supabase-js, we auto-proceed.
+    window.ZdSupabase.auth.onAuthStateChange(function (event, session) {
+      if (event === 'SIGNED_IN' && TOKEN && !claimInFlight && RETURNING_FROM_EMAIL) {
+        performClaim();
+      }
+    });
+
+    // Fetch token preview
+    const previewRes = await window.ZdSupabase.rpc('preview_claim_token', { p_token: TOKEN });
+    if (previewRes.error) {
+      console.error('[preview_claim_token]', previewRes.error);
+      show('stateInvalid');
+      $('invalidMsg').textContent = 'Възникна грешка при проверката на линка. Свържете се с нас на hello@zadeteto.com.';
+      return;
+    }
+
+    const data = previewRes.data;
+    if (!data || !data.ok) {
+      show('stateInvalid');
+      const errCode = (data && data.error) || 'unknown';
+      $('invalidMsg').textContent = errCode === 'token_not_found'
+        ? 'Този линк не е разпознат. Проверете дали сте го отворили пълно, без отрязани символи.'
+        : 'Линкът не е валиден. Свържете се с нас на hello@zadeteto.com.';
+      return;
+    }
+
+    previewData = data;
+
+    if (data.already_claimed_by_you) {
+      show('stateAlreadyMine');
+      return;
+    }
+
+    if (data.status === 'used') {
+      show('stateInvalid');
+      $('invalidMsg').textContent = 'Този линк вече е използван. Ако вие сте го използвали, влезте от портала за партньори.';
+      return;
+    }
+    if (data.status === 'expired') {
+      show('stateInvalid');
+      $('invalidMsg').textContent = 'Линкът е изтекъл. Свържете се с нас на hello@zadeteto.com, за да ви изпратим нов.';
+      return;
+    }
+    if (data.status === 'revoked') {
+      show('stateInvalid');
+      $('invalidMsg').textContent = 'Линкът е деактивиран. Свържете се с нас на hello@zadeteto.com за нов.';
+      return;
+    }
+
+    // status === 'valid'
+    renderPreview(data);
+
+    // Check for an existing, live session. We use getUser() (not getSession())
+    // because getSession() returns cached data even when the refresh token is
+    // no longer valid — and a stale session would fail claim_profile_with_token.
+    const { data: userData, error: userErr } = await window.ZdSupabase.auth.getUser();
+    if (!userErr && userData && userData.user) {
+      // Live session exists — show explicit confirmation, never auto-claim.
+      show('stateClaim');
+      await showSessionConfirm({ user: userData.user });
+      return;
+    }
+
+    // If we're here and RETURNING_FROM_EMAIL is true, the listener will take
+    // over once supabase-js finishes processing the URL hash. Don't hide the
+    // confirming state.
+    if (!RETURNING_FROM_EMAIL) {
+      show('stateClaim');
+    }
+  }
+
+  function resetClaimButton() {
+    const b = $('claimBtn'); if (b) { b.disabled = false; b.textContent = 'Активирайте профила си'; }
+    const s = $('sessionClaimBtn'); if (s) { s.disabled = false; s.textContent = 'Активирай с този акаунт'; }
+    claimInFlight = false;
+  }
+
+  async function performClaim() {
+    if (claimInFlight) return;
+    claimInFlight = true;
+    const { data, error } = await window.ZdSupabase.rpc('claim_profile_with_token', { p_token: TOKEN });
+    if (error) {
+      console.error('[claim_profile_with_token]', error);
+      const userMsg = mapClaimError(error);
+      // Route the error to whichever form is currently visible
+      if ($('sessionConfirm').style.display !== 'none') showErr('sessionClaimError', userMsg);
+      else if ($('signinForm').style.display !== 'none') showErr('signinError', userMsg);
+      else showErr('claimError', userMsg);
+      resetClaimButton();
+      return;
+    }
+    if (!data || !data.ok) {
+      const errCode = data && data.error;
+      const userMsg = errCode ? mapClaimError({ message: errCode }) : 'Неочакван отговор от системата. Опитайте отново.';
+      if ($('sessionConfirm').style.display !== 'none') showErr('sessionClaimError', userMsg);
+      else showErr('claimError', userMsg);
+      resetClaimButton();
+      return;
+    }
+    // Success — clear URL hash (leftover from email-confirmation redirect) so
+    // a refresh doesn't re-trigger the confirming state.
+    if (window.location.hash) {
+      try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (_) {}
+    }
+    show('stateSuccess');
+    setTimeout(function () {
+      window.location.href = 'business-dashboard.html';
+    }, 1500);
+  }
+
+  window.handleClaim = async function () {
+    clearErr('claimError');
+    clearErr('claimOk');
+    const email = $('claimEmail').value.trim();
+    const password = $('claimPassword').value;
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showErr('claimError', 'Моля въведете валиден имейл.');
+      return;
+    }
+    if (!password || password.length < 8) {
+      showErr('claimError', 'Паролата трябва да е поне 8 символа.');
+      return;
+    }
+
+    const btn = $('claimBtn');
+    btn.disabled = true;
+    btn.textContent = 'Активиране...';
+
+    try {
+      // Try signUp first; if email exists, Supabase returns an error → fall through to signIn
+      const signupRes = await window.ZdSupabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          emailRedirectTo: 'https://zadeteto.com/claim.html?token=' + encodeURIComponent(TOKEN)
+        }
+      });
+
+      if (signupRes.error) {
+        // If user already exists, try password sign-in
+        const msg = (signupRes.error.message || '').toLowerCase();
+        if (msg.includes('already') || msg.includes('registered') || msg.includes('exists')) {
+          const signinRes = await window.ZdSupabase.auth.signInWithPassword({ email: email, password: password });
+          if (signinRes.error) {
+            showErr('claimError', 'Имейлът вече е регистриран, но паролата не съвпада. ' +
+              'Натиснете "Влезте и заявете този профил" по-долу.');
+            btn.disabled = false;
+            btn.textContent = 'Активирайте профила си';
+            return;
+          }
+          // Signed in — proceed to claim
+          await performClaim();
+          return;
+        }
+        throw signupRes.error;
+      }
+
+      // signUp succeeded. If Supabase requires email confirmation,
+      // session will be null and we can't claim yet.
+      if (!signupRes.data || !signupRes.data.session) {
+        clearErr('claimError');
+        const okEl = $('claimOk');
+        // Build DOM safely — never inject user-provided email via innerHTML
+        okEl.textContent = '';
+        okEl.appendChild(document.createTextNode('Изпратихме потвърждение на '));
+        const strong = document.createElement('strong');
+        strong.textContent = email;
+        okEl.appendChild(strong);
+        okEl.appendChild(document.createElement('br'));
+        okEl.appendChild(document.createTextNode(
+          'Отворете имейла и натиснете линка — ще ви върнем тук, за да довършите активацията. ' +
+          'Ако вече имате стар акаунт, използвайте „Влезте и заявете този профил" по-долу.'
+        ));
+        okEl.style.display = 'block';
+        btn.style.display = 'none';
+        return;
+      }
+
+      // Have session → claim immediately
+      await performClaim();
+
+    } catch (err) {
+      console.error('[handleClaim]', err);
+      showErr('claimError', 'Грешка: ' + (err.message || 'неизвестна. Опитайте отново.'));
+      btn.disabled = false;
+      btn.textContent = 'Активирайте профила си';
+    }
+  };
+
+  window.handleSessionClaim = async function () {
+    clearErr('sessionClaimError');
+    const btn = $('sessionClaimBtn');
+    btn.disabled = true;
+    btn.textContent = 'Активиране...';
+    await performClaim();
+  };
+
+  window.handleSwitchAccount = async function () {
+    try { await window.ZdSupabase.auth.signOut(); } catch (_) {}
+    // Reload the page to start fresh (hash cleanup happens via reload)
+    window.location.href = window.location.pathname + '?token=' + encodeURIComponent(TOKEN);
+  };
+
+  window.handleSignIn = async function () {
+    clearErr('signinError');
+    const email = $('signinEmail').value.trim();
+    const password = $('signinPassword').value;
+    if (!email || !password) {
+      showErr('signinError', 'Моля попълнете имейл и парола.');
+      return;
+    }
+    const btn = $('signinBtn');
+    btn.disabled = true;
+    btn.textContent = 'Влизане...';
+
+    try {
+      const res = await window.ZdSupabase.auth.signInWithPassword({ email: email, password: password });
+      if (res.error) throw res.error;
+      await performClaim();
+    } catch (err) {
+      console.error('[handleSignIn]', err);
+      const msg = (err.message || '').toLowerCase().includes('invalid')
+        ? 'Грешен имейл или парола.'
+        : 'Грешка: ' + (err.message || 'неизвестна');
+      showErr('signinError', msg);
+      btn.disabled = false;
+      btn.textContent = 'Влез и заяви';
+    }
+  };
+
+  window.showExistingUserFlow = function (e) {
+    if (e) e.preventDefault();
+    $('signupForm').style.display = 'none';
+    $('sessionConfirm').style.display = 'none';
+    $('signinForm').style.display = 'block';
+  };
+  window.showSignupFlow = function (e) {
+    if (e) e.preventDefault();
+    $('signinForm').style.display = 'none';
+    $('sessionConfirm').style.display = 'none';
+    $('signupForm').style.display = 'block';
+  };
+
+  // Kick off
+  init();
+})();
+</script>
+</body>
+</html>

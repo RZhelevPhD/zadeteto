@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Кърджев — студен разговор (BD метод)</title>
+<style>
+  @page { size: A4; margin: 14mm 14mm 14mm 14mm; }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.42;
+    color: #1a1a1a;
+    background: #fdfcfb;
+  }
+
+  /* ===== Page shell ===== */
+  .page {
+    page-break-after: always;
+    break-after: page;
+    padding: 0;
+    position: relative;
+    min-height: 260mm;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+
+  .page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1.5px solid #1a1a1a;
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+  }
+  .page-head h1 {
+    font-size: 15pt;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .page-head .meta {
+    font-size: 9pt;
+    color: #6b6b6b;
+    font-weight: 500;
+  }
+  .page-head .home-link {
+    color: #7c4dff;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .page-head .home-link:hover { text-decoration: underline; }
+
+  h2 {
+    font-size: 11.5pt;
+    margin: 14px 0 6px 0;
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+  h3 {
+    font-size: 10pt;
+    margin: 10px 0 4px 0;
+    color: #4a4a4a;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+  }
+  p { margin: 4px 0 8px 0; }
+
+  /* ===== Script callouts (what you say) ===== */
+  .script {
+    background: #f5f0ff;
+    border-left: 3px solid #7c4dff;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 10.5pt;
+    line-height: 1.5;
+  }
+  .script strong { color: #4a2fb5; }
+
+  /* ===== Framework annotation ===== */
+  .annot {
+    font-size: 9pt;
+    color: #6b6b6b;
+    font-style: italic;
+    margin: 2px 0 10px 0;
+    padding-left: 8px;
+    border-left: 2px solid #e0e0e0;
+  }
+  .annot b { color: #4a4a4a; font-style: normal; }
+
+  /* ===== Landmine warning ===== */
+  .warn {
+    background: #fdf0ee;
+    border-left: 3px solid #d2453b;
+    padding: 7px 11px;
+    margin: 8px 0;
+    font-size: 10pt;
+  }
+  .warn::before {
+    content: "⚠ ВНИМАНИЕ: ";
+    color: #d2453b;
+    font-weight: 700;
+  }
+
+  /* ===== Branch buttons ===== */
+  .branches {
+    margin-top: 14px;
+    border-top: 1px dashed #bbb;
+    padding-top: 10px;
+  }
+  .branches h3 {
+    margin-top: 0;
+    margin-bottom: 6px;
+  }
+  .branch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .branch {
+    display: block;
+    padding: 7px 11px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 10pt;
+    color: #1a1a1a;
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    border-left-width: 4px;
+  }
+  .branch .b-label { display: block; color: #4a4a4a; font-size: 8.5pt; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+  .branch.go { border-left-color: #4caf6a; }
+  .branch.warn-branch { border-left-color: #e0a000; }
+  .branch.stop { border-left-color: #d2453b; }
+  .branch.neutral { border-left-color: #7c4dff; }
+
+  /* ===== Flow map (page 1) ===== */
+  .flowmap {
+    margin: 6px 0 14px 0;
+    padding: 10px;
+    background: #ffffff;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+  }
+  .flowmap h3 { margin-top: 0; }
+  .fm-row {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 6px;
+    margin: 4px 0;
+    flex-wrap: wrap;
+  }
+  .fm-node {
+    padding: 5px 8px;
+    border-radius: 5px;
+    font-size: 8.5pt;
+    font-weight: 600;
+    text-align: center;
+    min-width: 78px;
+    text-decoration: none;
+    color: #1a1a1a;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fm-node.start { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .fm-node.core { background: #f5f0ff; border-color: #7c4dff; }
+  .fm-node.obj { background: #fff9ed; border-color: #e0a000; }
+  .fm-node.end-ok { background: #e8f5ec; border-color: #4caf6a; }
+  .fm-node.end-stop { background: #fdf0ee; border-color: #d2453b; }
+  .fm-arrow {
+    text-align: center;
+    font-size: 14pt;
+    color: #7c4dff;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+  }
+  .fm-note {
+    font-size: 8.5pt;
+    color: #6b6b6b;
+    text-align: center;
+    margin: 4px 0;
+    font-style: italic;
+  }
+
+  /* ===== Core 1-page condensed script ===== */
+  .core-script {
+    font-size: 10pt;
+    line-height: 1.45;
+  }
+  .core-script .beat {
+    margin: 6px 0;
+    padding: 6px 9px;
+    background: #fff;
+    border: 1px solid #e4e4e4;
+    border-left: 3px solid #7c4dff;
+    border-radius: 4px;
+  }
+  .core-script .beat b { color: #4a2fb5; }
+
+  /* ===== Tables ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin: 8px 0;
+  }
+  th, td {
+    border: 1px solid #d8d8d8;
+    padding: 4px 7px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #f0ebfd; font-weight: 700; }
+
+  /* ===== Bullet lists ===== */
+  ul { margin: 4px 0 8px 0; padding-left: 18px; }
+  ul li { margin-bottom: 3px; }
+
+  /* ===== Checklists ===== */
+  .checklist li { list-style: none; position: relative; padding-left: 18px; }
+  .checklist li::before {
+    content: "☐";
+    position: absolute; left: 0; top: 0;
+    font-size: 11pt; color: #7c4dff;
+  }
+
+  /* ===== Print polish ===== */
+  @media print {
+    a { text-decoration: none; color: inherit; }
+    .branch { color: #1a1a1a; }
+    .home-link { color: #7c4dff !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 1 — Flow Map + 1-page Condensed Script -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="page-1">
+  <div class="page-head">
+    <h1>Кърджев · студен разговор · BD метод</h1>
+    <span class="meta">стр. 1 / 8 · ZaDeteto ×  Benjamin Dennehy</span>
+  </div>
+
+  <!-- FLOW MAP -->
+  <div class="flowmap">
+    <h3>Карта на разговора</h3>
+
+    <div class="fm-row">
+      <a class="fm-node start" href="#page-2">DIAL<br>↓ стр. 2</a>
+    </div>
+    <div class="fm-arrow">↓</div>
+    <div class="fm-row">
+      <a class="fm-node core" href="#page-2">Отваряне<br>+ Pattern Interrupt</a>
+    </div>
+    <div class="fm-note">„Това е студено обаждане — искаш ли да затвориш или 30 сек?"</div>
+    <div class="fm-row">
+      <a class="fm-node core" href="#page-3">30 сек ↓<br>ELEVATOR PITCH</a>
+      <a class="fm-node obj" href="#page-6">зает →<br>Obj A</a>
+      <a class="fm-node end-stop" href="#page-8">затвори →<br>END</a>
+    </div>
+    <div class="fm-arrow">↓</div>
+    <div class="fm-row">
+      <a class="fm-node core" href="#page-4">Negative Socratic<br>(3 въпроса)</a>
+      <a class="fm-node obj" href="#page-6">не ме интересува →<br>Obj A</a>
+    </div>
+    <div class="fm-arrow">↓</div>
+    <div class="fm-row">
+      <a class="fm-node core" href="#page-5">THE INVITATION<br>вторник 10:30 / четвъртък 15:00</a>
+    </div>
+    <div class="fm-row">
+      <a class="fm-node end-ok" href="#page-8">„ДА" →<br>ЗАТВОРИ + пост-разговор</a>
+      <a class="fm-node obj" href="#page-6">„изпрати инфо" →<br>Obj A (M3)</a>
+      <a class="fm-node obj" href="#page-7">„ще помисля /<br>разлика от logopedia" → Obj B</a>
+    </div>
+    <div class="fm-note" style="margin-top:8px;">
+      <b style="color:#d2453b;">LANDMINE:</b> не споменавай „Логопед на годината", „награда", „признание"
+    </div>
+  </div>
+
+  <!-- CORE CONDENSED SCRIPT -->
+  <h2>Компресиран скрипт · 4 удара</h2>
+  <div class="core-script">
+    <div class="beat">
+      <b>1 · ОТВАРЯНЕ</b> „Александър? Добър ден. Казвам се {{Име}}, обаждам се от София. <b>Това е студено обаждане — искаш ли да затвориш сега, или да ми дадеш 30 секунди да ти кажа защо звъня?</b>"
+    </div>
+    <div class="beat">
+      <b>2 · PITCH</b> „Видях „Завършен логопед". Правиш на едро това, което ние се опитваме да направим на национално ниво. Ние сме ZaDeteto — Michelin-стандарт за детските специалисти в България. <b>Не се обаждам да обяснявам платформата.</b> Обаждам се, защото дефинираме одитната рамка за логопедията, и има може би 2-3 души в България, с които тази рамка може да се постави сериозно. Ти си един от тях."
+    </div>
+    <div class="beat">
+      <b>3 · SOCRATIC · 3 въпроса</b>
+      <ol style="margin:4px 0 0 20px; padding:0;">
+        <li>Има ли българската логопедия реален, прилаган стандарт за качество?</li>
+        <li>Колко имена ти идват за секунди на хора, които могат реално да преценят компетентността на логопед?</li>
+        <li>Ако някой <b>трябва</b> да постави тази рамка — ти ли трябва да си на масата, или някой друг?</li>
+      </ol>
+    </div>
+    <div class="beat">
+      <b>4 · INVITATION</b> „20 минути следващата седмица, само двамата. Оставям ти одитната рамка, казваш ми директно какво липсва. <b>Вторник 10:30 или четвъртък 15:00 — кое работи?</b>"
+    </div>
+  </div>
+
+  <div class="branches">
+    <h3>→ Започни от стр. 2</h3>
+    <div class="branch-grid">
+      <a class="branch go" href="#page-2"><span class="b-label">START</span>Страница 2 · Отваряне (пълно)</a>
+      <a class="branch neutral" href="#page-8"><span class="b-label">REFERENCE</span>Страница 8 · Framework map &amp; пост-разговор</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 2 — Отваряне -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="page-2">
+  <div class="page-head">
+    <h1>1 · Отваряне — Pattern Interrupt</h1>
+    <span class="meta">стр. 2 / 8 · <a class="home-link" href="#page-1">← Начало</a></span>
+  </div>
+
+  <p><i>Първите 8–12 секунди. Той вдига.</i></p>
+
+  <div class="script">
+    „Александър? Добър ден. Казвам се <b>{{Име}}</b>, обаждам се от София. <b>Това е студено обаждане — искаш ли да затвориш сега, или да ми дадеш 30 секунди да ти кажа защо звъня?</b>"
+  </div>
+
+  <div class="annot">
+    <b>Pattern Interrupt</b> (Bootcamp M14 / 10 Reasons M6) — излиза от скрипта, който той очаква. <b>Push Away</b> (Bootcamp M16) — давайки разрешение да затвори, правиш отварянето безопасно. Избягва <b>Trigger Words</b> (Bootcamp M12): без „партньорство", „платформа", „възможност".
+  </div>
+
+  <div class="warn">
+    Никъде в разговора: <b>„Логопед на годината", „награда", „признание", „отличие".</b> Това е отнетата през 2023 награда — жива рана.
+  </div>
+
+  <div class="branches">
+    <h3>→ Според неговия отговор</h3>
+    <div class="branch-grid">
+      <a class="branch go" href="#page-3"><span class="b-label">НАЙ-ЧЕСТО</span>„Давай 30 секунди" → Elevator Pitch</a>
+      <a class="branch go" href="#page-3"><span class="b-label">РЯДКО, НО ОК</span>„Кратко, 2 мин" → Pitch (скъсено)</a>
+      <a class="branch warn-branch" href="#page-3"><span class="b-label">ЗАЩИТНА</span>„Кой си ти? Защо?" → Pitch</a>
+      <a class="branch stop" href="#page-8"><span class="b-label">ЗАТВАРЯ</span>END · запиши, 3 седм. пауза</a>
+    </div>
+    <div style="margin-top:6px; font-size:9pt; color:#6b6b6b;">
+      Ако „Кой си?": отговори от Adult, без защита: „{{Име}}, от ZaDeteto. Обаждам се по конкретна причина, свързана с „Завършен логопед". Дай ми 30 секунди — ако не е за теб, затваряш."
+    </div>
+    <div style="margin-top:8px;">
+      <a class="branch obj warn-branch" href="#page-6" style="display:block;"><span class="b-label">АКО КАЗВА „ЗАЕТ СЪМ"</span>→ стр. 6 · Obj A</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 3 — Elevator Pitch -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="page-3">
+  <div class="page-head">
+    <h1>2 · Elevator Pitch</h1>
+    <span class="meta">стр. 3 / 8 · <a class="home-link" href="#page-1">← Начало</a></span>
+  </div>
+
+  <div class="script">
+    „Видях „Завършен логопед". <b>Ти правиш на едро това, което ние се опитваме да направим на национално ниво</b> — да отделим реалните специалисти от шума.<br><br>
+    Ние сме <b>ZaDeteto</b>. Строим нещо, което е замислено като Michelin-стандарт за детските специалисти в България.<br><br>
+    <b>Не се обаждам да ти обяснявам платформата.</b> Обаждам се, защото сме на етап, в който дефинираме <b>одитната рамка за логопедията</b>, и в България има може би 2-3 души, с които тази рамка може да се постави сериозно. <b>Ти си един от тях.</b>"
+  </div>
+
+  <div class="annot">
+    <b>Humanising opening</b> (BC1 M11) — доказва, че не е шаблон. <b>Peer framing</b> (BC1 M3) — Parent ↔ Parent. <b>Elevator Pitch</b> (Bootcamp M15) — една фраза, проблем-центрична. „2-3 души" е оскъдност <b>без</b> ласкателство — ласкателството активира защита.
+  </div>
+
+  <h3>Ако пита „какво е ZaDeteto?" — НЕ обяснявай платформата</h3>
+  <div class="script" style="font-size:10pt;">
+    „Много бързо: национална директория с одит и статуси — „проверен специалист" означава преминал критерии, не просто платил. Но искам да ти спестя 20-минутната презентация, защото решението ти за среща не зависи от това. Може ли да ти задам два въпроса?"
+  </div>
+
+  <div class="branches">
+    <h3>→ Според реакцията</h3>
+    <div class="branch-grid">
+      <a class="branch go" href="#page-4"><span class="b-label">ИДЕАЛНО</span>Мълчи 2-3 сек → Socratic</a>
+      <a class="branch go" href="#page-4"><span class="b-label">OK</span>„Кажи повече" → БЕЗ да обясняваш → Socratic</a>
+      <a class="branch go" href="#page-4"><span class="b-label">OK</span>„Какво е ZaDeteto?" → отговор горе → Socratic</a>
+      <a class="branch warn-branch" href="#page-6"><span class="b-label">СЪПРОТИВА</span>„Не ме интересува" → Obj A</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 4 — Negative Socratic -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="page-4">
+  <div class="page-head">
+    <h1>3 · Negative Socratic — 3 въпроса</h1>
+    <span class="meta">стр. 4 / 8 · <a class="home-link" href="#page-1">← Начало</a></span>
+  </div>
+
+  <p><i>Целта: той да се продаде сам на проблема. Не ти му го обясняваш — той го формулира.</i></p>
+
+  <div class="script">
+    „Преди да ти обясня каквото и да било друго — <b>два въпроса, само за да знам дали изобщо има смисъл да ти отнемам повече време.</b>"
+  </div>
+
+  <h3>Въпрос 1</h3>
+  <div class="script">„Смяташ ли, че българската логопедия има в момента <b>реален, прилаган стандарт за качество</b>?"</div>
+  <div class="annot"><b>Очакван:</b> „Не." или дълго обяснение защо не. И двете работят.</div>
+
+  <h3>Въпрос 2</h3>
+  <div class="script">„Ако трябва да посочиш двама-трима души в България, които могат реално да преценят компетентността на един логопед — <b>колко имена ти идват наум за секунди?</b>"</div>
+  <div class="annot"><b>Очакван:</b> „Малко." / „Двама-трима." / мълчание.</div>
+
+  <h3>Въпрос 3 (ключов)</h3>
+  <div class="script">„Ако някой <b>трябва</b> да постави тази рамка — <b>ти ли трябва да си на масата, или някой друг?</b>"</div>
+  <div class="annot"><b>Очакван:</b> „Аз би трябвало." → моментът, в който той се продава сам.</div>
+
+  <div class="annot" style="margin-top:10px;">
+    <b>Рамки:</b> Negative Socratic (BC1 M16-17), Literal vs Reality (BC1 M13), Conversational Questioning (Bootcamp M19), Listening vs Hearing (BC1 M8). <b>Три въпроса, не повече.</b> <b>Не спорù</b> с отговорите — Crab Walking (Bootcamp M18) ако отидеш настрани.
+  </div>
+
+  <h3>Ако защитава професията („Да, има стандарт")</h3>
+  <div class="script" style="font-size:10pt;">
+    „Добре, интересно — ти ще знаеш по-добре от мен. Тогава по-конкретно: ти смяташ ли, че 836-те имена в директорията на logopedia.bg, <b>без филтър, без проверка, без критерий</b> — отразяват реално този стандарт?"
+  </div>
+  <div class="annot"><b>Структурна слабост на конкурент — не повдигаш събитието от 2023.</b></div>
+
+  <div class="branches">
+    <h3>→ Според реакцията</h3>
+    <div class="branch-grid">
+      <a class="branch go" href="#page-5"><span class="b-label">ОЧАКВАНО</span>Отговаря както очакваш → Invitation</a>
+      <a class="branch go" href="#page-5"><span class="b-label">ЗЛАТО</span>Започва да обяснява проблема → LISTEN → Invitation</a>
+      <a class="branch warn-branch" href="#page-5"><span class="b-label">ДРАЗНИ СЕ</span>Crab Walk back → Invitation директно</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 5 — The Invitation -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="page-5">
+  <div class="page-head">
+    <h1>4 · The Invitation</h1>
+    <span class="meta">стр. 5 / 8 · <a class="home-link" href="#page-1">← Начало</a></span>
+  </div>
+
+  <p><i>Единственият point, в който затваряш — <b>за среща</b>, не за нещо друго.</i></p>
+
+  <div class="script">
+    „Виж, нямам интерес да ти отнемам повече от телефона. <b>Това, което ти предлагам</b>: 20 минути следващата седмица, само двамата. Оставям ти одитната рамка, виждаш как изглежда, <b>казваш ми директно какво липсва</b>. Не е презентация, не е sales pitch, не е PDF. Половин час, директен разговор.<br><br>
+    <b>Вторник в 10:30 сутринта или четвъртък в 15:00 — кое е по-добре?</b>"
+  </div>
+
+  <div class="annot">
+    <b>The Invitation</b> (Bootcamp M20). <b>Два конкретни slot-а</b>, не „кога ти е удобно?" (Child-ego). „Казваш ми директно какво липсва" = поставя го в Parent/expert ego state. <b>BC1 M4 11 Commandments: stop selling after you've sold.</b>
+  </div>
+
+  <h3>One Last Chance to Bail (Bootcamp M21)</h3>
+  <div class="script" style="font-size:10pt;">
+    „Последно: ако в събота сутрин решиш, че това не е за теб — просто ми пиши „не работи" и толкова. Никакво обяснение. Ок?"
+  </div>
+  <div class="annot">Намалява „ghost" процента. Парадоксално намалява и отказа.</div>
+
+  <div class="branches">
+    <h3>→ Според реакцията</h3>
+    <div class="branch-grid">
+      <a class="branch go" href="#page-8"><span class="b-label">УСПЕХ</span>„Вторник 10:30 става" → ЗАТВАРЯЙ → пост-разговор</a>
+      <a class="branch neutral" href="#page-5"><span class="b-label">НЕ ПАСВА</span>„Нито едното" → предложи ТОЧНО 2 нови slots</a>
+      <a class="branch warn-branch" href="#page-6"><span class="b-label">ИЗКОФКАНЕ</span>„Изпрати ми инфо" → стр. 6 Obj A (M3)</a>
+      <a class="branch warn-branch" href="#page-7"><span class="b-label">ЗАБАВЯНЕ</span>„Ще помисля / ще обсъдя" → стр. 7 Obj B (M6)</a>
+    </div>
+    <div style="margin-top:6px; font-size:9.5pt;">
+      <b>ВТОРИЧНИ slots, ако първите не пасват:</b> „Петък в 14:00 или другия понеделник в 9:30 — кое работи?" <b>Не питай „кога?".</b>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 6 — Objections Pack A -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="page-6">
+  <div class="page-head">
+    <h1>Obj A · Send info / Busy / How much</h1>
+    <span class="meta">стр. 6 / 8 · <a class="home-link" href="#page-1">← Начало</a></span>
+  </div>
+
+  <h2>A1. „Изпрати ми инфо по мейл" <span style="font-size:9pt; color:#6b6b6b;">(Bulldoze M3)</span></h2>
+  <div class="script" style="font-size:10pt;">
+    „Мога. <b>Но честно</b> — ако ти изпратя PDF, ще го прегледаш между 47 други неща, ще изглежда като поредната платформа, и ще ми отговориш с „ще помисля". <b>Знам го, защото винаги става така.</b><br><br>
+    Ако ми дадеш 20 минути вместо това, ще ти спестя 2 часа четене и ще ти дам точно онова, което в PDF няма да видиш — <b>кои са другите хора в одитния борд и защо теб искам специално</b>. Става ли?"
+  </div>
+  <div class="annot"><b>Bulldoze M3</b> — признаваш, не се защитаваш. Предлагаш алтернатива с по-висока стойност.</div>
+
+  <h2>A2. „Зает съм в момента" <span style="font-size:9pt; color:#6b6b6b;">(Bulldoze M2 variant)</span></h2>
+  <div class="script" style="font-size:10pt;">
+    „Разбирам. Един въпрос: <b>„зает" означава ли „не сега, другата седмица", или „не ме интересува и казвам „зает" от учтивост"?</b> И двата отговора ги приемам — просто искам да не ти губя времето."
+  </div>
+  <div class="annot">Разделяш истинско занимание от учтив отказ. Той уважава директността.</div>
+
+  <h2>A3. „Колко струва?" <span style="font-size:9pt; color:#6b6b6b;">(Bulldoze M1 variant, ранна поява)</span></h2>
+  <div class="script" style="font-size:10pt;">
+    „Честен отговор: <b>ролята е платена</b>, но ценообразуването зависи от обхвата — не искам да ти кажа число, което после ще ревизираме. <b>За това искам срещата.</b> След 20 минути ще знаем и двамата дали има смисъл, и точно колко."
+  </div>
+  <div class="annot">Не давай цена по телефона. Bulldoze Rule: цената има значение само след стойността.</div>
+
+  <div class="branches">
+    <h3>→ След обработка на възражението</h3>
+    <div class="branch-grid">
+      <a class="branch go" href="#page-5"><span class="b-label">ОМЕКВА</span>„ОК, да опитаме" → Invitation (стр. 5)</a>
+      <a class="branch warn-branch" href="#page-7"><span class="b-label">НОВО ВЪЗРАЖЕНИЕ</span>„Ще помисля" / „logopedia" → стр. 7 Obj B</a>
+      <a class="branch stop" href="#page-8"><span class="b-label">ТВЪРДО НЕ</span>„Не ме интересува" → приемаш, затваряш учтиво → END</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 7 — Objections Pack B -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="page-7">
+  <div class="page-head">
+    <h1>Obj B · Logopedia / Not my role / Ще помисля</h1>
+    <span class="meta">стр. 7 / 8 · <a class="home-link" href="#page-1">← Начало</a></span>
+  </div>
+
+  <h2>B1. „Каква е разликата от logopedia.bg?"</h2>
+  <div class="script" style="font-size:10pt;">
+    „Logopedia.bg е <b>директория — безплатна, с 836 имена, без филтър, без проверка</b>. Ние сме <b>система за проверка</b>, с одит, с нива, с лимитиран брой места на град. Но това е на повърхността.<br><br>
+    Причината, по която те търся, <b>не е позициониране</b> — причината е, че самата <b>рамка за одит</b> тепърва се пише и искам твоя вход. Това не може да стане по телефона."
+  </div>
+  <div class="warn">НЕ повдигаш събитието от 2023. Стоиш на <b>структурна разлика на продукта</b>, не на reputational дразнене.</div>
+
+  <h2>B2. „Не съм аз човекът, пробвай {{друго име}}"</h2>
+  <div class="script" style="font-size:10pt;">
+    „Благодаря — ще говоря и с него/нея. Но <b>конкретно при теб търся нещо друго</b>: не само професионална оценка на логопедията, а и опит в <b>менторирането</b> на други логопеди. Това е рядка комбинация, затова те търся специално. 20 минути?"
+  </div>
+  <div class="annot">Не приемаш „иди при друг". Преформулираш <b>защо именно той.</b></div>
+
+  <h2>B3. „Ще трябва да си помисля / обсъдя" <span style="font-size:9pt; color:#6b6b6b;">(Bulldoze M6)</span></h2>
+  <div class="script" style="font-size:10pt;">
+    „Разбира се. <b>С кого ще го обсъждаш?</b> Не питам от любопитство — ако има още някой, който трябва да е на разговора, <b>по-добре да е там от началото</b>, не след втория кръг."
+  </div>
+  <div class="annot"><b>Bulldoze M6</b> — не го изпускаш в мъгла. Разкриваш реалния decision process.</div>
+
+  <div class="branches">
+    <h3>→ След обработка</h3>
+    <div class="branch-grid">
+      <a class="branch go" href="#page-5"><span class="b-label">ОМЕКВА</span>„ОК, да опитаме" → Invitation (стр. 5)</a>
+      <a class="branch warn-branch" href="#page-6"><span class="b-label">НОВО ВЪЗРАЖЕНИЕ</span>„Изпрати инфо" / „зает" → стр. 6 Obj A</a>
+      <a class="branch stop" href="#page-8"><span class="b-label">ТВЪРДО НЕ</span>„Не ме интересува" → приемаш, затваряш учтиво → END</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 8 — Post-call + Framework Map -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="page" id="page-8">
+  <div class="page-head">
+    <h1>След разговора · Framework reference</h1>
+    <span class="meta">стр. 8 / 8 · <a class="home-link" href="#page-1">← Начало</a></span>
+  </div>
+
+  <h2>Ако е казал „ДА" за срещата · в рамките на 2 часа</h2>
+
+  <h3>SMS (веднага)</h3>
+  <div class="script" style="font-size:10pt;">
+    „{{Име}} тук — потвърждавам вторник 10:30. Ще ти звънна на този номер. За всеки случай моят е {{+359...}}."
+  </div>
+
+  <h3>Email (същия ден)</h3>
+  <div class="script" style="font-size:10pt;">
+    Тема: <b>Вторник 10:30 — одитна рамка, чернова</b><br><br>
+    „Ще донеса чернова на одитната рамка — 1 страница, нищо повече. Твоята роля е <b>да я скъсаш на парчета</b>."
+  </div>
+  <div class="annot">Parent-ego bait. Той харесва да критикува. <b>НЕ изпращай инфо за ZaDeteto предварително</b> — остави го да дойде без очаквания.</div>
+
+  <h3>Подготовка за срещата (checklist)</h3>
+  <ul class="checklist">
+    <li>1-страница чернова на одитната рамка (не финал — чернова)</li>
+    <li>1-2 потвърдени имена на други auditor-и (различна специалност)</li>
+    <li>Honorarium диапазон готов (той ще пита)</li>
+    <li>BC2 Running A Sales Meeting: Omega Moment + Future State + Mock Presentation + Ending The Meeting</li>
+  </ul>
+
+  <h2>Ако е казал „НЕ" / END</h2>
+  <ul>
+    <li>Запиши датата и обективната причина (не „лоша среща")</li>
+    <li>След <b>3 месеца</b>: втори опит с различен Pattern Interrupt + референция към нещо ново, което е направил междувременно</li>
+    <li><b>НЕ</b> го слагай в nurture sequence. Strategic target, не лид.</li>
+  </ul>
+
+  <h2>Framework Map — бърза референция</h2>
+  <table>
+    <thead>
+      <tr><th>Секция</th><th>BD рамка / модул</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Отварянето</td><td>Pattern Interrupt (Bootcamp M14), Push Away (M16), Trigger Words (M12)</td></tr>
+      <tr><td>Elevator Pitch</td><td>Elevator Pitch (Bootcamp M15), Humanising (BC1 M11)</td></tr>
+      <tr><td>Позициониране</td><td>Superiority (10 Reasons M4), Transactional Analysis — Parent↔Parent (BC1 M3, Bootcamp M6-8)</td></tr>
+      <tr><td>Въпроси</td><td>Negative Socratic (BC1 M16-17), Literal vs Reality (BC1 M13), Conversational Q (Bootcamp M19), Listening vs Hearing (BC1 M8)</td></tr>
+      <tr><td>Поканата</td><td>The Invitation (Bootcamp M20), One Last Chance to Bail (M21)</td></tr>
+      <tr><td>Възражения</td><td>Bulldoze M1 (price), M2 (stall), M3 (send info), M6 (discuss)</td></tr>
+      <tr><td>Цел</td><td>Purpose Of A Cold Call = <b>20-мин среща</b>, нищо повече (10 Reasons M1)</td></tr>
+      <tr><td>Контрол</td><td>Staying In Control (10 Reasons M2), Crab Walking (Bootcamp M18)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warn" style="margin-top:12px;">
+    LANDMINES: „Логопед на годината" · „награда" · „признание" · „отличие" · „logopedia.bg" (освен ако той го повдигне — тогава структурна разлика, не reputational)
+  </div>
+
+  <div style="margin-top:14px; font-size:9pt; color:#6b6b6b; text-align:center;">
+    ZaDeteto · cold-call / BD метод · v1 · 2026-04-18
+  </div>
+</section>
+
+</body>
+</html>
