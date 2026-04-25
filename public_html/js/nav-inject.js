@@ -105,7 +105,24 @@
       /* Hamburger X animation when open */
       '.zd-hamburger.zd-open .bar1{transform:translateY(7px) rotate(45deg);}' +
       '.zd-hamburger.zd-open .bar2{opacity:0;}' +
-      '.zd-hamburger.zd-open .bar3{transform:translateY(-7px) rotate(-45deg);}';
+      '.zd-hamburger.zd-open .bar3{transform:translateY(-7px) rotate(-45deg);}' +
+      /* ═══ AUTH MENU dropdown (login + profile dropdowns in nav) ═══ */
+      '.zd-auth-anchor{position:relative;display:inline-flex;}' +
+      '.zd-auth-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:220px;background:#fff;border:1px solid #ece8f3;border-radius:14px;box-shadow:0 14px 40px rgba(26,16,60,0.10),0 4px 12px rgba(26,16,60,0.04);padding:6px;display:none;flex-direction:column;z-index:1100;animation:zdAuthMenuFadeIn 0.16s ease-out;}' +
+      '.zd-auth-menu.zd-open{display:flex;}' +
+      '.zd-auth-menu .zd-auth-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#1a103c;text-decoration:none;font-size:14px;font-weight:600;font-family:DM Sans,sans-serif;background:transparent;border:none;cursor:pointer;text-align:left;width:100%;transition:background 0.15s,color 0.15s;}' +
+      '.zd-auth-menu .zd-auth-item:hover{background:rgba(124,77,255,0.06);color:#7c4dff;}' +
+      '.zd-auth-menu .zd-auth-item:focus-visible{background:rgba(124,77,255,0.08);}' +
+      '.zd-auth-menu .zd-auth-item--danger{color:#c23a5d;}' +
+      '.zd-auth-menu .zd-auth-item--danger:hover{background:rgba(194,58,93,0.08);color:#c23a5d;}' +
+      '.zd-auth-menu .zd-auth-item svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;flex-shrink:0;}' +
+      '.zd-auth-menu .zd-auth-divider{height:1px;background:#ece8f3;margin:4px 8px;}' +
+      '.zd-auth-menu .zd-auth-section-label{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#8b80b0;padding:8px 14px 4px;}' +
+      '@keyframes zdAuthMenuFadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}' +
+      /* Mobile: dropdown becomes full-width inside hamburger */
+      '@media(max-width:980px){' +
+        '.zd-auth-menu{position:static;width:100%;min-width:0;box-shadow:none;border:1px solid #ece8f3;margin-top:8px;}' +
+      '}';
     // Append to head at parse time. This style lands just after the <script>
     // (which is before the page's own <style>), so the page <style> wins when
     // specificity is equal — per-page rules override these defaults.
@@ -247,6 +264,243 @@
         else footer.appendChild(socialsDiv);
       }
     }
+
+    /* ═══ AUTH MENU dropdowns (login + profile) ═══ */
+    initAuthMenu();
+  }
+
+  /* Helpers за auth menu */
+  function _zdCloseAllAuthMenus(except) {
+    document.querySelectorAll('.zd-auth-menu.zd-open').forEach(function (m) {
+      if (m !== except) m.classList.remove('zd-open');
+    });
+  }
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.zd-auth-anchor')) _zdCloseAllAuthMenus();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') _zdCloseAllAuthMenus();
+  });
+
+  function _zdMakeAnchor(btn) {
+    // Wrap a button/link in a positioning anchor so the dropdown sits relative to it
+    if (btn.parentElement && btn.parentElement.classList.contains('zd-auth-anchor')) {
+      return btn.parentElement;
+    }
+    var anchor = document.createElement('span');
+    anchor.className = 'zd-auth-anchor';
+    btn.parentNode.insertBefore(anchor, btn);
+    anchor.appendChild(btn);
+    return anchor;
+  }
+
+  function _zdBuildMenu(items) {
+    var menu = document.createElement('div');
+    menu.className = 'zd-auth-menu';
+    menu.setAttribute('role', 'menu');
+    items.forEach(function (it) {
+      if (it.divider) {
+        var d = document.createElement('div');
+        d.className = 'zd-auth-divider';
+        menu.appendChild(d);
+        return;
+      }
+      if (it.label) {
+        var l = document.createElement('div');
+        l.className = 'zd-auth-section-label';
+        l.textContent = it.label;
+        menu.appendChild(l);
+        return;
+      }
+      var el;
+      if (it.href) {
+        el = document.createElement('a');
+        el.href = it.href;
+      } else {
+        el = document.createElement('button');
+        el.type = 'button';
+      }
+      el.className = 'zd-auth-item' + (it.danger ? ' zd-auth-item--danger' : '');
+      el.setAttribute('role', 'menuitem');
+      el.innerHTML = (it.icon || '') + '<span>' + it.text + '</span>';
+      if (it.onclick) el.addEventListener('click', function (e) { it.onclick(e); _zdCloseAllAuthMenus(); });
+      menu.appendChild(el);
+    });
+    return menu;
+  }
+
+  function _zdRoleIcons() {
+    return {
+      admin:    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+      business: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></svg>',
+      parent:   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+      logout:   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>'
+    };
+  }
+
+  /* ── LOGGED-OUT: replace „Вход" link with role-pick dropdown ── */
+  function _zdAttachLoginDropdown(loginBtn) {
+    if (loginBtn.dataset.zdAuthMenuAttached === '1') return;
+    loginBtn.dataset.zdAuthMenuAttached = '1';
+    loginBtn.setAttribute('aria-haspopup', 'menu');
+    loginBtn.setAttribute('aria-expanded', 'false');
+    var anchor = _zdMakeAnchor(loginBtn);
+    var menu = _zdBuildMenu([
+      { label: 'Вход като' },
+      {
+        text: 'Родител',
+        href: 'search.html?login=true',
+        icon: _zdRoleIcons().parent
+      },
+      {
+        text: 'Партньор',
+        href: 'business-login.html',
+        icon: _zdRoleIcons().business
+      }
+    ]);
+    anchor.appendChild(menu);
+
+    loginBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var isOpen = menu.classList.contains('zd-open');
+      _zdCloseAllAuthMenus();
+      if (!isOpen) {
+        menu.classList.add('zd-open');
+        loginBtn.setAttribute('aria-expanded', 'true');
+        var first = menu.querySelector('.zd-auth-item');
+        if (first) first.focus();
+      } else {
+        loginBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  /* ── LOGGED-IN: replace any .nav-auth-btn with role-aware dropdown ── */
+  async function _zdAttachProfileDropdown(profileBtn, session) {
+    if (profileBtn.dataset.zdAuthMenuAttached === '1') return;
+    profileBtn.dataset.zdAuthMenuAttached = '1';
+    profileBtn.setAttribute('aria-haspopup', 'menu');
+    profileBtn.setAttribute('aria-expanded', 'false');
+
+    // Detect role
+    var role = 'parent';
+    var ownerRow = null;
+    try {
+      var ownerRes = await window.ZdSupabase
+        .from('business_owners')
+        .select('id, business_id, is_admin, is_superadmin')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      ownerRow = ownerRes.data || null;
+      if (ownerRow && (ownerRow.is_admin || ownerRow.is_superadmin)) role = 'admin';
+      else if (ownerRow && ownerRow.business_id) role = 'business';
+    } catch (e) {
+      console.warn('[auth-menu] role lookup failed:', e);
+    }
+
+    // Build menu items по role
+    var icons = _zdRoleIcons();
+    var items = [];
+    if (role === 'admin') {
+      items.push({ text: 'Админ панел', href: 'business-audit-admin.html', icon: icons.admin });
+      items.push({ text: 'Моят бизнес', href: 'business-dashboard.html', icon: icons.business });
+    } else if (role === 'business') {
+      items.push({ text: 'Бизнес профил', href: 'business-dashboard.html', icon: icons.business });
+    } else {
+      items.push({ text: 'Запазени бизнеси', href: 'search.html#liked', icon: icons.parent });
+    }
+    items.push({ divider: true });
+    items.push({
+      text: 'Изход',
+      icon: icons.logout,
+      danger: true,
+      onclick: async function (e) {
+        e.preventDefault();
+        try { if (window.ZdSupabase) await window.ZdSupabase.auth.signOut(); } catch (_) {}
+        try { localStorage.removeItem('zd_parent_logged_in'); } catch (_) {}
+        // Redirect според контекста
+        if (/\/(business-dashboard|business-audit-admin|business-audit|business-login|claim|welcome)\.html/i.test(location.pathname)) {
+          location.replace('business-login.html');
+        } else {
+          location.reload();
+        }
+      }
+    });
+
+    var anchor = _zdMakeAnchor(profileBtn);
+    var menu = _zdBuildMenu(items);
+    anchor.appendChild(menu);
+
+    // Override existing click handler — премахваме any onclick set by inline pages
+    profileBtn.onclick = null;
+    profileBtn.addEventListener('click', function (e) {
+      // search.html / listing.html re-set onclick on всеки auth state change.
+      // Изтриваме го наново всеки път и прекъсваме propagation за да не сработи.
+      profileBtn.onclick = null;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      var isOpen = menu.classList.contains('zd-open');
+      _zdCloseAllAuthMenus();
+      if (!isOpen) {
+        menu.classList.add('zd-open');
+        profileBtn.setAttribute('aria-expanded', 'true');
+        var first = menu.querySelector('.zd-auth-item');
+        if (first) first.focus();
+      } else {
+        profileBtn.setAttribute('aria-expanded', 'false');
+      }
+    }, true); // capture phase, преди inline handler-и
+  }
+
+  function initAuthMenu() {
+    // Logged-OUT button: винаги attach дропдауна (без значение от Supabase)
+    var loginBtn = document.querySelector('.nav-btn-login');
+    if (loginBtn) _zdAttachLoginDropdown(loginBtn);
+
+    // Logged-IN button: чакаме Supabase да зареди + има активна session
+    var profileBtns = document.querySelectorAll('.nav-auth-btn');
+    if (profileBtns.length === 0) return;
+
+    function tryAttach() {
+      if (!window.ZdSupabase) return false;
+      window.ZdSupabase.auth.getSession().then(function (res) {
+        var session = res && res.data ? res.data.session : null;
+        if (!session || !session.user) return; // not logged in: leave default behaviour
+        profileBtns.forEach(function (btn) { _zdAttachProfileDropdown(btn, session); });
+      });
+      return true;
+    }
+
+    if (!tryAttach()) {
+      // Изчаквай supabase-init да dispatch-не „zd-supabase-ready"
+      var ready = function () { tryAttach(); };
+      window.addEventListener('zd-supabase-ready', ready, { once: true });
+      // Fallback: poll до 4 секунди ако event не дойде
+      var tries = 0;
+      var poll = setInterval(function () {
+        tries++;
+        if (window.ZdSupabase) {
+          clearInterval(poll);
+          tryAttach();
+        } else if (tries > 40) {
+          clearInterval(poll);
+        }
+      }, 100);
+    }
+
+    // React на промени в session (sign-in/sign-out от друг tab)
+    function watchAuthChanges() {
+      if (!window.ZdSupabase) return;
+      window.ZdSupabase.auth.onAuthStateChange(function (event) {
+        if (event === 'SIGNED_OUT') {
+          // Премахни dropdown-а — пагаждавай след reload
+          location.reload();
+        }
+      });
+    }
+    if (window.ZdSupabase) watchAuthChanges();
+    else window.addEventListener('zd-supabase-ready', watchAuthChanges, { once: true });
   }
 
   if (document.readyState === 'loading') {
