@@ -784,14 +784,32 @@ async function loadExistingSubmission() {
   var { data: owner } = await sb.from('business_owners').select('business_id').eq('id', userId).single();
   if (!owner || !owner.business_id) return;
 
+  // Fetch businesses + partner_applications за prefill на празни полета
+  // (от waitlist signup-а вече имаме eik/email/phone/city/category)
+  var bizPromise = sb.from('businesses')
+    .select('eik, company_name, registered_address, mol_name, mol_phone, mol_email, phone, email, city, categories, name')
+    .eq('id', owner.business_id)
+    .maybeSingle();
+  var appPromise = sb.from('partner_applications')
+    .select('contact_name, eik, email, phone, city, category')
+    .eq('auth_user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  var bizRes = await bizPromise;
+  var appRes = await appPromise;
+  var biz = bizRes.data || null;
+  var app = (appRes.data && appRes.data.length > 0) ? appRes.data[0] : null;
+
   var { data: sub } = await sb.from('audit_submissions')
     .select('id, status')
     .eq('business_id', owner.business_id)
     .eq('tier', 'Безплатен')
-    .single();
+    .maybeSingle();
 
   if (!sub) {
     showStatusBanner('draft');
+    prefillFromWaitlist(biz, app);
     return;
   }
 
@@ -802,14 +820,95 @@ async function loadExistingSubmission() {
     disableForm();
   }
 
-  // Load answers
+  // Load answers, after това prefill за полета които НЯМАТ answer още
   var { data: answers } = await sb.from('audit_answers')
     .select('question_key, answer_value')
     .eq('submission_id', sub.id);
 
-  if (!answers) return;
-  answers.forEach(function(a) { populateAnswer(a.question_key, a.answer_value); });
+  var answeredKeys = {};
+  if (answers) {
+    answers.forEach(function(a) {
+      populateAnswer(a.question_key, a.answer_value);
+      answeredKeys[a.question_key] = true;
+    });
+  }
+
+  // Prefill за празните полета (само ако submission е още draft)
+  if (sub.status === 'draft') {
+    prefillFromWaitlist(biz, app, answeredKeys);
+  }
+
   updateProgress();
+}
+
+/* Pre-populate L1 полета които идват от partner_applications + businesses,
+ * за да избегнем двойно въвеждане. Не презаписва ако има user input
+ * (когато answeredKeys съдържа ключа, прескачаме). */
+function prefillFromWaitlist(biz, app, answeredKeys) {
+  answeredKeys = answeredKeys || {};
+  function setIf(elId, val) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    if (el.value && el.value.trim()) return; // вече има стойност, не презаписвай
+    if (val == null || val === '') return;
+    el.value = val;
+  }
+
+  // L1_Q01 — юридическо name (от businesses.company_name; ако е празно остава празно)
+  if (!answeredKeys.L1_Q01) {
+    setIf('q01', (biz && biz.company_name) || '');
+  }
+
+  // L1_Q02 — ЕИК
+  if (!answeredKeys.L1_Q02) {
+    setIf('q02', (biz && biz.eik) || (app && app.eik) || '');
+  }
+
+  // L1_Q03 — МОЛ блок
+  if (!answeredKeys.L1_Q03) {
+    setIf('q03_name',  (biz && biz.mol_name)  || (app && app.contact_name) || '');
+    setIf('q03_phone', (biz && biz.mol_phone) || (biz && biz.phone)        || (app && app.phone) || '');
+    setIf('q03_email', (biz && biz.mol_email) || (biz && biz.email)        || (app && app.email) || '');
+  }
+
+  // L1_Q05 — градове (като ranked list, един град като №1)
+  if (!answeredKeys.L1_Q05) {
+    var city = (biz && biz.city) || (app && app.city) || '';
+    if (city) {
+      try {
+        var citiesEl = document.getElementById('citiesRanked');
+        if (citiesEl && citiesEl.children.length === 0 && typeof renderRankedList === 'function') {
+          renderRankedList(citiesEl, [city]);
+        }
+      } catch (e) { console.warn('[audit prefill] cities ranked list failed:', e); }
+    }
+  }
+
+  // L1_Q06 — категории
+  if (!answeredKeys.L1_Q06) {
+    var cats = (biz && biz.categories && biz.categories.length > 0) ? biz.categories
+             : (app && app.category ? [app.category] : []);
+    if (cats.length > 0) {
+      cats.forEach(function (c) {
+        document.querySelectorAll('#categoryCheckboxes input').forEach(function (cb) {
+          if (cb.value === c && !cb.checked) {
+            cb.checked = true;
+            var lab = cb.closest('label');
+            if (lab) {
+              lab.style.borderColor = 'var(--accent)';
+              lab.style.background = 'var(--accent-light)';
+            }
+          }
+        });
+      });
+      try {
+        var catsEl = document.getElementById('categoriesRanked');
+        if (catsEl && catsEl.children.length === 0 && typeof renderRankedList === 'function') {
+          renderRankedList(catsEl, cats);
+        }
+      } catch (e) { console.warn('[audit prefill] categories ranked list failed:', e); }
+    }
+  }
 }
 
 function populateAnswer(key, val) {
