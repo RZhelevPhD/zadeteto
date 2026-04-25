@@ -37,6 +37,24 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 .logout { color:var(--danger); text-decoration:none; font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
 .admin-badge { display:inline-block; padding:3px 10px; border-radius:8px; background:rgba(231,76,111,0.1); color:var(--danger); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-left:8px; }
 
+/* USER INFO BLOCK */
+.user-info { padding:16px 24px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; min-width:0; }
+.user-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg, var(--accent), #5a2ee6); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0; font-family:'DM Sans',sans-serif; }
+.user-meta { display:flex; flex-direction:column; min-width:0; flex:1; }
+.user-email { font-size:12px; color:var(--text); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.role-badge { display:inline-block; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; letter-spacing:0.04em; text-transform:uppercase; margin-top:3px; width:fit-content; }
+.role-badge--partner { background:rgba(124,77,255,0.10); color:var(--accent); }
+.role-badge--admin { background:rgba(231,76,111,0.10); color:var(--danger); }
+.role-badge--super { background:linear-gradient(135deg, rgba(231,76,111,0.12), rgba(212,160,23,0.18)); color:var(--danger); }
+
+/* HOT LEAD badge in table */
+.hot-lead-flame { display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:#e7642c; padding:2px 8px; border-radius:8px; background:rgba(231,100,44,0.10); border:1px solid rgba(231,100,44,0.25); }
+.hot-lead-flame svg { width:11px; height:11px; }
+.filter-pill--hot { color:#e7642c; border-color:rgba(231,100,44,0.4); }
+.filter-pill--hot.active { background:#e7642c; color:#fff; border-color:#e7642c; }
+.filter-pill .count-pill { display:inline-block; margin-left:6px; background:rgba(0,0,0,0.10); color:inherit; font-size:10px; font-weight:700; padding:1px 6px; border-radius:8px; min-width:16px; text-align:center; }
+.filter-pill.active .count-pill { background:rgba(255,255,255,0.25); }
+
 /* MAIN */
 .main-area { flex:1; padding:40px; min-width:0; overflow-x:hidden; }
 .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:32px; flex-wrap:wrap; gap:16px; }
@@ -155,7 +173,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
   body { flex-direction:column; }
   .sidebar { width:100%; height:auto; position:relative; padding:16px 0; flex-direction:row; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
   .sidebar::-webkit-scrollbar { display:none; }
-  .logo-box, .sidebar-bottom { display:none; }
+  .logo-box, .sidebar-bottom, .user-info { display:none; }
   .nav-item { white-space:nowrap; padding:10px 16px; border-left:none; border-bottom:3px solid transparent; }
   .nav-item.active { border-left:none; border-bottom-color:var(--accent); }
   .main-area { padding:20px; }
@@ -184,6 +202,16 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
   <a href="business-audit-admin.html" class="nav-item active">
     <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Одит панел <span class="admin-badge">Admin</span>
   </a>
+  <a href="#change-requests" class="nav-item" onclick="scrollToChangeRequests(event);">
+    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Заявки за промяна <span class="nav-badge" id="changeReqBadge" style="display:none;">0</span>
+  </a>
+  <div class="user-info" id="userInfoBlock" style="display:none;">
+    <div class="user-avatar" id="userAvatar" aria-hidden="true">…</div>
+    <div class="user-meta">
+      <span class="user-email" id="userEmail" title=""></span>
+      <span class="role-badge role-badge--admin" id="userRoleBadge">Админ</span>
+    </div>
+  </div>
   <div class="sidebar-bottom">
     <a href="#" class="logout" onclick="event.preventDefault(); zdSignOut();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Изход</a>
   </div>
@@ -208,6 +236,11 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
   <!-- Filters -->
   <div class="filter-bar">
     <button class="filter-pill active" data-filter="all" onclick="setFilter(this)">Всички</button>
+    <button class="filter-pill filter-pill--hot" data-filter="hot" onclick="setFilter(this)">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:-2px;margin-right:3px;" aria-hidden="true"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8c0-5.39-2.59-10.21-6.5-13.33zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg>
+      Горещи
+      <span class="count-pill" id="hotLeadCount">0</span>
+    </button>
     <button class="filter-pill" data-filter="submitted" onclick="setFilter(this)">Нови</button>
     <button class="filter-pill" data-filter="under_review" onclick="setFilter(this)">В преглед</button>
     <button class="filter-pill" data-filter="scored" onclick="setFilter(this)">Оценени</button>
@@ -222,6 +255,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
     <table class="submissions-table">
       <thead>
         <tr>
+          <th></th>
           <th>Партньор</th>
           <th>Ниво</th>
           <th>Статус</th>
@@ -230,10 +264,37 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr><td colspan="5" class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><p>Зареждане...</p></td></tr>
+        <tr><td colspan="6" class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><p>Зареждане...</p></td></tr>
       </tbody>
     </table>
   </div>
+
+  <!-- Change Requests Section (Phase 3.5 skeleton) -->
+  <section id="change-requests" aria-labelledby="changeRequestsHeading" style="margin-top:48px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+      <h2 id="changeRequestsHeading" style="font-size:22px;">Заявки за промяна</h2>
+      <span style="font-size:13px;color:var(--muted);">Партньорски заявки за промяна на защитени полета (ЕИК, фирмени данни, МОЛ).</span>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;" id="changeRequestsContainer">
+      <div class="empty-state" id="changeRequestsEmpty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <p>Няма чакащи заявки за промяна.</p>
+      </div>
+      <table class="submissions-table" id="changeRequestsTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>Партньор</th>
+            <th>Поле</th>
+            <th>Текуща стойност</th>
+            <th>Заявена стойност</th>
+            <th>Подадена</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="changeRequestsBody"></tbody>
+      </table>
+    </div>
+  </section>
 
   <!-- Superadmin: Partner Profile Browser -->
   <div id="profileSection" style="display:none;margin-top:40px;">
@@ -286,6 +347,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 var allSubmissions = [];
 var currentFilter = 'all';
 var currentSubmission = null; // the one open in detail panel
+var auditLoaded = false;      // guard so search input doesn't render empty before initial load
 
 /* ─────────── Question definitions ─────────── */
 var QUESTIONS = {
@@ -374,7 +436,7 @@ async function loadSubmissions() {
 
   // Superadmin sees everything including drafts; regular admin sees non-drafts only
   var query = sb.from('audit_submissions')
-    .select('id, business_id, tier, status, submitted_at, created_at, businesses(name, slug, logo)')
+    .select('id, business_id, tier, status, submitted_at, created_at, is_hot_lead, businesses(name, slug, logo)')
     .order('submitted_at', { ascending: false, nullsFirst: false });
 
   if (!window.ZdIsSuperadmin) {
@@ -410,6 +472,7 @@ async function loadSubmissions() {
 
   updateStats();
   renderTable();
+  auditLoaded = true;
 }
 
 /* ─────────── Stats ─────────── */
@@ -418,6 +481,9 @@ function updateStats() {
   document.getElementById('statPending').textContent = allSubmissions.filter(function(s) { return s.status === 'submitted'; }).length;
   document.getElementById('statScored').textContent = allSubmissions.filter(function(s) { return s.status === 'scored'; }).length;
   document.getElementById('statApproved').textContent = allSubmissions.filter(function(s) { return s.status === 'approved'; }).length;
+  var hotCount = allSubmissions.filter(function(s) { return s.is_hot_lead === true; }).length;
+  var hotEl = document.getElementById('hotLeadCount');
+  if (hotEl) hotEl.textContent = hotCount;
 }
 
 /* ─────────── Filter ─────────── */
@@ -429,9 +495,14 @@ function setFilter(btn) {
 }
 
 function applyFilters() {
+  if (!auditLoaded) return; // не рендерирай empty state докато не са се заредили данните
   var search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
   var filtered = allSubmissions.filter(function(s) {
-    if (currentFilter !== 'all' && s.status !== currentFilter) return false;
+    if (currentFilter === 'hot') {
+      if (s.is_hot_lead !== true) return false;
+    } else if (currentFilter !== 'all' && s.status !== currentFilter) {
+      return false;
+    }
     if (search) {
       var name = (s.businesses && s.businesses.name || '').toLowerCase();
       if (name.indexOf(search) === -1) return false;
@@ -442,12 +513,14 @@ function applyFilters() {
 }
 
 /* ─────────── Render table ─────────── */
+var HOT_FLAME_SVG = '<span class="hot-lead-flame" title="VIP / горещ lead"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8c0-5.39-2.59-10.21-6.5-13.33z"/></svg></span>';
+
 function renderTable(list) {
   list = list || allSubmissions;
   var tbody = document.getElementById('tableBody');
 
   if (list.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><p>Няма намерени въпросници.</p></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><p>Няма намерени въпросници.</p></td></tr>';
     return;
   }
 
@@ -458,8 +531,10 @@ function renderTable(list) {
     var statusLabel = STATUS_LABELS[safeStatus];
     var date = s.submitted_at ? new Date(s.submitted_at).toLocaleDateString('bg-BG') : '—';
     var score = s._avgScore ? s._avgScore + ' <span style="color:var(--muted);font-size:11px;">(' + s._scoreCount + ' въпр.)</span>' : '—';
+    var hotCell = s.is_hot_lead === true ? HOT_FLAME_SVG : '';
 
     return '<tr onclick="openDetail(\'' + ZdSec.escapeHtml(s.id) + '\')">' +
+      '<td style="width:40px;padding-left:18px;">' + hotCell + '</td>' +
       '<td class="company-name">' + name + '</td>' +
       '<td><span class="tier-badge ' + tierClass + '">' + ZdSec.escapeHtml(s.tier) + '</span></td>' +
       '<td><span class="status-dot status--' + safeStatus + '">' + statusLabel + '</span></td>' +
@@ -467,6 +542,134 @@ function renderTable(list) {
       '<td>' + score + '</td>' +
       '</tr>';
   }).join('');
+}
+
+/* ─────────── Change requests (Phase 3.5 skeleton) ─────────── */
+var CHANGE_FIELD_LABELS = {
+  company_name: 'Фирмено име',
+  eik: 'ЕИК / Булстат',
+  registered_address: 'Регистриран адрес',
+  mol_name: 'МОЛ име',
+  mol_phone: 'МОЛ телефон',
+  mol_email: 'МОЛ имейл'
+};
+
+async function loadChangeRequests() {
+  if (!window.ZdSupabase) return;
+  var sb = window.ZdSupabase;
+  var res = await sb.from('change_requests')
+    .select('id, business_id, requested_by, field_name, old_value, new_value, status, created_at, businesses(name)')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false });
+
+  if (res.error) { console.error('[change_requests] load failed', res.error); return; }
+  var rows = res.data || [];
+
+  // Sidebar badge
+  var badge = document.getElementById('changeReqBadge');
+  if (badge) {
+    if (rows.length > 0) { badge.textContent = rows.length; badge.style.display = ''; }
+    else { badge.style.display = 'none'; }
+  }
+
+  var emptyEl = document.getElementById('changeRequestsEmpty');
+  var tableEl = document.getElementById('changeRequestsTable');
+  var bodyEl  = document.getElementById('changeRequestsBody');
+  if (!emptyEl || !tableEl || !bodyEl) return;
+
+  if (rows.length === 0) {
+    emptyEl.style.display = '';
+    tableEl.style.display = 'none';
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+  tableEl.style.display = '';
+
+  bodyEl.innerHTML = rows.map(function (r) {
+    var name = r.businesses ? ZdSec.escapeHtml(r.businesses.name) : '(изтрит бизнес)';
+    var label = CHANGE_FIELD_LABELS[r.field_name] || r.field_name;
+    var oldV = r.old_value != null ? ZdSec.escapeHtml(r.old_value) : '<span style="color:var(--muted);">(празно)</span>';
+    var newV = ZdSec.escapeHtml(r.new_value);
+    var date = new Date(r.created_at).toLocaleDateString('bg-BG');
+    return '<tr>' +
+      '<td class="company-name">' + name + '</td>' +
+      '<td>' + ZdSec.escapeHtml(label) + '</td>' +
+      '<td style="color:var(--muted);">' + oldV + '</td>' +
+      '<td style="font-weight:600;">' + newV + '</td>' +
+      '<td>' + date + '</td>' +
+      '<td style="text-align:right;">' +
+        '<button class="btn-success" data-cr-id="' + ZdSec.escapeHtml(r.id) + '" data-cr-action="approved" aria-label="Одобри заявка от ' + name + ' за ' + ZdSec.escapeHtml(label) + '" onclick="reviewChangeRequest(this)">Одобри</button> ' +
+        '<button class="btn-danger" data-cr-id="' + ZdSec.escapeHtml(r.id) + '" data-cr-action="rejected" aria-label="Отхвърли заявка от ' + name + ' за ' + ZdSec.escapeHtml(label) + '" onclick="reviewChangeRequest(this)">Отхвърли</button>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+async function reviewChangeRequest(btn) {
+  var id = btn.dataset.crId;
+  var action = btn.dataset.crAction; // 'approved' | 'rejected'
+  if (!id || !action) return;
+  var sb = window.ZdSupabase;
+  if (!sb) return;
+
+  // Зареждаме реда (имаме нужда от business_id, field_name, new_value за approved)
+  var loadRes = await sb.from('change_requests').select('*').eq('id', id).single();
+  if (loadRes.error || !loadRes.data) {
+    showToast('Грешка при зареждане на заявката.', 'error');
+    return;
+  }
+  var cr = loadRes.data;
+
+  // Confirm
+  var msg = action === 'approved'
+    ? 'Одобряваш промяна на „' + (CHANGE_FIELD_LABELS[cr.field_name] || cr.field_name) + '"?\n\nНова стойност: ' + cr.new_value
+    : 'Отхвърляш ли тази заявка?';
+  if (!window.confirm(msg)) return;
+
+  var meId = window.ZdCurrentUser ? window.ZdCurrentUser.id : null;
+  var nowIso = new Date().toISOString();
+
+  // Стъпка 1: маркирай заявката (status + reviewed_by + reviewed_at). Това е независим atomic write.
+  var marker = await sb.from('change_requests').update({
+    status: action,
+    reviewed_by: meId,
+    reviewed_at: nowIso
+  }).eq('id', id);
+  if (marker.error) {
+    console.error(marker.error);
+    showToast('Заявката не се обнови: ' + marker.error.message, 'error');
+    return;
+  }
+
+  // Стъпка 2 (само ако approved): приложи промяната върху businesses.
+  // При провал — rollback на маркера обратно към 'pending', за да не остане в half-done състояние.
+  if (action === 'approved') {
+    var update = {};
+    update[cr.field_name] = cr.new_value;
+    var bizRes = await sb.from('businesses').update(update).eq('id', cr.business_id);
+    if (bizRes.error) {
+      console.error(bizRes.error);
+      // Rollback на маркера
+      await sb.from('change_requests').update({
+        status: 'pending',
+        reviewed_by: null,
+        reviewed_at: null
+      }).eq('id', id);
+      showToast('Промяната не се записа: ' + bizRes.error.message + '. Заявката е върната в pending.', 'error');
+      loadChangeRequests();
+      return;
+    }
+  }
+
+  showToast(action === 'approved' ? 'Заявката е одобрена.' : 'Заявката е отхвърлена.', 'success');
+  loadChangeRequests();
+}
+
+function scrollToChangeRequests(e) {
+  if (e) e.preventDefault();
+  var el = document.getElementById('change-requests');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /* ─────────── Open detail panel ─────────── */
@@ -775,7 +978,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 
   // Check if admin or superadmin
   var { data: owner } = await window.ZdSupabase.from('business_owners')
-    .select('is_admin, is_superadmin')
+    .select('display_name, is_admin, is_superadmin')
     .eq('id', session.user.id)
     .single();
 
@@ -786,6 +989,29 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
   }
 
   window.ZdIsSuperadmin = owner.is_superadmin || false;
+  window.ZdCurrentOwner = owner;
+
+  // ─── Render user-info indicator ───
+  var emailEl  = document.getElementById('userEmail');
+  var avatarEl = document.getElementById('userAvatar');
+  var badgeEl  = document.getElementById('userRoleBadge');
+  var infoBlk  = document.getElementById('userInfoBlock');
+  if (emailEl && avatarEl && badgeEl && infoBlk) {
+    var email = session.user.email || '';
+    emailEl.textContent = email;
+    emailEl.title = email;
+    var seed = (owner.display_name) ? owner.display_name : email.split('@')[0];
+    var initials = seed.replace(/[^\p{L}\p{N}\s]/gu, '').trim().split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('') || '?';
+    avatarEl.textContent = initials;
+    if (owner.is_superadmin) {
+      badgeEl.textContent = 'Суперадмин';
+      badgeEl.className = 'role-badge role-badge--super';
+    } else {
+      badgeEl.textContent = 'Админ';
+      badgeEl.className = 'role-badge role-badge--admin';
+    }
+    infoBlk.style.display = '';
+  }
 
   window.ZdSupabase.auth.onAuthStateChange(function (event, sess) {
     if (event === 'SIGNED_OUT' || !sess) {
@@ -794,6 +1020,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
   });
 
   loadSubmissions();
+  loadChangeRequests();
 
   // Superadmin gets profile management section + draft filter
   if (window.ZdIsSuperadmin) {

@@ -42,6 +42,21 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 .sidebar-bottom { margin-top:auto; padding:24px; border-top:1px solid var(--border); }
 .logout { color:var(--danger); text-decoration:none; font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
 
+/* USER INFO BLOCK (above sidebar-bottom) */
+.user-info { padding:16px 24px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; min-width:0; }
+.user-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg, var(--accent), #5a2ee6); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0; font-family:'DM Sans',sans-serif; }
+.user-meta { display:flex; flex-direction:column; min-width:0; flex:1; }
+.user-email { font-size:12px; color:var(--text); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.role-badge { display:inline-block; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; letter-spacing:0.04em; text-transform:uppercase; margin-top:3px; width:fit-content; }
+.role-badge--partner { background:rgba(124,77,255,0.10); color:var(--accent); }
+.role-badge--admin { background:rgba(231,76,111,0.10); color:var(--danger); }
+.role-badge--super { background:linear-gradient(135deg, rgba(231,76,111,0.12), rgba(212,160,23,0.18)); color:var(--danger); }
+
+/* ADMIN PANEL nav-link (hidden until JS confirms role) */
+.nav-item--admin { color:var(--danger); }
+.nav-item--admin svg { stroke:var(--danger); }
+.nav-item--admin:hover { background:rgba(231,76,111,0.06); color:var(--danger); }
+
 /* MAIN */
 .main-area { flex:1; padding:40px; min-width:0; overflow-x:hidden; }
 .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px; }
@@ -174,7 +189,7 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 @media(max-width:900px){
   body { flex-direction:column; }
   .sidebar { width:100%; height:auto; position:relative; padding:16px 0; flex-direction:row; overflow-x:auto; }
-  .logo-box, .sidebar-bottom { display:none; }
+  .logo-box, .sidebar-bottom, .user-info { display:none; }
   .nav-item { white-space:nowrap; padding:10px 16px; border-left:none; border-bottom:3px solid transparent; }
   .nav-item.active { border-left:none; border-bottom-color:var(--accent); }
   .main-area { padding:20px; }
@@ -228,6 +243,16 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
   <button class="nav-item" onclick="setActiveNav(this); openModal('settingsModal');">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Настройки
   </button>
+  <a href="business-audit-admin.html" class="nav-item nav-item--admin" id="adminPanelLink" style="display:none;">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Админ панел
+  </a>
+  <div class="user-info" id="userInfoBlock" style="display:none;">
+    <div class="user-avatar" id="userAvatar" aria-hidden="true">…</div>
+    <div class="user-meta">
+      <span class="user-email" id="userEmail" title=""></span>
+      <span class="role-badge role-badge--partner" id="userRoleBadge">Партньор</span>
+    </div>
+  </div>
   <div class="sidebar-bottom">
     <a href="#" class="logout" onclick="event.preventDefault(); zdDashboardSignOut();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Изход от портала</a>
   </div>
@@ -236,8 +261,8 @@ h1,h2,h3 { font-family:'DM Serif Display',serif; }
 <main class="main-area">
   <div class="header">
     <div>
-      <h1>Здравейте, Учебен център "Искра" 👋</h1>
-      <p>Ето какво се случва с вашия профил този месец.</p>
+      <h1>Здравей</h1>
+      <p>Ето какво се случва с профила ти този месец.</p>
     </div>
   </div>
 
@@ -885,6 +910,76 @@ document.querySelectorAll('#reviewsModal .filter-pill').forEach(pill => {
   // Logged in — expose user globally for the dashboard code to use
   window.ZdCurrentUser = session.user;
   console.info('[dashboard] Logged in as', session.user.email);
+
+  // Fetch business_owners row to determine role + linked business
+  var ownerRow = null;
+  var businessRow = null;
+  try {
+    var ownerRes = await window.ZdSupabase
+      .from('business_owners')
+      .select('id, display_name, business_id, is_admin, is_superadmin')
+      .eq('id', session.user.id)
+      .maybeSingle();
+    ownerRow = ownerRes.data || null;
+    window.ZdCurrentOwner = ownerRow;
+
+    if (ownerRow && ownerRow.business_id) {
+      var bizRes = await window.ZdSupabase
+        .from('businesses')
+        .select('id, name, slug, tier, published')
+        .eq('id', ownerRow.business_id)
+        .maybeSingle();
+      businessRow = bizRes.data || null;
+      window.ZdCurrentBusiness = businessRow;
+    }
+  } catch (err) {
+    console.warn('[dashboard] role/business lookup failed:', err);
+  }
+
+  // ─── Render user-info indicator ───
+  var emailEl = document.getElementById('userEmail');
+  var avatarEl = document.getElementById('userAvatar');
+  var badgeEl = document.getElementById('userRoleBadge');
+  var infoBlock = document.getElementById('userInfoBlock');
+  if (emailEl && avatarEl && badgeEl && infoBlock) {
+    var email = session.user.email || '';
+    emailEl.textContent = email;
+    emailEl.title = email;
+    // Initials: from display_name if available, else from email local-part
+    var seed = (ownerRow && ownerRow.display_name) ? ownerRow.display_name : email.split('@')[0];
+    var initials = seed.replace(/[^\p{L}\p{N}\s]/gu, '').trim().split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('') || '?';
+    avatarEl.textContent = initials;
+    if (ownerRow && ownerRow.is_superadmin) {
+      badgeEl.textContent = 'Суперадмин';
+      badgeEl.className = 'role-badge role-badge--super';
+    } else if (ownerRow && ownerRow.is_admin) {
+      badgeEl.textContent = 'Админ';
+      badgeEl.className = 'role-badge role-badge--admin';
+    } else {
+      badgeEl.textContent = 'Партньор';
+      badgeEl.className = 'role-badge role-badge--partner';
+    }
+    infoBlock.style.display = '';
+  }
+
+  // ─── Show admin panel link conditionally ───
+  if (ownerRow && (ownerRow.is_admin || ownerRow.is_superadmin)) {
+    var adminLink = document.getElementById('adminPanelLink');
+    if (adminLink) adminLink.style.display = '';
+  }
+
+  // ─── Update welcome heading with real business name ───
+  var headingEl = document.querySelector('.header h1');
+  var headingSub = document.querySelector('.header p');
+  if (headingEl && businessRow && businessRow.name) {
+    var displayName = businessRow.name.replace(/\s*\(чернова\)\s*$/, '');
+    headingEl.textContent = 'Здравей, ' + displayName;
+    if (!businessRow.published && headingSub) {
+      headingSub.textContent = 'Профилът ти е чернова. Попълни данните и публикувай.';
+    }
+  } else if (headingEl) {
+    headingEl.textContent = 'Здравей!';
+  }
 
   // Listen for sign-out from another tab
   window.ZdSupabase.auth.onAuthStateChange(function (event, sess) {
