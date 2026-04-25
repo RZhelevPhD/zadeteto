@@ -344,6 +344,9 @@
     loginBtn.dataset.zdAuthMenuAttached = '1';
     loginBtn.setAttribute('aria-haspopup', 'menu');
     loginBtn.setAttribute('aria-expanded', 'false');
+    // Премахваме inline onclick (search.html го set-ва за openAuthModal)
+    loginBtn.onclick = null;
+    loginBtn.removeAttribute('onclick');
     var anchor = _zdMakeAnchor(loginBtn);
     var menu = _zdBuildMenu([
       { label: 'Вход като' },
@@ -361,7 +364,11 @@
     anchor.appendChild(menu);
 
     loginBtn.addEventListener('click', function (e) {
+      // Re-clear onclick на всеки клик за случаите когато други скриптове го re-set-ват
+      loginBtn.onclick = null;
       e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
       var isOpen = menu.classList.contains('zd-open');
       _zdCloseAllAuthMenus();
       if (!isOpen) {
@@ -372,7 +379,7 @@
       } else {
         loginBtn.setAttribute('aria-expanded', 'false');
       }
-    });
+    }, true); // capture phase
   }
 
   /* ── LOGGED-IN: replace any .nav-auth-btn with role-aware dropdown ── */
