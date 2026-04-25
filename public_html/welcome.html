@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Добре дошли в За Детето</title>
+<meta name="description" content="Активиране на партньорския профил в ZaDeteto.bg след потвърждение на имейла.">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="canonical" href="https://zadeteto.com/welcome.html">
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<script src="js/nav-inject.js"></script>
+
+<style>
+  :root {
+    --accent:#7c4dff;
+    --accent-dark:#5a2ee6;
+    --bg:#fdfcfb;
+    --surface:#fff;
+    --text:#1a103c;
+    --muted:#8b80b0;
+    --border:#ece8f3;
+    --ok:#1a6e34;
+    --err:#c23a5d;
+    --gold:#d4a017;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { min-height:100vh; min-height:100dvh; }
+  body {
+    overflow-x:hidden;
+    background:var(--bg);
+    background-image:
+      radial-gradient(at 20% 0%, rgba(124,77,255,0.08) 0, transparent 45%),
+      radial-gradient(at 90% 100%, rgba(212,160,23,0.06) 0, transparent 50%);
+    color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex; flex-direction:column;
+  }
+  h1,h2 { font-family:'DM Serif Display',serif; letter-spacing:-0.02em; }
+
+  main#zd-main-content { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+
+  .card {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:44px 40px;
+    width:100%;
+    max-width:520px;
+    box-shadow:0 24px 60px rgba(26,16,60,0.06), 0 2px 8px rgba(26,16,60,0.03);
+    text-align:center;
+  }
+  .logo { height:64px; margin-bottom:28px; }
+  h1 { font-size:30px; line-height:1.2; margin-bottom:14px; }
+  .sub { font-size:16px; color:var(--muted); line-height:1.6; margin-bottom:28px; }
+
+  .icon-circle {
+    width:72px; height:72px;
+    border-radius:50%;
+    margin:0 auto 24px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:36px;
+  }
+  .icon-circle.loading {
+    background:rgba(124,77,255,0.10);
+    color:var(--accent);
+  }
+  .icon-circle.success {
+    background:rgba(26,110,52,0.12);
+    color:var(--ok);
+  }
+  .icon-circle.error {
+    background:rgba(194,58,93,0.10);
+    color:var(--err);
+  }
+  .icon-circle.vip {
+    background:rgba(212,160,23,0.14);
+    color:var(--gold);
+  }
+
+  /* Spinner за loading state */
+  .spinner {
+    width:36px; height:36px;
+    border:3px solid rgba(124,77,255,0.18);
+    border-top-color:var(--accent);
+    border-radius:50%;
+    animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  /* Reduced motion: replace spinner with pulsing dot (opacity-only animation is allowed) */
+  @media (prefers-reduced-motion:reduce) {
+    .spinner {
+      animation:pulse 1.6s ease-in-out infinite;
+      border:none;
+      background:var(--accent);
+      width:18px; height:18px;
+    }
+    @keyframes pulse { 0%,100% { opacity:0.35 } 50% { opacity:1 } }
+  }
+
+  .vip-badge {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:linear-gradient(135deg, rgba(212,160,23,0.15), rgba(212,160,23,0.05));
+    color:var(--gold);
+    border:1px solid rgba(212,160,23,0.3);
+    padding:6px 14px;
+    border-radius:100px;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:16px;
+    letter-spacing:0.02em;
+  }
+  .vip-badge svg { flex-shrink:0; }
+  .icon-svg { width:32px; height:32px; }
+  h1 { outline:none; }
+  h1[tabindex="-1"]:focus { outline:none; }
+
+  .btn {
+    display:inline-block;
+    padding:14px 28px;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:100px;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+    cursor:pointer;
+    transition:background 180ms ease-out, transform 120ms ease-out;
+  }
+  .btn:hover { background:var(--accent-dark); }
+  .btn:focus-visible { outline:2px solid var(--accent-dark); outline-offset:3px; }
+  .btn:active { transform:translateY(1px); }
+  .btn-secondary {
+    background:transparent;
+    color:var(--accent);
+    border:1.5px solid var(--accent);
+  }
+  .btn-secondary:hover { background:rgba(124,77,255,0.06); }
+
+  .err-detail {
+    margin-top:18px;
+    padding:14px 18px;
+    background:rgba(194,58,93,0.06);
+    border:1px solid rgba(194,58,93,0.18);
+    border-radius:12px;
+    color:var(--err);
+    font-size:13px;
+    line-height:1.5;
+    text-align:left;
+  }
+  .err-detail code {
+    font-family:'DM Mono', ui-monospace, monospace;
+    font-size:12px;
+    background:rgba(194,58,93,0.10);
+    padding:1px 6px;
+    border-radius:4px;
+  }
+
+  .actions { margin-top:24px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
+  @media (max-width:540px) {
+    .card { padding:32px 24px; border-radius:20px; }
+    h1 { font-size:24px; }
+    .sub { font-size:15px; }
+  }
+</style>
+
+<script src="js/supabase-init.js"></script>
+</head>
+<body>
+<main id="zd-main-content">
+  <div class="card" id="welcomeCard" role="status" aria-live="polite" aria-atomic="true">
+    <img src="brand_assets/logo.svg" alt="За Детето" class="logo" onerror="this.style.display='none';">
+
+    <!-- LOADING STATE -->
+    <div id="state-loading">
+      <div class="icon-circle loading">
+        <div class="spinner" role="status" aria-label="Зарежда се"></div>
+      </div>
+      <h1 tabindex="-1">Активираме акаунта ти</h1>
+      <p class="sub">Само секунда. Свързваме потвърждението с твоя бизнес профил.</p>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="state-success" style="display:none;">
+      <div class="icon-circle success" aria-hidden="true">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div id="vipBadgeWrap" style="display:none;">
+        <span class="vip-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2L12 16.8 5.7 21l2.3-7.2-6-4.4h7.6z"/></svg>
+          VIP старт активен
+        </span>
+      </div>
+      <h1 id="successTitle" tabindex="-1">Готово!</h1>
+      <p class="sub" id="successSub">Бизнес профилът е създаден. Прехвърляме те към таблото.</p>
+      <div class="actions">
+        <a href="business-dashboard.html" class="btn" id="goDashboardBtn">Към таблото</a>
+      </div>
+    </div>
+
+    <!-- ALREADY COMPLETED STATE -->
+    <div id="state-already" style="display:none;">
+      <div class="icon-circle success" aria-hidden="true">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>
+      </div>
+      <h1 tabindex="-1">Вече си активиран</h1>
+      <p class="sub">Този акаунт вече е потвърден. Препращаме те към таблото.</p>
+      <div class="actions">
+        <a href="business-dashboard.html" class="btn" id="goDashboardBtnAlready">Към таблото</a>
+      </div>
+    </div>
+
+    <!-- NO SESSION STATE -->
+    <div id="state-nosession" style="display:none;">
+      <div class="icon-circle error" aria-hidden="true">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="13"></line><circle cx="12" cy="16.5" r="0.6" fill="currentColor"></circle></svg>
+      </div>
+      <h1 tabindex="-1">Линкът е изтекъл или невалиден</h1>
+      <p class="sub">Може да си отворил линка в друг браузър или вече да е използван. Опитай отново от формата за регистрация или влез с паролата си.</p>
+      <div class="actions">
+        <a href="business-login.html" class="btn">Към входа</a>
+        <a href="partners.html#apply" class="btn btn-secondary">Нова заявка</a>
+      </div>
+    </div>
+
+    <!-- NO APPLICATION STATE -->
+    <div id="state-noapp" style="display:none;">
+      <div class="icon-circle error" aria-hidden="true">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9a2.5 2.5 0 1 1 4.6 1.4c-.4.6-1.1 1-2.1 1.6V13"></path><circle cx="12" cy="16.5" r="0.6" fill="currentColor"></circle></svg>
+      </div>
+      <h1 tabindex="-1">Не намираме твоята заявка</h1>
+      <p class="sub">Имейлът е потвърден, но не намираме партньорска заявка с него. Може би си се регистрирал по друг начин. Влез в таблото и довърши попълването.</p>
+      <div class="actions">
+        <a href="business-dashboard.html" class="btn">Към таблото</a>
+      </div>
+    </div>
+
+    <!-- GENERIC ERROR STATE -->
+    <div id="state-error" style="display:none;">
+      <div class="icon-circle error" aria-hidden="true">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="13"></line><circle cx="12" cy="16.5" r="0.6" fill="currentColor"></circle></svg>
+      </div>
+      <h1 tabindex="-1">Нещо не се получи</h1>
+      <p class="sub">Не успяхме да активираме акаунта автоматично. Не се притеснявай, имейлът е потвърден успешно. Влез ръчно или се свържи с нас.</p>
+      <div class="err-detail" id="errDetail" style="display:none;"></div>
+      <div class="actions">
+        <a href="business-login.html" class="btn">Към входа</a>
+        <a href="mailto:info@zadeteto.bg" class="btn btn-secondary">Пиши ни</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  var REDIRECT_DELAY_MS = 1800;
+  var SESSION_POLL_MAX_MS = 2500;
+  var SESSION_POLL_INTERVAL_MS = 150;
+  var redirectTimerId = null;
+  var alreadyHandled = false; // pin against double-fire from onAuthStateChange + poll
+
+  function showState(id) {
+    ['state-loading','state-success','state-already','state-nosession','state-noapp','state-error']
+      .forEach(function (s) {
+        var el = document.getElementById(s);
+        if (el) el.style.display = (s === id) ? '' : 'none';
+      });
+    var visibleHeading = document.querySelector('#' + id + ' h1[tabindex="-1"]');
+    if (visibleHeading) {
+      // Defer focus so the visibility change registers first
+      setTimeout(function () { try { visibleHeading.focus(); } catch (_) {} }, 30);
+    }
+  }
+
+  function showError(detail) {
+    var box = document.getElementById('errDetail');
+    if (detail && box) {
+      box.textContent = detail;
+      box.style.display = '';
+    }
+    showState('state-error');
+  }
+
+  function cancelPendingRedirect() {
+    if (redirectTimerId) {
+      clearTimeout(redirectTimerId);
+      redirectTimerId = null;
+    }
+  }
+
+  function redirectAfter(ms, target) {
+    cancelPendingRedirect();
+    redirectTimerId = setTimeout(function () { window.location.replace(target); }, ms);
+  }
+
+  function wireDashboardButtons() {
+    // Manual click cancels the auto-redirect timer to avoid races
+    ['goDashboardBtn','goDashboardBtnAlready'].forEach(function (id) {
+      var b = document.getElementById(id);
+      if (b) b.addEventListener('click', cancelPendingRedirect);
+    });
+  }
+
+  function processSession(session) {
+    if (alreadyHandled) return;
+    alreadyHandled = true;
+
+    if (!session || !session.user) {
+      showState('state-nosession');
+      return;
+    }
+
+    // RPC да създаде business + business_owners + audit_submission ред
+    window.ZdSupabase.rpc('create_business_for_partner').then(function (rpcRes) {
+      if (rpcRes.error) {
+        var msg = rpcRes.error.message || '';
+        if (/no_application_found/i.test(msg)) {
+          showState('state-noapp');
+          redirectAfter(2500, 'business-dashboard.html');
+          return;
+        }
+        if (/not_authenticated/i.test(msg)) {
+          showState('state-nosession');
+          return;
+        }
+        showError(msg);
+        return;
+      }
+
+      var data = rpcRes.data || {};
+      if (data.already_completed) {
+        showState('state-already');
+      } else {
+        var vipWrap = document.getElementById('vipBadgeWrap');
+        if (vipWrap) vipWrap.style.display = data.is_hot_lead ? '' : 'none';
+
+        var title = document.getElementById('successTitle');
+        var sub   = document.getElementById('successSub');
+        var clean = (data.business_name || '').replace(' (чернова)', '').trim();
+        if (title) {
+          title.textContent = clean ? ('Готово, ' + clean + '!') : 'Готово!';
+        }
+        if (sub) {
+          sub.textContent = data.is_hot_lead
+            ? 'Бизнес профилът е създаден. Заявката ти е маркирана като приоритетна.'
+            : 'Бизнес профилът е създаден. Прехвърляме те към таблото.';
+        }
+        showState('state-success');
+      }
+      redirectAfter(REDIRECT_DELAY_MS, 'business-dashboard.html');
+    }).catch(function (err) {
+      console.error('[welcome] rpc error:', err);
+      showError(err && err.message ? err.message : 'Неочаквана грешка.');
+    });
+  }
+
+  function activate() {
+    if (typeof window.ZdSupabase === 'undefined') {
+      showError('Връзката към сървъра не е достъпна.');
+      return;
+    }
+
+    wireDashboardButtons();
+
+    // Race-safe: subscribe to onAuthStateChange AND poll getSession.
+    // detectSessionInUrl=true е async — при идване от email link-а
+    // sometimes onAuthStateChange/SIGNED_IN fires after createClient finishes,
+    // sometimes session is already in storage. Затова двата кaнала наведнъж,
+    // alreadyHandled guard предотвратява двойно изпълнение.
+
+    var authSub = null;
+    try {
+      var subRes = window.ZdSupabase.auth.onAuthStateChange(function (event, session) {
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
+          processSession(session);
+        }
+      });
+      authSub = subRes && subRes.data ? subRes.data.subscription : null;
+    } catch (e) {
+      console.warn('[welcome] onAuthStateChange not available:', e);
+    }
+
+    // Poll getSession докато не получим session или таймаут
+    var pollStart = Date.now();
+    var sessionPoll = setInterval(function () {
+      if (alreadyHandled) {
+        clearInterval(sessionPoll);
+        if (authSub && authSub.unsubscribe) try { authSub.unsubscribe(); } catch (_) {}
+        return;
+      }
+      window.ZdSupabase.auth.getSession().then(function (res) {
+        var session = res && res.data ? res.data.session : null;
+        if (alreadyHandled) {
+          clearInterval(sessionPoll);
+          return;
+        }
+        if (session && session.user) {
+          clearInterval(sessionPoll);
+          processSession(session);
+          if (authSub && authSub.unsubscribe) try { authSub.unsubscribe(); } catch (_) {}
+        } else if (Date.now() - pollStart > SESSION_POLL_MAX_MS) {
+          clearInterval(sessionPoll);
+          if (!alreadyHandled) {
+            alreadyHandled = true;
+            showState('state-nosession');
+            if (authSub && authSub.unsubscribe) try { authSub.unsubscribe(); } catch (_) {}
+          }
+        }
+      }).catch(function (err) {
+        console.warn('[welcome] getSession poll error:', err);
+      });
+    }, SESSION_POLL_INTERVAL_MS);
+  }
+
+  // Изчакваме supabase-init да създаде клиента
+  var tries = 0;
+  var sdkPoll = setInterval(function () {
+    tries++;
+    if (typeof window.ZdSupabase !== 'undefined') {
+      clearInterval(sdkPoll);
+      activate();
+    } else if (tries > 30) {
+      clearInterval(sdkPoll);
+      showError('Връзката към сървъра не зареди навреме.');
+    }
+  }, 100);
+})();
+</script>
+</body>
+</html>

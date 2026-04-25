@@ -381,18 +381,28 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="email">Имейл</label>
-            <input type="email" id="email" name="email" required placeholder="office@example.com">
+            <label for="email">Служебен имейл</label>
+            <input type="email" id="email" name="email" required placeholder="office@example.com" autocomplete="email">
           </div>
           <div class="form-group">
             <label for="phone">Телефон за връзка</label>
-            <input type="tel" id="phone" name="phone" required placeholder="+359 88 123 4567">
+            <input type="tel" id="phone" name="phone" required placeholder="+359 88 123 4567" autocomplete="tel">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password">Парола (мин. 8 знака)</label>
+            <input type="password" id="password" name="password" required minlength="8" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label for="password_confirm">Потвърди парола</label>
+            <input type="password" id="password_confirm" name="password_confirm" required minlength="8" placeholder="••••••••" autocomplete="new-password">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label for="city">Населено място</label>
-            <input type="text" id="city" name="city" required placeholder="гр. София">
+            <input type="text" id="city" name="city" required placeholder="гр. София" autocomplete="address-level2">
           </div>
           <div class="form-group">
             <label for="category">Категория</label>
@@ -417,8 +427,8 @@
         </div>
 
         <div id="partnerFormError" style="display:none;background:rgba(231,76,111,0.08);border:1px solid rgba(231,76,111,0.25);color:#c23a5d;padding:12px 16px;border-radius:12px;font-size:13px;margin-top:24px;"></div>
-        <button type="submit" class="submit-btn" id="partnerSubmitBtn" style="margin-top:24px;">Запази място в листата</button>
-        <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:16px;">Без обвързване и без такси до официалния старт.</p>
+        <button type="submit" class="submit-btn" id="partnerSubmitBtn" style="margin-top:24px;">Създай акаунт и запази място</button>
+        <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:16px;">Без обвързване и без такси до официалния старт. Ще получиш имейл за потвърждение веднага.</p>
       </form>
       <script>
         (function () {
@@ -426,62 +436,132 @@
           var btn = document.getElementById('partnerSubmitBtn');
           var errBox = document.getElementById('partnerFormError');
           var originalBtnText = btn.textContent;
+          var errorShown = false;
 
           function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-          function showError(msg) { errBox.textContent = msg; errBox.style.display = 'block'; errBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-          function clearError() { errBox.style.display = 'none'; errBox.textContent = ''; }
+          function showError(text) { errBox.textContent = text; errBox.style.display = 'block'; errorShown = true; errBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+          function showErrorHTML(html) { errBox.innerHTML = html; errBox.style.display = 'block'; errorShown = true; errBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+          function clearError() { errBox.style.display = 'none'; errBox.textContent = ''; errorShown = false; }
+          function resetBtn() { btn.disabled = false; btn.textContent = originalBtnText; btn.style.opacity = '1'; }
 
           form.addEventListener('submit', function (e) {
             e.preventDefault();
             clearError();
 
-            var contact_name = document.getElementById('name').value.trim();
-            var eik = document.getElementById('eik').value.trim();
-            var noEik = document.getElementById('noEik').checked;
-            var email = document.getElementById('email').value.trim();
-            var phone = document.getElementById('phone').value.trim();
-            var city = document.getElementById('city').value.trim();
-            var category = document.getElementById('category').value;
-            var vipStart = document.getElementById('vipStart').checked;
+            var contact_name     = document.getElementById('name').value.trim();
+            var eik              = document.getElementById('eik').value.trim();
+            var noEik            = document.getElementById('noEik').checked;
+            var email            = document.getElementById('email').value.trim();
+            var phone            = document.getElementById('phone').value.trim();
+            var password         = document.getElementById('password').value;
+            var password_confirm = document.getElementById('password_confirm').value;
+            var city             = document.getElementById('city').value.trim();
+            var category         = document.getElementById('category').value;
+            var vipStart         = document.getElementById('vipStart').checked;
 
-            if (!contact_name) return showError('Моля въведете вашето име.');
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Моля въведете валиден имейл.');
-            if (!phone || phone.replace(/[^\d]/g, '').length < 9) return showError('Моля въведете валиден телефон.');
-            if (!city) return showError('Моля въведете населено място.');
-            if (!category) return showError('Моля изберете категория.');
+            if (!contact_name)                                                  return showError('Въведи името си.');
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))            return showError('Въведи валиден имейл.');
+            if (!phone || phone.replace(/[^\d]/g, '').length < 9)               return showError('Въведи валиден телефон.');
+            if (!password || password.length < 8)                               return showError('Паролата трябва да е поне 8 знака.');
+            if (password !== password_confirm)                                  return showError('Паролите не съвпадат.');
+            if (!city)                                                          return showError('Въведи населено място.');
+            if (!category)                                                      return showError('Избери категория.');
 
             btn.disabled = true;
-            btn.textContent = 'Запазване...';
+            btn.textContent = 'Създаваме акаунта...';
             btn.style.opacity = '0.7';
 
-            ZdApi.submitForm('partner_applications', {
-              contact_name: contact_name,
-              eik: noEik ? null : (eik || null),
-              email: email,
-              phone: phone,
-              city: city,
-              category: category,
-              vip_onboarding: vipStart,
-              status: 'waitlist'
-            })
-              .then(function (res) {
-                if (!res || !res.ok) throw new Error('Submission failed');
+            // 1. Supabase auth signUp. Confirmation email сочи към welcome.html.
+            if (typeof window.ZdSupabase === 'undefined') {
+              showError('Връзката към сървъра не е достъпна. Презареди страницата и опитай отново.');
+              resetBtn();
+              return;
+            }
 
-                document.getElementById('partnerWaitlist').innerHTML =
-                  '<div class="waitlist-success">' +
-                    '<div class="success-check">&#10003;</div>' +
-                    '<h2 style="font-size:32px;margin-bottom:16px;">Вие сте в листата!</h2>' +
-                    '<p style="font-size:18px;color:var(--muted);line-height:1.6;max-width:500px;margin:0 auto 12px;">Ще се свържем с вас преди 1 юни 2026 г. с всичко необходимо за старта.</p>' +
-                    '<p style="font-size:14px;color:var(--muted);opacity:0.7;">Потвърждение беше изпратено на ' + esc(email) + '</p>' +
-                  '</div>';
-              })
-              .catch(function (err) {
-                console.error('[partner form]', err);
-                showError('Възникна грешка при изпращането. Моля опитайте отново или ни пишете на info@zadeteto.bg.');
-                btn.disabled = false;
-                btn.textContent = originalBtnText;
-                btn.style.opacity = '1';
-              });
+            var redirectTo = window.location.origin + '/welcome.html';
+            var capturedAuthUserId = null;
+
+            window.ZdSupabase.auth.signUp({
+              email: email,
+              password: password,
+              options: {
+                data: { display_name: contact_name },
+                emailRedirectTo: redirectTo
+              }
+            }).then(function (signupRes) {
+              if (signupRes.error) {
+                var msg = signupRes.error.message || '';
+                if (/already registered|already exists|user already/i.test(msg)) {
+                  showErrorHTML(
+                    'Вече има акаунт с този имейл. ' +
+                    '<a href="business-login.html" style="color:#c23a5d;text-decoration:underline;font-weight:600;">Влез вместо това</a> ' +
+                    'или си възстанови паролата.'
+                  );
+                } else {
+                  showError('Грешка при регистрация: ' + msg);
+                }
+                resetBtn();
+                throw signupRes.error;
+              }
+
+              var authUserId = signupRes.data && signupRes.data.user ? signupRes.data.user.id : null;
+              if (!authUserId) {
+                throw new Error('Supabase signUp върна без user.id');
+              }
+              capturedAuthUserId = authUserId;
+
+              // 2. Записваме partner_applications с auth_user_id за link.
+              // Ако този insert падне, welcome.html ще удари no_application_found —
+              // затова блокираме flow-а със смислена грешка вместо silent fallback.
+              return window.ZdSupabase
+                .from('partner_applications')
+                .insert({
+                  contact_name: contact_name,
+                  eik: noEik ? null : (eik || null),
+                  email: email,
+                  phone: phone,
+                  city: city,
+                  category: category,
+                  vip_onboarding: vipStart,
+                  auth_user_id: authUserId,
+                  password_set: true
+                  // status defaults to 'pending'
+                })
+                .then(function (insertRes) {
+                  if (insertRes.error) {
+                    console.error('[partner form] partner_applications insert failed after signUp:', insertRes.error, 'auth_user_id:', authUserId, 'email:', email);
+                    var supportLink = '<a href="mailto:info@zadeteto.bg?subject=' +
+                      encodeURIComponent('Проблем с регистрация (' + email + ')') +
+                      '&body=' + encodeURIComponent('Здравейте,\n\nРегистрирах се, но получих съобщение че данните не са запазени.\n\nuser id: ' + authUserId + '\nemail: ' + email + '\n\nПомогнете ми да продължа.') +
+                      '" style="color:#c23a5d;text-decoration:underline;font-weight:600;">пиши ни на info@zadeteto.bg</a>';
+                    showErrorHTML('Регистрацията започна, но не успяхме да запазим данните ти. Моля ' + supportLink + ' и ще ти помогнем веднага.');
+                    resetBtn();
+                    throw insertRes.error;
+                  }
+                  return { authUserId: authUserId, email: email, vip: vipStart };
+                });
+            }).then(function (result) {
+              if (!result) return; // upstream errored, already handled
+
+              // 3. Покажи „провери имейла си" UI
+              document.getElementById('partnerWaitlist').innerHTML =
+                '<div class="waitlist-success" style="text-align:center;padding:24px;" role="status" aria-live="polite">' +
+                  '<div style="font-size:48px;color:#7c4dff;margin-bottom:16px;" aria-hidden="true">&#9993;</div>' +
+                  '<h2 style="font-size:32px;margin-bottom:16px;" tabindex="-1" id="waitlistSuccessHeading">Провери имейла си</h2>' +
+                  '<p style="font-size:18px;color:var(--text);line-height:1.6;max-width:520px;margin:0 auto 12px;">Изпратихме линк за потвърждение на <strong>' + esc(result.email) + '</strong>.</p>' +
+                  '<p style="font-size:15px;color:var(--muted);line-height:1.6;max-width:520px;margin:0 auto 20px;">Кликни линка от писмото, за да активираш акаунта си. След това попадаш направо в твоя бизнес профил.</p>' +
+                  (result.vip ? '<p style="font-size:14px;color:#c89a00;font-weight:700;margin-bottom:8px;letter-spacing:0.02em;">VIP старт е активен</p>' : '') +
+                  '<p style="font-size:13px;color:var(--muted);opacity:0.75;">Не виждаш писмото? Провери папка „Спам" или ни пиши на info@zadeteto.bg.</p>' +
+                '</div>';
+              var heading = document.getElementById('waitlistSuccessHeading');
+              if (heading) heading.focus();
+            }).catch(function (err) {
+              if (errorShown) return; // already shown a specific error upstream
+              console.error('[partner form]', err);
+              if (!document.body.contains(errBox)) return; // form already replaced
+              showError('Нещо се обърка при изпращането. Опитай отново или ни пиши на info@zadeteto.bg.');
+              resetBtn();
+            });
           });
         })();
       </script>
