@@ -32,7 +32,6 @@
 <link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
 
 <link rel="stylesheet" href="brand_assets/fonts/fonts.css">
-<script src="js/nav-inject.js"></script>
 <style>
 :root {
   --zd-purple-50: #f8f5ff;
@@ -50,6 +49,7 @@
   --zd-gray-50: #fafafa;
   --zd-gray-100: #f3f3f3;
   --zd-gray-200: #e8e8e8;
+  --zd-gray-300: #d6d6d6;
   --zd-gray-400: #b0b0b0;
   --zd-gray-600: #777;
   --zd-gray-800: #333;
@@ -57,7 +57,6 @@
   --zd-online: #1976d2;
   --zd-font: 'DM Sans', sans-serif;
   --zd-card-h: calc((100vh - 100px) / 2);
-  --zd-card-h: calc((100dvh - 100px) / 2);
   --zd-heart: #e74c6f;
   --zd-nope: #c85050;
 }
@@ -72,15 +71,15 @@ body {
 
 /* ═══ LAYOUT ═══ */
 .directory-wrapper {
-  display: flex; gap: 0; align-items: flex-start; min-height: 100vh; min-height: 100dvh;
+  display: flex; gap: 0; align-items: flex-start; min-height: 100vh;
 }
 
 /* ═══ FILTER SIDEBAR ═══ */
 #filters {
-  width: 260px; min-width: 260px; position: sticky; top: 104px;
+  width: 260px; min-width: 260px; position: sticky; top: 0;
   padding: 20px 18px; display: flex; flex-direction: column; gap: 20px;
   background: #fff; border-right: 1px solid var(--zd-gray-200);
-  height: calc(100vh - 104px); height: calc(100dvh - 104px); overflow-y: auto;
+  height: 100vh; overflow-y: auto;
   scrollbar-width: thin; scrollbar-color: var(--zd-gray-200) transparent;
 }
 #filters::-webkit-scrollbar { width: 4px; }
@@ -93,9 +92,9 @@ body {
   margin: 0 0 8px; cursor: pointer;
   display: flex; justify-content: space-between; align-items: center;
 }
-.filter-title::after { content: "\25BC"; font-size: 13px; color: var(--zd-purple-600); padding-left: 8px; transition: transform .25s; }
+.filter-title::after { content: "\25BC"; font-size: 9px; transition: transform .25s; }
 .filter-title.collapsed::after { transform: rotate(180deg); }
-.filter-content.collapsed { display: none !important; }
+.filter-content.collapsed { display: none; }
 
 .filter-input {
   height: 40px; padding: 0 12px; font-size: 14px; font-family: var(--zd-font);
@@ -207,14 +206,14 @@ main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .results-count { font-size: 14px; font-weight: 600; }
 .results-count span { color: var(--zd-purple-600); font-weight: 700; }
 
+/* Shared pill-button styling — currently used by the "Близо до мен" button. */
 .dismissed-toggle {
-  display: none; align-items: center; gap: 5px;
+  display: flex; align-items: center; gap: 5px;
   font-size: 11px; font-weight: 600; color: var(--zd-gray-600);
   background: var(--zd-gray-100); border: 1px solid var(--zd-gray-200);
   border-radius: 8px; padding: 4px 10px; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.dismissed-toggle.has-items { display: flex; }
 .dismissed-toggle svg { width: 14px; height: 14px; }
 .dismissed-toggle.active {
   background: var(--zd-purple-50); border-color: var(--zd-purple-200); color: var(--zd-purple-600);
@@ -235,19 +234,6 @@ main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 /* ═══ CARD STACK ═══ */
 .card-stack {
   display: flex; flex-direction: column; gap: 8px; padding: 8px 10px 80px;
-}
-
-/* ═══ DISMISSED SECTION ═══ */
-.dismissed-section {
-  display: none; flex-direction: column; gap: 8px; margin-top: 8px; padding: 0 10px 20px;
-}
-.dismissed-section.visible { display: flex; }
-.dismissed-divider {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 0; color: var(--zd-gray-400); font-size: 11px; font-weight: 600;
-}
-.dismissed-divider::before, .dismissed-divider::after {
-  content: ''; flex: 1; height: 1px; background: var(--zd-gray-200);
 }
 
 /* Loading */
@@ -275,8 +261,6 @@ main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   perspective: 1200px;
   border-radius: 22px;
   -webkit-tap-highlight-color: transparent;
-  cursor: pointer;
-  touch-action: pan-y;
   /* min-height keeps the grid rows aligned even before content loads */
   min-height: 540px;
   /* Pop-forward hover lift transitions on the OUTER card.
@@ -306,9 +290,6 @@ main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   transition: transform .65s cubic-bezier(.2,.8,.2,1);
 }
 .zd-card.flipped .zd-flipper { transform: rotateY(180deg); }
-/* While the user is dragging, kill flipper transitions so the swipe is 1:1 */
-.zd-card.swiping .zd-flipper { transition: none; }
-.zd-card.swiping { transition: none; }
 
 /* ═══ FACES (front + back) ═══ */
 .zd-face {
@@ -333,6 +314,18 @@ main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   position: absolute; inset: 0;
   background-size: cover; background-position: center;
 }
+/* Empty-hero variant: no real gallery photo available for this business.
+   Use a subtle tier-tinted gradient so the card still has texture without
+   faking a stock photo. Text overlay stays readable thanks to the ::after
+   darkening gradient. */
+.zd-photo--empty {
+  background-image: linear-gradient(145deg, #efeae4 0%, #dcd5cc 100%);
+}
+.zd-card--elite .zd-photo--empty    { background-image: linear-gradient(145deg, #f0ecff 0%, #dcd2ff 100%); }
+.zd-card--verified .zd-photo--empty { background-image: linear-gradient(145deg, #e7f7ec 0%, #c7e7d0 100%); }
+.zd-card--premium .zd-photo--empty  { background-image: linear-gradient(145deg, #fff7dc 0%, #f0dfa0 100%); }
+.zd-card--standard .zd-photo--empty { background-image: linear-gradient(145deg, #f2f2f2 0%, #d9d9d9 100%); }
+.zd-card--free .zd-photo--empty     { background-image: linear-gradient(145deg, #ededed 0%, #dcdcdc 100%); }
 .zd-photo::after {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.25) 55%, rgba(0,0,0,.85) 100%);
@@ -345,12 +338,23 @@ main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,.35);
 }
 .zd-photo-dots span.active { background: rgba(255,255,255,.95); }
-.zd-card-logo{position:absolute;top:10px;left:10px;width:32px;height:32px;border-radius:8px;overflow:hidden;z-index:5;border:2px solid rgba(255,255,255,.8);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.zd-card-logo{position:absolute;top:20px;left:20px;width:96px;height:96px;border-radius:20px;overflow:hidden;z-index:5;background:transparent;box-shadow:0 4px 14px rgba(0,0,0,.22)}
 .zd-card-logo img{width:100%;height:100%;object-fit:cover;display:block}
+
+.zd-front-socials { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; }
+.zd-front-socials a { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px; background: rgba(255,255,255,.92); border: 1px solid rgba(0,0,0,.06); box-shadow: 0 1px 2px rgba(0,0,0,.05); transition: background .15s, transform .15s; }
+.zd-front-socials a:hover { background: #fff; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,.1); }
+.zd-front-socials img,
+.zd-front-socials svg { width: 16px; height: 16px; display: block; }
 
 .zd-top-badges {
   position: absolute; top: 14px; left: 14px; right: 14px; z-index: 4;
   display: flex; gap: 6px; align-items: center;
+  justify-content: flex-end; /* score + optional sop/online now pinned right; tier moved to content area */
+}
+.zd-tier-row {
+  display: flex; align-items: center; gap: 6px;
+  margin: 2px 0 4px; /* sits below name-row, above meta-row */
 }
 .zd-badge-tier {
   font-size: 9px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase;
@@ -371,39 +375,16 @@ main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .zd-badge-sop    { background: rgba(156,39,176,.65); color: #fff; }
 .zd-badge-online { background: rgba(25,118,210,.65); color: #fff; }
 
-/* (Flip-hint icon removed — see plan: card no longer hints at being double-sided) */
-
-/* Liked / dismissed overlays */
-.zd-state-overlay {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 3;
-}
-.zd-state-overlay--x     { background: rgba(200,80,80,.18); }
-.zd-state-overlay--x svg { width: 60px; height: 60px; color: var(--zd-nope); opacity: .7; }
-.zd-state-overlay--heart { background: rgba(231,76,111,.12); }
-.zd-state-overlay--heart svg { width: 56px; height: 56px; color: var(--zd-heart); opacity: .7; }
-.zd-card.dismissed .zd-state-overlay--x     { opacity: 1; }
-.zd-card.liked     .zd-state-overlay--heart { opacity: 1; }
-
-/* Undo button (visible only on dismissed) */
-.zd-undo {
-  display: none; position: absolute; top: 14px; left: 14px; z-index: 6;
-  font-size: 10px; font-weight: 700; color: #fff;
-  background: rgba(0,0,0,.55); backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,255,255,.25);
-  border-radius: 999px; padding: 5px 12px; cursor: pointer;
-}
-.zd-card.dismissed .zd-undo { display: block; }
-
 .zd-info {
   position: relative; z-index: 3; margin-top: auto;
   padding: 18px 18px 16px;
 }
 .zd-name-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .zd-name {
-  font-size: 22px; font-weight: 800; letter-spacing: -.5px; line-height: 1.05;
+  font-size: 22px; font-weight: 800; letter-spacing: -.5px; line-height: 1.1;
   color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.4);
   text-decoration: none;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 a.zd-name:hover { text-decoration: underline; }
 .zd-verified { color: #3ea6ff; font-size: 16px; }
@@ -412,19 +393,60 @@ a.zd-name:hover { text-decoration: underline; }
   font-size: 12px; font-weight: 500; color: rgba(255,255,255,.92);
 }
 .zd-meta-row svg { width: 14px; height: 14px; flex-shrink: 0; }
-.zd-rating {
-  margin-left: auto; display: flex; align-items: center; gap: 4px;
-  font-size: 12px; font-weight: 700;
+/* Dual-rating stack: Zadeteto (hearts) on top, Google (stars) below.
+   Pinned top-right, directly below the audit-score badge and opposite
+   to the logo so it never clashes with the social icons or the CTAs.
+   Dark translucent backdrop + blur so both ratings stay readable against
+   any photo or empty-hero tier gradient. Fixed-width num/count columns
+   keep the icons aligned pixel-for-pixel between the two rows. */
+.zd-rating-stack {
+  position: absolute; top: 46px; right: 14px; z-index: 4;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+  padding: 5px 9px;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
-.zd-rating .stars { color: var(--zd-gold-300); letter-spacing: -1px; font-size: 11px; }
-.zd-rating .num   { color: #fff; }
-.zd-rating .cnt   { color: rgba(255,255,255,.7); font-size: 10px; font-weight: 500; }
+.zd-rating {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 13px; font-weight: 700;
+}
+.zd-rating .num   { color: #fff; min-width: 26px; text-align: right; }
+.zd-rating .cnt   { color: rgba(255,255,255,.7); font-size: 11px; font-weight: 500; min-width: 44px; text-align: left; }
 .zd-rating .nudge { color: var(--zd-gold-300); font-size: 10px; font-weight: 600; text-decoration: none; margin-left: 2px; }
+
+/* Shared icon widget — 5 SVG glyphs + width-clipped colored overlay.
+   Both rows use the same 16×16 icons in the same flex row, so Google
+   stars and Zadeteto hearts line up pixel-for-pixel. */
+.zd-rating-icons {
+  position: relative; display: inline-block;
+  height: 16px; line-height: 0;
+  user-select: none; -webkit-user-select: none;
+}
+.zd-rating-icons-outline,
+.zd-rating-icons-fill {
+  display: flex; gap: 2px; height: 16px;
+}
+.zd-rating-icons-fill {
+  position: absolute; top: 0; left: 0;
+  overflow: hidden;
+}
+.zd-rating-icons .ri-glyph {
+  width: 16px; height: 16px; flex: 0 0 16px; display: block;
+  fill: currentColor;
+}
+.zd-rating-icons-outline { color: rgba(255,255,255,.35); }
+/* Both rows get the same soft glow treatment on the filled overlay —
+   gold-tinted glow for Google, purple-tinted for Zadeteto. */
+.zd-rating-google    .zd-rating-icons-fill { color: var(--zd-gold-300); filter: drop-shadow(0 0 3px rgba(255,215,0,.45)); }
+.zd-rating-zadeteto  .zd-rating-icons-fill { color: #c8a5ff; filter: drop-shadow(0 0 3px rgba(200,165,255,.5)); }
 
 .zd-tagline {
   font-size: 13px; font-weight: 500; line-height: 1.45; margin-top: 10px;
   color: rgba(255,255,255,.96); text-shadow: 0 1px 4px rgba(0,0,0,.3);
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 .zd-chips {
   display: flex; gap: 5px; margin-top: 12px; flex-wrap: wrap;
@@ -462,10 +484,6 @@ a.zd-name:hover { text-decoration: underline; }
 .zd-card-actions { display:flex; align-items:center; justify-content:center; margin-top:10px; }
 .zd-detail-btn { font-size:11px; font-weight:600; color:rgba(255,255,255,.8); cursor:pointer; display:inline-flex; align-items:center; gap:3px; transition:color .2s, gap .2s; text-shadow:0 1px 3px rgba(0,0,0,.3); }
 .zd-detail-btn:hover { color:#fff; gap:6px; }
-.zd-free-socials { display:flex; align-items:center; justify-content:center; gap:10px; }
-.zd-free-socials .zd-social-icn { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; transition:background 0.2s, transform 0.2s; }
-.zd-free-socials .zd-social-icn:hover { background:rgba(255,255,255,0.35); transform:scale(1.1); }
-.zd-free-socials .zd-social-icn img, .zd-free-socials .zd-social-icn svg { width:16px; height:16px; filter:brightness(0) invert(1); }
 .zd-profile-link-back { display:block; text-align:center; font-size:12px; font-weight:600; color:var(--zd-purple-600); text-decoration:none; padding:8px 16px; margin-top:8px; border-radius:10px; background:rgba(124,77,255,0.06); border:1px solid rgba(124,77,255,0.15); transition:background 0.2s, transform 0.15s; }
 .zd-profile-link-back:hover { background:rgba(124,77,255,0.12); transform:translateY(-1px); }
 .zd-cta--primary {
@@ -544,13 +562,15 @@ a.zd-name:hover { text-decoration: underline; }
   box-shadow: 0 6px 18px rgba(124,77,255,.35);
   font-family: var(--zd-font);
 }
-.zd-flip-back-hint {
-  text-align: center; font-size: 10px; color: var(--zd-gray-400); margin-top: 8px;
+.zd-flip-back-btn {
+  display: block; margin: 8px auto 0;
+  background: transparent; border: 1px solid var(--zd-gray-200); color: var(--zd-gray-600);
+  font: 600 11px/1 var(--zd-font); padding: 8px 16px; border-radius: 999px;
+  cursor: pointer; transition: background .15s, border-color .15s, color .15s;
+  -webkit-tap-highlight-color: transparent;
 }
-
-/* ═══ STATE: dismissed ═══ */
-.zd-card.dismissed .zd-flipper { filter: grayscale(1); opacity: .55; box-shadow: none; }
-.zd-card.dismissed { cursor: default; }
+.zd-flip-back-btn:hover { background: var(--zd-gray-100); border-color: var(--zd-gray-400); color: var(--zd-gray-800); }
+.zd-flip-back-btn:focus-visible { outline: 2px solid var(--zd-purple-400); outline-offset: 2px; }
 
 /* ═══════════════════════════════════════════════════════════════
    TIER VARIANTS (5 tiers — Премиум, Доверен, Проверен, Стандартен, Безплатен)
@@ -759,7 +779,7 @@ a.zd-name:hover { text-decoration: underline; }
 /* ═══ RESPONSIVE ═══ */
 @media (min-width: 768px) {
   :root { --zd-card-h: auto; }
-  .card-stack, .dismissed-section {
+  .card-stack {
     display: grid;
     /* Auto-fill: card count adjusts to viewport, never crowded.
        Min card width 400px keeps the "premium squarish" feel on wide screens.
@@ -776,15 +796,11 @@ a.zd-name:hover { text-decoration: underline; }
        get a horizontal scrollbar even if the math is off by a few pixels */
     min-width: 0;
   }
-  .dismissed-section { padding-top: 0; padding-bottom: 20px; }
-  .dismissed-divider { grid-column: 1 / -1; }
   .zd-card {
     /* Tinder cards are taller than the old expand-panel cards */
     min-height: 580px; height: 100%;
     max-width: 440px; width: 100%; justify-self: center;
   }
-  /* Hover tilt is on the flipper, NOT the card — see .zd-card:hover .zd-flipper above */
-  .zd-card.dismissed { transform: none; }
 }
 
 /* ─── Narrow window: drop the minmax floor so cards fit gracefully ───
@@ -793,14 +809,12 @@ a.zd-name:hover { text-decoration: underline; }
    stepped breakpoints lower the minimum card width so the grid drops to
    fewer (smaller) columns instead of clipping. */
 @media (min-width: 900px) and (max-width: 1280px) {
-  .zd-mode-desktop .card-stack,
-  .zd-mode-desktop .dismissed-section {
+  .zd-mode-desktop .card-stack {
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   }
 }
 @media (min-width: 900px) and (max-width: 1100px) {
-  .zd-mode-desktop .card-stack,
-  .zd-mode-desktop .dismissed-section {
+  .zd-mode-desktop .card-stack {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 14px; padding: 12px 14px 80px;
   }
@@ -825,7 +839,6 @@ a.zd-name:hover { text-decoration: underline; }
   }
   #filters.open { left: 0; }
   .card-stack { padding: 8px 8px 80px; }
-  .dismissed-section { padding: 0 8px 20px; }
 }
 /* ═══ GLOBAL FOOTER ═══ */
 .zd-footer { border-top:1px solid rgba(0,0,0,0.05); padding:32px 40px; background:var(--surface, #fff); text-align:center; position:relative; z-index:10; margin-top:auto; }
@@ -844,59 +857,44 @@ a.zd-name:hover { text-decoration: underline; }
 /* Viewport-mode visibility switch */
 .zd-mode-mobile { display: none; }
 .zd-mode-desktop { display: block; }
-
-/* Filter pill injected into global nav (search.html only) — hidden on desktop */
-.zd-search-filter-pill { display: none; }
-
 @media (max-width: 899px) {
+  .zd-mode-mobile  { display: block; }
   .zd-mode-desktop { display: none !important; }
-  /* ── NO-SCROLL mobile app shell — body is flex column, global nav at top, app shell fills rest ── */
-  html, body { overflow: hidden !important; height: 100dvh !important; overscroll-behavior: none; }
-  body { background: radial-gradient(ellipse at 50% 0%, #ece7ff 0%, #f5f3f0 55%); display: flex; flex-direction: column; min-height: 0; }
+  body { background: radial-gradient(ellipse at 50% 0%, #f3f1ef 0%, #ebe9e6 55%); }
   body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.025;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  /* Global nav stays at top + tightened; global footer is hidden */
-  body > nav { flex-shrink: 0; position: relative; min-height: 0 !important; padding: 8px 12px !important; }
-  body > nav .nav-logo img { height: 40px !important; }
-  body > footer.zd-footer { display: none !important; }
-  .zd-mode-mobile { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-  .app { flex: 1; min-height: 0; height: auto !important; }
-
-  /* Filter pill visible on mobile, sits to the left of the logo */
-  .zd-search-filter-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    height: 38px; padding: 0 12px 0 10px;
-    border-radius: 999px;
-    border: 1.5px solid var(--zd-purple-200);
-    background: linear-gradient(135deg, #fff, var(--zd-purple-50));
-    color: var(--zd-purple-800);
-    font: 700 13px/1 var(--zd-font);
-    cursor: pointer;
-    flex-shrink: 0;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .zd-search-filter-pill:active { transform: scale(0.97); }
-  .zd-search-filter-pill svg { width: 16px; height: 16px; flex-shrink: 0; stroke: currentColor; fill: none; }
-  .zd-search-filter-pill .zd-search-filter-chev { width: 14px; height: 14px; opacity: 0.7; }
-  .zd-search-filter-pill .zd-search-filter-label { white-space: nowrap; }
-  /* Very narrow screens: collapse label, keep just the magnifying glass + chevron */
-  @media (max-width: 359px) {
-    .zd-search-filter-pill .zd-search-filter-label { display: none; }
-    .zd-search-filter-pill { padding: 0 10px; }
-  }
-
-  /* Hide the old search-page top-bar on mobile — filter pill in nav takes over */
-  .top-bar { display: none !important; }
-  /* Feed container: full-bleed scroll area; card-wrap handles its own padding */
-  .stack-view { padding: 0 !important; }
 }
 
 /* === Mobile CSS variables === */
 .zd-mode-mobile { --zd-display:'DM Serif Display','Inter',serif; --safe-b:env(safe-area-inset-bottom,0px); }
 
+/* ═══ TUTORIAL (v3 — teaches the bottom .tinder-btn row) ═══ */
+.tutorial{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.7);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;backdrop-filter:blur(6px)}
+.tutorial.hidden{display:none}
+.tutorial-logo{margin-bottom:0}
+.tutorial-logo img{height:40px;width:auto;filter:brightness(0) invert(1);opacity:.8}
+.tutorial-title{font:700 16px/1.3 var(--zd-font);color:#fff;text-align:center;max-width:300px;margin:0}
+.tutorial-demos{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;max-width:340px}
+.tutorial-demo{display:flex;flex-direction:column;align-items:center;gap:10px;width:68px}
+.tut-btn-demo{width:52px;height:52px;border-radius:50%;background:#fff;border:2px solid;display:flex;align-items:center;justify-content:center;animation:tut-btn-pulse 2.4s ease-in-out infinite}
+.tut-btn-demo svg{width:22px;height:22px}
+.tutorial-demo--btn-nope .tut-btn-demo{border-color:var(--zd-nope);color:var(--zd-nope);box-shadow:0 2px 10px rgba(200,80,80,.15);animation-delay:0s}
+.tutorial-demo--btn-star .tut-btn-demo{border-color:var(--zd-gold-300);color:#c89a00;box-shadow:0 2px 10px rgba(245,215,110,.18);width:46px;height:46px;animation-delay:.6s}
+.tutorial-demo--btn-star .tut-btn-demo svg{width:18px;height:18px}
+.tutorial-demo--btn-eye .tut-btn-demo{border-color:var(--zd-purple-400);color:var(--zd-purple-600);box-shadow:0 2px 10px rgba(124,77,255,.15);width:46px;height:46px;animation-delay:1.2s}
+.tutorial-demo--btn-eye .tut-btn-demo svg{width:18px;height:18px}
+.tutorial-demo--btn-like .tut-btn-demo{border-color:var(--zd-mint-400);color:var(--zd-mint-600);box-shadow:0 2px 10px rgba(46,153,77,.15);animation-delay:1.8s}
+@keyframes tut-btn-pulse{0%,70%,100%{transform:scale(1)}35%{transform:scale(1.12)}}
+.tutorial-label{font:600 11px/1.25 var(--zd-font);color:rgba(255,255,255,.85);text-align:center}
+.tutorial-filter-hint{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:14px 18px;max-width:300px}
+.tutorial-filter-hint svg{flex-shrink:0}
+.tutorial-filter-hint span{font:500 13px/1.4 var(--zd-font);color:rgba(255,255,255,.85)}
+.tutorial-filter-hint b{color:#fff}
+.tutorial-dismiss{height:48px;padding:0 36px;border-radius:24px;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);color:#fff;font:700 15px/1 var(--zd-font);cursor:pointer;margin-top:8px;transition:background .15s}
+.tutorial-dismiss:active{background:rgba(255,255,255,.25)}
 
-/* ═══ MOBILE APP SHELL — no-scroll, fixed regions ═══ */
-.app{display:flex;flex-direction:column;height:100dvh;width:100%;position:relative;overflow:hidden}
-.top-bar{flex-shrink:0;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.05)}
+/* ═══ MOBILE APP SHELL ═══ */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.top-bar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.05)}
 .top-row{display:flex;gap:8px;align-items:center}
 .city-btn{height:40px;padding:0 12px;border-radius:12px;border:1.5px solid var(--zd-gray-200);background:#fff;font:600 13px/1 var(--zd-font);color:var(--zd-gray-800);cursor:pointer;display:flex;align-items:center;gap:6px;flex-shrink:0;max-width:45%}
 .city-btn svg{width:16px;height:16px;color:var(--zd-purple-600);flex-shrink:0}
@@ -910,20 +908,22 @@ a.zd-name:hover { text-decoration: underline; }
 .filter-btn svg{width:18px;height:18px;color:var(--zd-gray-600)}
 .filter-badge{display:none;position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:var(--zd-purple-600);color:#fff;font-size:9px;font-weight:700;align-items:center;justify-content:center}
 .filter-badge.visible{display:flex}
-.applied-chips{display:flex;gap:6px;padding:6px 14px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.applied-chips{display:flex;gap:6px;padding:6px 14px;overflow-x:auto;scrollbar-width:none}
 .applied-chips::-webkit-scrollbar{display:none}
 .applied-chips:empty{display:none}
 .ap-chip{height:28px;padding:0 10px;border-radius:8px;background:var(--zd-purple-50);border:1px solid var(--zd-purple-200);font:600 11px/1 var(--zd-font);color:var(--zd-purple-800);display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;flex-shrink:0}
 .ap-chip .x{font-size:10px;opacity:.5}
-.results-info{display:flex;align-items:center;justify-content:center;padding:4px 14px;flex-shrink:0}
+.results-info{display:flex;align-items:center;justify-content:center;padding:6px 14px 2px}
 .zd-mode-mobile .results-count{font-size:13px;font-weight:600;color:var(--zd-gray-400)}
 .zd-mode-mobile .results-count span{color:var(--zd-purple-600);font-weight:700}
 
-/* ═══ FEED — scroll-snap vertical list, one card per viewport ═══ */
-.stack-view{flex:1;min-height:0;display:flex;flex-direction:column;align-items:stretch;padding:0;position:relative}
-.stack-area{position:relative;width:100%;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-behavior:smooth}
-.stack-area::-webkit-scrollbar{display:none}
-.card-wrap{position:relative;width:100%;margin:0 auto;scroll-snap-align:start;scroll-snap-stop:always;padding:8px 10px;box-sizing:border-box;height:100%;perspective:1200px}
+/* ═══ STACK ═══ */
+.stack-view{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 16px 80px;position:relative}
+.stack-area{position:relative;width:100%;max-width:380px;flex:1;min-height:480px;margin:0 auto}
+.card-wrap{position:absolute;inset:0;perspective:1200px}
+.card-wrap.behind{z-index:0;pointer-events:none}
+.card-wrap.behind .card-inner{transform:scale(.94) translateY(10px);opacity:.35;filter:blur(1px)}
+.card-wrap.on-top{z-index:1}
 .card-inner{width:100%;height:100%;position:relative;transition:transform .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
 .card-inner.flipped{transform:rotateY(180deg)}
 .card-inner.flipped .card-front{pointer-events:none}
@@ -931,40 +931,56 @@ a.zd-name:hover { text-decoration: underline; }
 .card-front,.card-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
 
 /* ═══ CARD FRONT ═══ */
-.card-front{background:#fff;border:4px solid var(--card-border,var(--zd-gray-300));box-shadow:0 2px 4px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.12),0 20px 56px rgba(124,77,255,.1);justify-content:flex-end}
-.cf-hero{position:absolute;inset:0;overflow:hidden;border-radius:20px 20px 0 0}
+.card-front{background:#fff;border:2.5px solid var(--card-border,transparent);box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.06),0 12px 40px rgba(0,0,0,.04)}
+/* .cf-hero used to be position:absolute inset:0 so .cf-content-tray covered
+   the .cf-hero-overlay (name/rating/city) when they shared z-index. Now
+   .cf-hero is a flex item that grows to fill space above the tray, so the
+   overlay's bottom:0 lands directly above the tray and is visible. */
+.cf-hero{position:relative;flex:1 1 0;min-height:0;overflow:hidden;border-radius:20px 20px 0 0}
 .cf-hero img{width:100%;height:100%;object-fit:cover;transition:opacity .3s ease}
+.cf-hero-empty{width:100%;height:100%;background:linear-gradient(145deg, #efeae4 0%, #dcd5cc 100%)}
+.tier-elite .cf-hero-empty    { background: linear-gradient(145deg, #f0ecff 0%, #dcd2ff 100%); }
+.tier-verified .cf-hero-empty { background: linear-gradient(145deg, #e7f7ec 0%, #c7e7d0 100%); }
+.tier-premium .cf-hero-empty  { background: linear-gradient(145deg, #fff7dc 0%, #f0dfa0 100%); }
+.tier-standard .cf-hero-empty { background: linear-gradient(145deg, #f2f2f2 0%, #d9d9d9 100%); }
+.tier-free .cf-hero-empty     { background: linear-gradient(145deg, #ededed 0%, #dcdcdc 100%); }
 .cf-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,rgba(0,0,0,.55));pointer-events:none}
 /* White content tray — overlaps bottom of image */
 .cf-content-tray{position:relative;z-index:2;background:#fff;border-radius:0;padding:10px 0 10px;margin-top:auto}
 .cf-hero-overlay{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 12px;z-index:2;display:flex;flex-direction:column;gap:4px}
-.cf-hero-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.cf-hero-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px}
 .cf-hero-tags .cf-tag{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.2);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);text-shadow:0 1px 2px rgba(0,0,0,.3)}
 .cf-hero-top{display:flex;justify-content:space-between;align-items:flex-end}
-.cf-name{font:700 15px/1.15 var(--zd-display);letter-spacing:-.3px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3)}
+.cf-name{font:700 20px/1.15 var(--zd-display);letter-spacing:-.3px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3)}
 a.cf-name{text-decoration:none;color:#fff}
 a.cf-name:active{text-decoration:underline}
-.cf-hero-rating{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.cf-hero-rating .stars{color:var(--zd-gold-300);font-size:11px;letter-spacing:-1px}
-.cf-hero-rating .num{color:#fff;font-size:11px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.3)}
-.cf-hero-rating .cnt{color:rgba(255,255,255,.7);font-size:8px;font-weight:500}
+.cf-hero-rating{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.cf-rating-stack{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.cf-hero-rating .stars{color:var(--zd-gold-300);font-size:13px;letter-spacing:-1px}
+.cf-hero-rating .num{color:#fff;font-size:13px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.cf-hero-rating .cnt{color:rgba(255,255,255,.7);font-size:11px;font-weight:500}
 .cf-hero-bottom{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-.cf-hero-city{font-size:8px;font-weight:500;color:rgba(255,255,255,.85)}
-.cf-badge{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 7px;border-radius:5px}
+.cf-hero-city{font-size:11px;font-weight:500;color:rgba(255,255,255,.85)}
+.cf-badge{font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 7px;border-radius:5px}
 .cf-badge--tier{background:rgba(255,255,255,.2);color:#fff;backdrop-filter:blur(4px)}
 .cf-badge--sop{background:rgba(156,39,176,.3);color:#fff}
 .cf-badge--online{background:rgba(25,118,210,.3);color:#fff}
 .cf-score{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:3px;font-size:12px;font-weight:700;padding:4px 9px;border-radius:9px;z-index:3;background:rgba(255,255,255,.8);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.5);box-shadow:0 2px 8px rgba(0,0,0,.08);color:var(--accent,var(--zd-gray-800))}
 .cf-score svg{width:13px;height:13px}
-.cf-logo{position:absolute;top:12px;left:12px;width:36px;height:36px;border-radius:10px;overflow:hidden;z-index:3;border:2px solid rgba(255,255,255,.8);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.cf-logo{position:absolute;top:18px;left:18px;width:108px;height:108px;border-radius:22px;overflow:hidden;z-index:3;background:transparent;box-shadow:0 4px 14px rgba(0,0,0,.22)}
 .cf-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .cf-nudge{font-size:10px;font-weight:600;color:var(--zd-gold-300);text-decoration:none;margin-left:2px}
+.on-top .cf-hero{animation:revealScale .4s cubic-bezier(.2,.8,.3,1) both}
+.on-top .cf-meta{animation:revealUp .35s cubic-bezier(.2,.8,.3,1) .15s both}
+.on-top .cf-actions{animation:revealUp .3s cubic-bezier(.2,.8,.3,1) .25s both}
+@keyframes revealScale{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes revealUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 .cf-tagline-block{padding:5px 14px 0}
 .cf-tagline{font-size:13px;font-weight:700;color:var(--accent,var(--zd-purple-600));line-height:1.3;letter-spacing:-0.1px}
 .cf-oneliner{font-size:11px;font-weight:400;color:var(--zd-gray-600);line-height:1.4;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .cf-meta{display:flex;flex-direction:column;gap:4px;padding:5px 14px}
-.cf-socials{display:flex;gap:3px;flex-wrap:wrap}
-.cf-social{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .2s}
+.cf-socials{display:flex;gap:5px;flex-wrap:wrap}
+.cf-social{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.06);box-shadow:0 1px 2px rgba(0,0,0,.05);transition:transform .2s,background .15s}
 .cf-social:active{transform:scale(1.15)}
 .cf-social img{width:15px;height:15px;display:block}
 .cf-tags{display:flex;gap:4px;flex-wrap:wrap}
@@ -984,100 +1000,21 @@ a.cf-name:active{text-decoration:underline}
 .cf-detail-btn{display:flex;align-items:center;justify-content:center;gap:4px;padding:3px 0 5px;font:600 11px/1 var(--zd-font);color:var(--accent,var(--zd-gray-600));cursor:pointer;transition:gap .2s}
 .cf-detail-btn:active{gap:8px}
 .cf-detail-btn svg{width:14px;height:14px;transition:transform .2s}
-/* ═══ NEW CARD LAYOUT v4 — 2:1 aspect, fixed containers ═══ */
-.card-front{justify-content:flex-start;background:#fff}
-.card-front .cf-hero{position:relative;inset:auto;height:60%;flex-shrink:0;border-radius:20px 20px 0 0}
-.card-front .cf-tray{background:#fff;padding:14px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;height:40%;flex-shrink:0}
-.cf-text-box{width:100%;flex:1.3;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0}
-.cf-text-box .cf-tagline{font-size:16px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;padding:0;color:var(--accent,var(--zd-purple-600))}
-.cf-text-box .cf-oneliner{font-size:15px;color:var(--zd-gray-600);line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:100%;margin-top:4px;font-weight:400}
-.cf-soc-box{width:100%;flex:1;display:flex;justify-content:center;align-items:center;min-height:0}
-.cf-free-socials{display:flex;align-items:center;justify-content:center;gap:18px}
-.cf-free-social{width:65px;height:65px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(124,77,255,.08);border:1.5px solid rgba(124,77,255,.15);text-decoration:none;transition:transform .15s}
-.cf-free-social:active{transform:scale(1.15)}
-.cf-free-social img{width:32px;height:32px}
-.cf-cta-box{width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;min-height:0}
-.cf-cta-box .cf-ctas{display:flex;gap:8px;width:100%;padding:0}
-.cf-cta-box .cf-cta{flex:1;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font:600 13px/1 var(--zd-font);text-decoration:none;border:none;cursor:pointer}
-.cf-cta-box .cf-cta--primary{color:#fff;background:var(--accent,var(--zd-purple-600))}
-.cf-cta-box .cf-cta--secondary{background:#f5f5f5;border:1.5px solid var(--zd-gray-200);color:var(--zd-gray-800)}
-.cf-cta-box .cf-detail-btn{padding:0;font-size:13px;font-weight:600;color:var(--zd-gray-400);display:flex;align-items:center;gap:4px;cursor:pointer}
-.cf-cta-box .cf-detail-btn svg{width:14px;height:14px}
-
-/* Logo */
-.card-front .cf-logo{width:76px!important;height:76px!important;top:14px!important;left:14px!important;border-radius:16px!important;border:2.5px solid rgba(255,255,255,.9)!important;box-shadow:0 3px 12px rgba(0,0,0,.2)!important}
-
-/* Name, rating text — 30% smaller than the v4 large state */
-.card-front .cf-name{font-size:27px!important;line-height:1.1}
-.card-front .cf-hero-rating .stars{font-size:17px!important}
-.card-front .cf-hero-rating .num{font-size:17px!important}
-.card-front .cf-hero-rating .cnt{font-size:13px!important}
-.card-front .cf-hero-city{font-size:15px!important}
-.card-front .cf-tag{font-size:11px!important;padding:4px 10px!important}
-.card-front .cf-score{font-size:13px!important;padding:6px 10px!important}
-.card-front .cf-score svg{width:16px!important;height:16px!important}
-.card-front .cf-badge{font-size:11px!important;padding:2px 6px!important}
-
-/* Tier-specific tagline colors */
-.card-front.tier-standard .cf-tagline{color:#4a4a5a}
-.card-front.tier-verified .cf-tagline{color:#2e994d}
-.card-front.tier-elite .cf-tagline{color:var(--zd-purple-600)}
-.card-front.tier-premium .cf-tagline{color:#8a6800}
-.card-front.tier-free .cf-tagline{color:#666}
-
-/* Tier-specific primary CTA colors */
-.card-front.tier-verified .cf-cta--primary{background:#2e994d}
-.card-front.tier-elite .cf-cta--primary{background:var(--zd-purple-600)}
-.card-front.tier-premium .cf-cta--primary{background:linear-gradient(135deg,#f5d76e,#c89a00)}
-
-/* Tier-specific social icon backgrounds */
-
-/* ═══ NEW BACK CARD LAYOUT v4 — flex-proportional ═══ */
-.card-back{padding:22px 22px 14px;background:#fff;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}
-.card-back .cb-header{flex-shrink:0;text-align:center;display:flex;flex-direction:column;justify-content:center;margin:0}
-.card-back .cb-name{font:700 24px/1.2 var(--zd-display);color:var(--zd-gray-800);padding:0;background:none}
-.card-back .cb-city{font-size:15px;color:var(--zd-gray-400);margin-top:4px;padding:0}
-.card-back .cb-line{width:50px;height:2px;background:var(--zd-gray-200);margin:10px auto 14px;border-radius:2px;flex-shrink:0}
-.card-back .cb-info{flex:1;display:flex;flex-direction:column;gap:14px;overflow-y:auto;padding:0 4px 0 0;min-height:0}
-.card-back .cb-info::-webkit-scrollbar{width:3px}
-.card-back .cb-info::-webkit-scrollbar-thumb{background:var(--zd-gray-200);border-radius:3px}
-.card-back .cb-sec{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
-.card-back .cb-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--zd-gray-400)}
-.card-back .cb-txt{font-size:15px;line-height:1.5;color:var(--zd-gray-800)}
-.card-back .cb-svcs{display:flex;flex-wrap:wrap;gap:5px}
-.card-back .cb-svc{font-size:12px;font-weight:600;padding:5px 11px;border-radius:7px;background:var(--zd-gray-50);color:var(--zd-gray-800);border:1px solid var(--zd-gray-200)}
-/* Socials row on the back of the card — half the size of the old front socials */
-.card-back .cb-socials{flex-shrink:0;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
-.card-back .cb-socials .cf-social{width:25px;height:25px;border-radius:7px;border:1px solid var(--zd-gray-200);background:var(--zd-gray-50);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .15s}
-.card-back .cb-socials .cf-social:active{transform:scale(1.15)}
-.card-back .cb-socials .cf-social img{width:14px;height:14px;display:block}
-.card-back.tier-verified .cb-socials .cf-social{background:#e8f5e9;border-color:rgba(46,153,77,.2)}
-.card-back.tier-elite .cb-socials .cf-social{background:var(--zd-purple-50);border-color:rgba(124,77,255,.15)}
-.card-back.tier-premium .cb-socials .cf-social{background:linear-gradient(180deg,#fff,#fffaf0);border-color:#e6c660}
-.card-back .cb-dist-box{flex-shrink:0;margin-top:14px;display:flex;align-items:center;justify-content:center;padding:10px 0}
-.card-back .cb-dist{text-align:center;font-size:14px;color:var(--zd-gray-600)}
-.card-back .cb-dist b{color:var(--zd-gray-800)}
-.card-back .cb-dist a{color:var(--zd-purple-600);text-decoration:none;font-weight:600}
-.card-back .cb-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
-.card-back .cb-cta{width:100%;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font:600 15px/1 var(--zd-font);color:#fff;border:none;cursor:pointer;flex-shrink:0;background:var(--zd-purple-600)}
-.card-back .cb-cta2{width:100%;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:600 14px/1 var(--zd-font);border:1px solid var(--zd-gray-200);background:var(--zd-gray-50);color:var(--zd-gray-800);cursor:pointer;text-decoration:none;flex-shrink:0}
-.card-back .cb-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-shrink:0;margin-top:6px;padding:4px 2px}
-.card-back .cb-flip{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--zd-gray-400);cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
-.card-back .cb-flip svg{width:16px;height:16px}
-.card-back .cb-hide{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--zd-nope,#c85050);cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
-.card-back .cb-hide svg{width:16px;height:16px}
-.card-back .cb-hide:active{opacity:0.6}
-.card-back .cb-profile{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--zd-purple-600);cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
-.card-back .cb-profile svg{width:16px;height:16px}
-
-/* Tier-specific back CTA colors */
-.card-back.tier-standard .cb-cta{background:#4a4a5a}
-.card-back.tier-verified .cb-cta{background:#2e994d}
-.card-back.tier-elite .cb-cta{background:var(--zd-purple-600)}
-.card-back.tier-premium .cb-cta{background:linear-gradient(135deg,#f5d76e,#c89a00)}
-.card-back.tier-premium{background:linear-gradient(180deg,#fffdf5,#fff)}
-
-/* ═══ END NEW CARD LAYOUT v4 ═══ */
+.stack-counter{text-align:center;padding:4px 0;font-size:12px;font-weight:600;color:var(--zd-gray-400)}
+.tinder-actions{display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 0 4px}
+.tinder-btn{width:52px;height:52px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s;background:#fff;-webkit-tap-highlight-color:transparent}
+.tinder-btn:active{transform:scale(.9)}
+.tinder-btn svg{width:22px;height:22px}
+.tinder-btn--nope{border-color:var(--zd-nope);color:var(--zd-nope);box-shadow:0 2px 10px rgba(200,80,80,.12)}
+.tinder-btn--nope:active{box-shadow:0 0 20px rgba(200,80,80,.3)}
+.tinder-btn--star{border-color:var(--zd-gold-300);color:#c89a00;width:44px;height:44px;box-shadow:0 2px 10px rgba(245,215,110,.15)}
+.tinder-btn--star svg{width:18px;height:18px}
+.tinder-btn--star:active{box-shadow:0 0 20px rgba(245,215,110,.4)}
+.tinder-btn--like{border-color:var(--zd-mint-400);color:var(--zd-mint-600);box-shadow:0 2px 10px rgba(46,153,77,.12)}
+.tinder-btn--like:active{box-shadow:0 0 20px rgba(46,153,77,.3)}
+.tinder-btn--profile{border-color:var(--zd-purple-400);color:var(--zd-purple-600);width:44px;height:44px;box-shadow:0 2px 10px rgba(124,77,255,.12)}
+.tinder-btn--profile svg{width:18px;height:18px}
+.tinder-btn--profile:active{box-shadow:0 0 20px rgba(124,77,255,.3)}
 
 /* Review bottom sheet */
 .review-sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;z-index:9999;border-radius:24px 24px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.15);max-height:75vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.16,1,.3,1);padding:24px 20px calc(20px + var(--safe-b))}
@@ -1126,8 +1063,7 @@ a.cf-name:active{text-decoration:underline}
 .cb-flip-back svg{width:16px;height:16px}
 
 /* Tier styles for card-front (mobile) */
-.tier-elite{--accent:var(--zd-purple-600);--accent-light:var(--zd-purple-50);--accent-text:var(--zd-purple-800);--card-border:var(--zd-purple-400)}
-.tier-elite .card-front{background:linear-gradient(to bottom,#fff 0%,#fff 55%,var(--zd-purple-50) 100%)}
+.tier-elite{--accent:var(--zd-purple-600);--accent-light:var(--zd-purple-50);--accent-text:var(--zd-purple-800);--card-border:var(--zd-purple-200)}
 .tier-elite .card-front{box-shadow:0 1px 2px rgba(124,77,255,.06),0 4px 20px rgba(124,77,255,.1),0 12px 40px rgba(124,77,255,.06)}
 .tier-elite .card-front::before{content:"";position:absolute;inset:-1.5px;border-radius:23.5px;z-index:-1;background:linear-gradient(130deg,var(--zd-purple-200) 0%,var(--zd-purple-200) 38%,var(--zd-gold-300) 50%,var(--zd-purple-200) 62%,var(--zd-purple-200) 100%);background-size:250% 100%;animation:shimmer 8s ease-in-out infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:1.5px}
 .tier-elite .cf-badge--tier{background:linear-gradient(135deg,var(--zd-purple-600),var(--zd-purple-400));color:#fff}
@@ -1139,28 +1075,25 @@ a.cf-name:active{text-decoration:underline}
 .tier-elite .cf-cta--secondary:active{box-shadow:inset 0 2px 4px rgba(124,77,255,0.15)}
 .tier-elite .cf-score{color:var(--zd-purple-600);animation:scorePulse 4s ease-in-out infinite}
 @keyframes scorePulse{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.06)}50%{box-shadow:0 2px 12px rgba(124,77,255,.2)}}
-.tier-verified{--accent:var(--zd-mint-600);--accent-light:var(--zd-mint-50);--accent-text:var(--zd-mint-800);--card-border:var(--zd-mint-400)}
-.tier-verified .card-front{background:linear-gradient(to bottom,#fff 0%,#fff 55%,var(--zd-mint-50) 100%)}
+.tier-verified{--accent:var(--zd-mint-600);--accent-light:var(--zd-mint-50);--accent-text:var(--zd-mint-800);--card-border:var(--zd-mint-100)}
 .tier-verified .card-front{box-shadow:0 1px 2px rgba(46,153,77,.04),0 4px 16px rgba(46,153,77,.06),0 8px 30px rgba(0,0,0,.04)}
 .tier-verified .cf-hero{border-bottom:2px solid var(--zd-mint-400)}
 .tier-verified .cf-badge--tier{background:linear-gradient(135deg,var(--zd-mint-600),var(--zd-mint-400));color:#fff}
 .tier-verified .cf-tag{background:var(--zd-mint-50);border-color:var(--zd-mint-100);color:var(--zd-mint-800)}
 .tier-verified .cf-cta--primary{background:var(--zd-mint-600)}
 .tier-verified .cf-score{color:var(--zd-mint-600)}
-.tier-standard{--accent:var(--zd-gray-600);--accent-light:var(--zd-gray-100);--accent-text:var(--zd-gray-800);--card-border:var(--zd-gray-400)}
-.tier-standard .card-front{background:linear-gradient(to bottom,#fff 0%,#fff 55%,#f0f0f4 100%)}
+.tier-standard{--accent:var(--zd-gray-600);--accent-light:var(--zd-gray-100);--accent-text:var(--zd-gray-800);--card-border:var(--zd-gray-200)}
+.tier-standard .card-front{border-top:2.5px solid var(--zd-gray-400)}
 .tier-standard .cf-cta--primary{background:var(--zd-gray-800)}
 .tier-standard .cf-score{color:var(--zd-gray-600)}
 .tier-free{--accent:var(--zd-gray-400);--accent-light:var(--zd-gray-100);--accent-text:var(--zd-gray-600);opacity:.82}
-.tier-free{--card-border:var(--zd-gray-400)}
-.tier-free .card-front{border:3px dashed var(--zd-gray-400);background:linear-gradient(to bottom,#fff 0%,#fff 55%,#f5f3f0 100%)}
+.tier-free .card-front{border:1.5px dashed var(--zd-gray-200)}
 .tier-free .cf-hero img{filter:saturate(.5)}
 .tier-free .cf-cta--primary{background:var(--zd-gray-400)}
 .tier-free .cf-score{color:var(--zd-gray-400)}
 
 /* ─── ПРЕМИУМ tier (mobile) — animated gold border, gold CTAs ─── */
 .tier-premium{--accent:#8a6800;--accent-light:#fff8e1;--accent-text:#5a4500;--card-border:#d4af37}
-.tier-premium .card-front{background:linear-gradient(to bottom,#fff 0%,#fff 55%,#fff8e1 100%)}
 .tier-premium .card-front{box-shadow:0 1px 2px rgba(212,175,55,.08),0 4px 20px rgba(212,175,55,.18),0 12px 40px rgba(212,175,55,.1)}
 .tier-premium .card-front::before{content:"";position:absolute;inset:-1.5px;border-radius:23.5px;z-index:-1;background:linear-gradient(135deg,#d4af37,#ffe98a,#d4af37,#ffe98a,#d4af37);background-size:250% 100%;animation:zd-premium-shimmer 4s ease-in-out infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:1.5px}
 .tier-premium .cf-badge--tier{background:linear-gradient(135deg,#d4af37,#ffe98a);color:#5a4500;box-shadow:0 2px 10px rgba(212,175,55,.5)}
@@ -1171,51 +1104,44 @@ a.cf-name:active{text-decoration:underline}
 .tier-premium .cf-cta--secondary{background:#fff8e1;color:#8a6800;border:1px solid #ffe98a;box-shadow:inset 0 -2px 0 rgba(212,175,55,0.2)}
 .tier-premium .cf-score{color:#8a6800;animation:scorePulse 4s ease-in-out infinite}
 
-/* ═══ MOBILE FILTER PANEL — compact, fits one viewport on iPhone 12 Pro ═══ */
+/* ═══ MOBILE FILTER PANEL ═══ */
 .fp-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:199}
 .fp-backdrop.visible{display:block}
-.filter-panel{position:fixed;inset:0;z-index:200;background:#fff;box-shadow:0 8px 40px rgba(0,0,0,.12);transform:translateY(-100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;border-radius:0;overflow:hidden}
+.filter-panel{position:fixed;top:0;left:0;right:0;z-index:200;background:#fff;box-shadow:0 8px 40px rgba(0,0,0,.12);transform:translateY(-100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);max-height:85vh;display:flex;flex-direction:column;border-radius:0 0 22px 22px;overflow:hidden}
 .filter-panel.open{transform:translateY(0)}
-.fp-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--zd-gray-100);flex-shrink:0;gap:10px}
-.fp-title{font:700 18px/1 var(--zd-display)}
-.fp-clear{font:600 13px/1 var(--zd-font);color:var(--zd-purple-600);background:none;border:none;cursor:pointer;padding:8px;min-height:40px;-webkit-tap-highlight-color:transparent}
-.fp-close{width:40px;height:40px;border-radius:10px;border:none;background:var(--zd-gray-50);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
-.fp-close svg{width:20px;height:20px;color:var(--zd-gray-600)}
-.fp-body{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
-.fp-section{margin-bottom:12px}
-.fp-label{font:700 11px/1 var(--zd-font);text-transform:uppercase;letter-spacing:.6px;color:var(--zd-gray-400);margin-bottom:6px}
+.fp-logo{display:flex;justify-content:center;padding:14px 16px 0}
+.fp-logo img{height:28px;width:auto}
+.fp-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--zd-gray-100)}
+.fp-title{font:700 16px/1 var(--zd-display)}
+.fp-clear{font:600 12px/1 var(--zd-font);color:var(--zd-purple-600);background:none;border:none;cursor:pointer}
+.fp-close{width:36px;height:36px;border-radius:10px;border:none;background:var(--zd-gray-50);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fp-close svg{width:18px;height:18px;color:var(--zd-gray-600)}
+.fp-body{flex:1;overflow-y:auto;padding:12px 16px}
+.fp-section{margin-bottom:16px}
+.fp-label{font:700 11px/1 var(--zd-font);text-transform:uppercase;letter-spacing:.5px;color:var(--zd-gray-400);margin-bottom:8px}
 .fp-chips{display:flex;flex-wrap:wrap;gap:6px}
-.fp-chip{min-height:32px;padding:0 12px;border-radius:10px;border:1.5px solid var(--zd-gray-200);background:#fff;font:600 12px/1 var(--zd-font);color:var(--zd-gray-800);cursor:pointer;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;transition:.15s}
+.fp-chip{min-height:40px;padding:0 14px;border-radius:12px;border:1.5px solid var(--zd-gray-200);background:#fff;font:600 12px/1 var(--zd-font);color:var(--zd-gray-600);cursor:pointer;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;transition:.15s}
 .fp-chip.include{background:linear-gradient(135deg,#96f4a3,#63d977);color:#fff;border-color:var(--zd-mint-600)}
 .fp-chip.exclude{background:linear-gradient(135deg,#ef8b8b,#d95757);color:#fff;border-color:#d95757;text-decoration:line-through}
 .fp-row{display:flex;gap:8px;align-items:center}
-.fp-input{flex:1;height:40px;padding:0 12px;border-radius:10px;border:1.5px solid var(--zd-gray-200);background:var(--zd-gray-50);font:500 14px/1 var(--zd-font);color:var(--zd-gray-800);min-width:0}
+.fp-input{flex:1;height:42px;padding:0 14px;border-radius:12px;border:1.5px solid var(--zd-gray-200);background:var(--zd-gray-50);font:500 14px/1 var(--zd-font);color:var(--zd-gray-800)}
 .fp-input:focus{outline:none;border-color:var(--zd-purple-400)}
-/* Search input with leading magnifier icon */
-.fp-input-search{position:relative}
-.fp-input-search .fp-input{padding-left:38px}
-.fp-input-search::before{
-  content:"";position:absolute;left:12px;top:50%;width:18px;height:18px;transform:translateY(-50%);
-  background:no-repeat center/18px 18px;
-  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a3a3a8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-  pointer-events:none;
-}
-.fp-toggle-row{display:flex;align-items:center;justify-content:space-between;min-height:40px;margin-bottom:4px}
-.fp-toggle-label{font:600 13px/1 var(--zd-font)}
-.t-switch{position:relative;display:inline-block;width:44px;height:26px;flex-shrink:0}
+.fp-toggle-row{display:flex;align-items:center;justify-content:space-between;min-height:42px;margin-bottom:6px}
+.fp-toggle-label{font:500 13px/1 var(--zd-font)}
+.t-switch{position:relative;display:inline-block;width:46px;height:26px}
 .t-switch input{opacity:0;width:0;height:0}
 .t-slider{position:absolute;cursor:pointer;inset:0;background:var(--zd-gray-200);transition:.3s;border-radius:26px}
-.t-slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background:#fff;transition:.3s;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.t-slider:before{position:absolute;content:"";height:22px;width:22px;left:2px;bottom:2px;background:#fff;transition:.3s;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 input:checked+.t-slider{background:var(--zd-mint-600)}
-input:checked+.t-slider:before{transform:translateX(18px)}
+input:checked+.t-slider:before{transform:translateX(20px)}
 .fp-cat-group{margin-bottom:6px}
-.fp-cat-header{width:100%;min-height:38px;padding:0 12px;border-radius:10px;border:1.5px solid var(--zd-gray-200);background:#fff;font:600 13px/1 var(--zd-font);cursor:pointer;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent}
-.fp-cat-header svg{width:16px;height:16px;color:var(--zd-gray-400);transition:transform .2s}
+.fp-cat-header{width:100%;min-height:42px;padding:0 14px;border-radius:12px;border:1.5px solid var(--zd-gray-200);background:#fff;font:600 12px/1 var(--zd-font);cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.fp-cat-header svg{width:14px;height:14px;color:var(--zd-gray-400);transition:transform .2s}
 .fp-cat-header.open svg{transform:rotate(90deg)}
-.fp-cat-subs{display:none;padding:6px 0 2px 8px;flex-wrap:wrap;gap:6px}
+.fp-cat-subs{display:none;padding:6px 0 0 8px;flex-wrap:wrap;gap:6px}
 .fp-cat-subs.open{display:flex}
-.fp-footer{padding:10px 14px calc(10px + var(--safe-b));border-top:1px solid var(--zd-gray-100);flex-shrink:0}
-.fp-apply{width:100%;height:48px;border-radius:12px;border:none;background:var(--zd-purple-600);color:#fff;font:700 15px/1 var(--zd-font);cursor:pointer;box-shadow:0 4px 14px rgba(124,77,255,.3);-webkit-tap-highlight-color:transparent}
+.fp-footer{padding:12px 16px calc(12px + var(--safe-b));border-top:1px solid var(--zd-gray-100)}
+.fp-apply{width:100%;height:50px;border-radius:14px;border:none;background:var(--zd-purple-600);color:#fff;font:700 15px/1 var(--zd-font);cursor:pointer;box-shadow:0 4px 12px rgba(124,77,255,.25)}
 .fp-apply:active{filter:brightness(.9)}
 
 /* Mobile saved bar (own ID to avoid colliding with desktop savedBar) */
@@ -1228,6 +1154,9 @@ input:checked+.t-slider:before{transform:translateX(18px)}
 #savedBarMobile .saved-count{font:600 12px/1 var(--zd-font);color:var(--zd-gray-600)}
 #savedBarMobile .saved-view-btn{height:34px;padding:0 16px;border-radius:10px;border:none;background:var(--zd-purple-600);color:#fff;font:600 12px/1 var(--zd-font);cursor:pointer}
 
+.undo-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--zd-gray-800);color:#fff;padding:10px 20px;border-radius:14px;font:600 13px/1 var(--zd-font);display:flex;align-items:center;gap:10px;z-index:90;opacity:0;transition:transform .3s,opacity .3s;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.undo-toast.visible{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
+.undo-toast button{background:none;border:none;color:var(--zd-purple-200);font:700 13px/1 var(--zd-font);cursor:pointer;text-decoration:underline}
 .empty-state{display:flex;flex-direction:column;align-items:center;padding:48px 24px;text-align:center;gap:14px}
 .empty-state svg{width:48px;height:48px;color:var(--zd-gray-200)}
 .empty-state h3{font:700 18px/1 var(--zd-display);color:var(--zd-gray-800)}
@@ -1280,19 +1209,15 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
 </head>
 <body>
 
-<nav>
-  <button class="zd-search-filter-pill" aria-label="Филтри" onclick="openMobileFilters()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <span class="zd-search-filter-label">Филтри</span>
-    <svg class="zd-search-filter-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-  </button>
-  <a href="index.html" class="nav-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></a>
+<nav style="position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,0.05);">
+  <a href="index.html" class="nav-logo" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето" style="height:80px;">
+  </a>
   <div class="nav-links">
-    <a href="index.html" class="nav-link">Начало</a>
-    <a href="search.html" class="nav-btn-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Търсене</a>
-    <a href="partners.html" class="nav-btn-partner">Стани партньор</a>
-    <a href="pricing.html" class="nav-link">Абонаменти</a>
-    <a href="contacts.html" class="nav-link">Контакти</a>
+    <a href="index.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Начало</a>
+    <a href="partners.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">За партньори</a>
+    <a href="contacts.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Контакти</a>
+    <a href="pricing.html" class="nav-btn-partner">Стани партньор</a>
     <a href="#" class="nav-btn-login" onclick="openAuthModal(event); return false;">Вход</a>
   </div>
 </nav>
@@ -1356,10 +1281,6 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
           Филтри
         </button>
         <div class="results-count"><span id="count">0</span> резултата</div>
-        <button class="dismissed-toggle" id="dismissedToggle" onclick="toggleDismissed()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          <span id="dismissedToggleLabel">0 скрити</span>
-        </button>
         <button class="dismissed-toggle" id="nearMeToggle" onclick="toggleNearMe()" title="Сортирай по близост">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span>Близо до мен</span>
@@ -1375,10 +1296,6 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
 
     <div class="card-stack" id="cardStack">
       <p class="loading-msg">Зареждане...</p>
-    </div>
-
-    <div class="dismissed-section" id="dismissedSection">
-      <div class="dismissed-divider"><span id="dismissedCount">0</span> отхвърлени</div>
     </div>
   </main>
 
@@ -1401,6 +1318,35 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
      ═══════════════════════════════════════════════════════════════ -->
 <div class="zd-mode-mobile">
 
+  <!-- Tutorial overlay (first visit) — teaches the bottom button row -->
+  <div class="tutorial hidden" id="tutorial">
+    <div class="tutorial-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></div>
+    <p class="tutorial-title">Използвай бутоните долу, за да преглеждаш специалистите</p>
+    <div class="tutorial-demos">
+      <div class="tutorial-demo tutorial-demo--btn-nope">
+        <div class="tut-btn-demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="tutorial-label">Пропусни</div>
+      </div>
+      <div class="tutorial-demo tutorial-demo--btn-star">
+        <div class="tut-btn-demo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        <div class="tutorial-label">Оцени</div>
+      </div>
+      <div class="tutorial-demo tutorial-demo--btn-eye">
+        <div class="tut-btn-demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="tutorial-label">Профил</div>
+      </div>
+      <div class="tutorial-demo tutorial-demo--btn-like">
+        <div class="tut-btn-demo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+        <div class="tutorial-label">Запази</div>
+      </div>
+    </div>
+    <div class="tutorial-filter-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;color:rgba(255,255,255,.6);flex-shrink:0"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+      <span>Използвай <b>филтрите</b> за град, възраст и категория</span>
+    </div>
+    <button class="tutorial-dismiss" onclick="dismissTutorial()">Разбрах</button>
+  </div>
+
   <!-- App shell -->
   <div class="app">
     <div class="top-bar">
@@ -1414,19 +1360,28 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
     <div class="results-info"><div class="results-count"><span id="resultCount">0</span> резултата</div></div>
     <div class="stack-view">
       <div class="stack-area" id="stackArea"></div>
+      <div class="stack-counter" id="stackCounter"></div>
+      <div class="tinder-actions">
+        <button class="tinder-btn tinder-btn--nope" onclick="btnDismiss()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="tinder-btn tinder-btn--star" onclick="btnReview()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>
+        <button class="tinder-btn tinder-btn--profile" id="btnProfile" onclick="btnViewProfile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="tinder-btn tinder-btn--like" onclick="btnLike()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+      </div>
     </div>
   </div>
 
   <!-- Mobile filter panel -->
   <div class="fp-backdrop" id="fpBackdrop" onclick="closeMobileFilters()"></div>
   <div class="filter-panel" id="filterPanel">
-    <div class="fp-header"><span class="fp-title">Филтри</span><button class="fp-clear" onclick="fpClearAll()">Изчисти</button><button class="fp-close" onclick="closeMobileFilters()" aria-label="Затвори"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="fp-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></div>
+    <div class="fp-header"><span class="fp-title">Филтри</span><button class="fp-clear" onclick="fpClearAll()">Изчисти</button><button class="fp-close" onclick="closeMobileFilters()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="fp-body" id="fpBody"></div>
     <div class="fp-footer"><button class="fp-apply" id="fpApply" onclick="fpApply()">Приложи</button></div>
   </div>
 
   <!-- Mobile saved bar -->
   <div id="savedBarMobile"><div class="saved-avatars" id="savedAvatarsMobile"></div><div class="saved-count"><span id="savedCountMobile">0</span> запазени</div><button class="saved-view-btn">Виж списък</button></div>
+  <div class="undo-toast" id="undoToast">Отхвърлено <button onclick="undoLast()">Върни</button></div>
 
   <!-- Review bottom sheet (mobile) -->
   <div class="review-sheet-overlay" id="reviewOverlay" onclick="closeReview()"></div>
@@ -1514,7 +1469,7 @@ const subcategories = {
   "Учене и умения": ["Ясли и градини", "Училища", "Занимални", "Частни уроци", "STEM и програмиране", "Изкуства", "Езикови школи", "Музикални"],
   "Игри и забавления": ["Детски центрове", "Аркадни и VR", "Ресторанти", "Други"],
   "Култура": ["Театър", "Кино", "Музей", "Концерти", "Културни събития", "Изложби"],
-  "Спорт и движение": ["Отборни", "Индивидуални", "Бойни изкуства", "Танци", "Плувни", "На открито"],
+  "Спорт и движение": ["Отборни", "Индивидуални", "Бойни изкуства", "Танци", "Плувни", "Outdoor"],
   "Тържества и събития": ["Центрове", "Аниматори", "Торти и кетъринг", "Фото и видео", "Декор", "Под наем"],
   "Стоки": ["За бебето", "Дрехи и обувки", "Играчки и игри", "Книги и помагала", "Храни", "Безопасност", "Джаджи", "Конзоли и PC"],
   "Домашна грижа и помощ": ["Детегледачки", "Домашен майстор"]
@@ -1528,26 +1483,25 @@ const tierRank = { "Премиум": 0, "Доверен": 1, "Проверен":
 const tierClassMap = { "Премиум": "premium", "Доверен": "elite", "Проверен": "verified", "Стандартен": "standard", "Безплатен": "free" };
 
 const icons = {
-  phone: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da92e1a4e6aa34cbd04ee4.png",
-  viber: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da78d6ecab277f79b90e7b.svg",
-  email: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a77bcdd31bb6f4160.png",
-  website: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da79cc019dc508d34359a1.gif",
-  facebook: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779aa4e6aa34cbc97684.svg",
-  instagram: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a77bcdd31bb6f417b.svg",
-  tiktok: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779aa4e6aa34cbc976a8.svg",
-  linkedin: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a019dc508d342f768.svg",
-  x: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a982fd67a3560f3e4.png",
-  youtube: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779b982fd67a3560f3e6.svg",
-  maps: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779ad7871cddf74e837d.png",
-  reviews: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da907c019dc508d349407b.png"
+  phone: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165ce6566161a.svg",
+  email: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f3b45fe711.svg",
+  website: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e39f520486ca465431130.svg",
+  facebook: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg",
+  instagram: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165b73b661619.svg",
+  tiktok: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c80d255fe70e.svg",
+  linkedin: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45f958ee9ecb86249762.svg",
+  x: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933def5016cb73723d0adc.svg",
+  youtube: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f88b5fe710.svg",
+  maps: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933df9ed9c8fc6588920f1.svg",
+  reviews: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68939cebd69f994a4dd582e5.png"
 };
 
 const allowedIconsByTier = {
-  "Премиум":   ["phone", "viber", "email", "website", "facebook", "instagram", "tiktok", "linkedin", "x", "youtube", "maps", "reviews"],
-  "Доверен":   ["phone", "viber", "email", "website", "facebook", "instagram", "tiktok", "linkedin", "x", "youtube", "maps", "reviews"],
-  "Проверен":  ["phone", "viber", "email", "website", "facebook", "instagram", "maps"],
-  "Стандартен": ["phone", "viber", "email", "website", "facebook"],
-  "Безплатен": ["phone", "email", "website"]
+  "Премиум":   ["phone", "email", "website", "facebook", "instagram", "tiktok", "linkedin", "x", "youtube", "maps", "reviews"],
+  "Доверен":   ["phone", "email", "website", "facebook", "instagram", "tiktok", "linkedin", "x", "youtube", "maps", "reviews"],
+  "Проверен":  ["phone", "email", "website", "facebook", "instagram", "maps"],
+  "Стандартен": ["phone", "email", "website", "facebook"],
+  "Безплатен": ["phone", "email"]
 };
 
 const tagLimits = { "Премиум": 5, "Доверен": 4, "Проверен": 3, "Стандартен": 2, "Безплатен": 1 };
@@ -1573,13 +1527,14 @@ const CATEGORY_DEFAULT_PHOTOS = {
   "Стоки":                "https://images.unsplash.com/photo-1558877385-81a1c7e67d72?w=720&q=80",
   "Домашна грижа и помощ": "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=720&q=80"
 };
+/* Returns the first gallery URL if present, otherwise empty string.
+   Callers must handle the empty case — previously this fell back to a
+   category-themed Unsplash stock photo, which looked misleading on real
+   rows that hadn't been photographed yet. Now an empty hero lets the card
+   render a neutral tier-tinted background via the `--empty` variant. */
 function getCardPhoto(d) {
   if (Array.isArray(d.gallery_urls) && d.gallery_urls.length && d.gallery_urls[0]) return d.gallery_urls[0];
-  const cats = Array.isArray(d.categories) ? d.categories : (d.categories ? [d.categories] : []);
-  for (const c of cats) {
-    if (CATEGORY_DEFAULT_PHOTOS[c]) return CATEGORY_DEFAULT_PHOTOS[c];
-  }
-  return CATEGORY_DEFAULT_PHOTOS["Учене и умения"];
+  return "";
 }
 /* Square logo for the back-face header. Falls back to a colored placeholder
    with the business's first letter when no logo is uploaded. */
@@ -1621,8 +1576,6 @@ function getTierScore(d) {
   return range[0] + (Math.abs(hash) % span);
 }
 
-const SWIPE_THRESHOLD = 80;
-
 /* ═══ STATE ═══ */
 let data = [];
 let searchTerm = "", cityTerm = "";
@@ -1630,7 +1583,6 @@ let ageFrom = null, ageTo = null;
 const active = { level: { include: new Set(), exclude: new Set() }, category: { include: new Set(), exclude: new Set() } };
 let sopFilter = null, onlineFilter = false;
 let selectedCat = null;
-let showDismissed = false;
 let nearMeActive = false;
 let userLat = null, userLng = null;
 
@@ -1707,18 +1659,60 @@ let _ratingsLoaded = false;
  *    "social proof" so the directory feels alive at launch).
  *    The "Оцени!" nudge only shows for the FALLBACK path when count < 10.
  */
-function getCardRating(d) {
+/* Google Maps rating for `d`, or null if the row has no Google data. */
+function getGoogleRating(d) {
+  const r = typeof d.google_rating === 'number' ? d.google_rating : parseFloat(d.google_rating);
+  if (!isFinite(r) || r <= 0) return null;
+  const c = typeof d.google_review_count === 'number' ? d.google_review_count : parseInt(d.google_review_count, 10);
+  const cnt = isFinite(c) && c > 0 ? c : 0;
+  return { avg: r.toFixed(1), count: cnt, real: true, source: 'google' };
+}
+
+/* Zadeteto-internal (parent community) rating for `d`. Prefers the real
+   _ratingsCache (populated by loadAllCardRatings); falls back to a
+   deterministic hash so the mockup value is stable per business id. */
+function getZadetetoRating(d) {
   const cached = _ratingsCache.get(d.id);
-  if (cached) return { avg: cached.avg, count: cached.count, real: true };
-  // Stable fallback (NOT random — deterministic per business)
+  if (cached) return { avg: cached.avg, count: cached.count, real: true, source: 'zadeteto' };
   const idStr = String(d.id || d.legacy_id || d.name || '');
   let hash = 0;
   for (let i = 0; i < idStr.length; i++) hash = (hash * 31 + idStr.charCodeAt(i)) | 0;
   const absHash = Math.abs(hash);
-  const avg = (4.0 + (absHash % 10) / 10).toFixed(1); // 4.0 .. 4.9
+  const avg = (4.0 + (absHash % 10) / 10).toFixed(1);
   const tierBoost = { "Премиум": 80, "Доверен": 50, "Проверен": 25, "Стандартен": 10, "Безплатен": 0 }[d.tier] || 0;
   const count = 5 + ((absHash >> 8) % 100) + tierBoost;
-  return { avg, count, real: false };
+  return { avg, count, real: false, source: 'zadeteto-mock' };
+}
+
+/* Backwards-compatible wrapper — callers that still want ONE rating get
+   Google first, Zadeteto otherwise. */
+function getCardRating(d) {
+  return getGoogleRating(d) || getZadetetoRating(d);
+}
+
+/* SVG paths for the rating icons. Using SVG instead of Unicode glyphs
+   because font-rendered ★ and ♥ don't have matching visual dimensions on
+   most platforms — switching to a shared 24×24 viewBox guarantees pixel-
+   identical sizing between the Google stars row and the Zadeteto hearts
+   row. */
+const RATING_ICON_PATHS = {
+  star:  'M12 2.5l2.62 5.93 6.48.57-4.9 4.28 1.48 6.34L12 16.3l-5.68 3.32 1.48-6.34-4.9-4.28 6.48-.57z',
+  heart: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'
+};
+
+/* 5-icon rating widget: 5 SVG glyphs in a flex row (outline layer) +
+   identical 5 SVG glyphs width-clipped on top (filled overlay). Same
+   viewBox + same sizing → Google stars and Zadeteto hearts line up
+   pixel-for-pixel. `avg` is 0..5; `kind` is 'star' or 'heart'. */
+function ratingIconsHTML(avg, kind) {
+  const pct = Math.max(0, Math.min(100, (parseFloat(avg) / 5) * 100));
+  const path = RATING_ICON_PATHS[kind] || RATING_ICON_PATHS.star;
+  const glyph = `<svg class="ri-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="${path}"/></svg>`;
+  const row = glyph.repeat(5);
+  return `<span class="zd-rating-icons" aria-label="${avg} от 5">
+    <span class="zd-rating-icons-outline">${row}</span>
+    <span class="zd-rating-icons-fill" style="width:${pct}%">${row}</span>
+  </span>`;
 }
 
 /* loadAllCardRatings — single bulk fetch of approved reviews, called once
@@ -1765,13 +1759,22 @@ function patchVisibleCardRatings() {
     const id = card.dataset.id;
     if (!id) return;
     const rating = _ratingsCache.get(id);
-    if (!rating) return; // no real reviews → keep the deterministic fallback
-    // Desktop card: .zd-rating .num + .cnt
-    const numEl = card.querySelector('.zd-rating .num, .cf-hero-rating .num');
-    const cntEl = card.querySelector('.zd-rating .cnt, .cf-hero-rating .cnt');
-    if (numEl) numEl.textContent = rating.avg;
-    if (cntEl) cntEl.textContent = `(${rating.count})`;
-    // Hide the "Оцени!" nudge — it's only relevant for businesses with no real reviews
+    if (!rating) return; // no real Zadeteto reviews → keep the deterministic fallback
+    // Zadeteto row only (Google row has its own columns and doesn't change)
+    const zadRow = card.querySelector('.zd-rating-zadeteto');
+    if (zadRow) {
+      const numEl = zadRow.querySelector('.num');
+      const cntEl = zadRow.querySelector('.cnt');
+      if (numEl) numEl.textContent = rating.avg;
+      if (cntEl) cntEl.textContent = `/ ${rating.count}`;
+      // Update icon fill width to match the real rating
+      const fill = zadRow.querySelector('.zd-rating-icons-fill');
+      if (fill) {
+        const pct = Math.max(0, Math.min(100, (parseFloat(rating.avg) / 5) * 100));
+        fill.style.width = pct + '%';
+      }
+    }
+    // Hide the "Оцени!" nudge — only relevant for businesses with no real reviews
     const nudge = card.querySelector('.nudge, .cf-nudge');
     if (nudge) nudge.remove();
   });
@@ -1994,14 +1997,21 @@ function passAge(d) {
   const from = ageFrom ?? 0, to = ageTo ?? 100;
   return d.ageGroups.some(s => { const [a, b] = parseAgeGroup(s); return a <= to && b >= from; });
 }
+// visible_categories is the tier-gated subset populated by a DB trigger
+// (see supabase/migrations/0012). Free-tier rows only surface the first 2,
+// so disabled categories never leak into search, pill filters, or autocomplete.
+// Falls back to categories[] for any row pre-dating the migration backfill.
+const _visibleCats = d => Array.isArray(d.visible_categories) && d.visible_categories.length
+  ? d.visible_categories
+  : (Array.isArray(d.categories) ? d.categories : (d.categories ? [d.categories] : []));
 const passSearch = d => {
   if (!searchTerm) return true;
-  const catStr = Array.isArray(d.categories) ? d.categories.join(" ") : (d.categories || "");
+  const catStr = _visibleCats(d).join(" ");
   return [d.name, catStr, d.city, d.tier, ...(d.services || [])].join(" ").toLowerCase().includes(searchTerm);
 };
 const passCat = d => {
   if (active.category.include.size === 0 && active.category.exclude.size === 0) return true;
-  const cats = Array.isArray(d.categories) ? d.categories : [d.categories];
+  const cats = _visibleCats(d);
   const hasIncluded = active.category.include.size === 0 || cats.some(c => active.category.include.has(c));
   const hasExcluded = cats.some(c => active.category.exclude.has(c));
   return hasIncluded && !hasExcluded;
@@ -2010,19 +2020,6 @@ const passLevel = d => !(active.level.include.size && !active.level.include.has(
 const passCity = d => !cityTerm || d.city.toLowerCase() === cityTerm;
 const passSop = d => sopFilter === null || d.sop === sopFilter;
 const passOnline = d => !onlineFilter || d.city === "Онлайн";
-
-function buildFreeSocialsHTML(d) {
-  const allowed = allowedIconsByTier["Безплатен"] || [];
-  let html = '<div class="cf-free-socials">';
-  allowed.forEach(k => {
-    if (d[k] && d[k] !== '#') {
-      const href = k === 'phone' ? 'tel:' + d[k] : k === 'email' ? 'mailto:' + d[k] : ZdSec.sanitizeUrl(d[k]);
-      html += `<a class="cf-free-social" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
-    }
-  });
-  html += '</div>';
-  return html;
-}
 
 /* ═══ CARD HTML BUILDER (Tinder 3D flip — 5 tiers) ═══
  * Replaces the old white-body card with the Tinder mockup design.
@@ -2039,26 +2036,50 @@ function buildFreeSocialsHTML(d) {
 function buildCardHTML(d) {
   const tierClass = tierClassMap[d.tier] || "free";
   const isFree = d.tier === "Безплатен";
-  const isLiked = likedIds.has(d.id);
-  const isDismissed = dismissedIds.has(d.id);
   const limit = tagLimits[d.tier] || 1;
   const services = (d.services || []).slice(0, limit);
 
-  // ─── Rating (real reviews via _ratingsCache, hash-of-id fallback) ───
-  const rating = getCardRating(d);
-  const _rc = rating.count;
-  const _rt = rating.avg;
-  // Nudge to "Оцени!" only when (a) no real reviews exist AND (b) the
-  // fallback count is artificially low — avoids nudging real popular businesses.
-  const nudgeHTML = (!rating.real && _rc < 10)
+  // ─── Ratings: Google (top, real only) + Zadeteto hearts (below, hash mock until real) ───
+  const googleRating = getGoogleRating(d);
+  const zadRating = getZadetetoRating(d);
+  // Nudge to "Оцени!" only when (a) no real Zadeteto reviews AND (b) the
+  // fallback count is artificially low.
+  const nudgeHTML = (!zadRating.real && zadRating.count < 10)
     ? `<a class="nudge" href="#" onclick="event.stopPropagation();event.preventDefault();openAuthModal(event)">Оцени!</a>`
     : '';
+  const googleRatingHTML = googleRating
+    ? `<span class="zd-rating zd-rating-google" title="Google Maps">
+         ${ratingIconsHTML(googleRating.avg, 'star')}
+         <span class="num">${googleRating.avg}</span>
+         <span class="cnt">/ ${googleRating.count}</span>
+       </span>`
+    : '';
+  const zadetetoRatingHTML = `<span class="zd-rating zd-rating-zadeteto" title="Оценки от родители в ZaDeteto">
+      ${ratingIconsHTML(zadRating.avg, 'heart')}
+      <span class="num">${zadRating.avg}</span>
+      <span class="cnt">/ ${zadRating.count}</span>${nudgeHTML}
+    </span>`;
+  // ZD on top, Google below (per user pref — ZaDeteto brand signal leads).
+  const ratingStackHTML = `<div class="zd-rating-stack">${zadetetoRatingHTML}${googleRatingHTML}</div>`;
 
-  // ─── Tagline (max 45 chars) + oneliner (max 150 chars) ───
+  // ─── Tagline — first paragraph of the description; CSS line-clamp (3
+  //    lines on .zd-tagline) handles visual truncation. We cap the raw
+  //    length at 260 chars as a safety net against pathologically long
+  //    descriptions so the card layout can't explode vertically.
   let taglineHTML = '';
   if (d.description) {
-    const desc = d.description.trim();
-    let tagline = desc.length <= 45 ? desc : desc.slice(0, desc.lastIndexOf(' ', 44) || 44).trim() + '…';
+    const firstPara = d.description.split(/\n{2,}/)[0].trim();
+    const MAX = 260;
+    let tagline;
+    if (firstPara.length <= MAX) {
+      tagline = firstPara;
+    } else {
+      // `lastIndexOf` returns -1 when there is no space in the window — and
+      // -1 is truthy in JS so a naive `|| fallback` doesn't help. Guard with
+      // an explicit `> 0` check and fall back to a hard cut at MAX-1.
+      const cut = firstPara.lastIndexOf(' ', MAX - 1);
+      tagline = firstPara.slice(0, cut > 0 ? cut : MAX - 1).trim() + '…';
+    }
     taglineHTML = `<div class="zd-tagline">${ZdSec.escapeHtml(tagline)}</div>`;
   }
 
@@ -2067,10 +2088,35 @@ function buildCardHTML(d) {
     ? `<div class="zd-chips">${services.map(t => `<span class="zd-chip">${ZdSec.escapeHtml(t)}</span>`).join('')}</div>`
     : '';
 
-  // ─── Top badges (tier pill + audit score pill, plus SOP / Online if applicable) ───
+  // ─── Front-face socials (every icon this tier is allowed to show) ───
+  // Includes contacts (phone, email, website, maps) + social media. Back
+  // face keeps the same set; the front is just a compact inline strip.
+  // Maps is synthesized from lat/lng or address, matching the back face.
+  const allowedKeys = allowedIconsByTier[d.tier] || [];
+  let frontSocialsInner = '';
+  allowedKeys.forEach(k => {
+    if (k === 'maps') return; // appended below
+    if (!d[k] || d[k] === '#') return;
+    const href = k === 'phone' ? 'tel:' + d[k]
+               : k === 'email' ? 'mailto:' + d[k]
+               : ZdSec.sanitizeUrl(d[k]);
+    frontSocialsInner += `<a href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="${k}"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
+  });
+  if (allowedKeys.includes('maps')) {
+    const mapsFrontUrl = (d.lat && d.lng)
+      ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address || d.name) + ' ' + (d.city || ''))}`;
+    frontSocialsInner += `<a class="zd-front-socials-maps" href="${mapsFrontUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps"><svg viewBox="0 0 64 64" width="14" height="14"><path d="M32 2C20.4 2 11 11.4 11 23c0 17.2 19 37.4 20 38.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4C53 11.4 43.6 2 32 2z" fill="#34A853"/><path d="M32 2v30l21-9C53 11.4 43.6 2 32 2z" fill="#4285F4"/><path d="M11 23c0-9 5.4-16.7 13.1-20.1L32 32 12 32.5C11.4 29.5 11 26.3 11 23z" fill="#FBBC05"/><path d="M12 32.5L32 32l-8 29c-7-7.7-13-16.2-13-16.2S11.5 34 12 32.5z" fill="#EA4335"/><path d="M32 32l-8 29c3 3.2 7 9.4 8 10.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4 0-1-.1-2-.1-3L32 32z" fill="#34A853"/><circle cx="32" cy="23" r="8" fill="#fff"/></svg></a>`;
+  }
+  const frontSocialsHTML = frontSocialsInner ? `<div class="zd-front-socials">${frontSocialsInner}</div>` : '';
+
+  // ─── Top badges (audit score pill, plus SOP / Online if applicable) ───
+  // Tier pill moved out of the top-badges row and into a dedicated tier-row
+  // below the business name — was being hidden under the now-larger logo.
   const auditScore = getTierScore(d);
   const tierLabel = d.tier === 'Премиум' ? '★ Премиум' : d.tier;
-  let topBadgesHTML = `<span class="zd-badge-tier">${ZdSec.escapeHtml(tierLabel)}</span>`;
+  const tierPillHTML = `<div class="zd-tier-row"><span class="zd-badge-tier">${ZdSec.escapeHtml(tierLabel)}</span></div>`;
+  let topBadgesHTML = '';
   if (d.sop) topBadgesHTML += `<span class="zd-badge-sop">СОП</span>`;
   if (d.city === 'Онлайн') topBadgesHTML += `<span class="zd-badge-online">Online</span>`;
   topBadgesHTML += `<span class="zd-badge-score">${auditScore}</span>`;
@@ -2087,11 +2133,15 @@ function buildCardHTML(d) {
   const ctaRowHTML = `<div class="zd-cta-row">${secondaryHTML}${primaryHTML}</div>`;
 
   // ─── Name (link unless free) + verified tick on Премиум/Доверен ───
-  const nameHTML = isFree
-    ? `<span class="zd-name">${ZdSec.escapeHtml(d.name)}</span>`
-    : `<a class="zd-name" href="${profileUrl}" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.name)}</a>`;
+  // The tick lives INSIDE the name element (inline after the last word) so
+  // when the name wraps to 2-3 lines the tick rides with the last word
+  // instead of falling to its own line in the flex row.
   const verifiedTickHTML = (d.tier === 'Премиум' || d.tier === 'Доверен')
-    ? `<span class="zd-verified">✓</span>` : '';
+    ? `<span class="zd-verified"> ✓</span>` : '';
+  const nameInner = ZdSec.escapeHtml(d.name) + verifiedTickHTML;
+  const nameHTML = isFree
+    ? `<span class="zd-name">${nameInner}</span>`
+    : `<a class="zd-name" href="${profileUrl}" onclick="event.stopPropagation()">${nameInner}</a>`;
 
   // ─── Distance (when "near me" is active) ───
   const distKm = nearMeActive ? getDistanceKm(d) : null;
@@ -2109,31 +2159,34 @@ function buildCardHTML(d) {
   const photoUrl = getCardPhoto(d);
   const _hasLogo = d.logo && d.logo !== '#' && !d.logo.includes('placehold.co');
   const _logoEl = _hasLogo ? `<div class="zd-card-logo"><img src="${ZdSec.escapeHtml(d.logo)}" alt="" loading="lazy"></div>` : '';
+  // When a business has no real gallery photo, skip the background-image and
+  // render an empty-hero variant (subtle tier-tinted gradient from CSS).
+  const photoInlineStyle = photoUrl
+    ? `background-image:url('${photoUrl.replace(/'/g, "\\'")}')`
+    : '';
+  const photoClassExtra = photoUrl ? '' : ' zd-photo--empty';
   const frontHTML = `
     <div class="zd-face zd-face--front">
-      <div class="zd-photo" style="background-image:url('${photoUrl.replace(/'/g, "\\'")}')"></div>
+      <div class="zd-photo${photoClassExtra}" style="${photoInlineStyle}"></div>
       ${_logoEl}
       ${dotsHTML}
       <div class="zd-top-badges">${topBadgesHTML}</div>
-      <span class="zd-undo" onclick="event.stopPropagation();undoDismiss(this)">Върни</span>
-      <div class="zd-state-overlay zd-state-overlay--x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="17" y1="7" x2="7" y2="17"/><line x1="7" y1="7" x2="17" y2="17"/></svg></div>
-      <div class="zd-state-overlay zd-state-overlay--heart"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+      ${ratingStackHTML}
       <div class="zd-info">
-        <div class="zd-name-row">${nameHTML}${verifiedTickHTML}</div>
+        <div class="zd-name-row">${nameHTML}</div>
+        ${tierPillHTML}
         <div class="zd-meta-row">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7 8-13a8 8 0 0 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
           <span>${ZdSec.escapeHtml(d.city)}${distHTML}</span>
-          <span class="zd-rating">
-            <span class="stars">★★★★★</span>
-            <span class="num">${_rt}</span>
-            <span class="cnt">(${_rc})</span>${nudgeHTML}
-          </span>
         </div>
         ${taglineHTML}
         ${chipsHTML}
+        ${frontSocialsHTML}
         ${ctaRowHTML}
         <div class="zd-card-actions">
-          ${isFree ? buildFreeSocialsHTML(d) : `<span class="zd-detail-btn" onclick="event.stopPropagation();flipCard(this.closest('.zd-card'))">Детайли <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></span>`}
+          ${isFree
+            ? `<span class="zd-detail-btn" style="visibility:hidden" aria-hidden="true">Детайли</span>`
+            : `<span class="zd-detail-btn" onclick="event.stopPropagation();flipCard(this.closest('.zd-card'))">Детайли <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></span>`}
         </div>
       </div>
     </div>`;
@@ -2199,15 +2252,14 @@ function buildCardHTML(d) {
       <div class="zd-back-cta">
         <a href="${primaryUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${primaryLabel}</a>
         <a class="zd-profile-link-back" href="${profileUrl}" onclick="event.stopPropagation()">Подробен профил →</a>
-        <div class="zd-flip-back-hint">↻ Натисни картата за да се върнеш</div>
+        <button type="button" class="zd-flip-back-btn" onclick="event.stopPropagation();flipCard(this.closest('.zd-card'))">↻ Назад</button>
       </div>
     </div>`;
   }
 
-  const stateClasses = (isLiked ? ' liked' : '') + (isDismissed ? ' dismissed' : '');
   const safeName = ZdSec.escapeHtml(d.name);
 
-  return `<div class="zd-card zd-card--${tierClass}${stateClasses}" data-id="${d.id}" data-name="${safeName}" data-logo="${d.logo || ''}">
+  return `<div class="zd-card zd-card--${tierClass}" data-id="${d.id}" data-name="${safeName}" data-logo="${d.logo || ''}">
     <div class="zd-flipper">
       ${frontHTML}
       ${backHTML}
@@ -2236,8 +2288,8 @@ function render() {
     sorted = filtered.sort((a, b) => getTierScore(b) - getTierScore(a) || a.name.localeCompare(b.name, 'bg'));
   }
 
-  const activeCards = sorted.filter(d => !dismissedIds.has(d.id));
-  const dismissedCards = sorted.filter(d => dismissedIds.has(d.id));
+  // Desktop is browse-only — no dismiss action exists, so render every card.
+  const activeCards = sorted;
 
   // ─── LAZY LOAD: render only the first _visibleCount cards initially.
   // Filter/search/sort handlers should reset _visibleCount to LAZY_BATCH_SIZE
@@ -2257,33 +2309,8 @@ function render() {
     stack.innerHTML = '<p class="loading-msg">Няма намерени резултати</p>';
   }
 
-  // Dismissed cards
-  const dismissedSection = $("#dismissedSection");
-  const divider = dismissedSection.querySelector('.dismissed-divider');
-  // Remove old cards (keep divider)
-  [...dismissedSection.children].forEach(c => { if (c !== divider) c.remove(); });
-  dismissedCards.forEach(d => {
-    dismissedSection.insertAdjacentHTML('beforeend', buildCardHTML(d));
-  });
-
-  // Update counts
   document.getElementById('count').textContent = activeCards.length;
-  document.getElementById('dismissedCount').textContent = dismissedCards.length;
 
-  const toggle = document.getElementById('dismissedToggle');
-  const label = document.getElementById('dismissedToggleLabel');
-  if (dismissedCards.length > 0) {
-    toggle.classList.add('has-items');
-    label.textContent = `${dismissedCards.length} скрити`;
-  } else {
-    toggle.classList.remove('has-items');
-    dismissedSection.classList.remove('visible');
-    showDismissed = false;
-    toggle.classList.remove('active');
-  }
-
-  // Init swipe on all cards (initSwipe is idempotent via card._swipeInit flag)
-  document.querySelectorAll('.zd-card').forEach(initSwipe);
   // Stop propagation on interactive elements
   document.querySelectorAll('.zd-cta, .zd-contact-icon').forEach(el => {
     el.addEventListener('click', e => e.stopPropagation());
@@ -2326,119 +2353,18 @@ function updateCityList(arr) {
   set.forEach(c => { const o = document.createElement("option"); o.value = c; dl.appendChild(o); });
 }
 
-/* ═══ SWIPE SYSTEM (with tap-to-flip detection) ═══
- * Each card binds touch + mouse drag listeners. The transforms are written
- * to the inner .zd-flipper element (not .zd-card itself), so they compose
- * with the perspective container without breaking 3D.
- *
- * Click-vs-drag disambiguation: a release with |currentX| < 6px is treated
- * as a tap → flipCard(). Larger movements past SWIPE_THRESHOLD trigger
- * like/dismiss; in-between movements snap back to neutral with no flip.
- *
- * Interactive children (.zd-cta, .zd-social-icn, .zd-undo, .zd-name link,
- * .nudge) bypass the swipe + flip — they handle their own click via the
- * isInteractive() guard at touchstart/mousedown.
- *
- * Free tier: NO flip mechanism, NO swipe wobble — but liking/dismissing
- * via the saved bar is still supported, and the .zd-card has cursor:default.
- */
+/* Desktop card flip: triggered only by the explicit .zd-detail-btn button.
+ * Free tier never flips. */
 function flipCard(card) {
-  // Free tier never flips
   if (card.classList.contains('zd-card--free')) return;
-  // Don't flip a dismissed card
-  if (card.classList.contains('dismissed')) return;
   card.classList.toggle('flipped');
-}
-
-function initSwipe(card) {
-  if (card._swipeInit) return;
-  card._swipeInit = true;
-
-  // Free tier: no swipe, no flip — but still mark interactive elements
-  // as click-through (they handle themselves via stopPropagation in markup)
-  if (card.classList.contains('zd-card--free')) return;
-
-  const flipper = card.querySelector('.zd-flipper');
-  if (!flipper) return;
-
-  let startX = 0, currentX = 0, isDragging = false;
-
-  const isInteractive = e => e.target.closest(
-    '.zd-cta, .zd-social-icn, .zd-undo, .zd-name, .nudge, .zd-back-cta a, .zd-detail-btn, .zd-profile-link-back'
-  );
-
-  function applyDragTransform() {
-    // While dragging, apply the swipe translate to the flipper.
-    // The .swiping class on .zd-card disables transitions + animations
-    // so the drag tracks the cursor 1:1.
-    flipper.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.04}deg)`;
-  }
-  function clearDragTransform() {
-    flipper.style.transform = '';
-  }
-
-  function handleSwipeEnd() {
-    if (currentX > SWIPE_THRESHOLD) {
-      likeCard(card);
-      clearDragTransform();
-    } else if (currentX < -SWIPE_THRESHOLD) {
-      dismissCard(card);
-      // Don't clear transform — dismissCard's CSS state takes over
-    } else if (Math.abs(currentX) < 6) {
-      // Tap → flip (or flip-back if already flipped)
-      clearDragTransform();
-      flipCard(card);
-    } else {
-      // Mid-distance drag → snap back
-      clearDragTransform();
-    }
-    currentX = 0;
-  }
-
-  card.addEventListener('touchstart', e => {
-    if (isInteractive(e) || card.classList.contains('dismissed')) return;
-    startX = e.touches[0].clientX; currentX = 0; isDragging = true;
-    card.classList.add('swiping');
-  }, { passive: true });
-
-  card.addEventListener('touchmove', e => {
-    if (!isDragging) return;
-    currentX = e.touches[0].clientX - startX;
-    applyDragTransform();
-  }, { passive: true });
-
-  card.addEventListener('touchend', () => {
-    if (!isDragging) return;
-    isDragging = false; card.classList.remove('swiping');
-    handleSwipeEnd();
-  });
-
-  card.addEventListener('mousedown', e => {
-    if (isInteractive(e) || card.classList.contains('dismissed')) return;
-    startX = e.clientX; currentX = 0; isDragging = true;
-    card.classList.add('swiping');
-    const onMove = ev => {
-      if (!isDragging) return;
-      currentX = ev.clientX - startX;
-      applyDragTransform();
-    };
-    const onUp = () => {
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-      card.classList.remove('swiping');
-      if (!isDragging) return;
-      isDragging = false;
-      handleSwipeEnd();
-    };
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-  });
 }
 
 /* Hybrid auth prompt: show the parent auth modal after the user has dismissed
    3 cards or liked any card in this session — but only once per session, and
    only if not already logged in. Lets anonymous users browse freely while
-   nudging them to save their progress at the right moment. */
+   nudging them to save their progress at the right moment. Called from the
+   mobile tinder-button flow (doLike / doDismiss). */
 let _sessionDismissCount = 0;
 function _maybePromptAuth(reason) {
   try {
@@ -2449,54 +2375,6 @@ function _maybePromptAuth(reason) {
       if (typeof openAuthModal === 'function') openAuthModal();
     }
   } catch (e) { /* ignore storage errors */ }
-}
-
-function likeCard(card) {
-  const id = card.dataset.id;
-  // Clear the swipe transform on the inner flipper (not the outer .zd-card)
-  const flipper = card.querySelector('.zd-flipper');
-  if (flipper) flipper.style.transform = '';
-  card.classList.add('liked');
-  likedIds.add(id);
-  // The hero img is now a CSS background-image, not an <img>. Use data-logo
-  // (which buildCardHTML still writes) for the saved-bar avatar source.
-  const name = card.dataset.name || card.querySelector('.zd-name')?.textContent || '';
-  const avatar = card.dataset.logo || getCardLogo({ name, tier: 'Доверен' });
-  if (!savedItems.find(s => s.id === id)) {
-    savedItems.push({ id, img: avatar, name });
-  }
-  updateSavedBar();
-  _maybePromptAuth('like');
-  // Continuous sync to Supabase if logged in (no-op for anonymous users)
-  _syncLikeDismissToSupabase(id, 'like');
-}
-
-function dismissCard(card) {
-  const id = card.dataset.id;
-  const flipper = card.querySelector('.zd-flipper');
-  if (flipper) flipper.style.transform = '';
-  dismissedIds.add(id);
-  card.classList.add('dismissed');
-  card.classList.remove('flipped'); // unflip if dismissed mid-flip
-  _sessionDismissCount++;
-  _maybePromptAuth('dismiss');
-  _syncLikeDismissToSupabase(id, 'dismiss');
-  setTimeout(() => render(), 350);
-}
-
-function undoDismiss(btn) {
-  const card = btn.closest('.zd-card');
-  const id = card.dataset.id;
-  dismissedIds.delete(id);
-  _syncLikeDismissToSupabase(id, 'undismiss');
-  render();
-}
-
-function toggleDismissed() {
-  showDismissed = !showDismissed;
-  const toggle = document.getElementById('dismissedToggle');
-  toggle.classList.toggle('active', showDismissed);
-  document.getElementById('dismissedSection').classList.toggle('visible', showDismissed);
 }
 
 function updateSavedBar() {
@@ -2521,7 +2399,6 @@ function showSavedOnly() {
     const savedHtml = data.filter(d => likedIds.has(d.id)).map(d => buildCardHTML(d)).join('');
     stack.innerHTML = savedHtml || '<p class="loading-msg">Няма запазени специалисти</p>';
     document.getElementById('count').textContent = likedIds.size;
-    document.querySelectorAll('.zd-card').forEach(initSwipe);
     btn.textContent = 'Покажи всички';
   } else {
     render();
@@ -2563,6 +2440,25 @@ async function init() {
   $("#sop-toggle").addEventListener("change", e => { sopFilter = e.target.checked ? true : null; resetLazyAndRender(); });
   $("#online-toggle").addEventListener("change", e => { onlineFilter = e.target.checked; resetLazyAndRender(); });
 
+  // Honour URL params so shareable links like ?city=Стара Загора land pre-filtered.
+  // Populates both the input value (for user-facing feedback) and the filter state
+  // (for render). No debounce: we want the first render to already be filtered.
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const cityParam = params.get("city");
+    if (cityParam) {
+      const cityEl = $("#city-search");
+      if (cityEl) cityEl.value = cityParam;
+      cityTerm = cityParam.toLowerCase().trim();
+    }
+    const qParam = params.get("q");
+    if (qParam) {
+      const qEl = $("#search-text");
+      if (qEl) qEl.value = qParam;
+      searchTerm = qParam.toLowerCase();
+    }
+  } catch (_) {}
+
   try {
     const cacheKey = 'companyData_v4';
 
@@ -2570,7 +2466,7 @@ async function init() {
     if (window.ZdSupabase) {
       const { data: rows, error } = await window.ZdSupabase
         .from('businesses')
-        .select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups')
+        .select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,visible_categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups,google_rating,google_review_count')
         .eq('published', true);
       if (error) throw error;
       data = (rows || []).map(_aliasBusinessRow);
@@ -2578,6 +2474,7 @@ async function init() {
       render();
       // Fire-and-forget: load real ratings, patch the rendered cards in-place when ready
       loadAllCardRatings();
+      if (typeof showTutorial === 'function') showTutorial();
       return;
     }
 
@@ -2590,13 +2487,14 @@ async function init() {
       if (window.ZdSupabase) {
         const { data: rows, error } = await window.ZdSupabase
           .from('businesses')
-          .select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups')
+          .select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,visible_categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups,google_rating,google_review_count')
           .eq('published', true);
         if (!error) {
           data = (rows || []).map(_aliasBusinessRow);
           try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch (e) {}
           render();
           loadAllCardRatings();
+          if (typeof showTutorial === 'function') showTutorial();
           return;
         }
       }
@@ -2607,12 +2505,14 @@ async function init() {
     if (cachedData) {
       data = JSON.parse(cachedData);
       render();
+      if (typeof showTutorial === 'function') showTutorial();
       return;
     }
 
     // 4. Nothing cached → render empty state
     data = [];
     render();
+    if (typeof showTutorial === 'function') showTutorial();
   } catch (err) {
     console.error("Data load error:", err);
     // Final fallback: try localStorage cache before giving up
@@ -2684,6 +2584,111 @@ function _showAuthError(msg) {
 function _clearAuthError() {
   const err = document.getElementById('authError');
   if (err) { err.style.display = 'none'; err.textContent = ''; }
+}
+
+/* Login with email + password */
+async function parentSignInWithPassword() {
+  _clearAuthError();
+  const emailInput = document.getElementById('authEmail');
+  const pwdInput   = document.getElementById('authPassword');
+  const email = emailInput ? emailInput.value.trim() : '';
+  const password = pwdInput ? pwdInput.value : '';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    _showAuthError('Въведи валиден имейл адрес.');
+    if (emailInput) emailInput.focus();
+    return;
+  }
+  if (!password) {
+    _showAuthError('Въведи паролата си.');
+    if (pwdInput) pwdInput.focus();
+    return;
+  }
+  if (!window.ZdSupabase) {
+    _showAuthError('Системата за вход не е заредена. Опитай отново след малко.');
+    return;
+  }
+  const btn = document.getElementById('authPwdBtn');
+  const originalText = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Влизане...'; btn.style.opacity = '0.7'; }
+  try {
+    const { error } = await window.ZdSupabase.auth.signInWithPassword({ email: email, password: password });
+    if (error) throw error;
+    // Auth listener в _initAuthListener ще закрие модала автоматично
+    closeAuthModal();
+  } catch (e) {
+    console.error('[parentSignInWithPassword]', e);
+    var msg = (e.message || '').toLowerCase();
+    if (msg.includes('invalid login') || msg.includes('invalid_credentials')) {
+      _showAuthError('Грешен имейл или парола. Ако нямаш парола, използвай „Забравена парола?".');
+    } else if (msg.includes('email not confirmed')) {
+      _showAuthError('Първо потвърди имейла си. Провери пощата за линк за потвърждение.');
+    } else {
+      _showAuthError('Грешка при вход: ' + (e.message || 'неизвестна'));
+    }
+    if (btn) { btn.disabled = false; btn.textContent = originalText; btn.style.opacity = '1'; }
+  }
+}
+
+/* Register with email + password */
+async function parentSignUpWithPassword() {
+  _clearAuthError();
+  const emailInput = document.getElementById('authEmail');
+  const pwdInput   = document.getElementById('authPassword');
+  const pwdConfirm = document.getElementById('authPasswordConfirm');
+  const email = emailInput ? emailInput.value.trim() : '';
+  const password = pwdInput ? pwdInput.value : '';
+  const confirm  = pwdConfirm ? pwdConfirm.value : '';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    _showAuthError('Въведи валиден имейл адрес.');
+    if (emailInput) emailInput.focus();
+    return;
+  }
+  if (!password || password.length < 8) {
+    _showAuthError('Паролата трябва да е поне 8 знака.');
+    if (pwdInput) pwdInput.focus();
+    return;
+  }
+  if (password !== confirm) {
+    _showAuthError('Паролите не съвпадат.');
+    if (pwdConfirm) pwdConfirm.focus();
+    return;
+  }
+  if (!window.ZdSupabase) {
+    _showAuthError('Системата за вход не е заредена. Опитай отново след малко.');
+    return;
+  }
+  const btn = document.getElementById('authPwdBtn');
+  const originalText = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Регистрация...'; btn.style.opacity = '0.7'; }
+  try {
+    const { data, error } = await window.ZdSupabase.auth.signUp({
+      email: email,
+      password: password,
+      options: { emailRedirectTo: window.location.origin + window.location.pathname }
+    });
+    if (error) throw error;
+    // Ако имейл потвърждение е активирано, Supabase връща user без session
+    if (data && data.user && !data.session) {
+      const s1 = document.getElementById('authStep1');
+      const s2 = document.getElementById('authStep2');
+      const emEl = document.getElementById('authStep2Email');
+      if (emEl) emEl.textContent = email;
+      if (s1) s1.style.display = 'none';
+      if (s2) s2.style.display = 'block';
+    } else {
+      // Auto-confirmed (например без email verification): auth listener ще закрие модала
+      closeAuthModal();
+    }
+  } catch (e) {
+    console.error('[parentSignUpWithPassword]', e);
+    var msg = (e.message || '').toLowerCase();
+    if (msg.includes('already registered') || msg.includes('already exists') || msg.includes('user already')) {
+      _showAuthError('Вече има акаунт с този имейл. Влез вместо това или използвай „Забравена парола?".');
+    } else {
+      _showAuthError('Грешка при регистрация: ' + (e.message || 'неизвестна'));
+    }
+    if (btn) { btn.disabled = false; btn.textContent = originalText; btn.style.opacity = '1'; }
+  }
 }
 
 /* Send a magic link to the email entered in the modal */
@@ -2805,50 +2810,30 @@ function updateAuthUI(session) {
   const isLoggedIn = !!(session && session.user);
   // Track the current user id for the like/dismiss sync helper
   _currentUserId = isLoggedIn ? session.user.id : null;
-
-  // Extract display name + avatar from OAuth user metadata (Google/Facebook fill these)
-  let displayName = 'Профил';
-  let avatarUrl = 'https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da92d3019dc508d349ce42.png';
-  if (isLoggedIn) {
-    const meta = session.user.user_metadata || {};
-    const full = meta.full_name || meta.name || meta.given_name || '';
-    if (full) {
-      // Take first word only so the button doesn't grow too wide
-      displayName = full.trim().split(/\s+/)[0];
-    } else if (session.user.email) {
-      displayName = session.user.email.split('@')[0];
-    }
-    avatarUrl = meta.avatar_url || meta.picture || avatarUrl;
-  }
-
-  const handleLogoutClick = (e) => {
-    e && e.preventDefault();
-    if (confirm('Излез от профила?')) parentSignOut();
-  };
-
   if (isLoggedIn) {
     localStorage.setItem('zd_parent_logged_in', 'true');
-    // Desktop/tablet nav login button
-    document.querySelectorAll('.nav-btn-login').forEach(btn => {
-      btn.innerHTML = '<img src="' + ZdSec.escapeHtml(avatarUrl) + '" alt="" style="width:20px;height:20px;border-radius:50%;margin-right:6px;vertical-align:middle;object-fit:cover;">' + ZdSec.escapeHtml(displayName);
-      btn.style.background = 'rgba(124,77,255,0.08)';
-      btn.style.color = 'var(--zd-purple-700)';
+    document.querySelectorAll('.nav-auth-btn').forEach(btn => {
+      btn.innerHTML = '<span style="font-size:16px;">👤</span> Профил';
+      btn.style.background = 'transparent';
+      btn.style.color = '#333';
       btn.style.boxShadow = 'none';
-      btn.style.border = '1.5px solid var(--zd-purple-200)';
-      btn.title = session.user.email || '';
-      btn.onclick = handleLogoutClick;
+      btn.style.border = '1px solid #ccc';
+      btn.onclick = (e) => {
+        e && e.preventDefault();
+        if (confirm('Излез от профила?')) parentSignOut();
+      };
     });
   } else {
     localStorage.removeItem('zd_parent_logged_in');
     // Restore default "Вход" button (only matters after sign-out)
-    document.querySelectorAll('.nav-btn-login').forEach(btn => {
-      if ((btn.textContent || '').trim() === 'Вход') return;
+    document.querySelectorAll('.nav-auth-btn').forEach(btn => {
+      // Skip if button already shows "Вход" — avoid clobbering on every render
+      if ((btn.textContent || '').includes('Вход')) return;
       btn.innerHTML = 'Вход';
       btn.style.background = '';
       btn.style.color = '';
       btn.style.boxShadow = '';
       btn.style.border = '';
-      btn.title = '';
       btn.onclick = openAuthModal;
     });
   }
@@ -2925,22 +2910,35 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="auth-tab active" onclick="switchAuthTab('login')">Вход</div>
         <div class="auth-tab" onclick="switchAuthTab('register')">Регистрация</div>
       </div>
-      <h3 class="auth-title" id="authTitle">Добре дошли отново</h3>
-      <p class="auth-sub" id="authSub">Влезте, за да запазвате специалисти и да оставяте отзиви от опит.</p>
+      <h3 class="auth-title" id="authTitle">Добре дошъл отново</h3>
+      <p class="auth-sub" id="authSub">Влез, за да запазваш специалисти и да оставяш отзиви.</p>
 
       <button class="auth-btn" onclick="parentSignInOAuth('google')">
-        <img src="https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da7b02a4e6aa34cbca2b37.png" alt="Google" loading="lazy" decoding="async"> Продължи с Google
+        <img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688ee41ecef9f25cb7394cba.png" alt="Google" loading="lazy" decoding="async"> Продължи с Google
       </button>
       <button class="auth-btn" onclick="parentSignInOAuth('facebook')">
-        <img src="https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779aa4e6aa34cbc97684.svg" alt="Facebook" loading="lazy" decoding="async"> Продължи с Facebook
+        <img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg" alt="Facebook" loading="lazy" decoding="async"> Продължи с Facebook
       </button>
 
       <div class="auth-email-wrap">
-        <p style="font-size:13px;color:var(--muted);margin-bottom:8px;text-align:center;">Или продължете с имейл:</p>
-        <input type="email" id="authEmail" class="auth-email-input" placeholder="Вашият имейл адрес" autocomplete="email">
-        <div id="authError" style="display:none;background:rgba(231,76,111,0.08);border:1px solid rgba(231,76,111,0.25);color:#c23a5d;padding:10px 14px;border-radius:10px;font-size:12px;margin-top:10px;"></div>
-        <button class="auth-verify-btn" id="authMagicBtn" style="margin-top:12px;background:var(--text);" onclick="parentSendMagicLink()">Изпрати линк за вход</button>
-        <p style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted);">Без парола. Ще получите еднократен линк на имейла си.</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:8px;text-align:center;">Или с имейл и парола:</p>
+        <input type="email" id="authEmail" class="auth-email-input" placeholder="Имейл адрес" autocomplete="email" style="margin-bottom:10px;">
+        <input type="password" id="authPassword" class="auth-email-input" placeholder="Парола" autocomplete="current-password" style="margin-bottom:10px;">
+        <input type="password" id="authPasswordConfirm" class="auth-email-input" placeholder="Потвърди парола" autocomplete="new-password" style="display:none;margin-bottom:10px;">
+        <div id="authError" style="display:none;background:rgba(231,76,111,0.08);border:1px solid rgba(231,76,111,0.25);color:#c23a5d;padding:10px 14px;border-radius:10px;font-size:12px;margin-bottom:10px;"></div>
+
+        <button class="auth-verify-btn" id="authPwdBtn" onclick="parentSignInWithPassword()">Влез</button>
+
+        <div id="authForgotWrap" style="text-align:center;margin-top:12px;">
+          <a href="#" id="authForgotLink" onclick="parentShowForgotPassword(event)" style="font-size:13px;color:var(--zd-purple-600);text-decoration:none;font-weight:600;">Забравена парола?</a>
+        </div>
+
+        <!-- Magic-link fallback (hidden by default; shown when „Забравена парола?" is clicked) -->
+        <div id="authMagicWrap" style="display:none;margin-top:12px;padding-top:14px;border-top:1px solid var(--border);">
+          <p style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:10px;">Ще ти изпратим линк за еднократен вход без парола.</p>
+          <button class="auth-verify-btn" id="authMagicBtn" style="background:var(--text);" onclick="parentSendMagicLink()">Изпрати линк на имейла</button>
+          <p style="text-align:center;margin-top:8px;"><a href="#" onclick="parentHideForgotPassword(event)" style="font-size:12px;color:var(--muted);text-decoration:underline;">Назад към парола</a></p>
+        </div>
       </div>
     </div>
 
@@ -2957,17 +2955,71 @@ document.addEventListener("DOMContentLoaded", () => {
 </div>
 
 <script>
+var _zdAuthMode = 'login'; // 'login' | 'register'
+
 function switchAuthTab(type) {
+  _zdAuthMode = type;
   const tabs = document.querySelectorAll('.auth-tab');
   tabs[0].classList.toggle('active', type === 'login');
   tabs[1].classList.toggle('active', type === 'register');
+
+  const title = document.getElementById('authTitle');
+  const sub   = document.getElementById('authSub');
+  const pwdBtn = document.getElementById('authPwdBtn');
+  const pwdConfirm = document.getElementById('authPasswordConfirm');
+  const pwdInput   = document.getElementById('authPassword');
+  const forgotWrap = document.getElementById('authForgotWrap');
+
+  // Скриваме „Забравена парола?" линка при register (няма смисъл)
+  if (forgotWrap) forgotWrap.style.display = (type === 'login') ? '' : 'none';
+  // Скриваме magic-link wrap-а на смяна на таба
+  parentHideForgotPassword();
+
   if (type === 'login') {
-    document.getElementById('authTitle').innerText = 'Добре дошли отново';
-    document.getElementById('authSub').innerText = 'Влезте, за да запазвате специалисти и да оставяте отзиви от опит.';
+    if (title) title.innerText = 'Добре дошъл отново';
+    if (sub)   sub.innerText   = 'Влез, за да запазваш специалисти и да оставяш отзиви.';
+    if (pwdBtn) {
+      pwdBtn.innerText = 'Влез';
+      pwdBtn.onclick = parentSignInWithPassword;
+    }
+    if (pwdConfirm) pwdConfirm.style.display = 'none';
+    if (pwdInput) pwdInput.setAttribute('autocomplete', 'current-password');
   } else {
-    document.getElementById('authTitle').innerText = 'Регистрация';
-    document.getElementById('authSub').innerText = 'Създайте профил, за да оценявате специалистите.';
+    if (title) title.innerText = 'Създай профил';
+    if (sub)   sub.innerText   = 'Регистрирай се, за да запазваш специалисти и да оставяш отзиви.';
+    if (pwdBtn) {
+      pwdBtn.innerText = 'Регистрирай се';
+      pwdBtn.onclick = parentSignUpWithPassword;
+    }
+    if (pwdConfirm) pwdConfirm.style.display = '';
+    if (pwdInput) pwdInput.setAttribute('autocomplete', 'new-password');
   }
+}
+
+function parentShowForgotPassword(e) {
+  if (e) e.preventDefault();
+  var pwd = document.getElementById('authPassword');
+  var pwdBtn = document.getElementById('authPwdBtn');
+  var forgotWrap = document.getElementById('authForgotWrap');
+  var magicWrap = document.getElementById('authMagicWrap');
+  if (pwd) pwd.style.display = 'none';
+  if (pwdBtn) pwdBtn.style.display = 'none';
+  if (forgotWrap) forgotWrap.style.display = 'none';
+  if (magicWrap) magicWrap.style.display = '';
+  _clearAuthError();
+}
+
+function parentHideForgotPassword(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var pwd = document.getElementById('authPassword');
+  var pwdBtn = document.getElementById('authPwdBtn');
+  var forgotWrap = document.getElementById('authForgotWrap');
+  var magicWrap = document.getElementById('authMagicWrap');
+  if (pwd) pwd.style.display = '';
+  if (pwdBtn) pwdBtn.style.display = '';
+  if (forgotWrap && _zdAuthMode === 'login') forgotWrap.style.display = '';
+  if (magicWrap) magicWrap.style.display = 'none';
+  _clearAuthError();
 }
 </script>
 
@@ -3088,13 +3140,6 @@ body.fb-active nav { filter:grayscale(0.6) brightness(0.95); transition:filter 0
   transition:transform 0.4s cubic-bezier(0.16,1,0.3,1); pointer-events:none;
 }
 .fb-toast.visible { transform:translateX(-50%) translateY(0); }
-
-/* ═══ SMALL PHONE FINE-TUNING ═══ */
-@media(max-width:480px) {
-  .applied-chips { padding: 4px 10px; }
-  .fb-panel { left: 8px; right: 8px; border-radius: 16px; }
-  .fb-body { padding: 16px; }
-}
 </style>
 
 <div class="fb-overlay" id="fbOverlay" onclick="closeFeedbackWizard()"></div>
@@ -3217,12 +3262,7 @@ function closeFeedbackWizard() {
   // Remove focus effect
   document.body.classList.remove('fb-active');
   document.querySelectorAll('.zd-card.fb-focus').forEach(c => c.classList.remove('fb-focus'));
-  // Dismiss the card on close
-  if (fbCardId) {
-    const card = document.querySelector(`.zd-card[data-id="${fbCardId}"]`);
-    if (card) dismissCard(card);
-    fbCardId = null;
-  }
+  fbCardId = null;
 }
 
 function fbGoStep(step) {
@@ -3308,23 +3348,13 @@ function fbSubmit() {
   document.getElementById('fbPanel').classList.remove('open');
   document.body.classList.remove('fb-active');
   document.querySelectorAll('.zd-card.fb-focus').forEach(c => c.classList.remove('fb-focus'));
-  // Dismiss card
-  if (fbCardId) {
-    const card = document.querySelector(`.zd-card[data-id="${fbCardId}"]`);
-    if (card) dismissCard(card);
-    fbCardId = null;
-  }
+  fbCardId = null;
   // Show toast
   const toast = document.getElementById('fbToast');
   toast.classList.add('visible');
   setTimeout(() => toast.classList.remove('visible'), 2500);
 }
 
-// Expose dismissCard globally for the button onclick
-window.dismissCard = function(id) {
-  const card = document.querySelector(`.zd-card[data-id="${id}"]`);
-  if (card) dismissCard(card);
-};
 </script>
 
 <script>
@@ -3336,6 +3366,9 @@ window.dismissCard = function(id) {
    ═══════════════════════════════════════════════════════════════ */
 
 /* Mobile-only state */
+let stackIdx = 0;
+let lastDismissedId = null;
+let undoTimer = null;
 let pendingF = null;
 const tierColMap = {"Премиум":"d4af37","Доверен":"7c4dff","Проверен":"2e994d","Стандартен":"999","Безплатен":"bbb"};
 const TC_MAP = {"Премиум":"premium","Доверен":"elite","Проверен":"verified","Стандартен":"standard","Безплатен":"free"};
@@ -3346,162 +3379,107 @@ function _hl(t){const s=ZdSec.escapeHtml(t);if(!searchTerm||!t)return s;const e=
 function _getFilteredM(){return data.filter(d=>passSearch(d)&&passCity(d)&&passLevel(d)&&passCat(d)&&passAge(d)&&passSop(d)&&passOnline(d))}
 function _getSortedM(l){return[...l].sort((a,b)=>getTierScore(b)-getTierScore(a)||a.name.localeCompare(b.name,'bg'))}
 
-function _buildSocialIcon(k, d) {
-  if (k === 'maps') {
+function _buildSocialsM(d){
+  const allowed = allowedIconsByTier[d.tier]||[];
+  // Build the regular social icons (skip 'maps' — we always append a custom Google Maps pin at the end)
+  let html = allowed.filter(k=>k!=='maps'&&d[k]&&d[k]!=='#').map(k=>{
+    const href=k==='phone'?'tel:'+d[k]:k==='email'?'mailto:'+d[k]:ZdSec.sanitizeUrl(d[k]);
+    return`<a class="cf-social" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
+  }).join('');
+  // Always append Google Maps pin (no embedded map on the card)
+  if (d.tier !== 'Безплатен') {
     const mapsUrl = (d.lat && d.lng)
       ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address||d.name)+' '+(d.city||''))}`;
-    return `<a class="cf-social" href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps"><img src="${icons.maps}" alt="maps" loading="lazy"></a>`;
+    html += `<a class="cf-social cf-social--maps" href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps" style="background:transparent;border:none;padding:0"><svg viewBox="0 0 64 64" width="15" height="15"><path d="M32 2C20.4 2 11 11.4 11 23c0 17.2 19 37.4 20 38.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4C53 11.4 43.6 2 32 2z" fill="#34A853"/><path d="M32 2v30l21-9C53 11.4 43.6 2 32 2z" fill="#4285F4"/><path d="M11 23c0-9 5.4-16.7 13.1-20.1L32 32 12 32.5C11.4 29.5 11 26.3 11 23z" fill="#FBBC05"/><path d="M12 32.5L32 32l-8 29c-7-7.7-13-16.2-13-16.2S11.5 34 12 32.5z" fill="#EA4335"/><path d="M32 32l-8 29c3 3.2 7 9.4 8 10.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4 0-1-.1-2-.1-3L32 32z" fill="#34A853"/><circle cx="32" cy="23" r="8" fill="#fff"/></svg></a>`;
   }
-  if (!d[k] || d[k] === '#') return '';
-  const href = k==='phone' ? 'tel:'+d[k] : k==='email' ? 'mailto:'+d[k] : ZdSec.sanitizeUrl(d[k]);
-  return `<a class="cf-social" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
-}
-
-/* Card-back socials — half-size layout for the flipped (details) side */
-function _buildSocialsBack(d){
-  const allowed = allowedIconsByTier[d.tier]||[];
-  const items = allowed.filter(k=>k==='maps' || (d[k]&&d[k]!=='#'));
-  if (!items.length) return '';
-  const icons_html = items.map(k => _buildSocialIcon(k, d)).join('');
-  return `<div class="cb-socials">${icons_html}</div>`;
+  return html;
 }
 function _buildCTAsM(d){
-  // Доверен and Премиум get dual CTAs (Профил + primary booking)
-  if(d.tier==="Премиум"||d.tier==="Доверен"){
-    const profUrl = 'listing.html?id='+d.id;
-    const primaryUrl = ZdSec.sanitizeUrl(d.ctaUrl1||'#');
-    const primaryLabel = ZdSec.escapeHtml(d.ctaLabel1||'Запази час');
-    return `<div class="cf-ctas"><a class="cf-cta cf-cta--secondary" href="${profUrl}" onclick="event.stopPropagation()">Профил</a><a class="cf-cta cf-cta--primary" href="${primaryUrl}" target="_blank" onclick="event.stopPropagation()">${primaryLabel}</a></div>`;
-  }
-  // Проверен gets a single full-width primary CTA
-  if(d.tier==="Проверен"){
-    const primaryUrl = ZdSec.sanitizeUrl(d.ctaUrl1||d.ctaUrl||'#');
-    const primaryLabel = ZdSec.escapeHtml(d.ctaLabel1||d.ctaLabel||'Запази час');
-    return `<div class="cf-ctas single"><a class="cf-cta cf-cta--primary" href="${primaryUrl}" target="_blank" onclick="event.stopPropagation()">${primaryLabel}</a></div>`;
-  }
-  return '';
+  // Премиум gets the same dual-CTA layout as Доверен (the rare top tier)
+  if(d.tier==="Премиум"||d.tier==="Доверен")return`<div class="cf-ctas"><a class="cf-cta cf-cta--secondary" href="${ZdSec.sanitizeUrl(d.ctaUrl2)||'listing.html?id='+d.id}" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.ctaLabel2||'Профил')}</a><a class="cf-cta cf-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl1||'#')}" target="_blank" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.ctaLabel1||'Запази час')}</a></div>`;
+  if(d.tier==="Проверен"&&d.ctaLabel)return`<div class="cf-ctas single"><a class="cf-cta cf-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl||'#')}" target="_blank" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.ctaLabel)}</a></div>`;
+  return'';
 }
 function _buildBackM(d){
-  // Info sections
-  let info = '';
-  if (d.description) info += `<div class="cb-sec"><div class="cb-lbl">Описание</div><div class="cb-txt">${ZdSec.escapeHtml(d.description)}</div></div>`;
-  const wh = d.workingHours || d.working_hours;
-  if (wh && typeof wh === 'object') {
-    const mon = wh.mon, fri = wh.fri, sat = wh.sat, sun = wh.sun;
-    let hoursText = '';
-    if (mon || fri) {
-      const range = (mon && fri && mon === fri) ? mon : `${mon || ''}${mon && fri ? ' – ' : ''}${fri || ''}`;
-      hoursText += `Пон-Пет ${range === 'closed' ? 'затворено' : range}`;
-    }
-    if (sat) hoursText += ` · Съб ${sat === 'closed' ? 'затворено' : sat}`;
-    if (sun) hoursText += ` · Нед ${sun === 'closed' ? 'затворено' : sun}`;
-    if (hoursText) info += `<div class="cb-sec"><div class="cb-lbl">Работно време</div><div class="cb-txt">${ZdSec.escapeHtml(hoursText)}</div></div>`;
-  }
-  if (d.ageGroups && d.ageGroups.length) info += `<div class="cb-sec"><div class="cb-lbl">Възраст</div><div class="cb-txt">${d.ageGroups.map(a=>ZdSec.escapeHtml(a)).join(', ')}</div></div>`;
-  if (d.address || d.city) info += `<div class="cb-sec"><div class="cb-lbl">Адрес</div><div class="cb-txt">${ZdSec.escapeHtml(d.address||d.city)}</div></div>`;
-  if (d.services && d.services.length) info += `<div class="cb-sec"><div class="cb-lbl">Услуги</div><div class="cb-svcs">${d.services.map(s=>`<span class="cb-svc">${ZdSec.escapeHtml(s)}</span>`).join('')}</div></div>`;
-
-  // Distance + Google Maps link
-  const mapsUrl = (d.lat && d.lng)
+  let det='';
+  if(d.description)det+=`<div class="cb-glass"><div class="cb-section-label">Описание</div><div class="cb-desc">${ZdSec.escapeHtml(d.description)}</div></div>`;
+  if(d.ageGroups&&d.ageGroups.length)det+=`<div class="cb-glass"><div class="cb-detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div><div class="cb-section-label">Възраст</div><div class="cb-detail-text">${d.ageGroups.map(a=>ZdSec.escapeHtml(a)).join(', ')}</div></div></div></div>`;
+  if(d.address||d.city)det+=`<div class="cb-glass"><div class="cb-detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><div><div class="cb-section-label">Адрес</div><div class="cb-detail-text">${ZdSec.escapeHtml(d.address||d.city)}</div></div></div></div>`;
+  if(d.services&&d.services.length)det+=`<div class="cb-glass"><div class="cb-section-label">Всички услуги</div><div class="cb-services">${d.services.map(s=>`<span class="cb-service">${ZdSec.escapeHtml(s)}</span>`).join('')}</div></div>`;
+  const _mapsUrl = (d.lat && d.lng)
     ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address||d.name)+' '+(d.city||''))}`;
-  const distKm = (typeof nearMeActive !== 'undefined' && nearMeActive) ? getDistanceKm(d) : null;
-  const distHTML = distKm !== null
-    ? `<b>${distKm.toFixed(1)} км</b> от вас · <a href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Отвори в Google Maps</a>`
-    : `<a href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Отвори в Google Maps</a>`;
-
-  // Primary CTA (all paid tiers) + optional secondary CTA (Доверен/Премиум)
-  const primaryLabel = ZdSec.escapeHtml(d.ctaLabel1 || d.ctaLabel || 'Запази час');
-  const primaryUrl = ZdSec.sanitizeUrl(d.ctaUrl1 || d.ctaUrl || '#');
-  let actionsHTML = `<button class="cb-cta" onclick="event.stopPropagation();window.open('${primaryUrl}','_blank')">${primaryLabel}</button>`;
-  if (d.tier === 'Доверен' || d.tier === 'Премиум') {
-    const secLabel = ZdSec.escapeHtml(d.ctaLabel2 || 'Обади се');
-    const secUrl = ZdSec.sanitizeUrl(d.ctaUrl2 || (d.phone ? 'tel:'+d.phone : '#'));
-    actionsHTML += `<a class="cb-cta2" href="${secUrl}" onclick="event.stopPropagation()">${secLabel}</a>`;
-  }
-
-  return `<div class="cb-header"><div class="cb-name">${ZdSec.escapeHtml(d.name)}</div><div class="cb-city">${ZdSec.escapeHtml(d.city)}</div></div>
-<div class="cb-line"></div>
-<div class="cb-info">${info}</div>
-${_buildSocialsBack(d)}
-<div class="cb-dist-box"><div class="cb-dist">${distHTML}</div></div>
-<div class="cb-actions">
-  ${actionsHTML}
-  <div class="cb-bottom">
-    <a class="cb-flip" href="#" onclick="event.preventDefault();event.stopPropagation();flipBack(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6"/><path d="M2.67 12A10 10 0 1 0 4.09 5.41L2.5 8"/></svg>Обратно</a>
-    <a class="cb-hide" href="#" data-hide-id="${ZdSec.escapeHtml(String(d.id))}" title="Скрий тази карта"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a19.77 19.77 0 0 1 5.06-5.94"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a19.8 19.8 0 0 1-3.17 4.16"/><path d="M1 1l22 22"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/></svg>Скрий</a>
-    <a class="cb-profile" href="listing.html?id=${d.id}" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Профил</a>
-  </div>
-</div>`;
+  const _tileLat = d.lat || 42.6977, _tileLng = d.lng || 23.3219;
+  det+=`<a class="cb-map cb-map--live" href="${_mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="https://maps.googleapis.com/maps/api/staticmap?center=${_tileLat},${_tileLng}&zoom=14&size=400x120&scale=2&maptype=roadmap&style=feature:all|saturation:-30&markers=color:red|${_tileLat},${_tileLng}&key=" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt="Карта"><div class="cb-map-fallback" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Отвори в Google Maps</div></a>`;
+  return`<div class="cb-name">${ZdSec.escapeHtml(d.name)}</div><div class="cb-city">${ZdSec.escapeHtml(d.city)}</div><div class="cb-line"></div><div class="cb-body">${det}</div><div class="cb-flip-back" onclick="event.stopPropagation();flipBack(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6"/><path d="M2.67 12A10 10 0 1 0 4.09 5.41L2.5 8"/></svg>Обратно</div>`;
 }
 
 function buildStackCard(d){
   const tc=TC_MAP[d.tier]||'free',col=tierColMap[d.tier]||'999';
   const isFree=d.tier==="Безплатен";
+  // Премиум gets the back panel like Доверен/Проверен (the rare top tier)
+  const isExpandable=d.tier==="Премиум"||d.tier==="Доверен"||d.tier==="Проверен";
   const auditScore=getTierScore(d);
   const tags=(d.services||[]).slice(0,tagLimits[d.tier]||1);
-  const _mRating=getCardRating(d);
-  const _rc=_mRating.count;
-  const _rt=_mRating.avg;
-  const nudge=(!_mRating.real&&_rc<10)?`<a class="cf-nudge" href="#" onclick="event.stopPropagation();event.preventDefault();openAuthModal(event)">Оцени!</a>`:'';
+  // Dual rating: Google (real) + Zadeteto (hearts — real if in cache, else hash mock)
+  const _googleM = getGoogleRating(d);
+  const _zadM    = getZadetetoRating(d);
+  const nudge=(!_zadM.real&&_zadM.count<10)?`<a class="cf-nudge" href="#" onclick="event.stopPropagation();event.preventDefault();openAuthModal(event)">Оцени!</a>`:'';
+  const _googleRowM = _googleM
+    ? `<div class="cf-hero-rating zd-rating zd-rating-google" title="Google Maps">${ratingIconsHTML(_googleM.avg, 'star')}<span class="num">${_googleM.avg}</span><span class="cnt">/ ${_googleM.count}</span></div>`
+    : '';
+  const _zadRowM = `<div class="cf-hero-rating zd-rating zd-rating-zadeteto" title="Оценки от родители в ZaDeteto">${ratingIconsHTML(_zadM.avg, 'heart')}<span class="num">${_zadM.avg}</span><span class="cnt">/ ${_zadM.count}${nudge}</span></div>`;
+  // ZD on top, Google below
+  const _ratingStackM = `<div class="cf-rating-stack">${_zadRowM}${_googleRowM}</div>`;
   let badges=`<span class="cf-badge cf-badge--tier">${ZdSec.escapeHtml(d.tier)}</span>`;
   if(d.sop)badges+=`<span class="cf-badge cf-badge--sop">СОП</span>`;
   if(d.city==="Онлайн")badges+=`<span class="cf-badge cf-badge--online">Online</span>`;
-  // Free tier has NO score and NO rating on the hero overlay
-  const scoreHTML = isFree ? '' : `<div class="cf-score"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${auditScore}</div>`;
-  const ratingHTML = isFree ? '' : `<div class="cf-hero-rating"><span class="stars">★★★★★</span><span class="num">${_rt}</span><span class="cnt">(${_rc})${nudge}</span></div>`;
-  const nameHTML = isFree ? `<div class="cf-name">${_hl(d.name)}</div>` : `<a class="cf-name" href="listing.html?id=${d.id}" onclick="event.stopPropagation()">${_hl(d.name)}</a>`;
-  const heroImg = getCardPhoto(d);
-  const hasRealLogo = d.logo && d.logo !== '#' && !d.logo.includes('placehold.co');
-  const logoHTML = hasRealLogo ? `<div class="cf-logo"><img src="${ZdSec.escapeHtml(d.logo)}" alt="" loading="lazy"></div>` : '';
-  const _galleryJson = (Array.isArray(d.gallery_urls) && d.gallery_urls.length>1) ? ZdSec.escapeHtml(JSON.stringify(d.gallery_urls)) : '';
-
-  // Text block — tagline (1 line) + oneliner (3 lines max)
-  let textBlockHTML = '';
-  if (!isFree && d.description) {
-    const desc = d.description.trim();
-    let tagline = desc.length <= 45 ? desc : desc.slice(0, desc.lastIndexOf(' ', 44) || 44).trim() + '…';
-    let oneliner = '';
-    if (desc.length > 45) {
-      const rest = desc.slice(tagline.length - (tagline.endsWith('…') ? 1 : 0)).trim();
-      oneliner = rest.length <= 150 ? rest : rest.slice(0, rest.lastIndexOf(' ', 149) || 149).trim() + '…';
-    }
-    textBlockHTML = `<div class="cf-text-box"><div class="cf-tagline">${ZdSec.escapeHtml(tagline)}</div>${oneliner ? `<div class="cf-oneliner">${ZdSec.escapeHtml(oneliner)}</div>` : ''}</div>`;
-  }
-
-  // Free tier still shows a minimal socials row on the front (no flippable back)
-  const freeSocialsHTML = isFree ? `<div class="cf-soc-box">${buildFreeSocialsHTML(d)}</div>` : '';
-
-  // CTA block — Доверен/Премиум get dual CTAs; all non-free show Детайли; free shows nothing here
-  const ctasInner = _buildCTAsM(d);
-  const detailBtn = isFree ? '' : `<div class="cf-detail-btn" onclick="event.stopPropagation();flipCardMobile(this)"><span>Детайли</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></div>`;
-  const ctaBoxHTML = `<div class="cf-cta-box">${ctasInner}${detailBtn}</div>`;
-
-  const backHTML = isFree ? '' : `<div class="card-back tier-${tc}">${_buildBackM(d)}</div>`;
-
-  return `<div class="card-wrap" data-id="${d.id}" data-name="${ZdSec.escapeHtml(d.name)}" data-logo="${ZdSec.escapeHtml(heroImg)}"${_galleryJson?` data-gallery="${_galleryJson}"`:``}><div class="card-inner">
+  const scoreHTML=`<div class="cf-score"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${auditScore}</div>`;
+  const nameHTML=isFree?`<div class="cf-name">${_hl(d.name)}</div>`:`<a class="cf-name" href="listing.html?id=${d.id}" onclick="event.stopPropagation()">${_hl(d.name)}</a>`;
+  const heroImg=getCardPhoto(d);
+  const heroHTML = heroImg
+    ? `<img src="${heroImg}" alt="${ZdSec.escapeHtml(d.name)}" loading="lazy">`
+    : `<div class="cf-hero-empty"></div>`;
+  const hasRealLogo=d.logo&&d.logo!=='#'&&!d.logo.includes('placehold.co');
+  const logoHTML=hasRealLogo?`<div class="cf-logo"><img src="${ZdSec.escapeHtml(d.logo)}" alt="" loading="lazy"></div>`:'';
+  const _galleryJson=(Array.isArray(d.gallery_urls)&&d.gallery_urls.length>1)?ZdSec.escapeHtml(JSON.stringify(d.gallery_urls)):'';
+  return`<div class="card-wrap" data-id="${d.id}" data-name="${ZdSec.escapeHtml(d.name)}" data-logo="${ZdSec.escapeHtml(heroImg)}"${_galleryJson?` data-gallery="${_galleryJson}"`:``}><div class="card-inner">
   <div class="card-front tier-${tc}">
     ${scoreHTML}
     ${logoHTML}
     <div class="cf-hero">
-      <img src="${heroImg}" alt="${ZdSec.escapeHtml(d.name)}" loading="lazy">
+      ${heroHTML}
       <div class="cf-hero-overlay">
+        ${tags.length?`<div class="cf-hero-tags">${tags.map(t=>`<span class="cf-tag">${_hl(t)}</span>`).join('')}</div>`:''}
         <div class="cf-hero-top">
           ${nameHTML}
-          ${ratingHTML}
+          ${_ratingStackM}
         </div>
         <div class="cf-hero-bottom"><span class="cf-hero-city">${_hl(d.city)}</span>${badges}</div>
-        ${tags.length?`<div class="cf-hero-tags">${tags.map(t=>`<span class="cf-tag">${_hl(t)}</span>`).join('')}</div>`:''}
       </div>
     </div>
-    <div class="cf-tray">
-      ${textBlockHTML || '<div class="cf-text-box"></div>'}
-      ${freeSocialsHTML}
-      ${ctaBoxHTML}
+    <div class="cf-content-tray">
+    ${isExpandable && d.description ? (() => {
+      const desc = d.description.trim();
+      let tagline = desc.length <= 45 ? desc : desc.slice(0, desc.lastIndexOf(' ', 44) || 44).trim() + '…';
+      let oneliner = '';
+      if (desc.length > 45) {
+        const rest = desc.slice(tagline.length - (tagline.endsWith('…') ? 1 : 0)).trim();
+        oneliner = rest.length <= 150 ? rest : rest.slice(0, rest.lastIndexOf(' ', 149) || 149).trim() + '…';
+      }
+      return `<div class="cf-tagline-block"><div class="cf-tagline">${ZdSec.escapeHtml(tagline)}</div>${oneliner ? `<div class="cf-oneliner">${ZdSec.escapeHtml(oneliner)}</div>` : ''}</div>`;
+    })() : ''}
+    <div class="cf-meta">
+      <div class="cf-socials">${_buildSocialsM(d)}</div>
+    </div>
+    ${_buildCTAsM(d)}
+    ${isFree
+      ? `<div class="cf-detail-btn" style="visibility:hidden" aria-hidden="true"><span>Детайли</span></div>`
+      : `<div class="cf-detail-btn" onclick="event.stopPropagation();flipCardMobile(this)"><span>Детайли</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></div>`}
     </div>
   </div>
-  ${backHTML}
+  <div class="card-back tier-${tc}">${_buildBackM(d)}</div>
   </div></div>`;
 }
 
@@ -3509,56 +3487,88 @@ function renderMobile(){
   const filtered = _getFilteredM(), sorted = _getSortedM(filtered);
   const act = sorted.filter(d => !dismissedIds.has(d.id));
   const rc = document.getElementById('resultCount'); if (rc) rc.textContent = act.length;
-  updateBadgeMobile(); updateSavedBarMobile(); renderAppliedMobile(); renderFeed(act);
-  _initFeedInteractions();
+  updateBadgeMobile(); updateSavedBarMobile(); renderAppliedMobile(); renderStack(act);
 }
-/* Scroll-snap feed renderer — renders all filtered cards vertically */
-function renderFeed(cards){
+function renderStack(cards){
   const area = document.getElementById('stackArea'); if (!area) return;
-  if (!cards.length) {
-    area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`;
-    return;
-  }
-  area.innerHTML = cards.map(buildStackCard).join('');
-  area.scrollTop = 0;
+  if (stackIdx >= cards.length) stackIdx = Math.max(0, cards.length - 1);
+  if (!cards.length) { area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`; document.getElementById('stackCounter').textContent=''; return; }
+  let h = '';
+  if (stackIdx + 1 < cards.length) h += buildStackCard(cards[stackIdx + 1]).replace('card-wrap', 'card-wrap behind');
+  h += buildStackCard(cards[stackIdx]).replace('card-wrap', 'card-wrap on-top');
+  area.innerHTML = h;
+  document.getElementById('stackCounter').textContent = `${stackIdx + 1} / ${cards.length}`;
+  const top = area.querySelector('.on-top'); if (top) { _startGalleryRotation(top); }
 }
 
-/* Delegated click handler on the feed container.
-   Handles tap-to-advance gallery + the "Скрий" card-back link. Attached once. */
-function _initFeedInteractions(){
-  const area = document.getElementById('stackArea');
-  if (!area || area.dataset.interactionsBound) return;
-  area.dataset.interactionsBound = '1';
-  area.addEventListener('click', e => {
-    // Card-back "Скрий" link → dismiss
-    const hideBtn = e.target.closest('.cb-hide');
-    if (hideBtn) {
-      e.preventDefault(); e.stopPropagation();
-      const id = hideBtn.dataset.hideId;
-      const d = id && data.find(x => String(x.id) === id);
-      if (d) doDismiss(d);
-      return;
+/* Gallery rotation — crossfade through gallery_urls every 5s */
+var _galleryTimer = null;
+function _startGalleryRotation(wrap) {
+  if (_galleryTimer) { clearInterval(_galleryTimer); _galleryTimer = null; }
+  var raw = wrap.getAttribute('data-gallery'); if (!raw) return;
+  try { var urls = JSON.parse(raw); } catch(e) { return; }
+  if (!Array.isArray(urls) || urls.length < 2) return;
+  var img = wrap.querySelector('.cf-hero img'); if (!img) return;
+  var idx = 0;
+  _galleryTimer = setInterval(function() {
+    idx = (idx + 1) % urls.length;
+    img.style.opacity = '0';
+    setTimeout(function() { img.src = urls[idx]; img.style.opacity = '1'; }, 300);
+  }, 5000);
+}
+
+/* Tinder buttons */
+function _topCardsM(){ const f=_getFilteredM(),s=_getSortedM(f); return s.filter(d=>!dismissedIds.has(d.id)); }
+function getCurrentCard(){ return _topCardsM()[stackIdx] || null; }
+function btnLike(){ const cards = _topCardsM(); const card = document.querySelector('.zd-mode-mobile .on-top .card-front'); if (card) { card.style.transition='transform .3s'; card.style.transform='translateX(120%) rotate(12deg)'; setTimeout(() => doLike(cards), 280); } }
+function btnDismiss(){ const cards = _topCardsM(); const card = document.querySelector('.zd-mode-mobile .on-top .card-front'); if (card) { card.style.transition='transform .3s'; card.style.transform='translateX(-120%) rotate(-12deg)'; setTimeout(() => doDismiss(cards), 280); } }
+function btnReview(){ openReviewSheet(_topCardsM()); }
+function btnViewProfile(){ const d = getCurrentCard(); if (d && d.tier !== 'Безплатен') window.location.href = 'listing.html?id=' + d.id; }
+
+/* Review bottom sheet */
+let reviewCardId = null, reviewStarVal = 0;
+function openReviewSheet(cards){
+  const d = cards[stackIdx]; if (!d) return;
+  reviewCardId = d.id; reviewStarVal = 0;
+  document.getElementById('reviewLogo').innerHTML = `<img src="${d.logo||`https://placehold.co/88x88/${tierColMap[d.tier]||'999'}/white?text=${_initials(d.name)}`}" alt="">`;
+  document.getElementById('reviewName').textContent = d.name;
+  document.getElementById('reviewText').value = '';
+  document.querySelectorAll('.review-star').forEach(s => s.classList.remove('filled'));
+  document.getElementById('reviewOverlay').classList.add('open');
+  document.getElementById('reviewSheet').classList.add('open');
+}
+function closeReview(){
+  document.getElementById('reviewOverlay').classList.remove('open');
+  document.getElementById('reviewSheet').classList.remove('open');
+  reviewCardId = null;
+}
+function setReviewStars(n){
+  reviewStarVal = n;
+  document.querySelectorAll('.review-star').forEach((s, i) => s.classList.toggle('filled', i < n));
+}
+function submitReview(){
+  const text = document.getElementById('reviewText').value.trim();
+  if (reviewCardId && reviewStarVal > 0) {
+    const entry = { business_id: reviewCardId, stars: reviewStarVal, text, timestamp: new Date().toISOString() };
+    localStorage.setItem(`zd_review_${reviewCardId}`, JSON.stringify(entry));
+    const log = JSON.parse(localStorage.getItem('zd_review_log') || '[]'); log.push(entry);
+    localStorage.setItem('zd_review_log', JSON.stringify(log));
+    // Fire-and-forget to backend stub
+    if (window.ZdApi) {
+      ZdApi.submitForm('reviews', entry).catch(function (err) { console.warn('[submitReview] backend sync failed (kept locally):', err); });
     }
-    // Tap-to-advance gallery — skip interactive elements, but allow taps
-    // on empty padding inside the overlay (the overlay's own children still
-    // handle their own clicks since they're excluded by the anchor/button check).
-    if (e.target.closest('a, button, .cf-detail-btn, .cf-logo, .cf-score, .cf-tray, .card-back')) return;
-    const hero = e.target.closest('.cf-hero'); if (!hero) return;
-    const wrap = hero.closest('.card-wrap'); if (!wrap) return;
-    const raw = wrap.getAttribute('data-gallery'); if (!raw) return;
-    let urls;
-    try { urls = JSON.parse(raw); } catch(err) { return; }
-    if (!Array.isArray(urls) || urls.length < 2) return;
-    const img = hero.querySelector('img'); if (!img) return;
-    const nextIdx = ((+wrap.dataset.galleryIdx || 0) + 1) % urls.length;
-    wrap.dataset.galleryIdx = nextIdx;
-    img.src = urls[nextIdx];
-  });
+  }
+  closeReview();
+  const t = document.getElementById('mfbToast'); if (t) { t.textContent='Благодарим за оценката!'; t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 2500); }
 }
 
-function doDismiss(d){ if (!d) return; dismissedIds.add(d.id); _sessionDismissCount++; _maybePromptAuth('dismiss'); _syncLikeDismissToSupabase(d.id, 'dismiss'); render(); }
+function doLike(cards){ const d = cards[stackIdx]; if (!d) return; likedIds.add(d.id); if (!savedItems.find(s => s.id === d.id)) savedItems.push({ id: d.id, img: d.logo || `https://placehold.co/64x64/${tierColMap[d.tier]||'999'}/white?text=${_initials(d.name)}`, name: d.name }); _maybePromptAuth('like'); _syncLikeDismissToSupabase(d.id, 'like'); stackIdx++; render(); }
+function doDismiss(cards){ const d = cards[stackIdx]; if (!d) return; dismissedIds.add(d.id); lastDismissedId = d.id; _sessionDismissCount++; _maybePromptAuth('dismiss'); _syncLikeDismissToSupabase(d.id, 'dismiss'); showUndo(); stackIdx++; render(); }
 function flipCardMobile(btn){ btn.closest('.card-inner').classList.add('flipped'); }
 function flipBack(btn){ btn.closest('.card-inner').classList.remove('flipped'); }
+function showUndo(){ clearTimeout(undoTimer); document.getElementById('undoToast').classList.add('visible'); undoTimer = setTimeout(hideUndo, 4000); }
+function hideUndo(){ clearTimeout(undoTimer); document.getElementById('undoToast').classList.remove('visible'); }
+function undoLast(){ if (lastDismissedId !== null) { _syncLikeDismissToSupabase(lastDismissedId, 'undismiss'); dismissedIds.delete(lastDismissedId); lastDismissedId = null; hideUndo(); if (stackIdx > 0) stackIdx--; render(); } }
 
 function updateSavedBarMobile(){
   const bar = document.getElementById('savedBarMobile'), av = document.getElementById('savedAvatarsMobile'), ct = document.getElementById('savedCountMobile');
@@ -3584,6 +3594,11 @@ function renderAppliedMobile(){
   w.innerHTML = h;
 }
 
+// Bumped to v3 when swipe was removed and the demos rewritten to teach the
+// bottom button row. Existing users see the new tutorial once.
+function showTutorial(){ if (localStorage.getItem('zd_tutorial_seen_v3')) return; const t = document.getElementById('tutorial'); if (t) t.classList.remove('hidden'); }
+function dismissTutorial(){ const t = document.getElementById('tutorial'); if (t) t.classList.add('hidden'); localStorage.setItem('zd_tutorial_seen_v3', '1'); }
+
 /* Mobile filter panel */
 function openMobileFilters(){
   pendingF = { category: { include: new Set(active.category.include), exclude: new Set(active.category.exclude) }, level: { include: new Set(active.level.include), exclude: new Set(active.level.exclude) }, ageFrom, ageTo, cityTerm, sopFilter, onlineFilter };
@@ -3597,7 +3612,6 @@ function closeMobileFilters(){
 }
 function buildFP(){
   let h = '';
-  h += `<div class="fp-section"><div class="fp-label">Търсене</div><div class="fp-input-search"><input class="fp-input" id="fpSearch" type="search" placeholder="Име, категория, услуга..." value="${ZdSec.escapeHtml(searchTerm)}" autocomplete="off"></div></div>`;
   h += `<div class="fp-section"><div class="fp-label">Населено място</div><input class="fp-input" id="fpCity" placeholder="Въведи град..." value="${pendingF.cityTerm}" list="fpCityDl"><datalist id="fpCityDl"></datalist></div>`;
   h += `<div class="fp-section"><div class="fp-label">Възраст</div><div class="fp-row"><input class="fp-input" id="fpAgeFrom" type="number" placeholder="От..." value="${pendingF.ageFrom??''}"><span style="font-weight:600;color:var(--zd-gray-400)">—</span><input class="fp-input" id="fpAgeTo" type="number" placeholder="До..." value="${pendingF.ageTo??''}"></div></div>`;
   h += `<div class="fp-section"><div class="fp-label">Категория</div>`;
@@ -3615,7 +3629,6 @@ function buildFP(){
   const dl = document.getElementById('fpCityDl');
   [...new Set(data.map(d => d.city))].forEach(c => { const o = document.createElement('option'); o.value = c; dl.appendChild(o); });
   const listen = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('input', debounce(fn, 200)); };
-  listen('fpSearch', e => { searchTerm = e.target.value.toLowerCase().trim(); render(); fpUpdateCount(); });
   listen('fpCity', e => { pendingF.cityTerm = e.target.value.toLowerCase().trim(); fpUpdateCount(); });
   listen('fpAgeFrom', e => { pendingF.ageFrom = e.target.value ? +e.target.value : null; fpUpdateCount(); });
   listen('fpAgeTo', e => { pendingF.ageTo = e.target.value ? +e.target.value : null; fpUpdateCount(); });
@@ -3635,7 +3648,7 @@ function fpApply(){
   active.level.include = pendingF.level.include; active.level.exclude = pendingF.level.exclude;
   ageFrom = pendingF.ageFrom; ageTo = pendingF.ageTo; cityTerm = pendingF.cityTerm; sopFilter = pendingF.sopFilter; onlineFilter = pendingF.onlineFilter;
   document.getElementById('cityLabel').textContent = cityTerm || 'Всички';
-  closeMobileFilters(); render();
+  stackIdx = 0; closeMobileFilters(); render();
 }
 function fpClearAll(){
   pendingF = { category: { include: new Set(), exclude: new Set() }, level: { include: new Set(), exclude: new Set() }, ageFrom: null, ageTo: null, cityTerm: '', sopFilter: null, onlineFilter: false };
@@ -3702,6 +3715,11 @@ function mfbSubmit(){
   const t = document.getElementById('mfbToast'); t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 2500);
 }
 
+/* Wire mobile search input */
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('appSearch');
+  if (inp) inp.addEventListener('input', debounce(e => { searchTerm = e.target.value.toLowerCase().trim(); stackIdx = 0; render(); }, 200));
+});
 </script>
 
 <footer class="zd-footer">
@@ -3716,6 +3734,7 @@ function mfbSubmit(){
   <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
 </footer>
 
+<script src="js/nav-inject.js"></script>
 <script src="js/cookie-banner.js"></script>
 <script src="js/analytics-loader.js"></script>
 <script src="js/supabase-init.js"></script>
