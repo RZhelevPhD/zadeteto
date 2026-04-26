@@ -41,8 +41,6 @@
   --zd-purple-600: #7c4dff;
   --zd-purple-800: #5a2ecf;
   --zd-gold-300: #f5d76e;
-  --zd-gold-500: #d4af37;
-  --zd-gold-700: #8a6800;
   --zd-mint-50: #edf9f0;
   --zd-mint-100: #d4f5dc;
   --zd-mint-400: #4caf6a;
@@ -55,7 +53,6 @@
   --zd-gray-400: #b0b0b0;
   --zd-gray-600: #777;
   --zd-gray-800: #333;
-  --zd-charcoal: #36454f;
   --zd-sop: #9c27b0;
   --zd-online: #1976d2;
   --zd-font: 'DM Sans', sans-serif;
@@ -1218,13 +1215,36 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
    using <div class="flipper"><div class="face face--front">…</div>
    <div class="face face--back">…</div></div> internal markup. Each
    variant scopes its own face-specific styles via .X-face overrides. */
-/* Flip system — minimal. Article = perspective container. .zd-flipper holds
-   the two .face elements. Click any [data-action="flip"] inside the article
-   to toggle .flipped on .zd-card; the flipper rotates 180deg, the back face
-   shows. No tricks: no will-change, no translate3d, no lazy iframe swap. */
+[data-flip-card] {
+  position: relative;
+  perspective: 1200px;
+  -webkit-tap-highlight-color: transparent;
+}
+[data-flip-card] > .flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .65s cubic-bezier(.2, .8, .2, 1);
+}
+[data-flip-card].is-flipped > .flipper {
+  transform: rotateY(180deg);
+}
+[data-flip-card] > .flipper > .face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: inherit;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+[data-flip-card] > .flipper > .face--front { transform: rotateY(0deg); }
+[data-flip-card] > .flipper > .face--back  { transform: rotateY(180deg); }
 [data-action="flip"] { cursor: pointer; user-select: none; }
 @media (prefers-reduced-motion: reduce) {
-  body.variant-rigor .zd-flipper { transition: none !important; }
+  [data-flip-card] > .flipper { transition: none !important; }
 }
 .notxt {
   user-select: none;
@@ -1233,701 +1253,534 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
   -moz-user-select: none;
   pointer-events: none;
 }
-    .variant-rigor {
-      --rig-s-1: 4px; --rig-s-2: 8px; --rig-s-3: 12px; --rig-s-4: 16px; --rig-s-5: 20px; --rig-s-6: 24px;
-      --rig-radius: 14px; --rig-radius-sm: 8px;
-      --rig-surface: #ffffff; --rig-surface-2: #fbfaf7;
-      --rig-ink: #1f1d29; --rig-ink-soft: #524f60; --rig-ink-mute: #7a7689;
-      --rig-line: #e7e4dd;
-      /* Polish: punchier custom curves than the built-in eases.
-         --rig-ease       — strong ease-out for hover/exit feedback
-         --rig-ease-inout — strong ease-in-out for movement
-         --rig-ease-flip  — iOS-style drawer curve for the card rotation */
-      --rig-ease: cubic-bezier(0.23, 1, 0.32, 1);
-      --rig-ease-inout: cubic-bezier(0.77, 0, 0.175, 1);
-      --rig-ease-flip: cubic-bezier(0.32, 0.72, 0, 1);
-      --rig-dur: 200ms; --rig-dur-slow: 280ms;
-      --rig-focus: 0 0 0 3px rgba(124,77,255,.35);
+    /* ─── Variant: Polish ─────────────────────────────────────── */
+    .variant-polish {
+      --pol-spring: cubic-bezier(.2, .8, .2, 1);
+      --pol-press:  cubic-bezier(.4, 0, .6, 1);
+      --pol-radius: 18px;
     }
-    .variant-rigor .rig-card {
-      position: relative; display: grid; grid-template-rows: auto 1fr auto;
-      background: var(--rig-surface); border: 1px solid var(--rig-line); border-radius: var(--rig-radius);
-      font-family: var(--font-sans); color: var(--rig-ink);
-      transition: transform var(--rig-dur) var(--rig-ease), box-shadow var(--rig-dur) var(--rig-ease);
-      box-shadow: 0 1px 2px rgba(20,18,40,.04); min-height: 660px;
-      /* No overflow:hidden here — .face owns the radius clipping; this prevents
-         the body from cropping the always-visible CTA footer when content is tall. */
-    }
-    /* Hover lift moved to the OUTER article (.zd-card) so it never fights the
-       inner .rig-card's flip transform. rig-card itself only changes shadow on hover. */
-    .variant-rigor .rig-card:hover { box-shadow: 0 8px 20px rgba(20,18,40,.08), 0 2px 4px rgba(20,18,40,.04); }
 
-    .variant-rigor .rig-medallion {
-      display: flex; align-items: center; gap: var(--rig-s-2);
-      padding: var(--rig-s-2) var(--rig-s-4);
-      font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-      border-bottom: 1px solid var(--rig-line); background: var(--rig-surface-2); color: var(--rig-ink-soft);
-      position: relative; overflow: hidden;
+    /* card shell */
+    .variant-polish .pol-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: var(--pol-radius);
+      overflow: hidden;
+      isolation: isolate;
+      will-change: transform;
+      /* min-height required because the flip chassis ([data-flip-card] >
+         .flipper { height: 100% } > .face { position: absolute; inset: 0 })
+         collapses to zero height without an explicit dimension on the
+         outer card. Today's card uses height:580px; Taste/Rigor use
+         min-height:580px on their own card class — Polish was missing it. */
+      min-height: 580px;
+      /* layered ambient (will be re-tinted per tier) */
+      box-shadow:
+        0 1px 2px rgba(20, 14, 40, .04),
+        0 6px 14px rgba(20, 14, 40, .06),
+        0 18px 36px rgba(20, 14, 40, .07);
+      transition:
+        transform 280ms var(--pol-spring),
+        box-shadow 280ms var(--pol-spring);
     }
-    /* Per-tier top-left glow halo behind the dot. Soft and small so it
-       reads as a faint hue rather than a backlight. */
-    .variant-rigor .rig-medallion::before {
-      content: ""; position: absolute; left: -10px; top: -10px; width: 48px; height: 48px;
-      border-radius: 50%; pointer-events: none;
-      background: radial-gradient(circle, var(--rig-glow, transparent) 0%, transparent 55%);
-      opacity: 0.35; z-index: 0;
-    }
-    .variant-rigor .rig-medallion > * { position: relative; z-index: 1; }
-    .variant-rigor .rig-card--elite    .rig-medallion { --rig-glow: rgba(124,77,255,0.30); }
-    .variant-rigor .rig-card--premium  .rig-medallion { --rig-glow: rgba(212,175,55,0.35); animation: rig-glow-breathe-gold 5s var(--rig-ease-inout) infinite; }
-    .variant-rigor .rig-card--verified .rig-medallion { --rig-glow: rgba(46,153,77,0.28);  animation: rig-glow-breathe-green 5s var(--rig-ease-inout) infinite; }
-    .variant-rigor .rig-card--standard .rig-medallion { --rig-glow: rgba(54,69,79,0.16); }
-    .variant-rigor .rig-card--free     .rig-medallion { --rig-glow: rgba(176,176,176,0.18); }
-    /* Very subtle medallion breathing — barely perceptible, just enough to
-       feel "alive". Reduced amplitude per user feedback that the previous
-       breath was too strong. */
-    @keyframes rig-glow-breathe-gold {
-      0%, 100% { background: linear-gradient(180deg, #fbf3d8 0%, #fbfaf7 100%); }
-      50%      { background: linear-gradient(180deg, #fbedc4 0%, #fbfaf7 100%); }
-    }
-    @keyframes rig-glow-breathe-green {
-      0%, 100% { background: linear-gradient(180deg, #ecf7ef 0%, #fbfaf7 100%); }
-      50%      { background: linear-gradient(180deg, #e3f2e7 0%, #fbfaf7 100%); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-card--premium .rig-medallion,
-      .variant-rigor .rig-card--verified .rig-medallion { animation: none; }
-    }
-    .variant-rigor .rig-tier-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--zd-gray-400); flex-shrink: 0; }
-    .variant-rigor .rig-tier-label { font-weight: 700; }
-    .variant-rigor .rig-tier-trust { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 10px; letter-spacing: 0.04em; text-transform: none; color: var(--rig-ink-soft); }
-
-    .variant-rigor .rig-card--elite .rig-tier-dot      { background: var(--zd-purple-600); box-shadow: 0 0 0 3px rgba(124,77,255,.16); }
-    .variant-rigor .rig-card--elite .rig-tier-label    { color: var(--zd-purple-800); }
-    .variant-rigor .rig-card--elite .rig-medallion     { background: linear-gradient(180deg, #f6f1ff 0%, #fbfaf7 100%); border-bottom-color: var(--zd-purple-100); }
-    .variant-rigor .rig-card--premium .rig-tier-dot    { background: var(--zd-gold-500); box-shadow: 0 0 0 3px rgba(212,175,55,.20); animation: rig-dot-pulse-gold 2.6s var(--rig-ease-inout, ease-in-out) infinite; }
-    .variant-rigor .rig-card--premium .rig-tier-label  { color: var(--zd-gold-700); }
-    .variant-rigor .rig-card--premium .rig-medallion   { background: linear-gradient(180deg, #fbf3d8 0%, #fbfaf7 100%); border-bottom-color: #ead78a; }
-    .variant-rigor .rig-card--verified .rig-tier-dot   { background: var(--zd-mint-600); box-shadow: 0 0 0 3px rgba(46,153,77,.16); animation: rig-dot-pulse-green 2.6s var(--rig-ease-inout, ease-in-out) infinite; }
-    /* Tier-dot glow pulse — only on the higher-value tiers that warrant the
-       extra attention (Премиум gold, Проверен green). Slow + subtle so it
-       reads as "alive" rather than "blinking ad". */
-    @keyframes rig-dot-pulse-gold {
-      0%, 100% { box-shadow: 0 0 0 3px rgba(212,175,55,0.20), 0 0 0 0 rgba(212,175,55,0); }
-      50%      { box-shadow: 0 0 0 4px rgba(212,175,55,0.30), 0 0 12px 2px rgba(212,175,55,0.35); }
-    }
-    @keyframes rig-dot-pulse-green {
-      0%, 100% { box-shadow: 0 0 0 3px rgba(46,153,77,0.16), 0 0 0 0 rgba(46,153,77,0); }
-      50%      { box-shadow: 0 0 0 4px rgba(46,153,77,0.28), 0 0 12px 2px rgba(46,153,77,0.32); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-card--premium .rig-tier-dot,
-      .variant-rigor .rig-card--verified .rig-tier-dot { animation: none; }
-    }
-    .variant-rigor .rig-card--verified .rig-tier-label { color: var(--zd-mint-800); }
-    .variant-rigor .rig-card--verified .rig-medallion  { background: linear-gradient(180deg, #ecf7ef 0%, #fbfaf7 100%); border-bottom-color: var(--zd-mint-100); }
-    .variant-rigor .rig-card--standard .rig-tier-dot   { background: var(--zd-charcoal); box-shadow: 0 0 0 3px rgba(54,69,79,.16); }
-    .variant-rigor .rig-card--standard .rig-tier-label { color: var(--zd-charcoal); }
-    .variant-rigor .rig-card--standard .rig-medallion  { background: linear-gradient(180deg, #eef1f4 0%, #fbfaf7 100%); border-bottom-color: #d6dde2; }
-    .variant-rigor .rig-card--free .rig-tier-dot       { background: var(--zd-gray-400); }
-    .variant-rigor .rig-card--free .rig-tier-label     { color: var(--zd-gray-600); }
-
-    /* Named slots — every card has the same row order and reserves space even
-       when an optional slot is empty, so a row of cards aligns at every band. */
-    .variant-rigor .rig-body {
-      display: grid; gap: var(--rig-s-2); padding: var(--rig-s-4) var(--rig-s-4) var(--rig-s-3);
-      min-width: 0; min-height: 0; overflow: hidden;
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-rows:
-        auto    /* thumb */
-        auto    /* name */
-        18px    /* meta (neighborhood line) */
-        auto    /* desc */
-        auto    /* chips */
-        auto    /* ratings (vertical 3-row strip) */
-        auto;   /* socials */
-      grid-template-areas: "thumb" "name" "meta" "desc" "chips" "ratings" "socials";
-    }
-    .variant-rigor .rig-slot--thumb    { grid-area: thumb; }
-    .variant-rigor .rig-slot--name     { grid-area: name; }
-    .variant-rigor .rig-slot--meta     { grid-area: meta; min-height: 18px; display: flex; align-items: center; }
-    .variant-rigor .rig-slot--desc     { grid-area: desc; }
-    .variant-rigor .rig-slot--chips    { grid-area: chips; }
-    .variant-rigor .rig-slot--ratings  { grid-area: ratings; }
-    .variant-rigor .rig-slot--socials  { grid-area: socials; min-height: 22px; }
-    /* Empty slots reserve their natural band height so cards in a row stay aligned */
-    .variant-rigor .rig-slot--desc[data-empty]    { min-height: calc(1.55em * 3); }
-    .variant-rigor .rig-slot--chips[data-empty]   { min-height: 24px; }
-    .variant-rigor .rig-slot--ratings[data-empty] { min-height: 56px; }
-
-    .variant-rigor .rig-thumb {
-      position: relative; aspect-ratio: 16 / 9; border-radius: var(--rig-radius-sm);
-      overflow: hidden; background: var(--zd-gray-100); margin-bottom: var(--rig-s-1);
-    }
-    .variant-rigor .rig-thumb > img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--rig-dur-slow) var(--rig-ease); }
     @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-card:hover .rig-thumb > img { transform: scale(1.03); }
+      .variant-polish .pol-card:hover {
+        transform: translateY(-4px) scale(1.008);
+      }
     }
-    /* Tier-themed empty placeholder for cards without a real photo */
-    .variant-rigor .rig-thumb-empty {
-      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, var(--ph-1, #f3f3f3), var(--ph-2, #fafafa));
+    .variant-polish .pol-card:active {
+      transform: translateY(-1px) scale(0.997);
+      transition:
+        transform 120ms var(--pol-press),
+        box-shadow 120ms var(--pol-press);
     }
-    .variant-rigor .rig-thumb-mark { width: 64px; height: 64px; opacity: 0.85; }
-    .variant-rigor .rig-card--elite    .rig-thumb-empty { --ph-1: #efe8ff; --ph-2: #f8f5ff; }
-    .variant-rigor .rig-card--premium  .rig-thumb-empty { --ph-1: #fbf3d8; --ph-2: #fff8e0; }
-    .variant-rigor .rig-card--verified .rig-thumb-empty { --ph-1: #ecf7ef; --ph-2: #f4fbf6; }
-    .variant-rigor .rig-card--standard .rig-thumb-empty { --ph-1: #e6e9ec; --ph-2: #f4f6f8; }
-    /* Free tier — flat light gray, no gradient (lowest value, no shine) */
-    .variant-rigor .rig-card--free     .rig-thumb-empty { background: #ededed; --ph-1: #ededed; --ph-2: #ededed; }
-    .variant-rigor .rig-card--free     .rig-thumb-mark  { opacity: 0.45; filter: grayscale(0.6); }
 
-    .variant-rigor .rig-flip-cue {
-      position: absolute; bottom: var(--rig-s-2); right: var(--rig-s-2);
-      display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
-      font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
-      background: rgba(31,29,41,.78); color: #fff; border-radius: 999px;
-      opacity: 0; transform: translateY(2px);
-      transition: opacity var(--rig-dur) var(--rig-ease), transform var(--rig-dur) var(--rig-ease);
+    /* photo region */
+    .variant-polish .pol-photo {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background: var(--zd-gray-100);
+    }
+    .variant-polish .pol-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transform: scale(1.001); /* prevents flicker on zoom */
+      transition: transform 480ms var(--pol-spring), filter 320ms ease;
+      will-change: transform;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .variant-polish .pol-card:hover .pol-photo img {
+        transform: scale(1.045);
+      }
+    }
+    /* photo bottom soft mask so rating pills stay legible */
+    .variant-polish .pol-photo::after {
+      content: "";
+      position: absolute; inset: auto 0 0 0;
+      height: 60%;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 100%);
       pointer-events: none;
     }
-    .variant-rigor .rig-card:hover .rig-flip-cue, .variant-rigor .rig-card:focus-within .rig-flip-cue { opacity: 1; transform: translateY(0); }
-    .variant-rigor .rig-thumb--muted img { filter: saturate(.55) brightness(.98); }
-    .variant-rigor .rig-card--free .rig-flip-cue { display: none; }
 
-    .variant-rigor .rig-name {
-      font-family: var(--font-serif); font-size: 19px; line-height: 1.2; letter-spacing: -0.01em;
-      color: var(--rig-ink); margin-top: 2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+    /* tier pill (top-left over photo) */
+    .variant-polish .pol-tier-pill {
+      position: absolute; top: 10px; left: 10px;
+      z-index: 2;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.95);
+      color: var(--zd-gray-800);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 6px rgba(0,0,0,.12);
     }
-    /* Back-face title may wrap freely (more horizontal room there) */
-    .variant-rigor .rig-back-head .rig-name { white-space: normal; overflow: visible; text-overflow: clip; text-wrap: balance; }
-    .variant-rigor .rig-meta { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--rig-ink-mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-    .variant-rigor .rig-pin { color: var(--rig-ink-mute); flex-shrink: 0; }
-    .variant-rigor .rig-desc {
-      font-size: 13px; line-height: 1.55; color: var(--rig-ink-soft);
-      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-      hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; word-break: normal;
+    .variant-polish .pol-tier-pill .pol-i { width: 10px; height: 10px; }
+
+    /* flip-cue pill (top-right, secondary) */
+    .variant-polish .pol-flip-pill {
+      position: absolute; top: 10px; right: 10px;
+      z-index: 2;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(20, 14, 40, 0.55);
+      color: #fff;
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      transition: transform 180ms var(--pol-spring), background 180ms ease;
     }
-    .variant-rigor .rig-desc-wrap { position: relative; }
-    .variant-rigor .rig-more {
-      position: absolute; right: 0; bottom: 0;
-      padding-left: 22px; font-size: 13px; line-height: 1.55; font-weight: 600;
-      color: var(--rig-tier-link, var(--rig-ink)); text-decoration: none;
-      background: linear-gradient(90deg, transparent 0%, var(--rig-surface) 32%);
+    .variant-polish .pol-flip-pill .pol-i { width: 11px; height: 11px; }
+    .variant-polish .pol-flip-pill:hover { background: rgba(20, 14, 40, 0.78); transform: scale(1.04); }
+    .variant-polish .pol-flip-pill:active { transform: scale(0.94); }
+
+    /* rating row pinned bottom-left of photo */
+    .variant-polish .pol-rating-row {
+      position: absolute; left: 10px; bottom: 10px;
+      z-index: 2;
+      display: flex; gap: 6px;
+    }
+    .variant-polish .pol-rating {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.96);
+      color: var(--zd-gray-800);
+      box-shadow: 0 2px 6px rgba(0,0,0,.18);
       letter-spacing: -0.005em;
     }
-    /* Tier-colored "още →" arrow link matches each tier's accent */
-    .variant-rigor .rig-card--elite    { --rig-tier-link: var(--zd-purple-600); --rig-tier-link-hover: var(--zd-purple-800); }
-    .variant-rigor .rig-card--premium  { --rig-tier-link: var(--zd-gold-700);   --rig-tier-link-hover: #6b5100; }
-    .variant-rigor .rig-card--verified { --rig-tier-link: var(--zd-mint-600);   --rig-tier-link-hover: var(--zd-mint-800); }
-    .variant-rigor .rig-card--standard { --rig-tier-link: var(--zd-charcoal);   --rig-tier-link-hover: #1f2a33; }
-    .variant-rigor .rig-card--free     { --rig-tier-link: var(--zd-gray-600);   --rig-tier-link-hover: var(--zd-gray-800); }
-    .variant-rigor .rig-more { transition: color var(--rig-dur) var(--rig-ease), transform var(--rig-dur) var(--rig-ease); }
-    .variant-rigor .rig-more:active { transform: translateX(1px); transition-duration: 100ms; }
-    .variant-rigor .rig-more:focus-visible { outline: none; box-shadow: var(--rig-focus); border-radius: 3px; }
-    @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-more:hover { color: var(--rig-tier-link-hover, var(--rig-tier-link, var(--rig-ink))); text-decoration: underline; }
+    .variant-polish .pol-rating em { font-style: normal; font-weight: 500; opacity: .55; }
+    .variant-polish .pol-rating .pol-i { width: 10px; height: 10px; }
+    .variant-polish .pol-rating--zd .pol-i { color: var(--zd-heart); }
+    .variant-polish .pol-rating--g  .pol-i { color: #fbbc05; }
+
+    /* body */
+    .variant-polish .pol-body {
+      position: relative;
+      padding: 14px 14px 14px;
+      display: flex; flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+    .variant-polish .pol-logo {
+      position: absolute;
+      top: -22px; right: 14px;
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: #fff;
+      padding: 3px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.06);
+      z-index: 3;
+    }
+    .variant-polish .pol-logo img {
+      width: 100%; height: 100%;
+      border-radius: 9px;
+      object-fit: cover;
     }
 
-    .variant-rigor .rig-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--rig-s-1); }
-    .variant-rigor .rig-chips li { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; background: var(--zd-gray-100); color: var(--rig-ink-soft); border: 1px solid var(--rig-line); }
-    .variant-rigor .rig-card--elite .rig-chips li     { background: #f6f1ff; color: var(--zd-purple-800); border-color: var(--zd-purple-100); }
-    .variant-rigor .rig-card--premium .rig-chips li   { background: #fbf3d8; color: var(--zd-gold-700); border-color: #ead78a; }
-    .variant-rigor .rig-card--verified .rig-chips li  { background: #ecf7ef; color: var(--zd-mint-800); border-color: var(--zd-mint-100); }
-
-    /* Ratings — horizontal "score bar". Three blocks side-by-side, each with
-       an icon on the LEFT and the score on the right. No text labels — the
-       icon (magnifier / star / heart) carries the meaning. Audit + ZD icons
-       have a subtle animation to draw the eye; Google's star sits still. */
-    .variant-rigor .rig-ratings {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      background: linear-gradient(180deg, #ffffff 0%, #fafaf7 100%);
-      border: 1px solid var(--rig-line); border-radius: 10px;
-      padding: 10px 4px; box-shadow: 0 1px 2px rgba(20,18,40,0.04), inset 0 1px 0 rgba(255,255,255,0.8);
+    .variant-polish .pol-name {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      line-height: 1.18;
+      letter-spacing: -0.018em;
+      color: var(--zd-gray-800);
+      padding-right: 50px; /* clear of logo */
+      margin-bottom: -2px;
+    }
+    .variant-polish .pol-meta {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--zd-gray-600);
+      letter-spacing: 0.005em;
+    }
+    .variant-polish .pol-desc {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #4a4458;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .variant-rigor .rig-ratings .rig-rblock {
-      display: flex; flex-direction: row; align-items: center; justify-content: center;
-      gap: 6px; padding: 0 6px; min-width: 0; position: relative;
-    }
-    .variant-rigor .rig-ratings .rig-rblock + .rig-rblock { border-left: 1px solid var(--rig-line); border-top: 0; }
-    .variant-rigor .rig-ratings .rig-rblock-icn { display: inline-flex; align-items: center; justify-content: center; color: var(--rig-ink); flex: none; }
-    .variant-rigor .rig-ratings .rig-rblock-icn svg { width: 16px; height: 16px; display: block; }
-    .variant-rigor .rig-ratings .rig-rblock-num {
-      font-family: var(--font-serif, var(--font-sans));
-      font-size: 17px; font-weight: 700; color: var(--rig-ink); letter-spacing: -0.02em;
-      white-space: nowrap; line-height: 1;
-    }
-    .variant-rigor .rig-ratings .rig-rblock-num small {
-      font-family: var(--font-sans);
-      font-weight: 500; color: var(--rig-ink-mute); margin-left: 2px; font-size: 10.5px; letter-spacing: 0;
-    }
-    /* Labels are no longer rendered visually — the icon is the label.
-       Keep the markup so screen readers still get a hint via title attrs. */
-    .variant-rigor .rig-ratings .rig-rblock-lbl { display: none; }
-    .variant-rigor .rig-ratings .rig-rblock-empty .rig-rblock-icn,
-    .variant-rigor .rig-ratings .rig-rblock-empty .rig-rblock-num { opacity: 0.45; }
-    .variant-rigor .rig-ratings .rig-rblock-empty .rig-rblock-num { color: var(--rig-ink-mute); font-weight: 500; }
-    /* Per-icon animations to draw the eye:
-       · Audit   — magnifier scans (rotate); the inner glint flickers like a
-                   sensor light catching the lens
-       · Google  — star twinkles (gentle wiggle + brightness/scale pulse)
-       · ZD      — heart beats (double-thump scale) */
-    .variant-rigor .rig-ratings .rig-rblock:first-child .rig-rblock-icn {
-      animation: rig-icon-scan 3.6s var(--rig-ease-inout) infinite;
-      transform-origin: 60% 60%;
-    }
-    .variant-rigor .rig-ratings .rig-rblock:first-child .rig-glint {
-      animation: rig-glint-flicker 2.4s ease-in-out infinite;
-      transform-origin: center;
-    }
-    .variant-rigor .rig-ratings .rig-rblock:nth-child(2) .rig-rblock-icn {
-      animation: rig-icon-twinkle 2.8s var(--rig-ease-inout) infinite;
-      transform-origin: center;
-    }
-    .variant-rigor .rig-ratings .rig-rblock:last-child .rig-rblock-icn {
-      animation: rig-icon-beat 2.2s var(--rig-ease-inout) infinite;
-      transform-origin: center;
-    }
-    @keyframes rig-icon-scan {
-      0%, 70%, 100% { transform: rotate(0deg); }
-      80%  { transform: rotate(-12deg); }
-      90%  { transform: rotate(8deg); }
-    }
-    @keyframes rig-glint-flicker {
-      0%, 88%, 100% { opacity: 0; }
-      89%, 92%      { opacity: 0.95; }
-      93%           { opacity: 0; }
-      96%, 98%      { opacity: 0.7; }
-    }
-    @keyframes rig-icon-twinkle {
-      0%, 100% { transform: rotate(0deg) scale(1); filter: brightness(1) saturate(1); }
-      30%      { transform: rotate(-10deg) scale(1.05); filter: brightness(1.3) saturate(1.15); }
-      50%      { transform: rotate(0deg) scale(1); filter: brightness(1) saturate(1); }
-      70%      { transform: rotate(10deg) scale(1.05); filter: brightness(1.25) saturate(1.15); }
-    }
-    @keyframes rig-icon-beat {
-      0%, 100% { transform: scale(1); }
-      12%      { transform: scale(1.18); }
-      24%      { transform: scale(1); }
-      36%      { transform: scale(1.10); }
-      48%      { transform: scale(1); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-ratings .rig-rblock-icn,
-      .variant-rigor .rig-ratings .rig-glint { animation: none; }
-    }
-    .variant-rigor .rig-rblock-icn { flex: none; display: inline-flex; align-items: center; justify-content: center; }
-    .variant-rigor .rig-rblock-text { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; }
-    .variant-rigor .rig-rblock-num { font-size: 13px; font-weight: 700; color: var(--rig-ink); letter-spacing: -0.01em; white-space: nowrap; }
-    .variant-rigor .rig-rblock-num small { font-weight: 500; color: var(--rig-ink-mute); font-size: 11px; margin-left: 3px; }
-    .variant-rigor .rig-rblock-lbl { font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--rig-ink-mute); margin-top: 1px; }
-    .variant-rigor .rig-rblock-empty .rig-rblock-num { color: var(--rig-ink-mute); font-weight: 500; }
-    /* City chip: distinct from service chips so it reads as a location pill */
-    .variant-rigor .rig-chip-city {
-      font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
-      background: #efe8ff; color: var(--zd-purple-800); border: 1px solid var(--zd-purple-100);
-      display: inline-flex; align-items: center; gap: 4px;
-    }
-    .variant-rigor .rig-chip-city svg { opacity: 0.85; }
 
-    .variant-rigor .rig-socials { display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--rig-s-1); }
-    .variant-rigor .rig-soc { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; background: var(--zd-gray-100); color: var(--rig-ink-mute); pointer-events: none; }
-    .variant-rigor .rig-soc svg { display: block; }
-
-    .variant-rigor .rig-free-note { font-size: 11px; color: var(--rig-ink-mute); font-style: italic; margin-top: var(--rig-s-1); }
-
-    .variant-rigor .rig-actions {
-      display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--rig-s-2);
-      padding: var(--rig-s-3) var(--rig-s-4);
-      border-top: 1px solid var(--rig-line); background: var(--rig-surface-2);
-      flex-shrink: 0; min-height: 56px; align-items: center;
+    /* chips */
+    .variant-polish .pol-chips {
+      display: flex; gap: 4px; flex-wrap: wrap;
     }
-    .variant-rigor .rig-actions--single { grid-template-columns: 1fr; }
-
-    .variant-rigor .rig-cta {
-      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-      min-height: 38px; padding: 0 var(--rig-s-3); border-radius: var(--rig-radius-sm);
-      font-family: var(--font-sans); font-size: 13px; font-weight: 600; letter-spacing: -0.005em;
-      text-decoration: none; cursor: pointer; border: 1px solid transparent; user-select: none;
-      transition: transform var(--rig-dur) var(--rig-ease),
-                  box-shadow var(--rig-dur) var(--rig-ease),
-                  background-color var(--rig-dur) var(--rig-ease);
-    }
-    /* Press feedback on every CTA — subtle scale, instant ease-out for snappy release */
-    .variant-rigor .rig-cta:active { transform: scale(0.97); transition-duration: 100ms; }
-    .variant-rigor .rig-cta--ghost { background: transparent; color: var(--rig-ink); border-color: var(--rig-line); }
-    .variant-rigor .rig-cta--primary { background: var(--rig-ink); color: #fff; position: relative; overflow: hidden; isolation: isolate; }
-    .variant-rigor .rig-cta--primary:focus-visible,
-    .variant-rigor .rig-cta--ghost:focus-visible { outline: none; box-shadow: var(--rig-focus); }
-    /* Hover effects only on real pointer devices — kills false-positive hover-on-tap on mobile */
-    @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-cta--ghost:hover { background: var(--zd-gray-100); }
-      .variant-rigor .rig-cta--primary:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(20,18,40,.18); }
-    }
-    /* Per-tier shimmer sweep on the primary CTA — slow + weak so it reads as
-       "alive" rather than "blinking ad". Color and cadence vary per tier so
-       each ladder rung has its own personality:
-         · Доверен (purple): standard white shimmer, 6.5s
-         · Премиум (gold):   warmer white-gold shimmer, faster (5s) — most attention
-         · Проверен (green): subtle white shimmer, slower (8s) — restrained
-         · Стандартен:       no shimmer (no premium signal)
-         · Безплатен:        no shimmer (free has only the front primary)
-       Pauses on hover so the moment the user engages, the visual noise stops. */
-    .variant-rigor .rig-cta--primary {
-      --rig-shimmer-color: rgba(255,255,255,0.22);
-      --rig-shimmer-dur: 6.5s;
-    }
-    .variant-rigor .rig-cta--primary::after {
-      content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
-      background: linear-gradient(110deg, transparent 35%, var(--rig-shimmer-color) 50%, transparent 65%);
-      transform: translateX(-130%);
-      animation: rig-cta-shimmer var(--rig-shimmer-dur) var(--rig-ease-inout) infinite;
-    }
-    .variant-rigor .rig-cta--primary > * { position: relative; z-index: 2; }
-    .variant-rigor .rig-cta--primary:hover::after { animation-play-state: paused; }
-    /* Tier overrides */
-    .variant-rigor .rig-card--premium .rig-cta--primary  { --rig-shimmer-color: rgba(255,236,178,0.42); --rig-shimmer-dur: 5s; }
-    .variant-rigor .rig-card--verified .rig-cta--primary { --rig-shimmer-color: rgba(255,255,255,0.18); --rig-shimmer-dur: 8s; }
-    .variant-rigor .rig-card--standard .rig-cta--primary::after,
-    .variant-rigor .rig-card--free     .rig-cta--primary::after { animation: none; display: none; }
-    @keyframes rig-cta-shimmer {
-      0%, 70% { transform: translateX(-130%); }
-      90%, 100% { transform: translateX(130%); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-cta--primary::after { animation: none; display: none; }
+    .variant-polish .pol-chip {
+      font-size: 10.5px; font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--zd-gray-100);
+      color: var(--zd-gray-800);
+      letter-spacing: 0.005em;
     }
 
-    .variant-rigor .rig-card--elite    .rig-cta--primary { background: var(--zd-purple-600); }
-    .variant-rigor .rig-card--elite    .rig-cta--primary:hover { background: var(--zd-purple-800); }
-    .variant-rigor .rig-card--premium  .rig-cta--primary { background: var(--zd-gold-700); color: #fff; }
-    .variant-rigor .rig-card--premium  .rig-cta--primary:hover { background: #6b5100; }
-    .variant-rigor .rig-card--verified .rig-cta--primary { background: var(--zd-mint-600); }
-    .variant-rigor .rig-card--verified .rig-cta--primary:hover { background: var(--zd-mint-800); }
-    .variant-rigor .rig-card--standard .rig-cta--primary { background: var(--zd-gray-800); }
-
-    .variant-rigor .rig-card--free { border-style: dashed; border-color: var(--zd-gray-300); background: #fafaf8; }
-    .variant-rigor .rig-card--free .rig-cta--solo { background: var(--zd-gray-400); color: #fff; cursor: not-allowed; }
-    .variant-rigor .rig-card--free .rig-actions { background: transparent; }
-
-    @keyframes rig-elite-shimmer {
-      0%, 100% { box-shadow: 0 1px 2px rgba(20,18,40,.04), 0 0 0 1px rgba(124,77,255,.12); }
-      50%      { box-shadow: 0 1px 2px rgba(20,18,40,.04), 0 0 0 1px rgba(212,175,55,.32); }
+    /* decorative socials */
+    .variant-polish .pol-socials {
+      display: flex; gap: 5px; flex-wrap: wrap;
+      padding-top: 2px;
+      border-top: 1px solid var(--zd-gray-100);
+      margin-top: 2px;
+      padding-top: 8px;
     }
-    .variant-rigor .rig-card--elite { animation: rig-elite-shimmer 6s ease-in-out infinite; }
-    @keyframes rig-premium-shimmer {
-      0%, 100% { box-shadow: 0 1px 2px rgba(20,18,40,.04), 0 0 0 1px rgba(212,175,55,.18); }
-      50%      { box-shadow: 0 1px 2px rgba(20,18,40,.04), 0 0 0 1px rgba(212,175,55,.40); }
+    .variant-polish .pol-s {
+      width: 22px; height: 22px;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--zd-gray-600);
+      opacity: 0.65;
+      border-radius: 6px;
     }
-    .variant-rigor .rig-card--premium { animation: rig-premium-shimmer 6s ease-in-out infinite; }
+    .variant-polish .pol-s .pol-i { width: 13px; height: 13px; }
 
-    .variant-rigor .rig-card--mobile { min-height: 0; font-size: 13px; }
-    .variant-rigor .rig-card--mobile .rig-name { font-size: 17px; }
-    .variant-rigor .rig-card--mobile .rig-desc { -webkit-line-clamp: 2; font-size: 12.5px; }
-    .variant-rigor .rig-card--mobile .rig-body { padding: var(--rig-s-3); gap: 6px; }
-    .variant-rigor .rig-card--mobile .rig-actions { padding: var(--rig-s-2) var(--rig-s-3); }
-    .variant-rigor .rig-card--mobile .rig-cta { min-height: 44px; font-size: 13px; }
-
-    @media (max-width: 1024px) { .variant-rigor .rig-card { min-height: 660px; } .variant-rigor .rig-name { font-size: 18px; } }
-    @media (max-width: 768px) { .variant-rigor .rig-card { min-height: 0; } .variant-rigor .rig-actions { grid-template-columns: 1fr 1fr; } .variant-rigor .rig-cta { min-height: 44px; } }
-    @media (max-width: 390px) { .variant-rigor .rig-body { padding: var(--rig-s-3); } .variant-rigor .rig-name { font-size: 17px; } .variant-rigor .rig-desc { -webkit-line-clamp: 2; } .variant-rigor .rig-chips li { font-size: 10.5px; } }
-    @media (max-width: 320px) { .variant-rigor .rig-medallion { padding: 6px 12px; font-size: 10px; } .variant-rigor .rig-actions { grid-template-columns: 1fr; } }
-
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-card,
-      .variant-rigor .rig-card:hover,
-      .variant-rigor .rig-thumb img,
-      .variant-rigor .rig-flip-cue,
-      .variant-rigor .rig-cta,
-      .variant-rigor .rig-cta--primary:hover {
-        transition: none !important; animation: none !important; transform: none !important;
-      }
-      .variant-rigor .rig-card--elite, .variant-rigor .rig-card--premium { animation: none !important; }
-      .variant-rigor .rig-card:hover .rig-flip-cue { opacity: 1; }
+    /* CTA stack */
+    .variant-polish .pol-cta-stack {
+      display: flex; flex-direction: column; gap: 6px;
+      margin-top: auto;
+      padding-top: 6px;
     }
-    /* Back face — lighter palette for better text contrast focus.
-       Each tier has a subtle hue tint; the body stays near-white so text and
-       CTAs read with high contrast. The tier color signals presence via a
-       thicker accent border and a soft top-left corner wash, not by darkening
-       the whole surface. */
-    .variant-rigor .rig-card--back {
-      grid-template-rows: auto 1fr auto; min-height: 660px;
-      background: linear-gradient(160deg, var(--rig-back-from, #fff) 0%, var(--rig-back-to, #fafafa) 100%);
-      border-left: 5px solid var(--rig-accent, var(--zd-gray-400));
-      box-shadow: inset 0 0 0 1px var(--rig-line), 0 4px 20px rgba(20,18,40,0.06);
+    .variant-polish .pol-cta {
       position: relative;
-      /* Darker, denser ink on the back so text pops against the lighter surface */
-      color: #1a1820;
-    }
-    /* Soft corner wash anchored to the top-left so the tier color feels
-       present without flooding the whole card. */
-    .variant-rigor .rig-card--back::before {
-      content: ""; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(90% 65% at 0% 0%, var(--rig-accent, var(--zd-gray-400)) 0%, transparent 55%);
-      opacity: 0.07; z-index: 0;
-    }
-    .variant-rigor .rig-card--back > * { position: relative; z-index: 1; }
-    /* Lighter, near-white tints per tier — main surface stays bright so
-       the description and CTAs have maximum legibility. */
-    /* Доверен — pale lavender → ivory */
-    .variant-rigor .rig-card--back.rig-card--elite    { --rig-accent: var(--zd-purple-600); --rig-back-from: #faf7ff; --rig-back-to: #fffcf2; }
-    /* Премиум — pale gold → white. Pulled paler than the previous swatch and
-       the radial wash is dialled down per tier so text contrast matches the
-       other backs. */
-    .variant-rigor .rig-card--back.rig-card--premium  { --rig-accent: #d4af37;             --rig-back-from: #fdf8e7; --rig-back-to: #ffffff; }
-    .variant-rigor .rig-card--back.rig-card--premium::before { opacity: 0.04; }
-    /* Проверен — pale mint → white */
-    .variant-rigor .rig-card--back.rig-card--verified { --rig-accent: var(--zd-mint-600);  --rig-back-from: #f1faf3; --rig-back-to: #ffffff; }
-    /* Стандартен — glossy white glass: subtle vertical highlight, no tier tint */
-    .variant-rigor .rig-card--back.rig-card--standard {
-      --rig-accent: var(--zd-charcoal);
-      background: linear-gradient(180deg, #ffffff 0%, #fafbfc 50%, #f4f6f8 100%);
-    }
-    .variant-rigor .rig-card--back.rig-card--standard::before {
-      background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 30%);
-      opacity: 1;
-    }
-    .variant-rigor .rig-back-body { display: flex; flex-direction: column; gap: var(--rig-s-3); padding: var(--rig-s-4); overflow: hidden; }
-    .variant-rigor .rig-back-desc-wrap { position: relative; }
-    .variant-rigor .rig-back-desc { font-size: 13px; line-height: 1.6; color: #2c2935; margin: 0; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
-    /* Back-side read-more: stylized "enter" key — circular badge with return-arrow icon.
-       Background follows the tier accent; per-tier shadow + hover variants below. */
-    .variant-rigor .rig-back-more {
-      position: absolute; right: -2px; bottom: -2px;
-      width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center;
-      border-radius: 8px;
-      background: var(--rig-arrow-bg, var(--zd-purple-600));
-      color: var(--rig-arrow-fg, #fff);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.20), inset 0 -2px 0 rgba(0,0,0,0.12);
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 11px 14px;
+      border-radius: 11px;
+      font-size: 13px; font-weight: 700;
+      font-family: var(--font-sans);
       text-decoration: none;
-      transition: transform var(--rig-dur) var(--rig-ease),
-                  background-color var(--rig-dur) var(--rig-ease),
-                  box-shadow var(--rig-dur) var(--rig-ease);
+      letter-spacing: 0.005em;
+      cursor: pointer;
+      will-change: transform;
+      transition:
+        transform 160ms var(--pol-spring),
+        box-shadow 200ms var(--pol-spring),
+        background-color 180ms ease;
     }
-    .variant-rigor .rig-back-more::before {
-      content: ""; position: absolute; right: 100%; top: 50%; width: 28px; height: 1.6em; transform: translateY(-50%);
-      background: linear-gradient(90deg, transparent 0%, var(--rig-back-from, #fff) 70%);
-      pointer-events: none;
+    .variant-polish .pol-cta .pol-i { width: 14px; height: 14px; transition: transform 220ms var(--pol-spring); }
+    .variant-polish .pol-cta:active { transform: scale(0.97); transition: transform 110ms var(--pol-press); }
+
+    /* primary CTA — dominant action: drives parent into listing.html */
+    .variant-polish .pol-cta--primary {
+      background: var(--zd-purple-600);
+      color: #fff;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.25) inset,
+        0 1px 2px rgba(124, 77, 255, .25),
+        0 6px 14px rgba(124, 77, 255, .28);
     }
-    /* Per-tier arrow badge colors */
-    .variant-rigor .rig-card--back.rig-card--elite    { --rig-arrow-bg: var(--zd-purple-600); --rig-arrow-fg: #fff; --rig-arrow-bg-hover: var(--zd-purple-800); }
-    .variant-rigor .rig-card--back.rig-card--premium  { --rig-arrow-bg: var(--zd-gold-700);   --rig-arrow-fg: #fff; --rig-arrow-bg-hover: #6b5100; }
-    .variant-rigor .rig-card--back.rig-card--verified { --rig-arrow-bg: var(--zd-mint-600);   --rig-arrow-fg: #fff; --rig-arrow-bg-hover: var(--zd-mint-800); }
-    .variant-rigor .rig-card--back.rig-card--standard { --rig-arrow-bg: var(--zd-charcoal);   --rig-arrow-fg: #fff; --rig-arrow-bg-hover: #1f2a33; }
-    .variant-rigor .rig-back-more:active { transform: scale(0.94); transition-duration: 100ms; }
-    .variant-rigor .rig-back-more:focus-visible { outline: none; box-shadow: var(--rig-focus); }
-    .variant-rigor .rig-back-more svg { width: 14px; height: 14px; display: block; }
-    @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-back-more:hover {
-        background: var(--rig-arrow-bg-hover, var(--zd-purple-800));
-        transform: translate(-1px,-1px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.12);
+    .variant-polish .pol-cta--primary:hover {
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.35) inset,
+        0 2px 4px rgba(124, 77, 255, .30),
+        0 10px 22px rgba(124, 77, 255, .38);
+    }
+    .variant-polish .pol-cta--primary:hover .pol-i { transform: translateX(2px); }
+    .variant-polish .pol-cta--primary:active {
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.18) inset,
+        0 1px 2px rgba(124, 77, 255, .25);
+    }
+
+    /* ghost / secondary CTA */
+    .variant-polish .pol-cta--ghost {
+      background: var(--zd-gray-100);
+      color: var(--zd-gray-800);
+      box-shadow: 0 1px 0 rgba(255,255,255,.6) inset;
+    }
+    .variant-polish .pol-cta--ghost:hover { background: var(--zd-gray-200); }
+
+    /* ─── tier overrides ────────────────────────────────────── */
+    /* ELITE — purple */
+    .variant-polish .pol-card--elite {
+      box-shadow:
+        0 1px 2px rgba(124, 77, 255, .08),
+        0 6px 16px rgba(124, 77, 255, .12),
+        0 22px 44px rgba(124, 77, 255, .18);
+    }
+    .variant-polish .pol-card--elite:hover {
+      box-shadow:
+        0 1px 2px rgba(124, 77, 255, .10),
+        0 10px 24px rgba(124, 77, 255, .18),
+        0 30px 60px rgba(124, 77, 255, .26);
+    }
+    .variant-polish .pol-card--elite .pol-tier-pill {
+      background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-400));
+      color: #fff;
+    }
+
+    /* PREMIUM — gold */
+    .variant-polish .pol-card--premium {
+      box-shadow:
+        0 1px 2px rgba(212, 175, 55, .12),
+        0 6px 16px rgba(212, 175, 55, .15),
+        0 22px 44px rgba(138, 104, 0, .18);
+    }
+    .variant-polish .pol-card--premium:hover {
+      box-shadow:
+        0 1px 2px rgba(212, 175, 55, .16),
+        0 10px 24px rgba(212, 175, 55, .22),
+        0 30px 60px rgba(138, 104, 0, .26);
+    }
+    .variant-polish .pol-card--premium .pol-tier-pill {
+      background: linear-gradient(135deg, var(--zd-gold-500), var(--zd-gold-300));
+      color: var(--zd-gold-700);
+    }
+    .variant-polish .pol-card--premium .pol-cta--primary {
+      background: linear-gradient(135deg, var(--zd-gold-500), #e0c456);
+      color: var(--zd-gold-700);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.45) inset,
+        0 1px 2px rgba(212, 175, 55, .35),
+        0 6px 14px rgba(138, 104, 0, .28);
+    }
+    .variant-polish .pol-card--premium .pol-cta--primary:hover {
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.55) inset,
+        0 2px 4px rgba(212, 175, 55, .40),
+        0 10px 22px rgba(138, 104, 0, .38);
+    }
+
+    /* VERIFIED — mint */
+    .variant-polish .pol-card--verified {
+      box-shadow:
+        0 1px 2px rgba(46, 153, 77, .08),
+        0 6px 16px rgba(46, 153, 77, .12),
+        0 22px 44px rgba(26, 110, 52, .14);
+    }
+    .variant-polish .pol-card--verified:hover {
+      box-shadow:
+        0 1px 2px rgba(46, 153, 77, .12),
+        0 10px 24px rgba(46, 153, 77, .18),
+        0 30px 60px rgba(26, 110, 52, .22);
+    }
+    .variant-polish .pol-card--verified .pol-tier-pill {
+      background: var(--zd-mint-600);
+      color: #fff;
+    }
+    .variant-polish .pol-card--verified .pol-cta--primary {
+      background: var(--zd-mint-600);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.25) inset,
+        0 1px 2px rgba(46, 153, 77, .30),
+        0 6px 14px rgba(46, 153, 77, .32);
+    }
+    .variant-polish .pol-card--verified .pol-cta--primary:hover {
+      background: #279043;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.35) inset,
+        0 2px 4px rgba(46, 153, 77, .35),
+        0 10px 22px rgba(26, 110, 52, .42);
+    }
+
+    /* STANDARD — neutral gray */
+    .variant-polish .pol-card--standard {
+      box-shadow:
+        0 1px 2px rgba(20, 14, 40, .06),
+        0 4px 10px rgba(20, 14, 40, .07),
+        0 14px 28px rgba(20, 14, 40, .08);
+      border-top: 2.5px solid var(--zd-gray-600);
+    }
+    .variant-polish .pol-card--standard .pol-tier-pill {
+      background: rgba(255,255,255,0.95);
+      color: var(--zd-gray-600);
+    }
+    .variant-polish .pol-card--standard .pol-cta--primary {
+      background: var(--zd-gray-800);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.18) inset,
+        0 1px 2px rgba(20, 14, 40, .25),
+        0 6px 14px rgba(20, 14, 40, .22);
+    }
+
+    /* FREE — degraded */
+    .variant-polish .pol-card--free {
+      opacity: 0.82;
+      background: #fcfcfb;
+      border: 1.5px dashed var(--zd-gray-300);
+      box-shadow: none;
+    }
+    .variant-polish .pol-card--free:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(20, 14, 40, .06);
+    }
+    .variant-polish .pol-card--free .pol-photo img {
+      filter: saturate(0.5);
+    }
+    .variant-polish .pol-card--free .pol-tier-pill {
+      background: rgba(255,255,255,0.95);
+      color: var(--zd-gray-600);
+      box-shadow: none;
+      border: 1px solid var(--zd-gray-300);
+    }
+    .variant-polish .pol-card--free .pol-cta--primary {
+      background: var(--zd-gray-600);
+      color: #fff;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.15) inset,
+        0 1px 2px rgba(0,0,0,.15),
+        0 4px 10px rgba(0,0,0,.12);
+    }
+
+    /* mobile sizing tweaks (cards in narrow column) */
+    .variant-polish .pol-card--mobile .pol-name { font-size: 16px; }
+    .variant-polish .pol-card--mobile .pol-body { padding: 12px; gap: 7px; }
+    .variant-polish .pol-card--mobile .pol-cta { padding: 10px 12px; font-size: 12.5px; }
+    .variant-polish .pol-card--mobile .pol-logo { width: 38px; height: 38px; top: -19px; }
+
+    /* reduced motion: kill all transforms / transitions */
+    @media (prefers-reduced-motion: reduce) {
+      .variant-polish .pol-card,
+      .variant-polish .pol-cta,
+      .variant-polish .pol-photo img,
+      .variant-polish .pol-flip-pill,
+      .variant-polish .pol-cta .pol-i {
+        transition: none !important;
+        transform: none !important;
+      }
+      .variant-polish .pol-card:hover,
+      .variant-polish .pol-card:active,
+      .variant-polish .pol-cta:hover,
+      .variant-polish .pol-cta:active,
+      .variant-polish .pol-card:hover .pol-photo img {
+        transform: none !important;
       }
     }
-    .variant-rigor .rig-back-map { display: block; position: relative; border-radius: var(--rig-radius-sm); overflow: hidden; border: 1px solid var(--rig-line); background: var(--zd-gray-100); aspect-ratio: 16 / 7; padding: 0; gap: 0; }
-    .variant-rigor .rig-back-map iframe { width: 100%; height: 100%; border: 0; display: block; }
-    .variant-rigor .rig-back-map-link { position: absolute; right: 8px; bottom: 8px; padding: 4px 9px; border-radius: 999px; background: rgba(255,255,255,0.95); color: var(--rig-ink); font-size: 11px; font-weight: 600; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-    .variant-rigor .rig-back-map-link:hover { background: #fff; }
-    .variant-rigor .rig-back-head { display: grid; grid-template-columns: 56px 1fr; gap: var(--rig-s-3); align-items: center; padding-bottom: var(--rig-s-3); border-bottom: 1px solid rgba(0,0,0,0.08); }
-    .variant-rigor .rig-back-logo { width: 56px; height: 56px; border-radius: var(--rig-radius-sm); object-fit: cover; background: var(--zd-gray-100); border: 1px solid var(--rig-line); box-shadow: 0 1px 2px rgba(20,18,40,.06); }
-    .variant-rigor .rig-back-head .rig-name { margin: 0; font-size: 17px; line-height: 1.2; }
-    .variant-rigor .rig-back-sub { font-size: 11.5px; letter-spacing: 0.02em; color: var(--rig-ink-soft); margin-top: 3px; display: inline-flex; flex-wrap: wrap; align-items: center; gap: 5px; }
-    /* Сертифициран pill — tier-coloured per card. Defaults to mint;
-       per-tier overrides below match Доверен (purple), Премиум (gold). */
-    .variant-rigor .rig-back-pill { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; font-size: 10px; font-weight: 600; background: #ecf7ef; color: var(--zd-mint-800); border: 1px solid var(--zd-mint-100); }
-    .variant-rigor .rig-card--back.rig-card--elite    .rig-back-pill { background: #f6f1ff; color: var(--zd-purple-800); border-color: var(--zd-purple-100); }
-    .variant-rigor .rig-card--back.rig-card--premium  .rig-back-pill { background: #fbf3d8; color: var(--zd-gold-700);  border-color: #ead78a; }
-    .variant-rigor .rig-card--back.rig-card--verified .rig-back-pill { background: #ecf7ef; color: var(--zd-mint-800);  border-color: var(--zd-mint-100); }
-    .variant-rigor .rig-card--back.rig-card--standard .rig-back-pill { background: #eef1f4; color: var(--zd-charcoal);  border-color: #d6dde2; }
-    .variant-rigor .rig-back-section { display: flex; flex-direction: column; gap: var(--rig-s-1); }
-    /* Back face section labels — high-contrast so they read on every tier
-       gradient, including the gold-tinted Премиум back. */
-    .variant-rigor .rig-back-h { margin: 0; font-family: var(--font-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #524e60; }
-    .variant-rigor .rig-back-text { margin: 0; font-size: 13px; line-height: 1.6; color: #16141d; }
-    .variant-rigor .rig-back-hours { margin: 0; display: grid; grid-template-columns: 1fr; gap: 3px; }
-    .variant-rigor .rig-back-hours > div { display: grid; grid-template-columns: 88px 1fr; align-items: baseline; gap: var(--rig-s-2); padding: 3px 0; border-bottom: 1px solid var(--rig-line); }
-    .variant-rigor .rig-back-hours > div:last-child { border-bottom: 0; }
-    .variant-rigor .rig-back-hours dt { font-size: 11.5px; font-weight: 600; color: var(--rig-ink-soft); margin: 0; }
-    .variant-rigor .rig-back-hours dd { font-size: 12.5px; font-weight: 600; color: var(--rig-ink); letter-spacing: -0.005em; margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
-    /* Transparent so the back face's tier gradient flows through into the footer */
-    .variant-rigor .rig-back-actions { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: auto; gap: 6px var(--rig-s-2); padding: var(--rig-s-3) var(--rig-s-4); border-top: 1px solid rgba(0,0,0,0.06); background: transparent; }
-    .variant-rigor .rig-back-actions .rig-cta { width: 100%; }
-    .variant-rigor .rig-back-actions .rig-back-flip { grid-column: 1 / -1; }
-    @media (max-width: 360px) { .variant-rigor .rig-back-actions { grid-template-columns: 1fr; } }
-    .variant-rigor .rig-back-flip {
-      appearance: none; background: transparent; border: 0; padding: 6px;
-      font-family: var(--font-sans); font-size: 11.5px; font-weight: 600; letter-spacing: 0.02em;
-      color: var(--rig-ink-mute); cursor: pointer; border-radius: var(--rig-radius-sm);
-      align-self: center;
-      transition: color var(--rig-dur) var(--rig-ease),
-                  background-color var(--rig-dur) var(--rig-ease),
-                  transform var(--rig-dur) var(--rig-ease);
+    /* ─── Polish · Back face ─── */
+    .variant-polish .pol-back-card { position: relative; display: flex; flex-direction: column; background: #fff; border-radius: 22px; padding: 18px 16px 14px; gap: 12px; isolation: isolate; overflow: hidden; box-shadow: 0 1px 2px rgba(20,14,40,.04), 0 6px 14px rgba(20,14,40,.06), 0 18px 36px rgba(20,14,40,.07); transition: transform 280ms cubic-bezier(.2,.8,.2,1), box-shadow 280ms cubic-bezier(.2,.8,.2,1); will-change: transform; height: 580px; }
+    @media (hover: hover) and (pointer: fine) { .variant-polish .pol-back-card:hover { transform: translateY(-4px) scale(1.008); } }
+    .variant-polish .pol-back-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--zd-gray-300); z-index: 1; }
+
+    .variant-polish .pol-back-head { display: flex; align-items: center; gap: 11px; padding-bottom: 12px; border-bottom: 1px solid var(--zd-gray-100); }
+    .variant-polish .pol-back-logo { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px; background: #fff; padding: 3px; box-shadow: 0 4px 10px rgba(0,0,0,.10), 0 1px 2px rgba(0,0,0,.06); }
+    .variant-polish .pol-back-logo img { width: 100%; height: 100%; border-radius: 9px; object-fit: cover; }
+    .variant-polish .pol-back-id { min-width: 0; flex: 1; }
+    .variant-polish .pol-back-name { font-family: var(--font-serif); font-size: 17px; line-height: 1.18; letter-spacing: -0.018em; color: var(--zd-gray-800); margin: 0 0 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .variant-polish .pol-back-sub { font-size: 11px; font-weight: 600; color: var(--zd-gray-600); letter-spacing: 0.01em; display: inline-flex; align-items: center; gap: 6px; }
+    .variant-polish .pol-back-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--zd-gray-400); }
+
+    .variant-polish .pol-back-section { display: flex; flex-direction: column; gap: 5px; }
+    .variant-polish .pol-back-eyebrow { font-size: 9.5px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--zd-gray-600); opacity: 0.78; }
+    .variant-polish .pol-back-text { font-size: 12.5px; line-height: 1.5; color: #4a4458; margin: 0; }
+    .variant-polish .pol-back-text--addr { color: var(--zd-gray-800); font-weight: 500; }
+
+    .variant-polish .pol-back-hours { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; font-size: 12px; font-variant-numeric: tabular-nums; }
+    .variant-polish .pol-back-hours-day { color: var(--zd-gray-600); font-weight: 500; }
+    .variant-polish .pol-back-hours-time { color: var(--zd-gray-800); font-weight: 600; letter-spacing: -0.005em; }
+    .variant-polish .pol-back-hours-time--closed { color: var(--zd-gray-600); font-weight: 500; font-style: italic; }
+
+    .variant-polish .pol-back-section--socials .pol-back-socials { display: flex; flex-wrap: wrap; gap: 4px; }
+    .variant-polish .pol-back-section--socials .pol-s { width: 24px; height: 24px; background: var(--zd-gray-100); opacity: 1; color: var(--zd-gray-800); display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 12px; }
+
+    .variant-polish .pol-back-cta-stack { display: flex; flex-direction: column; gap: 6px; margin-top: auto; padding-top: 6px; }
+    .variant-polish .pol-back-link { display: inline-flex; align-items: center; justify-content: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: var(--zd-gray-800); text-decoration: none; padding: 8px 10px; border-radius: 9px; background: var(--zd-gray-100); transition: background 180ms ease; }
+    .variant-polish .pol-back-link:hover { background: var(--zd-gray-200); }
+    .variant-polish .pol-back-flip { display: inline-flex; align-items: center; justify-content: center; gap: 5px; font-size: 11px; font-weight: 600; color: var(--zd-gray-600); letter-spacing: 0.01em; padding: 6px; cursor: pointer; user-select: none; transition: color 160ms ease; }
+    .variant-polish .pol-back-flip:hover { color: var(--zd-gray-800); }
+
+    /* tier accents */
+    .variant-polish .pol-back-card--elite::before    { background: linear-gradient(90deg, var(--zd-purple-600), var(--zd-purple-400), var(--zd-purple-600)); }
+    .variant-polish .pol-back-card--elite            { box-shadow: 0 1px 2px rgba(124,77,255,.08), 0 6px 16px rgba(124,77,255,.12), 0 22px 44px rgba(124,77,255,.18); }
+    .variant-polish .pol-back-card--premium::before  { background: linear-gradient(90deg, var(--zd-gold-500), #e0c456, var(--zd-gold-500)); }
+    .variant-polish .pol-back-card--premium          { box-shadow: 0 1px 2px rgba(212,175,55,.12), 0 6px 16px rgba(212,175,55,.15), 0 22px 44px rgba(138,104,0,.18); }
+    .variant-polish .pol-back-card--verified::before { background: var(--zd-mint-600); }
+    .variant-polish .pol-back-card--verified         { box-shadow: 0 1px 2px rgba(46,153,77,.08), 0 6px 16px rgba(46,153,77,.12), 0 22px 44px rgba(26,110,52,.14); }
+    .variant-polish .pol-back-card--standard::before { background: var(--zd-gray-600); }
+
+    /* free placeholder */
+    .variant-polish .pol-back-card--none { background: #fafaf9; border: 1.5px dashed var(--zd-gray-300); box-shadow: none; align-items: center; justify-content: center; text-align: center; padding: 24px 18px; }
+    .variant-polish .pol-back-card--none::before { display: none; }
+    @media (hover: hover) and (pointer: fine) { .variant-polish .pol-back-card--none:hover { transform: none; box-shadow: none; } }
+    .variant-polish .pol-back-none { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: auto 0; max-width: 220px; }
+    .variant-polish .pol-back-none-mark { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--zd-gray-100); color: var(--zd-gray-600); font-size: 18px; }
+    .variant-polish .pol-back-none-title { font-family: var(--font-serif); font-size: 14.5px; letter-spacing: -0.01em; color: var(--zd-gray-800); }
+    .variant-polish .pol-back-none-text { font-size: 11.5px; line-height: 1.5; color: var(--zd-gray-600); margin: 0; }
+
+    /* mobile sizing */
+    .variant-polish .pol-back-card--mobile { padding: 14px 12px 12px; gap: 10px; height: 580px; }
+    .variant-polish .pol-back-card--mobile .pol-back-name { font-size: 15px; }
+    .variant-polish .pol-back-card--mobile .pol-back-logo { width: 38px; height: 38px; }
+    .variant-polish .pol-back-card--mobile .pol-back-text,
+    .variant-polish .pol-back-card--mobile .pol-back-hours { font-size: 11.5px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .variant-polish .pol-back-card,
+      .variant-polish .pol-back-link { transition: none !important; transform: none !important; }
+      .variant-polish .pol-back-card:hover { transform: none !important; }
     }
-    .variant-rigor .rig-back-flip:active { transform: scale(0.96); transition-duration: 100ms; }
-    @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-back-flip:hover { color: var(--rig-ink); background: var(--zd-gray-100); }
-    }
-    .variant-rigor .rig-back-soc-list { display: flex; flex-direction: column; gap: 5px; }
-    .variant-rigor .rig-back-soc-row { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--rig-ink-soft); font-family: var(--font-sans); letter-spacing: 0.005em; }
-    .variant-rigor .rig-back-soc-i { font-size: 13px; line-height: 1; opacity: 0.7; min-width: 14px; }
-    .variant-rigor .rig-card--back.rig-card--free { background: #fafaf8; border-style: dashed; border-color: var(--zd-gray-300); }
-    .variant-rigor .rig-card--back.rig-card--free .rig-back-head { border-bottom-color: var(--zd-gray-200); }
-    .variant-rigor .rig-card--back.rig-card--free .rig-name { color: var(--rig-ink-soft); }
 
-    .variant-rigor .rig-back-placeholder { display: grid; grid-template-rows: auto 1fr; background: #fafaf8; border: 1.5px dashed var(--zd-gray-300); border-radius: var(--rig-radius); overflow: hidden; min-height: 580px; color: var(--rig-ink-mute); }
-    .variant-rigor .rig-back-placeholder .rig-medallion { background: transparent; border-bottom-color: var(--zd-gray-200); }
-    .variant-rigor .rig-back-placeholder-body { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: var(--rig-s-2); padding: var(--rig-s-6) var(--rig-s-4); }
-    .variant-rigor .rig-back-placeholder-ico { color: var(--zd-gray-400); margin-bottom: var(--rig-s-1); }
-    .variant-rigor .rig-back-placeholder-title { margin: 0; font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: var(--rig-ink-soft); }
-    .variant-rigor .rig-back-placeholder-text { margin: 0; font-size: 12px; line-height: 1.5; color: var(--rig-ink-mute); max-width: 200px; }
-
-    .variant-rigor .rig-card--back.rig-card--mobile { min-height: 0; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-body { padding: var(--rig-s-3); gap: var(--rig-s-2); }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-head { grid-template-columns: 44px 1fr; padding-bottom: var(--rig-s-2); gap: var(--rig-s-2); }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-logo { width: 44px; height: 44px; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-head .rig-name { font-size: 15px; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-text { font-size: 12.5px; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-hours > div { grid-template-columns: 78px 1fr; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-actions { padding: var(--rig-s-2) var(--rig-s-3); }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-actions .rig-cta { min-height: 44px; }
-    .variant-rigor .rig-back-placeholder--mobile { min-height: 0; padding-bottom: var(--rig-s-3); }
-    .variant-rigor .rig-back-placeholder--mobile .rig-back-placeholder-body { padding: var(--rig-s-4) var(--rig-s-3); }
-
-/* ═══ search3.html — Rigor flip system (clean rebuild) ═══
-   Markup: <article class="zd-card zd-card--<tier>">
-             <div class="zd-flipper">
-               <div class="face face--front rig-card rig-card--<tier>">…</div>
-               <div class="face face--back  rig-card rig-card--back rig-card--<tier>">…</div>
-             </div>
-           </article>
-   - .zd-card is the perspective container.
-   - .zd-flipper holds preserve-3d + the rotateY transition.
-   - Each .face is absolute, inset:0, backface-hidden — they share the same plane.
-   - Toggling .flipped on .zd-card rotates the flipper 180deg.
-   - Free-tier cards opt out via class check in JS. */
-body.variant-rigor .zd-card {
+/* ─── search2.html: Polish overrides on top of .zd-card system ─── */
+body.variant-polish .zd-card {
+  /* Re-set the perspective container properties Polish needs.
+     The original .zd-card { perspective: 1200px } stays useful. */
   background: transparent;
-  border-radius: var(--rig-radius);
-  perspective: 1100px;
-  min-height: 660px;
-  -webkit-tap-highlight-color: transparent;
+  border-radius: 0;
 }
-body.variant-rigor .zd-flipper {
-  position: relative;
-  width: 100%;
-  min-height: 660px;
-  transform-style: preserve-3d;
-  transition: transform .45s var(--rig-ease-flip);
+body.variant-polish .zd-card:hover {
+  /* Disable .zd-card's hover lift; Polish has its own on .pol-card. */
+  transform: none;
+  box-shadow: none;
 }
-body.variant-rigor .zd-card.flipped .zd-flipper {
-  transform: rotateY(180deg);
-}
-body.variant-rigor .zd-flipper > .face {
-  position: absolute;
-  inset: 0;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  border-radius: var(--rig-radius);
-  overflow: hidden;
-}
-body.variant-rigor .zd-flipper > .face--front { transform: rotateY(0deg); }
-body.variant-rigor .zd-flipper > .face--back  { transform: rotateY(180deg); }
-/* Tier shimmer pseudos from the legacy .zd-flipper styles use border-radius: 22px;
-   round them down to the Rigor radius so they don't bleed square corners. */
-body.variant-rigor .zd-flipper::before { border-radius: var(--rig-radius); }
-/* Neutralize the legacy .zd-flipper box-shadow and color so they don't bleed in. */
-body.variant-rigor .zd-flipper { box-shadow: none; color: inherit; border-radius: var(--rig-radius); }
-
-/* Hover lift on the article (never on the inner rig-card → never fights the rotation).
-   Doubled .zd-card.zd-card beats the legacy .zd-card--<tier>:hover rules without !important.
-   :not(.flipped) auto-disables the lift while the card is showing its back. */
-body.variant-rigor .zd-card.zd-card { transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s cubic-bezier(.2,.8,.2,1); }
-body.variant-rigor .zd-card.zd-card:hover:not(.flipped) {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 32px rgba(20, 18, 40, 0.10), 0 4px 12px rgba(20, 18, 40, 0.06);
-}
-body.variant-rigor .zd-back-cta, body.variant-rigor .zd-tagline,
-body.variant-rigor .zd-card-actions, body.variant-rigor .zd-cta-row { display: none; }
-
-body.variant-rigor .rig-socials, body.variant-rigor .rig-socials .rig-soc {
+body.variant-polish .zd-card.flipped .zd-flipper { transform: none; }
+/* Hide any stray legacy zd-* descendants that don't apply to the new markup */
+body.variant-polish .zd-back-cta, body.variant-polish .zd-tagline,
+body.variant-polish .zd-card-actions, body.variant-polish .zd-cta-row { display: none; }
+/* Front-face socials: visibility yes, interactivity no */
+body.variant-polish .pol-socials, body.variant-polish .pol-socials a {
   pointer-events: none;
   cursor: default;
 }
+body.variant-polish .pol-socials .pol-i { color: var(--zd-gray-600); }
 
-/* Convert decorative .rig-flip-cue (pointer-events:none) → real button.
-   We swap the markup to <button class="rig-flip-btn" data-action="flip">. */
-body.variant-rigor .rig-flip-btn {
-  position: absolute; bottom: var(--rig-s-2); right: var(--rig-s-2);
-  appearance: none; background: rgba(31,29,41,.85); color: #fff; border: 0;
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 5px 10px;
-  font-family: var(--font-sans);
-  font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em;
-  border-radius: 999px;
-  cursor: pointer;
-  opacity: 0; transform: translateY(2px);
-  transition: opacity var(--rig-dur) var(--rig-ease), transform var(--rig-dur) var(--rig-ease);
-  z-index: 4;
+/* Polish "Виж бързо" pill becomes the front-face flip cue but reads as
+   "Виж подробности" per spec. Make sure the button-style works. */
+body.variant-polish .pol-flip-pill {
+  appearance: none; border: 0; font: inherit;
 }
-body.variant-rigor .rig-flip-btn::before { content: "↻"; opacity: .85; }
-body.variant-rigor .rig-flip-btn:focus-visible { opacity: 1; transform: translateY(0); outline: none; box-shadow: var(--rig-focus); }
-body.variant-rigor .rig-flip-btn:active { transform: scale(0.95); transition-duration: 100ms; }
-@media (hover: hover) and (pointer: fine) {
-  body.variant-rigor .face--front:hover .rig-flip-btn { opacity: 1; transform: translateY(0); }
-  body.variant-rigor .rig-flip-btn:hover { background: rgba(31,29,41,1); }
-}
-/* On touch devices, the flip button stays visible (no hover available) */
-@media (hover: none) {
-  body.variant-rigor .rig-flip-btn { opacity: 1; transform: translateY(0); }
-}
-body.variant-rigor .rig-card--free .rig-flip-btn { display: none; }
-@media (hover: none) {
-  body.variant-rigor .rig-flip-btn { opacity: .85; transform: translateY(0); }
-}
-body.variant-rigor .rig-back-flip {
+body.variant-polish .pol-back-flip {
   appearance: none; border: 0; background: transparent; font: inherit;
-  cursor: pointer;
 }
 
-body.variant-rigor .card-stack {
+/* The .pol-card layout: photo+body sit inside .face--front absolutely.
+   Make the .face take its actual height from .pol-card's min-height, not
+   from the absolute-positioned defaults. */
+body.variant-polish [data-flip-card] > .flipper {
+  min-height: 580px;
+}
+
+/* Search results container — keep grid but adjust gap for Polish */
+body.variant-polish .card-stack {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 22px;
   padding: 16px 24px 80px;
 }
-
-/* Polish: subtle stagger entrance — each card fades + lifts in with a small
-   delay after its predecessor. Caps at 12 to avoid hundreds of ms of waiting
-   for cards far down the list. */
-body.variant-rigor .card-stack > .zd-card {
-  opacity: 0;
-  transform: translateY(8px);
-  animation: rig-card-enter 360ms var(--rig-ease, cubic-bezier(0.23, 1, 0.32, 1)) forwards;
-}
-body.variant-rigor .card-stack > .zd-card:nth-child(1)  { animation-delay: 0ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(2)  { animation-delay: 40ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(3)  { animation-delay: 80ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(4)  { animation-delay: 120ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(5)  { animation-delay: 160ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(6)  { animation-delay: 200ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(7)  { animation-delay: 240ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(8)  { animation-delay: 280ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(9)  { animation-delay: 320ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(10) { animation-delay: 360ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(11) { animation-delay: 400ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440ms; }
-@keyframes rig-card-enter {
-  to { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  body.variant-rigor .card-stack > .zd-card {
-    animation: none; opacity: 1; transform: none;
-  }
-}
 @media (max-width: 768px) {
-  body.variant-rigor .card-stack {
+  body.variant-polish .card-stack {
     grid-template-columns: 1fr;
     padding: 12px 16px 80px;
   }
@@ -1936,7 +1789,24 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
 
 </style>
 </head>
-<body class="variant-rigor">
+<body class="variant-polish">
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+          <symbol id="pol-i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/></symbol>
+          <symbol id="pol-i-mail" viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m8 7L4 6v2l8 5 8-5V6z"/></symbol>
+          <symbol id="pol-i-web" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m6.93 9h-2.95a15.6 15.6 0 0 0-1.38-5.55A8 8 0 0 1 18.93 11M12 4.07A13.7 13.7 0 0 1 13.96 11H10.04A13.7 13.7 0 0 1 12 4.07M4.26 14a8 8 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4m.81 2h2.95a15.6 15.6 0 0 0 1.38 5.55A8 8 0 0 1 5.07 16M7.64 11H4.26a8 8 0 0 1 4.81-5.55A15.6 15.6 0 0 0 7.64 11M12 19.93A13.7 13.7 0 0 1 10.04 13h3.92A13.7 13.7 0 0 1 12 19.93M14.36 11h-4.72a13.5 13.5 0 0 1 0-4h4.72a13.5 13.5 0 0 1 0 4m.61 5h2.95a8 8 0 0 1-4.81 5.55A15.6 15.6 0 0 0 14.97 16m1-2a16.5 16.5 0 0 0 0-4h3.38a8 8 0 0 1 0 4z"/></symbol>
+          <symbol id="pol-i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M13.4 21v-7.5h2.5l.4-3h-2.9V8.6c0-.85.25-1.45 1.5-1.45H16.5V4.5a21 21 0 0 0-2.3-.13c-2.3 0-3.85 1.4-3.85 3.95v2.18H7.85v3h2.5V21z"/></symbol>
+          <symbol id="pol-i-ig" viewBox="0 0 24 24"><path fill="currentColor" d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2m-.25 2A3.25 3.25 0 0 0 4 7.25v9.5A3.25 3.25 0 0 0 7.25 20h9.5A3.25 3.25 0 0 0 20 16.75v-9.5A3.25 3.25 0 0 0 16.75 4zM17.88 5.5a1.13 1.13 0 1 1 0 2.25 1.13 1.13 0 0 1 0-2.25M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></symbol>
+          <symbol id="pol-i-tt" viewBox="0 0 24 24"><path fill="currentColor" d="M16.6 5.82a4.28 4.28 0 0 1-1.05-2.82H12.3v12.13a2.6 2.6 0 0 1-2.6 2.5 2.6 2.6 0 0 1-2.6-2.6 2.6 2.6 0 0 1 2.6-2.6c.27 0 .53.04.78.12V9.13a5.83 5.83 0 0 0-.78-.05A5.84 5.84 0 0 0 3.86 14.9a5.84 5.84 0 0 0 5.84 5.83 5.84 5.84 0 0 0 5.84-5.83V8.97a7.55 7.55 0 0 0 4.43 1.42V7.13a4.36 4.36 0 0 1-3.37-1.31"/></symbol>
+          <symbol id="pol-i-in" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3V10.7h-2.8v7.8h2.8v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 9.12a1.69 1.69 0 0 0 1.68-1.68A1.69 1.69 0 0 0 6.88 5.75 1.69 1.69 0 0 0 5.2 7.44c0 .93.75 1.68 1.68 1.68m1.4 9.38v-7.8H5.5v7.8z"/></symbol>
+          <symbol id="pol-i-yt" viewBox="0 0 24 24"><path fill="currentColor" d="M10 15l5.19-3L10 9zm11.56-7.83a2.78 2.78 0 0 0-1.94-1.94C17.88 5 12 5 12 5s-5.88 0-7.62.23a2.78 2.78 0 0 0-1.94 1.94A29 29 0 0 0 2.21 12a29 29 0 0 0 .23 4.83 2.78 2.78 0 0 0 1.94 1.94C6.12 19 12 19 12 19s5.88 0 7.62-.23a2.78 2.78 0 0 0 1.94-1.94A29 29 0 0 0 21.79 12a29 29 0 0 0-.23-4.83"/></symbol>
+          <symbol id="pol-i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a8 8 0 0 0-8 8c0 5.4 7 11.5 7.3 11.74a1 1 0 0 0 1.4 0C13 21.5 20 15.4 20 10a8 8 0 0 0-8-8m0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/></symbol>
+          <symbol id="pol-i-arrow" viewBox="0 0 24 24"><path fill="currentColor" d="M5 12h13.17l-4.59-4.59L15 6l7 7-7 7-1.42-1.41L18.17 13H5z"/></symbol>
+          <symbol id="pol-i-flip" viewBox="0 0 24 24"><path fill="currentColor" d="M12 6V3L8 7l4 4V8a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5H5a7 7 0 0 0 7 7 7 7 0 0 0 7-7 7 7 0 0 0-7-7"/></symbol>
+          <symbol id="pol-i-star" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></symbol>
+          <symbol id="pol-i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-7-4.5-7-10a4.5 4.5 0 0 1 8-2.85A4.5 4.5 0 0 1 21 11c0 5.5-7 10-7 10z"/></symbol>
+        </defs>
+      </svg>
 
 <nav style="position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,0.05);">
   <a href="index.html" class="nav-logo" style="display:flex;align-items:center;text-decoration:none;">
@@ -2764,8 +2634,10 @@ const passOnline = d => !onlineFilter || d.city === "Онлайн";
  * Free tier: NO back face is rendered. The card stays a static front-only.
  */
 function buildCardHTML(d) {
-  /* search3.html: Rigor card. Outer article carries .zd-card (legacy compat)
-     PLUS .rig-card (Rigor styling). data-flip-card enables generic flip. */
+  /* search2.html: Polish desktop card. Outer article carries BOTH .zd-card
+     (so legacy code referencing .zd-card still finds elements) AND .pol-card
+     (so all Polish CSS applies). data-flip-card="true" enables the generic
+     flip chassis. Free tier renders without back face / flip pill. */
   const tierClass = (tierClassMap || {})[d.tier] || "free";
   const isFree = d.tier === "Безплатен";
   const tagLimit = (typeof tagLimits !== 'undefined' ? tagLimits : {Безплатен:1})[d.tier] || 1;
@@ -2786,198 +2658,123 @@ function buildCardHTML(d) {
 
   const safeName = esc(d.name);
   const profileUrl = `listing.html?id=${d.id}`;
-  // Real photo, or null → render the tier-themed empty placeholder div instead.
+
+  // Hero photo with category fallback
   const photoUrl = (Array.isArray(d.gallery_urls) && d.gallery_urls[0])
     || (typeof getCardPhoto === 'function' ? getCardPhoto(d) : null)
-    || null;
-  const tierLabel = d.tier || 'Безплатен';
+    || `https://placehold.co/720x450/efefef/777?text=${encodeURIComponent(d.name || '')}`;
 
-  // Tier label already conveys verification (Доверен / Проверен / Премиум).
-  // Keeping the variable so existing template slots stay valid; render nothing.
-  const trustHTML = '';
+  const tierLabel = d.tier === 'Премиум' ? '★ Премиум' : (d.tier || 'Безплатен');
 
-  // Inline gray social SVGs (Lucide-style stroke icons)
-  const SOC_SVG = {
-    phone:    '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
-    email:    '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>',
-    website:  '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
-    facebook: '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 0 1 1-1h3v-4h-3a5 5 0 0 0-5 5v2.01h-2l-.396 3.98h2.396z"/></svg>',
-    instagram:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37a4 4 0 1 1-7.91 1.18A4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>',
-    tiktok:   '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.66a8.16 8.16 0 0 0 4.77 1.52V6.73a4.85 4.85 0 0 1-1.84-.04z"/></svg>',
-    linkedin: '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68 1.68 1.68 0 1 0-3.36 0 1.68 1.68 0 0 0 1.68 1.68zm1.39 9.94v-8.37H5.5v8.37z"/></svg>',
-    youtube:  '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M21.582 7.186A2.506 2.506 0 0 0 19.812 5.4C18.254 5 12 5 12 5s-6.254 0-7.812.4A2.506 2.506 0 0 0 2.418 7.186 26.05 26.05 0 0 0 2 12a26.05 26.05 0 0 0 .418 4.814A2.506 2.506 0 0 0 4.188 18.6C5.746 19 12 19 12 19s6.254 0 7.812-.4a2.506 2.506 0 0 0 1.77-1.786A26.05 26.05 0 0 0 22 12a26.05 26.05 0 0 0-.418-4.814zM10 15V9l5.196 3z"/></svg>',
-    maps:     '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>'
-  };
+  // Front-face decorative socials (gray, NOT clickable on card)
   const allowedKeys = (typeof allowedIconsByTier !== 'undefined' ? allowedIconsByTier[d.tier] : null) || [];
+  const iconMap = {
+    phone: 'pol-i-phone', email: 'pol-i-mail', website: 'pol-i-web',
+    facebook: 'pol-i-fb', instagram: 'pol-i-ig', tiktok: 'pol-i-tt',
+    linkedin: 'pol-i-in', youtube: 'pol-i-yt', maps: 'pol-i-pin'
+  };
   let frontSocialsInner = '';
   allowedKeys.forEach(k => {
-    if (!SOC_SVG[k]) return;
+    if (!iconMap[k]) return;
     if (k !== 'maps' && (!d[k] || d[k] === '#')) return;
-    frontSocialsInner += `<span class="rig-soc">${SOC_SVG[k]}</span>`;
+    frontSocialsInner += `<span class="pol-s" aria-hidden="true"><svg class="pol-i"><use href="#${iconMap[k]}"/></svg></span>`;
   });
+  const frontSocialsHTML = frontSocialsInner ? `<div class="pol-socials" aria-hidden="true">${frontSocialsInner}</div>` : '';
 
-  // Free-tier inline notxt socials
-  let freeNotxtHTML = '';
+  // Free tier inline notxt socials (uncopyable phone/email)
+  let freeSocialsHTML = '';
   if (isFree) {
-    let inner = '';
-    if (d.phone) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">📞</span><span class="notxt">${esc(d.phone)}</span></span>`;
-    if (d.email) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">✉</span><span class="notxt">${esc(d.email)}</span></span>`;
-    if (inner) freeNotxtHTML = `<div class="rig-back-soc-list">${inner}</div>`;
+    let notxtInner = '';
+    if (d.phone) notxtInner += `<span class="pol-back-soc-row"><span class="pol-s">📞</span><span class="notxt">${esc(d.phone)}</span></span>`;
+    if (d.email) notxtInner += `<span class="pol-back-soc-row"><span class="pol-s">✉</span><span class="notxt">${esc(d.email)}</span></span>`;
+    if (notxtInner) freeSocialsHTML = `<div class="pol-back-socials-text">${notxtInner}</div>`;
   }
 
   // CTAs
-  const primaryLabel = esc(d.cta_label_1 || d.cta_label || (isFree ? 'Контакт' : 'Виж профила'));
-  const primaryUrl   = safeUrl(d.cta_url_1 || d.cta_url || (isFree ? (d.phone ? 'tel:' + d.phone : '#') : profileUrl));
+  const primaryLabel = esc(d.cta_label_1 || d.ctaLabel1 || d.cta_label || (isFree ? 'Контакт' : 'Подробен профил'));
+  const primaryUrl   = safeUrl(d.cta_url_1 || d.ctaUrl1 || d.cta_url || (isFree ? (d.phone ? 'tel:' + d.phone : '#') : profileUrl));
   const primaryAttrs = /^(https?:)/i.test(primaryUrl) ? 'target="_blank" rel="noopener"' : '';
-  const ghostLabel = esc(d.cta_label_2 || 'Запази');
+  const ghostLabel = esc(d.cta_label_2 || 'Запази час');
   const ghostUrl   = safeUrl(d.cta_url_2 || profileUrl);
+  const ghostAttrs = /^(https?:)/i.test(ghostUrl) ? 'target="_blank" rel="noopener"' : '';
 
-  let actionsHTML;
-  if (isFree) {
-    actionsHTML = `<footer class="rig-actions rig-actions--single">
-      <a class="rig-cta rig-cta--primary rig-cta--solo" href="${primaryUrl}" ${primaryAttrs} onclick="event.stopPropagation()">${primaryLabel}</a>
-    </footer>`;
-  } else {
-    actionsHTML = `<footer class="rig-actions">
-      <a class="rig-cta rig-cta--ghost" href="${ghostUrl}" onclick="event.stopPropagation()">${ghostLabel}</a>
-      <a class="rig-cta rig-cta--primary" href="${primaryUrl}" ${primaryAttrs} onclick="event.stopPropagation()">${primaryLabel}</a>
-    </footer>`;
-  }
+  const primaryHTML = `<a class="pol-cta pol-cta--primary" href="${primaryUrl}" ${primaryAttrs} onclick="event.stopPropagation()">${primaryLabel} <svg class="pol-i"><use href="#pol-i-arrow"/></svg></a>`;
+  const ghostHTML = isFree ? '' : `<a class="pol-cta pol-cta--ghost" href="${ghostUrl}" ${ghostAttrs} onclick="event.stopPropagation()">${ghostLabel}</a>`;
+  const ctaStackHTML = `<div class="pol-cta-stack">${primaryHTML}${ghostHTML}</div>`;
 
-  // Address line: prefer explicit neighborhood; else strip the city from
-  // the address so we don't duplicate it (city gets its own pill below).
-  function deriveNeighborhood(b) {
-    if (b.neighborhood) return String(b.neighborhood).trim();
-    if (!b.address) return '';
-    let s = String(b.address);
-    if (b.city) {
-      const cityRe = new RegExp('\\s*[,·]?\\s*' + b.city.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$', 'i');
-      s = s.replace(cityRe, '').trim();
-    }
-    return s;
-  }
-  const neighborhood = deriveNeighborhood(d);
+  // Logo overlay
+  const hasLogo = d.logo && !String(d.logo).includes('placehold.co');
+  const logoHTML = hasLogo ? `<div class="pol-logo"><img src="${esc(d.logo)}" alt="" loading="lazy"></div>` : '';
 
-  // Ratings — vertical 3-row strip in the body. Sequence top→bottom:
-  // 1) Одит (ZaDeteto audit score)  2) Google  3) ZaDeteto parent reviews
-  const auditScore = (typeof getTierScore === 'function') ? getTierScore(d) : null;
-  const gRat = (typeof getGoogleRating === 'function') ? getGoogleRating(d) : null;
-  const zRat = (typeof getZadetetoRating === 'function') ? getZadetetoRating(d) : null;
-  // Score icons:
-  //   Audit  → dark magnifier with a small inner glint that flickers
-  //   Google → vibrant gold star that wiggles + brightens (twinkle)
-  //   ZD     → vibrant purple heart that beats
-  const ICN_AUDIT  = '<svg viewBox="0 0 24 24" fill="none" stroke="#1a1820" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><circle class="rig-glint" cx="8" cy="8" r="1.4" fill="#1a1820" stroke="none" opacity="0"/><path d="m21 21-4.3-4.3"/></svg>';
-  const ICN_GOOGLE = '<svg viewBox="0 0 24 24" fill="#e0a800" stroke="#9c7600" stroke-width="0.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 17.6l-6.2 3.6 1.6-6.9L2.1 9.6l7-.7L12 2.5z"/></svg>';
-  const ICN_ZD     = '<svg viewBox="0 0 24 24" fill="#9c5fff" aria-hidden="true"><path d="M12 21.2s-7.8-4.7-9.7-9.9C1 7.5 3.7 4 7.4 4c2.1 0 3.7 1 4.6 2.6C12.9 5 14.5 4 16.6 4c3.7 0 6.4 3.5 5.1 7.3-1.9 5.2-9.7 9.9-9.7 9.9z"/></svg>';
-  const ratingsHTML = `<div class="rig-ratings" aria-label="Оценки">
-    <div class="rig-rblock${auditScore == null ? ' rig-rblock-empty' : ''}" title="Одит на ZaDeteto">
-      <span class="rig-rblock-icn">${ICN_AUDIT}</span>
-      <span class="rig-rblock-lbl">Одит</span>
-      <span class="rig-rblock-num">${auditScore != null ? auditScore : '—'}</span>
-    </div>
-    <div class="rig-rblock${gRat ? '' : ' rig-rblock-empty'}" title="Google Maps">
-      <span class="rig-rblock-icn">${ICN_GOOGLE}</span>
-      <span class="rig-rblock-lbl">Google</span>
-      <span class="rig-rblock-num">${gRat ? gRat.avg : '—'}${gRat && gRat.count ? `<small>· ${gRat.count}</small>` : ''}</span>
-    </div>
-    <div class="rig-rblock${zRat ? '' : ' rig-rblock-empty'}" title="Оценки от родители в ZaDeteto">
-      <span class="rig-rblock-icn">${ICN_ZD}</span>
-      <span class="rig-rblock-lbl">ZaDeteto</span>
-      <span class="rig-rblock-num">${zRat ? zRat.avg : '—'}${zRat && zRat.count ? `<small>· ${zRat.count}</small>` : ''}</span>
-    </div>
-  </div>`;
+  // Ratings (Google + ZaDeteto fallback)
+  const gAvg = (typeof d.google_rating === 'number') ? d.google_rating : parseFloat(d.google_rating);
+  const gCnt = d.google_review_count || null;
+  const ratingsHTML = (gAvg && !isNaN(gAvg)) ? `
+    <div class="pol-rating-row">
+      <span class="pol-rating pol-rating--g"><svg class="pol-i"><use href="#pol-i-star"/></svg> ${gAvg.toFixed(1)}${gCnt ? ` <em>· ${gCnt}</em>` : ''}</span>
+    </div>` : '';
 
-  // City pill rendered as the FIRST chip, distinct styling
-  const cityChipHTML = d.city
-    ? `<li class="rig-chip-city"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M6 1a3.5 3.5 0 0 0-3.5 3.5C2.5 7.5 6 11 6 11s3.5-3.5 3.5-6.5A3.5 3.5 0 0 0 6 1zm0 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/></svg>${esc(d.city)}</li>`
-    : '';
+  const meta = [d.city, d.address].filter(Boolean).join(' · ');
 
-  // Thumb: real photo or tier-themed empty placeholder
-  const thumbInner = photoUrl
-    ? `<img src="${esc(photoUrl)}" alt="" loading="lazy">`
-    : `<div class="rig-thumb-empty" aria-hidden="true"><img class="rig-thumb-mark" src="brand_assets/zadeteto-icon-mark.svg" alt=""></div>`;
-
-  // ─── FRONT face (.face--front carries .rig-card classes for grid/style) ───
+  // ─── FRONT face ───
   const frontHTML = `
-    <div class="face face--front rig-card rig-card--${tierClass}" data-tier="${tierClass}">
-      <header class="rig-medallion">
-        <span class="rig-tier-dot"></span>
-        <span class="rig-tier-label">${esc(tierLabel)}</span>
-        ${trustHTML}
-      </header>
-      <div class="rig-body">
-        <div class="rig-slot rig-slot--thumb rig-thumb${isFree ? ' rig-thumb--muted' : ''}">
-          ${thumbInner}
-          ${isFree ? '' : `<button type="button" class="rig-flip-btn" data-action="flip">Виж подробности</button>`}
-        </div>
-        <h3 class="rig-slot rig-slot--name rig-name">${safeName}</h3>
-        ${neighborhood
-          ? `<p class="rig-slot rig-slot--meta rig-meta"><svg class="rig-pin" viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M6 1a3.5 3.5 0 0 0-3.5 3.5C2.5 7.5 6 11 6 11s3.5-3.5 3.5-6.5A3.5 3.5 0 0 0 6 1zm0 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/></svg>${esc(neighborhood)}</p>`
-          : `<div class="rig-slot rig-slot--meta" data-empty></div>`}
-        ${d.description
-          ? `<div class="rig-slot rig-slot--desc rig-desc-wrap"><p class="rig-desc" lang="bg">${esc(d.description)}</p><a class="rig-more" href="${profileUrl}" onclick="event.stopPropagation()">още →</a></div>`
-          : `<div class="rig-slot rig-slot--desc" data-empty></div>`}
-        ${(cityChipHTML || services.length)
-          ? `<ul class="rig-slot rig-slot--chips rig-chips" aria-label="Услуги">${cityChipHTML}${services.map(s => `<li>${esc(s)}</li>`).join('')}</ul>`
-          : `<div class="rig-slot rig-slot--chips" data-empty></div>`}
-        <div class="rig-slot rig-slot--ratings">${ratingsHTML}</div>
-        <div class="rig-slot rig-slot--socials">${isFree ? freeNotxtHTML : (frontSocialsInner ? `<div class="rig-socials">${frontSocialsInner}</div>` : '')}${isFree ? `<p class="rig-free-note">Профилът не е активиран от собственика.</p>` : ''}</div>
+    <div class="face face--front">
+      <div class="pol-photo">
+        <img src="${esc(photoUrl)}" alt="" loading="lazy">
+        <span class="pol-tier-pill"><svg class="pol-i"><use href="#pol-i-star"/></svg> ${esc(tierLabel)}</span>
+        ${isFree ? '' : `<button type="button" class="pol-flip-pill" data-action="flip"><svg class="pol-i"><use href="#pol-i-flip"/></svg> Виж подробности</button>`}
+        ${ratingsHTML}
       </div>
-      ${actionsHTML}
+      <div class="pol-body">
+        ${logoHTML}
+        <h3 class="pol-name">${safeName}</h3>
+        <div class="pol-meta">${esc(meta)}</div>
+        ${d.description ? `<p class="pol-desc">${esc(d.description)}</p>` : ''}
+        ${services.length ? `<div class="pol-chips">${services.map(s => `<span class="pol-chip">${esc(s)}</span>`).join('')}</div>` : ''}
+        ${isFree ? freeSocialsHTML : frontSocialsHTML}
+        ${ctaStackHTML}
+      </div>
     </div>`;
 
-  // ─── BACK face (paid tiers only, no socials per spec) ───
+  // ─── BACK face (paid tiers only) ───
+  // No socials on back face per user spec. Free tier never reaches here.
   let backHTML = '';
   if (!isFree) {
-    const logoSrc = (d.logo && !String(d.logo).includes('placehold.co'))
-      ? d.logo
-      : `https://placehold.co/80x80/e7e4dd/7a7689?text=${encodeURIComponent((d.name || '?').slice(0, 1))}`;
-
-    const verifiedPill = (d.tier === 'Доверен' || d.tier === 'Премиум' || d.tier === 'Проверен')
-      ? ` · <span class="rig-back-pill">✓ Сертифициран</span>` : '';
-
-    // Embedded Google Maps: prefer lat/lng, else address+city query.
-    const _mapsQuery = (d.lat && d.lng)
-      ? `${d.lat},${d.lng}`
-      : encodeURIComponent([d.address, d.city].filter(Boolean).join(', ') || d.name || '');
-    const _mapsEmbedSrc = `https://www.google.com/maps?q=${_mapsQuery}&output=embed`;
-    const _mapsLinkUrl = (d.lat && d.lng)
-      ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
-      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([d.address, d.city].filter(Boolean).join(', ') || d.name || '')}`;
-    const addressLine = [d.address, d.city].filter(Boolean).join(', ');
+    const wh = d.working_hours || d.workingHours;
+    let hoursRows = '';
+    if (wh && typeof wh === 'object') {
+      const mon = wh.mon, fri = wh.fri, sat = wh.sat, sun = wh.sun;
+      if (mon || fri) {
+        const range = (mon && fri && mon === fri) ? mon : `${mon || ''}${mon && fri ? ' – ' : ''}${fri || ''}`;
+        hoursRows += `<span class="pol-back-hours-day">Пон–Пет</span><span class="pol-back-hours-time${range === 'closed' ? ' pol-back-hours-time--closed' : ''}">${range === 'closed' ? 'Затворено' : esc(range)}</span>`;
+      }
+      if (sat) hoursRows += `<span class="pol-back-hours-day">Съб</span><span class="pol-back-hours-time${sat === 'closed' ? ' pol-back-hours-time--closed' : ''}">${sat === 'closed' ? 'Затворено' : esc(sat)}</span>`;
+      if (sun) hoursRows += `<span class="pol-back-hours-day">Нед</span><span class="pol-back-hours-time${sun === 'closed' ? ' pol-back-hours-time--closed' : ''}">${sun === 'closed' ? 'Затворено' : esc(sun)}</span>`;
+    }
 
     backHTML = `
-    <div class="face face--back rig-card rig-card--back rig-card--${tierClass}">
-      <header class="rig-medallion">
-        <span class="rig-tier-dot"></span>
-        <span class="rig-tier-label">${esc(tierLabel)}</span>
-        ${trustHTML}
-      </header>
-      <div class="rig-back-body">
-        <div class="rig-back-head">
-          <img class="rig-back-logo" src="${esc(logoSrc)}" alt="">
-          <div>
-            <h3 class="rig-name">${safeName}</h3>
-            <p class="rig-back-sub">${esc(d.city || '')} · ${esc(tierLabel)}${verifiedPill}</p>
+    <div class="face face--back">
+      <div class="pol-back-card pol-back-card--${tierClass}">
+        <header class="pol-back-head">
+          ${hasLogo ? `<div class="pol-back-logo"><img src="${esc(d.logo)}" alt=""></div>` : ''}
+          <div class="pol-back-id">
+            <h3 class="pol-back-name">${safeName}</h3>
+            <div class="pol-back-sub"><span class="pol-back-dot"></span> ${esc(d.city || '')} · ${esc(tierLabel)}</div>
           </div>
+        </header>
+        ${d.description ? `<section class="pol-back-section"><div class="pol-back-eyebrow">За нас</div><p class="pol-back-text">${esc(d.description)}</p></section>` : ''}
+        ${hoursRows ? `<section class="pol-back-section"><div class="pol-back-eyebrow">Работно време</div><div class="pol-back-hours">${hoursRows}</div></section>` : ''}
+        ${(d.address || d.city) ? `<section class="pol-back-section"><div class="pol-back-eyebrow">Адрес</div><p class="pol-back-text pol-back-text--addr">📍 ${esc(d.address || d.city)}</p></section>` : ''}
+        <div class="pol-back-cta-stack">
+          ${primaryHTML}
+          <a class="pol-back-link" href="${profileUrl}">Виж пълния профил →</a>
+          <button type="button" class="pol-back-flip" data-action="flip">↻ Назад</button>
         </div>
-        ${d.description ? `<section class="rig-back-section"><h4 class="rig-back-h">За нас</h4><div class="rig-back-desc-wrap"><p class="rig-back-desc" lang="bg">${esc(d.description)}</p><a class="rig-back-more" href="${profileUrl}" onclick="event.stopPropagation()" aria-label="Виж пълния профил" title="Виж пълния профил"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg></a></div></section>` : ''}
-        ${addressLine ? `<section class="rig-back-section"><h4 class="rig-back-h">Адрес</h4><p class="rig-back-text">${esc(addressLine)}</p></section>` : ''}
-        <section class="rig-back-section rig-back-map" aria-label="Карта">
-          <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${_mapsEmbedSrc}" title="Локация на ${safeName}"></iframe>
-          <a class="rig-back-map-link" href="${_mapsLinkUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Отвори в Google Maps ↗</a>
-        </section>
       </div>
-      <footer class="rig-back-actions">
-        <a class="rig-cta rig-cta--primary" href="${primaryUrl}" ${primaryAttrs} onclick="event.stopPropagation()">${primaryLabel}</a>
-        <a class="rig-cta rig-cta--ghost" href="${profileUrl}" onclick="event.stopPropagation()">Виж пълния профил →</a>
-        <button type="button" class="rig-back-flip" data-action="flip">↻ Назад</button>
-      </footer>
     </div>`;
   }
 
-  return `<article class="zd-card zd-card--${tierClass}" data-id="${d.id}" data-name="${safeName}" data-flip-card="true">
+  return `<article class="zd-card zd-card--${tierClass} pol-card pol-card--${tierClass}" data-id="${d.id}" data-name="${safeName}" data-flip-card="true">
     <div class="zd-flipper flipper">
       ${frontHTML}
       ${backHTML}
@@ -4460,18 +4257,21 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="js/api-stub.js"></script>
 
 <script>
-/* Flip handler — minimal. Click any [data-action="flip"] inside a .zd-card
-   toggles the .flipped class on that article. Free tier opts out. */
-document.addEventListener('click', function (e) {
-  var trigger = e.target.closest('[data-action="flip"]');
-  if (!trigger) return;
-  var card = trigger.closest('.zd-card');
-  if (!card) return;
-  if (card.classList.contains('zd-card--free')) return;
-  e.preventDefault();
-  e.stopPropagation();
-  card.classList.toggle('flipped');
-});
+/* Generic [data-flip-card] handler for Polish / Rigor card variants.
+   Click any [data-action="flip"] descendant → toggles .is-flipped on the
+   nearest [data-flip-card] ancestor. Free tier is opted-out via class check. */
+(function () {
+  document.addEventListener('click', function (e) {
+    var trigger = e.target.closest('[data-action="flip"]');
+    if (!trigger) return;
+    var card = trigger.closest('[data-flip-card]');
+    if (!card) return;
+    if (card.classList.contains('pol-card--free') || card.classList.contains('rig-card--free')) return;
+    e.preventDefault();
+    e.stopPropagation();
+    card.classList.toggle('is-flipped');
+  });
+})();
 </script>
 
 </body>
