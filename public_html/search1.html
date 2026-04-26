@@ -41,8 +41,6 @@
   --zd-purple-600: #7c4dff;
   --zd-purple-800: #5a2ecf;
   --zd-gold-300: #f5d76e;
-  --zd-gold-500: #d4af37;
-  --zd-gold-700: #8a6800;
   --zd-mint-50: #edf9f0;
   --zd-mint-100: #d4f5dc;
   --zd-mint-400: #4caf6a;
@@ -55,7 +53,6 @@
   --zd-gray-400: #b0b0b0;
   --zd-gray-600: #777;
   --zd-gray-800: #333;
-  --zd-charcoal: #36454f;
   --zd-sop: #9c27b0;
   --zd-online: #1976d2;
   --zd-font: 'DM Sans', sans-serif;
@@ -1208,735 +1205,9 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
 .mfb-nav-skip{background:transparent;color:var(--zd-gray-600);flex:0;padding:10px 14px}
 .mfb-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--zd-gray-800);color:#fff;padding:12px 24px;border-radius:12px;font:600 13px/1 var(--zd-font);z-index:10000;box-shadow:0 8px 30px rgba(0,0,0,.15);transition:transform .4s cubic-bezier(.16,1,.3,1);pointer-events:none}
 .mfb-toast.visible{transform:translateX(-50%) translateY(0)}
-
-
-/* ════════════════════════════════════════════════════════
-   VARIANT INJECTION — written by gen_search_variants.py
-   ════════════════════════════════════════════════════════ */
-/* ─── Generic 3D flip card chassis ───────────────────────────────
-   Variants opt in by giving their card the [data-flip-card] attr and
-   using <div class="flipper"><div class="face face--front">…</div>
-   <div class="face face--back">…</div></div> internal markup. Each
-   variant scopes its own face-specific styles via .X-face overrides. */
-/* Flip system — minimal. Article = perspective container. .zd-flipper holds
-   the two .face elements. Click any [data-action="flip"] inside the article
-   to toggle .flipped on .zd-card; the flipper rotates 180deg, the back face
-   shows. No tricks: no will-change, no translate3d, no lazy iframe swap. */
-[data-action="flip"] { cursor: pointer; user-select: none; }
-@media (prefers-reduced-motion: reduce) {
-  body.variant-rigor .zd-flipper { transition: none !important; }
-}
-.notxt {
-  user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -moz-user-select: none;
-  pointer-events: none;
-}
-    .variant-rigor {
-      --rig-s-1: 4px; --rig-s-2: 8px; --rig-s-3: 12px; --rig-s-4: 16px; --rig-s-5: 20px; --rig-s-6: 24px;
-      --rig-radius: 14px; --rig-radius-sm: 8px;
-      --rig-surface: #ffffff; --rig-surface-2: #fbfaf7;
-      --rig-ink: #1f1d29; --rig-ink-soft: #524f60; --rig-ink-mute: #7a7689;
-      --rig-line: #e7e4dd;
-      /* Polish: punchier custom curves than the built-in eases.
-         --rig-ease       — strong ease-out for hover/exit feedback
-         --rig-ease-inout — strong ease-in-out for movement
-         --rig-ease-flip  — iOS-style drawer curve for the card rotation */
-      --rig-ease: cubic-bezier(0.23, 1, 0.32, 1);
-      --rig-ease-inout: cubic-bezier(0.77, 0, 0.175, 1);
-      --rig-ease-flip: cubic-bezier(0.32, 0.72, 0, 1);
-      --rig-dur: 200ms; --rig-dur-slow: 280ms;
-      --rig-focus: 0 0 0 3px rgba(124,77,255,.35);
-    }
-    .variant-rigor .rig-card {
-      position: relative; display: grid; grid-template-rows: auto 1fr auto;
-      background: var(--rig-surface); border: 1px solid var(--rig-line); border-radius: var(--rig-radius);
-      font-family: var(--font-sans); color: var(--rig-ink);
-      transition: transform var(--rig-dur) var(--rig-ease), box-shadow var(--rig-dur) var(--rig-ease);
-      box-shadow: 0 1px 2px rgba(20,18,40,.04); min-height: 660px;
-      /* No overflow:hidden here — .face owns the radius clipping; this prevents
-         the body from cropping the always-visible CTA footer when content is tall. */
-    }
-    /* Hover lift moved to the OUTER article (.zd-card) so it never fights the
-       inner .rig-card's flip transform. rig-card itself only changes shadow on hover. */
-    .variant-rigor .rig-card:hover { box-shadow: 0 8px 20px rgba(20,18,40,.08), 0 2px 4px rgba(20,18,40,.04); }
-
-    .variant-rigor .rig-medallion {
-      display: flex; align-items: center; gap: var(--rig-s-2);
-      padding: var(--rig-s-2) var(--rig-s-4);
-      font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-      border-bottom: 1px solid var(--rig-line); background: var(--rig-surface-2); color: var(--rig-ink-soft);
-      position: relative; overflow: hidden;
-    }
-    /* Per-tier top-left glow halo behind the dot. Soft and small so it
-       reads as a faint hue rather than a backlight. */
-    .variant-rigor .rig-medallion::before {
-      content: ""; position: absolute; left: -10px; top: -10px; width: 48px; height: 48px;
-      border-radius: 50%; pointer-events: none;
-      background: radial-gradient(circle, var(--rig-glow, transparent) 0%, transparent 55%);
-      opacity: 0.35; z-index: 0;
-    }
-    .variant-rigor .rig-medallion > * { position: relative; z-index: 1; }
-    .variant-rigor .rig-card--elite    .rig-medallion { --rig-glow: rgba(124,77,255,0.30); }
-    .variant-rigor .rig-card--premium  .rig-medallion { --rig-glow: rgba(212,175,55,0.35); animation: rig-glow-breathe-gold 5s var(--rig-ease-inout) infinite; }
-    .variant-rigor .rig-card--verified .rig-medallion { --rig-glow: rgba(46,153,77,0.28);  animation: rig-glow-breathe-green 5s var(--rig-ease-inout) infinite; }
-    .variant-rigor .rig-card--standard .rig-medallion { --rig-glow: rgba(54,69,79,0.16); }
-    .variant-rigor .rig-card--free     .rig-medallion { --rig-glow: rgba(176,176,176,0.18); }
-    /* Very subtle medallion breathing — barely perceptible, just enough to
-       feel "alive". Reduced amplitude per user feedback that the previous
-       breath was too strong. */
-    @keyframes rig-glow-breathe-gold {
-      0%, 100% { background: linear-gradient(180deg, #fbf3d8 0%, #fbfaf7 100%); }
-      50%      { background: linear-gradient(180deg, #fbedc4 0%, #fbfaf7 100%); }
-    }
-    @keyframes rig-glow-breathe-green {
-      0%, 100% { background: linear-gradient(180deg, #ecf7ef 0%, #fbfaf7 100%); }
-      50%      { background: linear-gradient(180deg, #e3f2e7 0%, #fbfaf7 100%); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-card--premium .rig-medallion,
-      .variant-rigor .rig-card--verified .rig-medallion { animation: none; }
-    }
-    .variant-rigor .rig-tier-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--zd-gray-400); flex-shrink: 0; }
-    .variant-rigor .rig-tier-label { font-weight: 700; }
-    .variant-rigor .rig-tier-trust { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 10px; letter-spacing: 0.04em; text-transform: none; color: var(--rig-ink-soft); }
-
-    .variant-rigor .rig-card--elite .rig-tier-dot      { background: var(--zd-purple-600); box-shadow: 0 0 0 3px rgba(124,77,255,.16); }
-    .variant-rigor .rig-card--elite .rig-tier-label    { color: var(--zd-purple-800); }
-    .variant-rigor .rig-card--elite .rig-medallion     { background: linear-gradient(180deg, #f6f1ff 0%, #fbfaf7 100%); border-bottom-color: var(--zd-purple-100); }
-    .variant-rigor .rig-card--premium .rig-tier-dot    { background: var(--zd-gold-500); box-shadow: 0 0 0 3px rgba(212,175,55,.20); animation: rig-dot-pulse-gold 2.6s var(--rig-ease-inout, ease-in-out) infinite; }
-    .variant-rigor .rig-card--premium .rig-tier-label  { color: var(--zd-gold-700); }
-    .variant-rigor .rig-card--premium .rig-medallion   { background: linear-gradient(180deg, #fbf3d8 0%, #fbfaf7 100%); border-bottom-color: #ead78a; }
-    .variant-rigor .rig-card--verified .rig-tier-dot   { background: var(--zd-mint-600); box-shadow: 0 0 0 3px rgba(46,153,77,.16); animation: rig-dot-pulse-green 2.6s var(--rig-ease-inout, ease-in-out) infinite; }
-    /* Tier-dot glow pulse — only on the higher-value tiers that warrant the
-       extra attention (Премиум gold, Проверен green). Slow + subtle so it
-       reads as "alive" rather than "blinking ad". */
-    @keyframes rig-dot-pulse-gold {
-      0%, 100% { box-shadow: 0 0 0 3px rgba(212,175,55,0.20), 0 0 0 0 rgba(212,175,55,0); }
-      50%      { box-shadow: 0 0 0 4px rgba(212,175,55,0.30), 0 0 12px 2px rgba(212,175,55,0.35); }
-    }
-    @keyframes rig-dot-pulse-green {
-      0%, 100% { box-shadow: 0 0 0 3px rgba(46,153,77,0.16), 0 0 0 0 rgba(46,153,77,0); }
-      50%      { box-shadow: 0 0 0 4px rgba(46,153,77,0.28), 0 0 12px 2px rgba(46,153,77,0.32); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-card--premium .rig-tier-dot,
-      .variant-rigor .rig-card--verified .rig-tier-dot { animation: none; }
-    }
-    .variant-rigor .rig-card--verified .rig-tier-label { color: var(--zd-mint-800); }
-    .variant-rigor .rig-card--verified .rig-medallion  { background: linear-gradient(180deg, #ecf7ef 0%, #fbfaf7 100%); border-bottom-color: var(--zd-mint-100); }
-    .variant-rigor .rig-card--standard .rig-tier-dot   { background: var(--zd-charcoal); box-shadow: 0 0 0 3px rgba(54,69,79,.16); }
-    .variant-rigor .rig-card--standard .rig-tier-label { color: var(--zd-charcoal); }
-    .variant-rigor .rig-card--standard .rig-medallion  { background: linear-gradient(180deg, #eef1f4 0%, #fbfaf7 100%); border-bottom-color: #d6dde2; }
-    .variant-rigor .rig-card--free .rig-tier-dot       { background: var(--zd-gray-400); }
-    .variant-rigor .rig-card--free .rig-tier-label     { color: var(--zd-gray-600); }
-
-    /* Named slots — every card has the same row order and reserves space even
-       when an optional slot is empty, so a row of cards aligns at every band. */
-    .variant-rigor .rig-body {
-      display: grid; gap: var(--rig-s-2); padding: var(--rig-s-4) var(--rig-s-4) var(--rig-s-3);
-      min-width: 0; min-height: 0; overflow: hidden;
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-rows:
-        auto    /* thumb */
-        auto    /* name */
-        18px    /* meta (neighborhood line) */
-        auto    /* desc */
-        auto    /* chips */
-        auto    /* ratings (vertical 3-row strip) */
-        auto;   /* socials */
-      grid-template-areas: "thumb" "name" "meta" "desc" "chips" "ratings" "socials";
-    }
-    .variant-rigor .rig-slot--thumb    { grid-area: thumb; }
-    .variant-rigor .rig-slot--name     { grid-area: name; }
-    .variant-rigor .rig-slot--meta     { grid-area: meta; min-height: 18px; display: flex; align-items: center; }
-    .variant-rigor .rig-slot--desc     { grid-area: desc; }
-    .variant-rigor .rig-slot--chips    { grid-area: chips; }
-    .variant-rigor .rig-slot--ratings  { grid-area: ratings; }
-    .variant-rigor .rig-slot--socials  { grid-area: socials; min-height: 22px; }
-    /* Empty slots reserve their natural band height so cards in a row stay aligned */
-    .variant-rigor .rig-slot--desc[data-empty]    { min-height: calc(1.55em * 3); }
-    .variant-rigor .rig-slot--chips[data-empty]   { min-height: 24px; }
-    .variant-rigor .rig-slot--ratings[data-empty] { min-height: 56px; }
-
-    .variant-rigor .rig-thumb {
-      position: relative; aspect-ratio: 16 / 9; border-radius: var(--rig-radius-sm);
-      overflow: hidden; background: var(--zd-gray-100); margin-bottom: var(--rig-s-1);
-    }
-    .variant-rigor .rig-thumb > img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--rig-dur-slow) var(--rig-ease); }
-    @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-card:hover .rig-thumb > img { transform: scale(1.03); }
-    }
-    /* Tier-themed empty placeholder for cards without a real photo */
-    .variant-rigor .rig-thumb-empty {
-      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, var(--ph-1, #f3f3f3), var(--ph-2, #fafafa));
-    }
-    .variant-rigor .rig-thumb-mark { width: 64px; height: 64px; opacity: 0.85; }
-    .variant-rigor .rig-card--elite    .rig-thumb-empty { --ph-1: #efe8ff; --ph-2: #f8f5ff; }
-    .variant-rigor .rig-card--premium  .rig-thumb-empty { --ph-1: #fbf3d8; --ph-2: #fff8e0; }
-    .variant-rigor .rig-card--verified .rig-thumb-empty { --ph-1: #ecf7ef; --ph-2: #f4fbf6; }
-    .variant-rigor .rig-card--standard .rig-thumb-empty { --ph-1: #e6e9ec; --ph-2: #f4f6f8; }
-    /* Free tier — flat light gray, no gradient (lowest value, no shine) */
-    .variant-rigor .rig-card--free     .rig-thumb-empty { background: #ededed; --ph-1: #ededed; --ph-2: #ededed; }
-    .variant-rigor .rig-card--free     .rig-thumb-mark  { opacity: 0.45; filter: grayscale(0.6); }
-
-    .variant-rigor .rig-flip-cue {
-      position: absolute; bottom: var(--rig-s-2); right: var(--rig-s-2);
-      display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
-      font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
-      background: rgba(31,29,41,.78); color: #fff; border-radius: 999px;
-      opacity: 0; transform: translateY(2px);
-      transition: opacity var(--rig-dur) var(--rig-ease), transform var(--rig-dur) var(--rig-ease);
-      pointer-events: none;
-    }
-    .variant-rigor .rig-card:hover .rig-flip-cue, .variant-rigor .rig-card:focus-within .rig-flip-cue { opacity: 1; transform: translateY(0); }
-    .variant-rigor .rig-thumb--muted img { filter: saturate(.55) brightness(.98); }
-    .variant-rigor .rig-card--free .rig-flip-cue { display: none; }
-
-    .variant-rigor .rig-name {
-      font-family: var(--font-serif); font-size: 19px; line-height: 1.2; letter-spacing: -0.01em;
-      color: var(--rig-ink); margin-top: 2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
-    }
-    /* Back-face title may wrap freely (more horizontal room there) */
-    .variant-rigor .rig-back-head .rig-name { white-space: normal; overflow: visible; text-overflow: clip; text-wrap: balance; }
-    .variant-rigor .rig-meta { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--rig-ink-mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-    .variant-rigor .rig-pin { color: var(--rig-ink-mute); flex-shrink: 0; }
-    .variant-rigor .rig-desc {
-      font-size: 13px; line-height: 1.55; color: var(--rig-ink-soft);
-      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-      hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; word-break: normal;
-    }
-    .variant-rigor .rig-desc-wrap { position: relative; }
-    .variant-rigor .rig-more {
-      position: absolute; right: 0; bottom: 0;
-      padding-left: 22px; font-size: 13px; line-height: 1.55; font-weight: 600;
-      color: var(--rig-tier-link, var(--rig-ink)); text-decoration: none;
-      background: linear-gradient(90deg, transparent 0%, var(--rig-surface) 32%);
-      letter-spacing: -0.005em;
-    }
-    /* Tier-colored "още →" arrow link matches each tier's accent */
-    .variant-rigor .rig-card--elite    { --rig-tier-link: var(--zd-purple-600); --rig-tier-link-hover: var(--zd-purple-800); }
-    .variant-rigor .rig-card--premium  { --rig-tier-link: var(--zd-gold-700);   --rig-tier-link-hover: #6b5100; }
-    .variant-rigor .rig-card--verified { --rig-tier-link: var(--zd-mint-600);   --rig-tier-link-hover: var(--zd-mint-800); }
-    .variant-rigor .rig-card--standard { --rig-tier-link: var(--zd-charcoal);   --rig-tier-link-hover: #1f2a33; }
-    .variant-rigor .rig-card--free     { --rig-tier-link: var(--zd-gray-600);   --rig-tier-link-hover: var(--zd-gray-800); }
-    .variant-rigor .rig-more { transition: color var(--rig-dur) var(--rig-ease), transform var(--rig-dur) var(--rig-ease); }
-    .variant-rigor .rig-more:active { transform: translateX(1px); transition-duration: 100ms; }
-    .variant-rigor .rig-more:focus-visible { outline: none; box-shadow: var(--rig-focus); border-radius: 3px; }
-    @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-more:hover { color: var(--rig-tier-link-hover, var(--rig-tier-link, var(--rig-ink))); text-decoration: underline; }
-    }
-
-    .variant-rigor .rig-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--rig-s-1); }
-    .variant-rigor .rig-chips li { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; background: var(--zd-gray-100); color: var(--rig-ink-soft); border: 1px solid var(--rig-line); }
-    .variant-rigor .rig-card--elite .rig-chips li     { background: #f6f1ff; color: var(--zd-purple-800); border-color: var(--zd-purple-100); }
-    .variant-rigor .rig-card--premium .rig-chips li   { background: #fbf3d8; color: var(--zd-gold-700); border-color: #ead78a; }
-    .variant-rigor .rig-card--verified .rig-chips li  { background: #ecf7ef; color: var(--zd-mint-800); border-color: var(--zd-mint-100); }
-
-    /* Ratings — horizontal "score bar". Three blocks side-by-side, each with
-       an icon on the LEFT and the score on the right. No text labels — the
-       icon (magnifier / star / heart) carries the meaning. Audit + ZD icons
-       have a subtle animation to draw the eye; Google's star sits still. */
-    .variant-rigor .rig-ratings {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      background: linear-gradient(180deg, #ffffff 0%, #fafaf7 100%);
-      border: 1px solid var(--rig-line); border-radius: 10px;
-      padding: 10px 4px; box-shadow: 0 1px 2px rgba(20,18,40,0.04), inset 0 1px 0 rgba(255,255,255,0.8);
-      overflow: hidden;
-    }
-    .variant-rigor .rig-ratings .rig-rblock {
-      display: flex; flex-direction: row; align-items: center; justify-content: center;
-      gap: 6px; padding: 0 6px; min-width: 0; position: relative;
-    }
-    .variant-rigor .rig-ratings .rig-rblock + .rig-rblock { border-left: 1px solid var(--rig-line); border-top: 0; }
-    .variant-rigor .rig-ratings .rig-rblock-icn { display: inline-flex; align-items: center; justify-content: center; color: var(--rig-ink); flex: none; }
-    .variant-rigor .rig-ratings .rig-rblock-icn svg { width: 16px; height: 16px; display: block; }
-    .variant-rigor .rig-ratings .rig-rblock-num {
-      font-family: var(--font-serif, var(--font-sans));
-      font-size: 17px; font-weight: 700; color: var(--rig-ink); letter-spacing: -0.02em;
-      white-space: nowrap; line-height: 1;
-    }
-    .variant-rigor .rig-ratings .rig-rblock-num small {
-      font-family: var(--font-sans);
-      font-weight: 500; color: var(--rig-ink-mute); margin-left: 2px; font-size: 10.5px; letter-spacing: 0;
-    }
-    /* Labels are no longer rendered visually — the icon is the label.
-       Keep the markup so screen readers still get a hint via title attrs. */
-    .variant-rigor .rig-ratings .rig-rblock-lbl { display: none; }
-    .variant-rigor .rig-ratings .rig-rblock-empty .rig-rblock-icn,
-    .variant-rigor .rig-ratings .rig-rblock-empty .rig-rblock-num { opacity: 0.45; }
-    .variant-rigor .rig-ratings .rig-rblock-empty .rig-rblock-num { color: var(--rig-ink-mute); font-weight: 500; }
-    /* Per-icon animations to draw the eye:
-       · Audit   — magnifier scans (rotate); the inner glint flickers like a
-                   sensor light catching the lens
-       · Google  — star twinkles (gentle wiggle + brightness/scale pulse)
-       · ZD      — heart beats (double-thump scale) */
-    .variant-rigor .rig-ratings .rig-rblock:first-child .rig-rblock-icn {
-      animation: rig-icon-scan 3.6s var(--rig-ease-inout) infinite;
-      transform-origin: 60% 60%;
-    }
-    .variant-rigor .rig-ratings .rig-rblock:first-child .rig-glint {
-      animation: rig-glint-flicker 2.4s ease-in-out infinite;
-      transform-origin: center;
-    }
-    .variant-rigor .rig-ratings .rig-rblock:nth-child(2) .rig-rblock-icn {
-      animation: rig-icon-twinkle 2.8s var(--rig-ease-inout) infinite;
-      transform-origin: center;
-    }
-    .variant-rigor .rig-ratings .rig-rblock:last-child .rig-rblock-icn {
-      animation: rig-icon-beat 2.2s var(--rig-ease-inout) infinite;
-      transform-origin: center;
-    }
-    @keyframes rig-icon-scan {
-      0%, 70%, 100% { transform: rotate(0deg); }
-      80%  { transform: rotate(-12deg); }
-      90%  { transform: rotate(8deg); }
-    }
-    @keyframes rig-glint-flicker {
-      0%, 88%, 100% { opacity: 0; }
-      89%, 92%      { opacity: 0.95; }
-      93%           { opacity: 0; }
-      96%, 98%      { opacity: 0.7; }
-    }
-    @keyframes rig-icon-twinkle {
-      0%, 100% { transform: rotate(0deg) scale(1); filter: brightness(1) saturate(1); }
-      30%      { transform: rotate(-10deg) scale(1.05); filter: brightness(1.3) saturate(1.15); }
-      50%      { transform: rotate(0deg) scale(1); filter: brightness(1) saturate(1); }
-      70%      { transform: rotate(10deg) scale(1.05); filter: brightness(1.25) saturate(1.15); }
-    }
-    @keyframes rig-icon-beat {
-      0%, 100% { transform: scale(1); }
-      12%      { transform: scale(1.18); }
-      24%      { transform: scale(1); }
-      36%      { transform: scale(1.10); }
-      48%      { transform: scale(1); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-ratings .rig-rblock-icn,
-      .variant-rigor .rig-ratings .rig-glint { animation: none; }
-    }
-    .variant-rigor .rig-rblock-icn { flex: none; display: inline-flex; align-items: center; justify-content: center; }
-    .variant-rigor .rig-rblock-text { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; }
-    .variant-rigor .rig-rblock-num { font-size: 13px; font-weight: 700; color: var(--rig-ink); letter-spacing: -0.01em; white-space: nowrap; }
-    .variant-rigor .rig-rblock-num small { font-weight: 500; color: var(--rig-ink-mute); font-size: 11px; margin-left: 3px; }
-    .variant-rigor .rig-rblock-lbl { font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--rig-ink-mute); margin-top: 1px; }
-    .variant-rigor .rig-rblock-empty .rig-rblock-num { color: var(--rig-ink-mute); font-weight: 500; }
-    /* City chip: distinct from service chips so it reads as a location pill */
-    .variant-rigor .rig-chip-city {
-      font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
-      background: #efe8ff; color: var(--zd-purple-800); border: 1px solid var(--zd-purple-100);
-      display: inline-flex; align-items: center; gap: 4px;
-    }
-    .variant-rigor .rig-chip-city svg { opacity: 0.85; }
-
-    .variant-rigor .rig-socials { display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--rig-s-1); }
-    .variant-rigor .rig-soc { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; background: var(--zd-gray-100); color: var(--rig-ink-mute); pointer-events: none; }
-    .variant-rigor .rig-soc svg { display: block; }
-
-    .variant-rigor .rig-free-note { font-size: 11px; color: var(--rig-ink-mute); font-style: italic; margin-top: var(--rig-s-1); }
-
-    .variant-rigor .rig-actions {
-      display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--rig-s-2);
-      padding: var(--rig-s-3) var(--rig-s-4);
-      border-top: 1px solid var(--rig-line); background: var(--rig-surface-2);
-      flex-shrink: 0; min-height: 56px; align-items: center;
-    }
-    .variant-rigor .rig-actions--single { grid-template-columns: 1fr; }
-
-    .variant-rigor .rig-cta {
-      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-      min-height: 38px; padding: 0 var(--rig-s-3); border-radius: var(--rig-radius-sm);
-      font-family: var(--font-sans); font-size: 13px; font-weight: 600; letter-spacing: -0.005em;
-      text-decoration: none; cursor: pointer; border: 1px solid transparent; user-select: none;
-      transition: transform var(--rig-dur) var(--rig-ease),
-                  box-shadow var(--rig-dur) var(--rig-ease),
-                  background-color var(--rig-dur) var(--rig-ease);
-    }
-    /* Press feedback on every CTA — subtle scale, instant ease-out for snappy release */
-    .variant-rigor .rig-cta:active { transform: scale(0.97); transition-duration: 100ms; }
-    .variant-rigor .rig-cta--ghost { background: transparent; color: var(--rig-ink); border-color: var(--rig-line); }
-    .variant-rigor .rig-cta--primary { background: var(--rig-ink); color: #fff; position: relative; overflow: hidden; isolation: isolate; }
-    .variant-rigor .rig-cta--primary:focus-visible,
-    .variant-rigor .rig-cta--ghost:focus-visible { outline: none; box-shadow: var(--rig-focus); }
-    /* Hover effects only on real pointer devices — kills false-positive hover-on-tap on mobile */
-    @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-cta--ghost:hover { background: var(--zd-gray-100); }
-      .variant-rigor .rig-cta--primary:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(20,18,40,.18); }
-    }
-    /* Per-tier shimmer sweep on the primary CTA — slow + weak so it reads as
-       "alive" rather than "blinking ad". Color and cadence vary per tier so
-       each ladder rung has its own personality:
-         · Доверен (purple): standard white shimmer, 6.5s
-         · Премиум (gold):   warmer white-gold shimmer, faster (5s) — most attention
-         · Проверен (green): subtle white shimmer, slower (8s) — restrained
-         · Стандартен:       no shimmer (no premium signal)
-         · Безплатен:        no shimmer (free has only the front primary)
-       Pauses on hover so the moment the user engages, the visual noise stops. */
-    .variant-rigor .rig-cta--primary {
-      --rig-shimmer-color: rgba(255,255,255,0.22);
-      --rig-shimmer-dur: 6.5s;
-    }
-    .variant-rigor .rig-cta--primary::after {
-      content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
-      background: linear-gradient(110deg, transparent 35%, var(--rig-shimmer-color) 50%, transparent 65%);
-      transform: translateX(-130%);
-      animation: rig-cta-shimmer var(--rig-shimmer-dur) var(--rig-ease-inout) infinite;
-    }
-    .variant-rigor .rig-cta--primary > * { position: relative; z-index: 2; }
-    .variant-rigor .rig-cta--primary:hover::after { animation-play-state: paused; }
-    /* Tier overrides */
-    .variant-rigor .rig-card--premium .rig-cta--primary  { --rig-shimmer-color: rgba(255,236,178,0.42); --rig-shimmer-dur: 5s; }
-    .variant-rigor .rig-card--verified .rig-cta--primary { --rig-shimmer-color: rgba(255,255,255,0.18); --rig-shimmer-dur: 8s; }
-    .variant-rigor .rig-card--standard .rig-cta--primary::after,
-    .variant-rigor .rig-card--free     .rig-cta--primary::after { animation: none; display: none; }
-    @keyframes rig-cta-shimmer {
-      0%, 70% { transform: translateX(-130%); }
-      90%, 100% { transform: translateX(130%); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-cta--primary::after { animation: none; display: none; }
-    }
-
-    .variant-rigor .rig-card--elite    .rig-cta--primary { background: var(--zd-purple-600); }
-    .variant-rigor .rig-card--elite    .rig-cta--primary:hover { background: var(--zd-purple-800); }
-    .variant-rigor .rig-card--premium  .rig-cta--primary { background: var(--zd-gold-700); color: #fff; }
-    .variant-rigor .rig-card--premium  .rig-cta--primary:hover { background: #6b5100; }
-    .variant-rigor .rig-card--verified .rig-cta--primary { background: var(--zd-mint-600); }
-    .variant-rigor .rig-card--verified .rig-cta--primary:hover { background: var(--zd-mint-800); }
-    .variant-rigor .rig-card--standard .rig-cta--primary { background: var(--zd-gray-800); }
-
-    .variant-rigor .rig-card--free { border-style: dashed; border-color: var(--zd-gray-300); background: #fafaf8; }
-    .variant-rigor .rig-card--free .rig-cta--solo { background: var(--zd-gray-400); color: #fff; cursor: not-allowed; }
-    .variant-rigor .rig-card--free .rig-actions { background: transparent; }
-
-    @keyframes rig-elite-shimmer {
-      0%, 100% { box-shadow: 0 1px 2px rgba(20,18,40,.04), 0 0 0 1px rgba(124,77,255,.12); }
-      50%      { box-shadow: 0 1px 2px rgba(20,18,40,.04), 0 0 0 1px rgba(212,175,55,.32); }
-    }
-    .variant-rigor .rig-card--elite { animation: rig-elite-shimmer 6s ease-in-out infinite; }
-    @keyframes rig-premium-shimmer {
-      0%, 100% { box-shadow: 0 1px 2px rgba(20,18,40,.04), 0 0 0 1px rgba(212,175,55,.18); }
-      50%      { box-shadow: 0 1px 2px rgba(20,18,40,.04), 0 0 0 1px rgba(212,175,55,.40); }
-    }
-    .variant-rigor .rig-card--premium { animation: rig-premium-shimmer 6s ease-in-out infinite; }
-
-    .variant-rigor .rig-card--mobile { min-height: 0; font-size: 13px; }
-    .variant-rigor .rig-card--mobile .rig-name { font-size: 17px; }
-    .variant-rigor .rig-card--mobile .rig-desc { -webkit-line-clamp: 2; font-size: 12.5px; }
-    .variant-rigor .rig-card--mobile .rig-body { padding: var(--rig-s-3); gap: 6px; }
-    .variant-rigor .rig-card--mobile .rig-actions { padding: var(--rig-s-2) var(--rig-s-3); }
-    .variant-rigor .rig-card--mobile .rig-cta { min-height: 44px; font-size: 13px; }
-
-    @media (max-width: 1024px) { .variant-rigor .rig-card { min-height: 660px; } .variant-rigor .rig-name { font-size: 18px; } }
-    @media (max-width: 768px) { .variant-rigor .rig-card { min-height: 0; } .variant-rigor .rig-actions { grid-template-columns: 1fr 1fr; } .variant-rigor .rig-cta { min-height: 44px; } }
-    @media (max-width: 390px) { .variant-rigor .rig-body { padding: var(--rig-s-3); } .variant-rigor .rig-name { font-size: 17px; } .variant-rigor .rig-desc { -webkit-line-clamp: 2; } .variant-rigor .rig-chips li { font-size: 10.5px; } }
-    @media (max-width: 320px) { .variant-rigor .rig-medallion { padding: 6px 12px; font-size: 10px; } .variant-rigor .rig-actions { grid-template-columns: 1fr; } }
-
-    @media (prefers-reduced-motion: reduce) {
-      .variant-rigor .rig-card,
-      .variant-rigor .rig-card:hover,
-      .variant-rigor .rig-thumb img,
-      .variant-rigor .rig-flip-cue,
-      .variant-rigor .rig-cta,
-      .variant-rigor .rig-cta--primary:hover {
-        transition: none !important; animation: none !important; transform: none !important;
-      }
-      .variant-rigor .rig-card--elite, .variant-rigor .rig-card--premium { animation: none !important; }
-      .variant-rigor .rig-card:hover .rig-flip-cue { opacity: 1; }
-    }
-    /* Back face — lighter palette for better text contrast focus.
-       Each tier has a subtle hue tint; the body stays near-white so text and
-       CTAs read with high contrast. The tier color signals presence via a
-       thicker accent border and a soft top-left corner wash, not by darkening
-       the whole surface. */
-    .variant-rigor .rig-card--back {
-      grid-template-rows: auto 1fr auto; min-height: 660px;
-      background: linear-gradient(160deg, var(--rig-back-from, #fff) 0%, var(--rig-back-to, #fafafa) 100%);
-      border-left: 5px solid var(--rig-accent, var(--zd-gray-400));
-      box-shadow: inset 0 0 0 1px var(--rig-line), 0 4px 20px rgba(20,18,40,0.06);
-      position: relative;
-      /* Darker, denser ink on the back so text pops against the lighter surface */
-      color: #1a1820;
-    }
-    /* Soft corner wash anchored to the top-left so the tier color feels
-       present without flooding the whole card. */
-    .variant-rigor .rig-card--back::before {
-      content: ""; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(90% 65% at 0% 0%, var(--rig-accent, var(--zd-gray-400)) 0%, transparent 55%);
-      opacity: 0.07; z-index: 0;
-    }
-    .variant-rigor .rig-card--back > * { position: relative; z-index: 1; }
-    /* Lighter, near-white tints per tier — main surface stays bright so
-       the description and CTAs have maximum legibility. */
-    /* Доверен — pale lavender → ivory */
-    .variant-rigor .rig-card--back.rig-card--elite    { --rig-accent: var(--zd-purple-600); --rig-back-from: #faf7ff; --rig-back-to: #fffcf2; }
-    /* Премиум — pale gold → white. Pulled paler than the previous swatch and
-       the radial wash is dialled down per tier so text contrast matches the
-       other backs. */
-    .variant-rigor .rig-card--back.rig-card--premium  { --rig-accent: #d4af37;             --rig-back-from: #fdf8e7; --rig-back-to: #ffffff; }
-    .variant-rigor .rig-card--back.rig-card--premium::before { opacity: 0.04; }
-    /* Проверен — pale mint → white */
-    .variant-rigor .rig-card--back.rig-card--verified { --rig-accent: var(--zd-mint-600);  --rig-back-from: #f1faf3; --rig-back-to: #ffffff; }
-    /* Стандартен — glossy white glass: subtle vertical highlight, no tier tint */
-    .variant-rigor .rig-card--back.rig-card--standard {
-      --rig-accent: var(--zd-charcoal);
-      background: linear-gradient(180deg, #ffffff 0%, #fafbfc 50%, #f4f6f8 100%);
-    }
-    .variant-rigor .rig-card--back.rig-card--standard::before {
-      background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 30%);
-      opacity: 1;
-    }
-    .variant-rigor .rig-back-body { display: flex; flex-direction: column; gap: var(--rig-s-3); padding: var(--rig-s-4); overflow: hidden; }
-    .variant-rigor .rig-back-desc-wrap { position: relative; }
-    .variant-rigor .rig-back-desc { font-size: 13px; line-height: 1.6; color: #2c2935; margin: 0; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
-    /* Back-side read-more: stylized "enter" key — circular badge with return-arrow icon.
-       Background follows the tier accent; per-tier shadow + hover variants below. */
-    .variant-rigor .rig-back-more {
-      position: absolute; right: -2px; bottom: -2px;
-      width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center;
-      border-radius: 8px;
-      background: var(--rig-arrow-bg, var(--zd-purple-600));
-      color: var(--rig-arrow-fg, #fff);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.20), inset 0 -2px 0 rgba(0,0,0,0.12);
-      text-decoration: none;
-      transition: transform var(--rig-dur) var(--rig-ease),
-                  background-color var(--rig-dur) var(--rig-ease),
-                  box-shadow var(--rig-dur) var(--rig-ease);
-    }
-    .variant-rigor .rig-back-more::before {
-      content: ""; position: absolute; right: 100%; top: 50%; width: 28px; height: 1.6em; transform: translateY(-50%);
-      background: linear-gradient(90deg, transparent 0%, var(--rig-back-from, #fff) 70%);
-      pointer-events: none;
-    }
-    /* Per-tier arrow badge colors */
-    .variant-rigor .rig-card--back.rig-card--elite    { --rig-arrow-bg: var(--zd-purple-600); --rig-arrow-fg: #fff; --rig-arrow-bg-hover: var(--zd-purple-800); }
-    .variant-rigor .rig-card--back.rig-card--premium  { --rig-arrow-bg: var(--zd-gold-700);   --rig-arrow-fg: #fff; --rig-arrow-bg-hover: #6b5100; }
-    .variant-rigor .rig-card--back.rig-card--verified { --rig-arrow-bg: var(--zd-mint-600);   --rig-arrow-fg: #fff; --rig-arrow-bg-hover: var(--zd-mint-800); }
-    .variant-rigor .rig-card--back.rig-card--standard { --rig-arrow-bg: var(--zd-charcoal);   --rig-arrow-fg: #fff; --rig-arrow-bg-hover: #1f2a33; }
-    .variant-rigor .rig-back-more:active { transform: scale(0.94); transition-duration: 100ms; }
-    .variant-rigor .rig-back-more:focus-visible { outline: none; box-shadow: var(--rig-focus); }
-    .variant-rigor .rig-back-more svg { width: 14px; height: 14px; display: block; }
-    @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-back-more:hover {
-        background: var(--rig-arrow-bg-hover, var(--zd-purple-800));
-        transform: translate(-1px,-1px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.12);
-      }
-    }
-    .variant-rigor .rig-back-map { display: block; position: relative; border-radius: var(--rig-radius-sm); overflow: hidden; border: 1px solid var(--rig-line); background: var(--zd-gray-100); aspect-ratio: 16 / 7; padding: 0; gap: 0; }
-    .variant-rigor .rig-back-map iframe { width: 100%; height: 100%; border: 0; display: block; }
-    .variant-rigor .rig-back-map-link { position: absolute; right: 8px; bottom: 8px; padding: 4px 9px; border-radius: 999px; background: rgba(255,255,255,0.95); color: var(--rig-ink); font-size: 11px; font-weight: 600; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-    .variant-rigor .rig-back-map-link:hover { background: #fff; }
-    .variant-rigor .rig-back-head { display: grid; grid-template-columns: 56px 1fr; gap: var(--rig-s-3); align-items: center; padding-bottom: var(--rig-s-3); border-bottom: 1px solid rgba(0,0,0,0.08); }
-    .variant-rigor .rig-back-logo { width: 56px; height: 56px; border-radius: var(--rig-radius-sm); object-fit: cover; background: var(--zd-gray-100); border: 1px solid var(--rig-line); box-shadow: 0 1px 2px rgba(20,18,40,.06); }
-    .variant-rigor .rig-back-head .rig-name { margin: 0; font-size: 17px; line-height: 1.2; }
-    .variant-rigor .rig-back-sub { font-size: 11.5px; letter-spacing: 0.02em; color: var(--rig-ink-soft); margin-top: 3px; display: inline-flex; flex-wrap: wrap; align-items: center; gap: 5px; }
-    /* Сертифициран pill — tier-coloured per card. Defaults to mint;
-       per-tier overrides below match Доверен (purple), Премиум (gold). */
-    .variant-rigor .rig-back-pill { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; font-size: 10px; font-weight: 600; background: #ecf7ef; color: var(--zd-mint-800); border: 1px solid var(--zd-mint-100); }
-    .variant-rigor .rig-card--back.rig-card--elite    .rig-back-pill { background: #f6f1ff; color: var(--zd-purple-800); border-color: var(--zd-purple-100); }
-    .variant-rigor .rig-card--back.rig-card--premium  .rig-back-pill { background: #fbf3d8; color: var(--zd-gold-700);  border-color: #ead78a; }
-    .variant-rigor .rig-card--back.rig-card--verified .rig-back-pill { background: #ecf7ef; color: var(--zd-mint-800);  border-color: var(--zd-mint-100); }
-    .variant-rigor .rig-card--back.rig-card--standard .rig-back-pill { background: #eef1f4; color: var(--zd-charcoal);  border-color: #d6dde2; }
-    .variant-rigor .rig-back-section { display: flex; flex-direction: column; gap: var(--rig-s-1); }
-    /* Back face section labels — high-contrast so they read on every tier
-       gradient, including the gold-tinted Премиум back. */
-    .variant-rigor .rig-back-h { margin: 0; font-family: var(--font-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #524e60; }
-    .variant-rigor .rig-back-text { margin: 0; font-size: 13px; line-height: 1.6; color: #16141d; }
-    .variant-rigor .rig-back-hours { margin: 0; display: grid; grid-template-columns: 1fr; gap: 3px; }
-    .variant-rigor .rig-back-hours > div { display: grid; grid-template-columns: 88px 1fr; align-items: baseline; gap: var(--rig-s-2); padding: 3px 0; border-bottom: 1px solid var(--rig-line); }
-    .variant-rigor .rig-back-hours > div:last-child { border-bottom: 0; }
-    .variant-rigor .rig-back-hours dt { font-size: 11.5px; font-weight: 600; color: var(--rig-ink-soft); margin: 0; }
-    .variant-rigor .rig-back-hours dd { font-size: 12.5px; font-weight: 600; color: var(--rig-ink); letter-spacing: -0.005em; margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
-    /* Transparent so the back face's tier gradient flows through into the footer */
-    .variant-rigor .rig-back-actions { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: auto; gap: 6px var(--rig-s-2); padding: var(--rig-s-3) var(--rig-s-4); border-top: 1px solid rgba(0,0,0,0.06); background: transparent; }
-    .variant-rigor .rig-back-actions .rig-cta { width: 100%; }
-    .variant-rigor .rig-back-actions .rig-back-flip { grid-column: 1 / -1; }
-    @media (max-width: 360px) { .variant-rigor .rig-back-actions { grid-template-columns: 1fr; } }
-    .variant-rigor .rig-back-flip {
-      appearance: none; background: transparent; border: 0; padding: 6px;
-      font-family: var(--font-sans); font-size: 11.5px; font-weight: 600; letter-spacing: 0.02em;
-      color: var(--rig-ink-mute); cursor: pointer; border-radius: var(--rig-radius-sm);
-      align-self: center;
-      transition: color var(--rig-dur) var(--rig-ease),
-                  background-color var(--rig-dur) var(--rig-ease),
-                  transform var(--rig-dur) var(--rig-ease);
-    }
-    .variant-rigor .rig-back-flip:active { transform: scale(0.96); transition-duration: 100ms; }
-    @media (hover: hover) and (pointer: fine) {
-      .variant-rigor .rig-back-flip:hover { color: var(--rig-ink); background: var(--zd-gray-100); }
-    }
-    .variant-rigor .rig-back-soc-list { display: flex; flex-direction: column; gap: 5px; }
-    .variant-rigor .rig-back-soc-row { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--rig-ink-soft); font-family: var(--font-sans); letter-spacing: 0.005em; }
-    .variant-rigor .rig-back-soc-i { font-size: 13px; line-height: 1; opacity: 0.7; min-width: 14px; }
-    .variant-rigor .rig-card--back.rig-card--free { background: #fafaf8; border-style: dashed; border-color: var(--zd-gray-300); }
-    .variant-rigor .rig-card--back.rig-card--free .rig-back-head { border-bottom-color: var(--zd-gray-200); }
-    .variant-rigor .rig-card--back.rig-card--free .rig-name { color: var(--rig-ink-soft); }
-
-    .variant-rigor .rig-back-placeholder { display: grid; grid-template-rows: auto 1fr; background: #fafaf8; border: 1.5px dashed var(--zd-gray-300); border-radius: var(--rig-radius); overflow: hidden; min-height: 580px; color: var(--rig-ink-mute); }
-    .variant-rigor .rig-back-placeholder .rig-medallion { background: transparent; border-bottom-color: var(--zd-gray-200); }
-    .variant-rigor .rig-back-placeholder-body { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: var(--rig-s-2); padding: var(--rig-s-6) var(--rig-s-4); }
-    .variant-rigor .rig-back-placeholder-ico { color: var(--zd-gray-400); margin-bottom: var(--rig-s-1); }
-    .variant-rigor .rig-back-placeholder-title { margin: 0; font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: var(--rig-ink-soft); }
-    .variant-rigor .rig-back-placeholder-text { margin: 0; font-size: 12px; line-height: 1.5; color: var(--rig-ink-mute); max-width: 200px; }
-
-    .variant-rigor .rig-card--back.rig-card--mobile { min-height: 0; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-body { padding: var(--rig-s-3); gap: var(--rig-s-2); }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-head { grid-template-columns: 44px 1fr; padding-bottom: var(--rig-s-2); gap: var(--rig-s-2); }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-logo { width: 44px; height: 44px; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-head .rig-name { font-size: 15px; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-text { font-size: 12.5px; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-hours > div { grid-template-columns: 78px 1fr; }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-actions { padding: var(--rig-s-2) var(--rig-s-3); }
-    .variant-rigor .rig-card--back.rig-card--mobile .rig-back-actions .rig-cta { min-height: 44px; }
-    .variant-rigor .rig-back-placeholder--mobile { min-height: 0; padding-bottom: var(--rig-s-3); }
-    .variant-rigor .rig-back-placeholder--mobile .rig-back-placeholder-body { padding: var(--rig-s-4) var(--rig-s-3); }
-
-/* ═══ search3.html — Rigor flip system (clean rebuild) ═══
-   Markup: <article class="zd-card zd-card--<tier>">
-             <div class="zd-flipper">
-               <div class="face face--front rig-card rig-card--<tier>">…</div>
-               <div class="face face--back  rig-card rig-card--back rig-card--<tier>">…</div>
-             </div>
-           </article>
-   - .zd-card is the perspective container.
-   - .zd-flipper holds preserve-3d + the rotateY transition.
-   - Each .face is absolute, inset:0, backface-hidden — they share the same plane.
-   - Toggling .flipped on .zd-card rotates the flipper 180deg.
-   - Free-tier cards opt out via class check in JS. */
-body.variant-rigor .zd-card {
-  background: transparent;
-  border-radius: var(--rig-radius);
-  perspective: 1100px;
-  min-height: 660px;
-  -webkit-tap-highlight-color: transparent;
-}
-body.variant-rigor .zd-flipper {
-  position: relative;
-  width: 100%;
-  min-height: 660px;
-  transform-style: preserve-3d;
-  transition: transform .45s var(--rig-ease-flip);
-}
-body.variant-rigor .zd-card.flipped .zd-flipper {
-  transform: rotateY(180deg);
-}
-body.variant-rigor .zd-flipper > .face {
-  position: absolute;
-  inset: 0;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  border-radius: var(--rig-radius);
-  overflow: hidden;
-}
-body.variant-rigor .zd-flipper > .face--front { transform: rotateY(0deg); }
-body.variant-rigor .zd-flipper > .face--back  { transform: rotateY(180deg); }
-/* Tier shimmer pseudos from the legacy .zd-flipper styles use border-radius: 22px;
-   round them down to the Rigor radius so they don't bleed square corners. */
-body.variant-rigor .zd-flipper::before { border-radius: var(--rig-radius); }
-/* Neutralize the legacy .zd-flipper box-shadow and color so they don't bleed in. */
-body.variant-rigor .zd-flipper { box-shadow: none; color: inherit; border-radius: var(--rig-radius); }
-
-/* Hover lift on the article (never on the inner rig-card → never fights the rotation).
-   Doubled .zd-card.zd-card beats the legacy .zd-card--<tier>:hover rules without !important.
-   :not(.flipped) auto-disables the lift while the card is showing its back. */
-body.variant-rigor .zd-card.zd-card { transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s cubic-bezier(.2,.8,.2,1); }
-body.variant-rigor .zd-card.zd-card:hover:not(.flipped) {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 32px rgba(20, 18, 40, 0.10), 0 4px 12px rgba(20, 18, 40, 0.06);
-}
-body.variant-rigor .zd-back-cta, body.variant-rigor .zd-tagline,
-body.variant-rigor .zd-card-actions, body.variant-rigor .zd-cta-row { display: none; }
-
-body.variant-rigor .rig-socials, body.variant-rigor .rig-socials .rig-soc {
-  pointer-events: none;
-  cursor: default;
-}
-
-/* Convert decorative .rig-flip-cue (pointer-events:none) → real button.
-   We swap the markup to <button class="rig-flip-btn" data-action="flip">. */
-body.variant-rigor .rig-flip-btn {
-  position: absolute; bottom: var(--rig-s-2); right: var(--rig-s-2);
-  appearance: none; background: rgba(31,29,41,.85); color: #fff; border: 0;
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 5px 10px;
-  font-family: var(--font-sans);
-  font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em;
-  border-radius: 999px;
-  cursor: pointer;
-  opacity: 0; transform: translateY(2px);
-  transition: opacity var(--rig-dur) var(--rig-ease), transform var(--rig-dur) var(--rig-ease);
-  z-index: 4;
-}
-body.variant-rigor .rig-flip-btn::before { content: "↻"; opacity: .85; }
-body.variant-rigor .rig-flip-btn:focus-visible { opacity: 1; transform: translateY(0); outline: none; box-shadow: var(--rig-focus); }
-body.variant-rigor .rig-flip-btn:active { transform: scale(0.95); transition-duration: 100ms; }
-@media (hover: hover) and (pointer: fine) {
-  body.variant-rigor .face--front:hover .rig-flip-btn { opacity: 1; transform: translateY(0); }
-  body.variant-rigor .rig-flip-btn:hover { background: rgba(31,29,41,1); }
-}
-/* On touch devices, the flip button stays visible (no hover available) */
-@media (hover: none) {
-  body.variant-rigor .rig-flip-btn { opacity: 1; transform: translateY(0); }
-}
-body.variant-rigor .rig-card--free .rig-flip-btn { display: none; }
-@media (hover: none) {
-  body.variant-rigor .rig-flip-btn { opacity: .85; transform: translateY(0); }
-}
-body.variant-rigor .rig-back-flip {
-  appearance: none; border: 0; background: transparent; font: inherit;
-  cursor: pointer;
-}
-
-body.variant-rigor .card-stack {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 22px;
-  padding: 16px 24px 80px;
-}
-
-/* Polish: subtle stagger entrance — each card fades + lifts in with a small
-   delay after its predecessor. Caps at 12 to avoid hundreds of ms of waiting
-   for cards far down the list. */
-body.variant-rigor .card-stack > .zd-card {
-  opacity: 0;
-  transform: translateY(8px);
-  animation: rig-card-enter 360ms var(--rig-ease, cubic-bezier(0.23, 1, 0.32, 1)) forwards;
-}
-body.variant-rigor .card-stack > .zd-card:nth-child(1)  { animation-delay: 0ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(2)  { animation-delay: 40ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(3)  { animation-delay: 80ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(4)  { animation-delay: 120ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(5)  { animation-delay: 160ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(6)  { animation-delay: 200ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(7)  { animation-delay: 240ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(8)  { animation-delay: 280ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(9)  { animation-delay: 320ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(10) { animation-delay: 360ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(11) { animation-delay: 400ms; }
-body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440ms; }
-@keyframes rig-card-enter {
-  to { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  body.variant-rigor .card-stack > .zd-card {
-    animation: none; opacity: 1; transform: none;
-  }
-}
-@media (max-width: 768px) {
-  body.variant-rigor .card-stack {
-    grid-template-columns: 1fr;
-    padding: 12px 16px 80px;
-  }
-}
-
-
 </style>
 </head>
-<body class="variant-rigor">
+<body>
 
 <nav style="position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,0.05);">
   <a href="index.html" class="nav-logo" style="display:flex;align-items:center;text-decoration:none;">
@@ -2763,227 +2034,238 @@ const passOnline = d => !onlineFilter || d.city === "Онлайн";
  * Free tier: NO back face is rendered. The card stays a static front-only.
  */
 function buildCardHTML(d) {
-  /* search3.html: Rigor card. Outer article carries .zd-card (legacy compat)
-     PLUS .rig-card (Rigor styling). data-flip-card enables generic flip. */
-  const tierClass = (tierClassMap || {})[d.tier] || "free";
+  const tierClass = tierClassMap[d.tier] || "free";
   const isFree = d.tier === "Безплатен";
-  const tagLimit = (typeof tagLimits !== 'undefined' ? tagLimits : {Безплатен:1})[d.tier] || 1;
-  const services = (d.services || []).slice(0, tagLimit);
+  const limit = tagLimits[d.tier] || 1;
+  const services = (d.services || []).slice(0, limit);
 
-  function esc(s) {
-    if (s === null || s === undefined) return '';
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-  function safeUrl(u) {
-    if (!u) return '#';
-    const s = String(u).trim();
-    if (/^(javascript|data|vbscript):/i.test(s)) return '#';
-    if (/^(https?:|mailto:|tel:|\/|#)/i.test(s)) return s;
-    return 'https://' + s;
-  }
+  // ─── Ratings: Google (top, real only) + Zadeteto hearts (below, hash mock until real) ───
+  const googleRating = getGoogleRating(d);
+  const zadRating = getZadetetoRating(d);
+  // Nudge to "Оцени!" only when (a) no real Zadeteto reviews AND (b) the
+  // fallback count is artificially low.
+  const nudgeHTML = (!zadRating.real && zadRating.count < 10)
+    ? `<a class="nudge" href="#" onclick="event.stopPropagation();event.preventDefault();openAuthModal(event)">Оцени!</a>`
+    : '';
+  const googleRatingHTML = googleRating
+    ? `<span class="zd-rating zd-rating-google" title="Google Maps">
+         ${ratingIconsHTML(googleRating.avg, 'star')}
+         <span class="num">${googleRating.avg}</span>
+         <span class="cnt">/ ${googleRating.count}</span>
+       </span>`
+    : '';
+  const zadetetoRatingHTML = `<span class="zd-rating zd-rating-zadeteto" title="Оценки от родители в ZaDeteto">
+      ${ratingIconsHTML(zadRating.avg, 'heart')}
+      <span class="num">${zadRating.avg}</span>
+      <span class="cnt">/ ${zadRating.count}</span>${nudgeHTML}
+    </span>`;
+  // ZD on top, Google below (per user pref — ZaDeteto brand signal leads).
+  const ratingStackHTML = `<div class="zd-rating-stack">${zadetetoRatingHTML}${googleRatingHTML}</div>`;
 
-  const safeName = esc(d.name);
-  const profileUrl = `listing.html?id=${d.id}`;
-  // Real photo, or null → render the tier-themed empty placeholder div instead.
-  const photoUrl = (Array.isArray(d.gallery_urls) && d.gallery_urls[0])
-    || (typeof getCardPhoto === 'function' ? getCardPhoto(d) : null)
-    || null;
-  const tierLabel = d.tier || 'Безплатен';
-
-  // Tier label already conveys verification (Доверен / Проверен / Премиум).
-  // Keeping the variable so existing template slots stay valid; render nothing.
-  const trustHTML = '';
-
-  // Inline gray social SVGs (Lucide-style stroke icons)
-  const SOC_SVG = {
-    phone:    '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
-    email:    '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>',
-    website:  '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
-    facebook: '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 0 1 1-1h3v-4h-3a5 5 0 0 0-5 5v2.01h-2l-.396 3.98h2.396z"/></svg>',
-    instagram:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37a4 4 0 1 1-7.91 1.18A4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>',
-    tiktok:   '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.66a8.16 8.16 0 0 0 4.77 1.52V6.73a4.85 4.85 0 0 1-1.84-.04z"/></svg>',
-    linkedin: '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68 1.68 1.68 0 1 0-3.36 0 1.68 1.68 0 0 0 1.68 1.68zm1.39 9.94v-8.37H5.5v8.37z"/></svg>',
-    youtube:  '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M21.582 7.186A2.506 2.506 0 0 0 19.812 5.4C18.254 5 12 5 12 5s-6.254 0-7.812.4A2.506 2.506 0 0 0 2.418 7.186 26.05 26.05 0 0 0 2 12a26.05 26.05 0 0 0 .418 4.814A2.506 2.506 0 0 0 4.188 18.6C5.746 19 12 19 12 19s6.254 0 7.812-.4a2.506 2.506 0 0 0 1.77-1.786A26.05 26.05 0 0 0 22 12a26.05 26.05 0 0 0-.418-4.814zM10 15V9l5.196 3z"/></svg>',
-    maps:     '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>'
-  };
-  const allowedKeys = (typeof allowedIconsByTier !== 'undefined' ? allowedIconsByTier[d.tier] : null) || [];
-  let frontSocialsInner = '';
-  allowedKeys.forEach(k => {
-    if (!SOC_SVG[k]) return;
-    if (k !== 'maps' && (!d[k] || d[k] === '#')) return;
-    frontSocialsInner += `<span class="rig-soc">${SOC_SVG[k]}</span>`;
-  });
-
-  // Free-tier inline notxt socials
-  let freeNotxtHTML = '';
-  if (isFree) {
-    let inner = '';
-    if (d.phone) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">📞</span><span class="notxt">${esc(d.phone)}</span></span>`;
-    if (d.email) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">✉</span><span class="notxt">${esc(d.email)}</span></span>`;
-    if (inner) freeNotxtHTML = `<div class="rig-back-soc-list">${inner}</div>`;
-  }
-
-  // CTAs
-  const primaryLabel = esc(d.cta_label_1 || d.cta_label || (isFree ? 'Контакт' : 'Виж профила'));
-  const primaryUrl   = safeUrl(d.cta_url_1 || d.cta_url || (isFree ? (d.phone ? 'tel:' + d.phone : '#') : profileUrl));
-  const primaryAttrs = /^(https?:)/i.test(primaryUrl) ? 'target="_blank" rel="noopener"' : '';
-  const ghostLabel = esc(d.cta_label_2 || 'Запази');
-  const ghostUrl   = safeUrl(d.cta_url_2 || profileUrl);
-
-  let actionsHTML;
-  if (isFree) {
-    actionsHTML = `<footer class="rig-actions rig-actions--single">
-      <a class="rig-cta rig-cta--primary rig-cta--solo" href="${primaryUrl}" ${primaryAttrs} onclick="event.stopPropagation()">${primaryLabel}</a>
-    </footer>`;
-  } else {
-    actionsHTML = `<footer class="rig-actions">
-      <a class="rig-cta rig-cta--ghost" href="${ghostUrl}" onclick="event.stopPropagation()">${ghostLabel}</a>
-      <a class="rig-cta rig-cta--primary" href="${primaryUrl}" ${primaryAttrs} onclick="event.stopPropagation()">${primaryLabel}</a>
-    </footer>`;
-  }
-
-  // Address line: prefer explicit neighborhood; else strip the city from
-  // the address so we don't duplicate it (city gets its own pill below).
-  function deriveNeighborhood(b) {
-    if (b.neighborhood) return String(b.neighborhood).trim();
-    if (!b.address) return '';
-    let s = String(b.address);
-    if (b.city) {
-      const cityRe = new RegExp('\\s*[,·]?\\s*' + b.city.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$', 'i');
-      s = s.replace(cityRe, '').trim();
+  // ─── Tagline — first paragraph of the description; CSS line-clamp (3
+  //    lines on .zd-tagline) handles visual truncation. We cap the raw
+  //    length at 260 chars as a safety net against pathologically long
+  //    descriptions so the card layout can't explode vertically.
+  let taglineHTML = '';
+  if (d.description) {
+    const firstPara = d.description.split(/\n{2,}/)[0].trim();
+    const MAX = 260;
+    let tagline;
+    if (firstPara.length <= MAX) {
+      tagline = firstPara;
+    } else {
+      // `lastIndexOf` returns -1 when there is no space in the window — and
+      // -1 is truthy in JS so a naive `|| fallback` doesn't help. Guard with
+      // an explicit `> 0` check and fall back to a hard cut at MAX-1.
+      const cut = firstPara.lastIndexOf(' ', MAX - 1);
+      tagline = firstPara.slice(0, cut > 0 ? cut : MAX - 1).trim() + '…';
     }
-    return s;
+    taglineHTML = `<div class="zd-tagline">${ZdSec.escapeHtml(tagline)}</div>`;
   }
-  const neighborhood = deriveNeighborhood(d);
 
-  // Ratings — vertical 3-row strip in the body. Sequence top→bottom:
-  // 1) Одит (ZaDeteto audit score)  2) Google  3) ZaDeteto parent reviews
-  const auditScore = (typeof getTierScore === 'function') ? getTierScore(d) : null;
-  const gRat = (typeof getGoogleRating === 'function') ? getGoogleRating(d) : null;
-  const zRat = (typeof getZadetetoRating === 'function') ? getZadetetoRating(d) : null;
-  // Score icons:
-  //   Audit  → dark magnifier with a small inner glint that flickers
-  //   Google → vibrant gold star that wiggles + brightens (twinkle)
-  //   ZD     → vibrant purple heart that beats
-  const ICN_AUDIT  = '<svg viewBox="0 0 24 24" fill="none" stroke="#1a1820" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><circle class="rig-glint" cx="8" cy="8" r="1.4" fill="#1a1820" stroke="none" opacity="0"/><path d="m21 21-4.3-4.3"/></svg>';
-  const ICN_GOOGLE = '<svg viewBox="0 0 24 24" fill="#e0a800" stroke="#9c7600" stroke-width="0.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 17.6l-6.2 3.6 1.6-6.9L2.1 9.6l7-.7L12 2.5z"/></svg>';
-  const ICN_ZD     = '<svg viewBox="0 0 24 24" fill="#9c5fff" aria-hidden="true"><path d="M12 21.2s-7.8-4.7-9.7-9.9C1 7.5 3.7 4 7.4 4c2.1 0 3.7 1 4.6 2.6C12.9 5 14.5 4 16.6 4c3.7 0 6.4 3.5 5.1 7.3-1.9 5.2-9.7 9.9-9.7 9.9z"/></svg>';
-  const ratingsHTML = `<div class="rig-ratings" aria-label="Оценки">
-    <div class="rig-rblock${auditScore == null ? ' rig-rblock-empty' : ''}" title="Одит на ZaDeteto">
-      <span class="rig-rblock-icn">${ICN_AUDIT}</span>
-      <span class="rig-rblock-lbl">Одит</span>
-      <span class="rig-rblock-num">${auditScore != null ? auditScore : '—'}</span>
-    </div>
-    <div class="rig-rblock${gRat ? '' : ' rig-rblock-empty'}" title="Google Maps">
-      <span class="rig-rblock-icn">${ICN_GOOGLE}</span>
-      <span class="rig-rblock-lbl">Google</span>
-      <span class="rig-rblock-num">${gRat ? gRat.avg : '—'}${gRat && gRat.count ? `<small>· ${gRat.count}</small>` : ''}</span>
-    </div>
-    <div class="rig-rblock${zRat ? '' : ' rig-rblock-empty'}" title="Оценки от родители в ZaDeteto">
-      <span class="rig-rblock-icn">${ICN_ZD}</span>
-      <span class="rig-rblock-lbl">ZaDeteto</span>
-      <span class="rig-rblock-num">${zRat ? zRat.avg : '—'}${zRat && zRat.count ? `<small>· ${zRat.count}</small>` : ''}</span>
-    </div>
-  </div>`;
-
-  // City pill rendered as the FIRST chip, distinct styling
-  const cityChipHTML = d.city
-    ? `<li class="rig-chip-city"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M6 1a3.5 3.5 0 0 0-3.5 3.5C2.5 7.5 6 11 6 11s3.5-3.5 3.5-6.5A3.5 3.5 0 0 0 6 1zm0 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/></svg>${esc(d.city)}</li>`
+  // ─── Chips (tier-bound limit) ───
+  const chipsHTML = services.length
+    ? `<div class="zd-chips">${services.map(t => `<span class="zd-chip">${ZdSec.escapeHtml(t)}</span>`).join('')}</div>`
     : '';
 
-  // Thumb: real photo or tier-themed empty placeholder
-  const thumbInner = photoUrl
-    ? `<img src="${esc(photoUrl)}" alt="" loading="lazy">`
-    : `<div class="rig-thumb-empty" aria-hidden="true"><img class="rig-thumb-mark" src="brand_assets/zadeteto-icon-mark.svg" alt=""></div>`;
+  // ─── Front-face socials (every icon this tier is allowed to show) ───
+  // Includes contacts (phone, email, website, maps) + social media. Back
+  // face keeps the same set; the front is just a compact inline strip.
+  // Maps is synthesized from lat/lng or address, matching the back face.
+  const allowedKeys = allowedIconsByTier[d.tier] || [];
+  let frontSocialsInner = '';
+  allowedKeys.forEach(k => {
+    if (k === 'maps') return; // appended below
+    if (!d[k] || d[k] === '#') return;
+    const href = k === 'phone' ? 'tel:' + d[k]
+               : k === 'email' ? 'mailto:' + d[k]
+               : ZdSec.sanitizeUrl(d[k]);
+    frontSocialsInner += `<a href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="${k}"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
+  });
+  if (allowedKeys.includes('maps')) {
+    const mapsFrontUrl = (d.lat && d.lng)
+      ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address || d.name) + ' ' + (d.city || ''))}`;
+    frontSocialsInner += `<a class="zd-front-socials-maps" href="${mapsFrontUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps"><svg viewBox="0 0 64 64" width="14" height="14"><path d="M32 2C20.4 2 11 11.4 11 23c0 17.2 19 37.4 20 38.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4C53 11.4 43.6 2 32 2z" fill="#34A853"/><path d="M32 2v30l21-9C53 11.4 43.6 2 32 2z" fill="#4285F4"/><path d="M11 23c0-9 5.4-16.7 13.1-20.1L32 32 12 32.5C11.4 29.5 11 26.3 11 23z" fill="#FBBC05"/><path d="M12 32.5L32 32l-8 29c-7-7.7-13-16.2-13-16.2S11.5 34 12 32.5z" fill="#EA4335"/><path d="M32 32l-8 29c3 3.2 7 9.4 8 10.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4 0-1-.1-2-.1-3L32 32z" fill="#34A853"/><circle cx="32" cy="23" r="8" fill="#fff"/></svg></a>`;
+  }
+  const frontSocialsHTML = frontSocialsInner ? `<div class="zd-front-socials">${frontSocialsInner}</div>` : '';
 
-  // ─── FRONT face (.face--front carries .rig-card classes for grid/style) ───
+  // ─── Top badges (audit score pill, plus SOP / Online if applicable) ───
+  // Tier pill moved out of the top-badges row and into a dedicated tier-row
+  // below the business name — was being hidden under the now-larger logo.
+  const auditScore = getTierScore(d);
+  const tierLabel = d.tier === 'Премиум' ? '★ Премиум' : d.tier;
+  const tierPillHTML = `<div class="zd-tier-row"><span class="zd-badge-tier">${ZdSec.escapeHtml(tierLabel)}</span></div>`;
+  let topBadgesHTML = '';
+  if (d.sop) topBadgesHTML += `<span class="zd-badge-sop">СОП</span>`;
+  if (d.city === 'Онлайн') topBadgesHTML += `<span class="zd-badge-online">Online</span>`;
+  topBadgesHTML += `<span class="zd-badge-score">${auditScore}</span>`;
+
+  // ─── Front-face CTAs (glass on photo gradient) ───
+  // Secondary = "Профил" → listing.html. Primary = business's cta_label_1 if set.
+  const primaryLabel = ZdSec.escapeHtml(d.ctaLabel1 || d.ctaLabel || (isFree ? 'Контакт' : 'Запази час'));
+  const primaryUrl   = ZdSec.sanitizeUrl(d.ctaUrl1 || d.ctaUrl || (isFree ? (d.phone ? 'tel:' + d.phone : '#') : '#'));
+  const profileUrl   = `listing.html?id=${d.id}`;
+  const secondaryHTML = isFree
+    ? '' // free tier gets only the primary slot
+    : `<a class="zd-cta zd-cta--secondary" href="${profileUrl}" onclick="event.stopPropagation()">Профил</a>`;
+  const primaryHTML = `<a class="zd-cta zd-cta--primary" href="${primaryUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${primaryLabel}</a>`;
+  const ctaRowHTML = `<div class="zd-cta-row">${secondaryHTML}${primaryHTML}</div>`;
+
+  // ─── Name (link unless free) + verified tick on Премиум/Доверен ───
+  // The tick lives INSIDE the name element (inline after the last word) so
+  // when the name wraps to 2-3 lines the tick rides with the last word
+  // instead of falling to its own line in the flex row.
+  const verifiedTickHTML = (d.tier === 'Премиум' || d.tier === 'Доверен')
+    ? `<span class="zd-verified"> ✓</span>` : '';
+  const nameInner = ZdSec.escapeHtml(d.name) + verifiedTickHTML;
+  const nameHTML = isFree
+    ? `<span class="zd-name">${nameInner}</span>`
+    : `<a class="zd-name" href="${profileUrl}" onclick="event.stopPropagation()">${nameInner}</a>`;
+
+  // ─── Distance (when "near me" is active) ───
+  const distKm = nearMeActive ? getDistanceKm(d) : null;
+  const distHTML = distKm !== null ? ` · ${distKm.toFixed(1)} км` : '';
+
+  // ─── Photo dots placeholder (multi-photo strip is a future feature) ───
+  const photoCount = (Array.isArray(d.gallery_urls) ? d.gallery_urls.length : 0) || 1;
+  let dotsHTML = '<div class="zd-photo-dots">';
+  for (let i = 0; i < Math.min(photoCount, 5); i++) {
+    dotsHTML += `<span${i === 0 ? ' class="active"' : ''}></span>`;
+  }
+  dotsHTML += '</div>';
+
+  // ─── Front face ───
+  const photoUrl = getCardPhoto(d);
+  const _hasLogo = d.logo && d.logo !== '#' && !d.logo.includes('placehold.co');
+  const _logoEl = _hasLogo ? `<div class="zd-card-logo"><img src="${ZdSec.escapeHtml(d.logo)}" alt="" loading="lazy"></div>` : '';
+  // When a business has no real gallery photo, skip the background-image and
+  // render an empty-hero variant (subtle tier-tinted gradient from CSS).
+  const photoInlineStyle = photoUrl
+    ? `background-image:url('${photoUrl.replace(/'/g, "\\'")}')`
+    : '';
+  const photoClassExtra = photoUrl ? '' : ' zd-photo--empty';
   const frontHTML = `
-    <div class="face face--front rig-card rig-card--${tierClass}" data-tier="${tierClass}">
-      <header class="rig-medallion">
-        <span class="rig-tier-dot"></span>
-        <span class="rig-tier-label">${esc(tierLabel)}</span>
-        ${trustHTML}
-      </header>
-      <div class="rig-body">
-        <div class="rig-slot rig-slot--thumb rig-thumb${isFree ? ' rig-thumb--muted' : ''}">
-          ${thumbInner}
-          ${isFree ? '' : `<button type="button" class="rig-flip-btn" data-action="flip">Виж подробности</button>`}
+    <div class="zd-face zd-face--front">
+      <div class="zd-photo${photoClassExtra}" style="${photoInlineStyle}"></div>
+      ${_logoEl}
+      ${dotsHTML}
+      <div class="zd-top-badges">${topBadgesHTML}</div>
+      ${ratingStackHTML}
+      <div class="zd-info">
+        <div class="zd-name-row">${nameHTML}</div>
+        ${tierPillHTML}
+        <div class="zd-meta-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7 8-13a8 8 0 0 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <span>${ZdSec.escapeHtml(d.city)}${distHTML}</span>
         </div>
-        <h3 class="rig-slot rig-slot--name rig-name">${safeName}</h3>
-        ${neighborhood
-          ? `<p class="rig-slot rig-slot--meta rig-meta"><svg class="rig-pin" viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M6 1a3.5 3.5 0 0 0-3.5 3.5C2.5 7.5 6 11 6 11s3.5-3.5 3.5-6.5A3.5 3.5 0 0 0 6 1zm0 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor"/></svg>${esc(neighborhood)}</p>`
-          : `<div class="rig-slot rig-slot--meta" data-empty></div>`}
-        ${d.description
-          ? `<div class="rig-slot rig-slot--desc rig-desc-wrap"><p class="rig-desc" lang="bg">${esc(d.description)}</p><a class="rig-more" href="${profileUrl}" onclick="event.stopPropagation()">още →</a></div>`
-          : `<div class="rig-slot rig-slot--desc" data-empty></div>`}
-        ${(cityChipHTML || services.length)
-          ? `<ul class="rig-slot rig-slot--chips rig-chips" aria-label="Услуги">${cityChipHTML}${services.map(s => `<li>${esc(s)}</li>`).join('')}</ul>`
-          : `<div class="rig-slot rig-slot--chips" data-empty></div>`}
-        <div class="rig-slot rig-slot--ratings">${ratingsHTML}</div>
-        <div class="rig-slot rig-slot--socials">${isFree ? freeNotxtHTML : (frontSocialsInner ? `<div class="rig-socials">${frontSocialsInner}</div>` : '')}${isFree ? `<p class="rig-free-note">Профилът не е активиран от собственика.</p>` : ''}</div>
+        ${taglineHTML}
+        ${chipsHTML}
+        ${frontSocialsHTML}
+        ${ctaRowHTML}
+        <div class="zd-card-actions">
+          ${isFree
+            ? `<span class="zd-detail-btn" style="visibility:hidden" aria-hidden="true">Детайли</span>`
+            : `<span class="zd-detail-btn" onclick="event.stopPropagation();flipCard(this.closest('.zd-card'))">Детайли <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></span>`}
+        </div>
       </div>
-      ${actionsHTML}
     </div>`;
 
-  // ─── BACK face (paid tiers only, no socials per spec) ───
+  // ─── Back face (only for non-free tiers) ───
   let backHTML = '';
   if (!isFree) {
-    const logoSrc = (d.logo && !String(d.logo).includes('placehold.co'))
-      ? d.logo
-      : `https://placehold.co/80x80/e7e4dd/7a7689?text=${encodeURIComponent((d.name || '?').slice(0, 1))}`;
-
-    const verifiedPill = (d.tier === 'Доверен' || d.tier === 'Премиум' || d.tier === 'Проверен')
-      ? ` · <span class="rig-back-pill">✓ Сертифициран</span>` : '';
-
-    // Embedded Google Maps: prefer lat/lng, else address+city query.
-    const _mapsQuery = (d.lat && d.lng)
-      ? `${d.lat},${d.lng}`
-      : encodeURIComponent([d.address, d.city].filter(Boolean).join(', ') || d.name || '');
-    const _mapsEmbedSrc = `https://www.google.com/maps?q=${_mapsQuery}&output=embed`;
-    const _mapsLinkUrl = (d.lat && d.lng)
+    // Socials row (tier-bound). Maps icon is appended at the end always.
+    const allowed = allowedIconsByTier[d.tier] || [];
+    let socialsInner = '';
+    allowed.forEach(k => {
+      if (k === 'maps') return; // we add the maps icon manually below
+      if (d[k] && d[k] !== '#') {
+        const href = k === 'phone' ? 'tel:' + d[k] : k === 'email' ? 'mailto:' + d[k] : ZdSec.sanitizeUrl(d[k]);
+        socialsInner += `<a class="zd-social-icn" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
+      }
+    });
+    // Always add the Google Maps pin at the end (no embedded map)
+    const mapsUrl = (d.lat && d.lng)
       ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
-      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([d.address, d.city].filter(Boolean).join(', ') || d.name || '')}`;
-    const addressLine = [d.address, d.city].filter(Boolean).join(', ');
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address || d.name) + ' ' + (d.city || ''))}`;
+    socialsInner += `<a class="zd-social-icn zd-social-icn--maps" href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps"><svg viewBox="0 0 64 64" width="14" height="14"><path d="M32 2C20.4 2 11 11.4 11 23c0 17.2 19 37.4 20 38.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4C53 11.4 43.6 2 32 2z" fill="#34A853"/><path d="M32 2v30l21-9C53 11.4 43.6 2 32 2z" fill="#4285F4"/><path d="M11 23c0-9 5.4-16.7 13.1-20.1L32 32 12 32.5C11.4 29.5 11 26.3 11 23z" fill="#FBBC05"/><path d="M12 32.5L32 32l-8 29c-7-7.7-13-16.2-13-16.2S11.5 34 12 32.5z" fill="#EA4335"/><path d="M32 32l-8 29c3 3.2 7 9.4 8 10.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4 0-1-.1-2-.1-3L32 32z" fill="#34A853"/><circle cx="32" cy="23" r="8" fill="#fff"/></svg></a>`;
+
+    // Working hours grid
+    let hoursHTML = '';
+    const wh = d.workingHours || d.working_hours;
+    if (wh && typeof wh === 'object') {
+      const mon = wh.mon, fri = wh.fri, sat = wh.sat, sun = wh.sun;
+      let rows = '';
+      if (mon || fri) {
+        const range = (mon && fri && mon === fri) ? mon : `${mon || ''}${mon && fri ? ' – ' : ''}${fri || ''}`;
+        rows += `<span>Пон-Пет</span><span>${range === 'closed' ? 'Затворено' : range}</span>`;
+      }
+      if (sat) rows += `<span>Съб</span><span>${sat === 'closed' ? 'Затворено' : sat}</span>`;
+      if (sun) rows += `<span>Нед</span><span>${sun === 'closed' ? 'Затворено' : sun}</span>`;
+      if (rows) hoursHTML = `<div class="zd-back-section"><div class="zd-back-label">Работно време</div><div class="zd-hours-grid">${rows}</div></div>`;
+    }
+
+    const aboutHTML = d.description
+      ? `<div class="zd-back-section"><div class="zd-back-label">За нас</div><div class="zd-back-text">${ZdSec.escapeHtml(d.description)}</div></div>`
+      : '';
+    const addressHTML = (d.address || d.city)
+      ? `<div class="zd-back-section"><div class="zd-back-label">Адрес</div><div class="zd-back-text">${ZdSec.escapeHtml(d.address || d.city)}</div></div>`
+      : '';
+    const subLine = `${ZdSec.escapeHtml(d.city || '')} · ${ZdSec.escapeHtml(d.tier)}${(d.tier === 'Премиум' || d.tier === 'Доверен') ? ' · ✓ Сертифициран' : ''}`;
 
     backHTML = `
-    <div class="face face--back rig-card rig-card--back rig-card--${tierClass}">
-      <header class="rig-medallion">
-        <span class="rig-tier-dot"></span>
-        <span class="rig-tier-label">${esc(tierLabel)}</span>
-        ${trustHTML}
-      </header>
-      <div class="rig-back-body">
-        <div class="rig-back-head">
-          <img class="rig-back-logo" src="${esc(logoSrc)}" alt="">
-          <div>
-            <h3 class="rig-name">${safeName}</h3>
-            <p class="rig-back-sub">${esc(d.city || '')} · ${esc(tierLabel)}${verifiedPill}</p>
-          </div>
+    <div class="zd-face zd-face--back">
+      <div class="zd-back-header">
+        <div class="zd-back-logo"><img src="${getCardLogo(d)}" alt="${ZdSec.escapeHtml(d.name)}" loading="lazy"></div>
+        <div class="zd-back-header-text">
+          <div class="zd-back-name">${ZdSec.escapeHtml(d.name)}</div>
+          <div class="zd-back-sub">${subLine}</div>
         </div>
-        ${d.description ? `<section class="rig-back-section"><h4 class="rig-back-h">За нас</h4><div class="rig-back-desc-wrap"><p class="rig-back-desc" lang="bg">${esc(d.description)}</p><a class="rig-back-more" href="${profileUrl}" onclick="event.stopPropagation()" aria-label="Виж пълния профил" title="Виж пълния профил"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg></a></div></section>` : ''}
-        ${addressLine ? `<section class="rig-back-section"><h4 class="rig-back-h">Адрес</h4><p class="rig-back-text">${esc(addressLine)}</p></section>` : ''}
-        <section class="rig-back-section rig-back-map" aria-label="Карта">
-          <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${_mapsEmbedSrc}" title="Локация на ${safeName}"></iframe>
-          <a class="rig-back-map-link" href="${_mapsLinkUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Отвори в Google Maps ↗</a>
-        </section>
       </div>
-      <footer class="rig-back-actions">
-        <a class="rig-cta rig-cta--primary" href="${primaryUrl}" ${primaryAttrs} onclick="event.stopPropagation()">${primaryLabel}</a>
-        <a class="rig-cta rig-cta--ghost" href="${profileUrl}" onclick="event.stopPropagation()">Виж пълния профил →</a>
-        <button type="button" class="rig-back-flip" data-action="flip">↻ Назад</button>
-      </footer>
+      ${aboutHTML}
+      ${hoursHTML}
+      ${addressHTML}
+      <div class="zd-back-section">
+        <div class="zd-back-label">Контакти</div>
+        <div class="zd-socials-row">${socialsInner}</div>
+      </div>
+      <div class="zd-back-cta">
+        <a href="${primaryUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${primaryLabel}</a>
+        <a class="zd-profile-link-back" href="${profileUrl}" onclick="event.stopPropagation()">Подробен профил →</a>
+        <button type="button" class="zd-flip-back-btn" onclick="event.stopPropagation();flipCard(this.closest('.zd-card'))">↻ Назад</button>
+      </div>
     </div>`;
   }
 
-  return `<article class="zd-card zd-card--${tierClass}" data-id="${d.id}" data-name="${safeName}" data-flip-card="true">
-    <div class="zd-flipper flipper">
+  const safeName = ZdSec.escapeHtml(d.name);
+
+  return `<div class="zd-card zd-card--${tierClass}" data-id="${d.id}" data-name="${safeName}" data-logo="${d.logo || ''}">
+    <div class="zd-flipper">
       ${frontHTML}
       ${backHTML}
     </div>
-  </article>`;
+  </div>`;
 }
-
 
 /* ═══ RENDER ═══ */
 function render() {
@@ -3187,7 +2469,7 @@ async function init() {
         .select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,visible_categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups,google_rating,google_review_count')
         .eq('published', true);
       if (error) throw error;
-      data = _injectRigorDemoCards((rows || []).map(_aliasBusinessRow));
+      data = (rows || []).map(_aliasBusinessRow);
       try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch (e) {}
       render();
       // Fire-and-forget: load real ratings, patch the rendered cards in-place when ready
@@ -3208,7 +2490,7 @@ async function init() {
           .select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,visible_categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups,google_rating,google_review_count')
           .eq('published', true);
         if (!error) {
-          data = _injectRigorDemoCards((rows || []).map(_aliasBusinessRow));
+          data = (rows || []).map(_aliasBusinessRow);
           try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch (e) {}
           render();
           loadAllCardRatings();
@@ -3221,14 +2503,14 @@ async function init() {
     // 3. Offline / Supabase unreachable → fall back to localStorage cache
     const cachedData = localStorage.getItem(cacheKey);
     if (cachedData) {
-      data = _injectRigorDemoCards(JSON.parse(cachedData));
+      data = JSON.parse(cachedData);
       render();
       if (typeof showTutorial === 'function') showTutorial();
       return;
     }
 
-    // 4. Nothing cached → render demo-only state (Rigor preview always shows tier samples)
-    data = _injectRigorDemoCards([]);
+    // 4. Nothing cached → render empty state
+    data = [];
     render();
     if (typeof showTutorial === 'function') showTutorial();
   } catch (err) {
@@ -3236,77 +2518,10 @@ async function init() {
     // Final fallback: try localStorage cache before giving up
     try {
       const cached = localStorage.getItem('companyData_v4');
-      if (cached) { data = _injectRigorDemoCards(JSON.parse(cached)); render(); return; }
+      if (cached) { data = JSON.parse(cached); render(); return; }
     } catch (e) {}
     $("#cardStack").innerHTML = `<p class="loading-msg">Грешка при зареждане: ${err.message}</p>`;
   }
-}
-
-/* Demo fixtures so each tier (Елит / Премиум / Доверен / Стандартен / Безплатен)
-   is visible on the Rigor preview page. The "Доверен" variant is intentionally
-   omitted here — the real "В 3 Стъпки" Stara Zagora business already provides it.
-   These rows are prepended client-side and never sync to Supabase (their
-   non-UUID ids fail the _UUID_RE guard in _syncLikeDismissToSupabase). */
-const _DEMO_RIGOR_TIER_CARDS = (function () {
-  const baseAddress = 'ул. „Княз Борис" 136А, Стара Загора';
-  const baseCity = 'Стара Загора';
-  // baseGallery left empty so demo cards exercise the per-tier empty placeholder
-  const baseGallery = [];
-  const baseLogo = 'brand_assets/zadeteto-icon-mark.svg';
-  const baseLat = 42.4258, baseLng = 25.6345;
-  const baseServices = ['Занималня 6–12', 'Занималня 3–5', 'Логопед', 'Детски психолог'];
-  const baseCats = ['Школа', 'Специалисти'];
-  const baseAges = ['3-5', '6-12'];
-  const make = (over) => Object.assign({
-    name: 'В 3 Стъпки — занималня',
-    description: 'За родители в Стара Загора, които търсят структурирана, професионална подкрепа следобедна грижа деца между 3–12 г. С 15 години практика и собствена възпитателна система „Първите 7" даваме малки групи (макс. 7 деца на учител), специалисти на едно място и следобед, който ражда навици. Следобедите без структура у дома се натрупват бързо. Една година детето е с телефон пред вас и сякаш всичко изглежда наред, а при втората и вече му е трудно да сяда с домашните.',
-    city: baseCity, address: baseAddress, lat: baseLat, lng: baseLng,
-    phone: '+359 88 123 4567', email: 'hello@v3stapki.bg', website: 'https://v3stapki.bg',
-    facebook: 'https://facebook.com/v3stapki', instagram: 'https://instagram.com/v3stapki',
-    logo: baseLogo, gallery_urls: baseGallery,
-    services: baseServices, categories: baseCats, age_groups: baseAges, ageGroups: baseAges,
-    sop: false, published: true,
-    google_rating: 4.6, google_review_count: 9,
-  }, over);
-  return [
-    make({
-      id: 'demo-rigor-proveren-v3stapki',
-      tier: 'Проверен',
-      audit_score: 78,
-      cta_label_1: 'Запази безплатен тур', cta_url_1: 'https://v3stapki.bg/tour',
-      cta_label_2: 'Запази',
-    }),
-    make({
-      id: 'demo-rigor-premium-v3stapki',
-      tier: 'Премиум',
-      audit_score: 88,
-      cta_label_1: 'Резервирай място', cta_url_1: 'https://v3stapki.bg/book',
-      cta_label_2: 'Запази',
-    }),
-    make({
-      id: 'demo-rigor-standard-v3stapki',
-      tier: 'Стандартен',
-      audit_score: 64,
-      google_rating: 4.3, google_review_count: 5,
-      cta_label_1: 'Виж профила', cta_url_1: '#',
-      cta_label_2: 'Запази',
-    }),
-    make({
-      id: 'demo-rigor-free-v3stapki',
-      tier: 'Безплатен',
-      audit_score: 38,
-      google_rating: null, google_review_count: 0,
-      services: baseServices.slice(0, 1),
-      cta_label_1: 'Контакт', cta_url_1: 'tel:+359881234567',
-    }),
-  ];
-})();
-
-function _injectRigorDemoCards(arr) {
-  const list = Array.isArray(arr) ? arr : [];
-  const ids = new Set(list.map(r => r && r.id).filter(Boolean));
-  const fresh = _DEMO_RIGOR_TIER_CARDS.filter(d => !ids.has(d.id));
-  return fresh.concat(list);
 }
 
 /* Map a Supabase row (snake_case columns) to the camelCase shape the
@@ -4524,21 +3739,5 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="js/analytics-loader.js"></script>
 <script src="js/supabase-init.js"></script>
 <script src="js/api-stub.js"></script>
-
-<script>
-/* Flip handler — minimal. Click any [data-action="flip"] inside a .zd-card
-   toggles the .flipped class on that article. Free tier opts out. */
-document.addEventListener('click', function (e) {
-  var trigger = e.target.closest('[data-action="flip"]');
-  if (!trigger) return;
-  var card = trigger.closest('.zd-card');
-  if (!card) return;
-  if (card.classList.contains('zd-card--free')) return;
-  e.preventDefault();
-  e.stopPropagation();
-  card.classList.toggle('flipped');
-});
-</script>
-
 </body>
 </html>
