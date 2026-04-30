@@ -61,7 +61,6 @@
   --zd-font: 'DM Sans', sans-serif;
   --zd-card-h: calc((100vh - 100px) / 2);
   --zd-heart: #e74c6f;
-  --zd-nope: #c85050;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -850,11 +849,14 @@ a.zd-name:hover { text-decoration: underline; }
 .zd-footer-links a:hover { color:var(--accent, #7c4dff); }
 .zd-footer-copy { font-size:12px; color:var(--muted, #8b80b0); opacity:0.6; }
 @media(max-width:768px){ .zd-footer{padding:24px;} .zd-footer-links{gap:16px;} }
+/* Hide global footer on the mobile search view: the .app shell already takes
+   100dvh and the footer would compete with the scroll-snap feed. */
+@media (max-width:899px){ .zd-footer{display:none;} }
 
 /* ═══════════════════════════════════════════════════════════════
-   MERGED MOBILE STACK UX — visible only below 900px viewport
-   All mobile classes namespaced cf-* / tier-* / tinder-* / fp-*
-   etc. to avoid colliding with the zd-* desktop styles above.
+   MERGED MOBILE STACK UX, visible only below 900px viewport.
+   Mobile-only classes namespaced cf-* / tier-* / fp-* / rig-* to
+   avoid colliding with the zd-* desktop styles above.
    ═══════════════════════════════════════════════════════════════ */
 
 /* Viewport-mode visibility switch */
@@ -868,35 +870,22 @@ a.zd-name:hover { text-decoration: underline; }
 }
 
 /* === Mobile CSS variables === */
-.zd-mode-mobile { --zd-display:'DM Serif Display','Inter',serif; --safe-b:env(safe-area-inset-bottom,0px); }
+.zd-mode-mobile { --zd-display:'DM Serif Display',serif; --safe-b:env(safe-area-inset-bottom,0px); }
 
-/* ═══ TUTORIAL (v3 — teaches the bottom .tinder-btn row) ═══ */
-.tutorial{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.7);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;backdrop-filter:blur(6px)}
-.tutorial.hidden{display:none}
-.tutorial-logo{margin-bottom:0}
-.tutorial-logo img{height:40px;width:auto;filter:brightness(0) invert(1);opacity:.8}
-.tutorial-title{font:700 16px/1.3 var(--zd-font);color:#fff;text-align:center;max-width:300px;margin:0}
-.tutorial-demos{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;max-width:340px}
-.tutorial-demo{display:flex;flex-direction:column;align-items:center;gap:10px;width:68px}
-.tut-btn-demo{width:52px;height:52px;border-radius:50%;background:#fff;border:2px solid;display:flex;align-items:center;justify-content:center;animation:tut-btn-pulse 2.4s ease-in-out infinite}
-.tut-btn-demo svg{width:22px;height:22px}
-.tutorial-demo--btn-nope .tut-btn-demo{border-color:var(--zd-nope);color:var(--zd-nope);box-shadow:0 2px 10px rgba(200,80,80,.15);animation-delay:0s}
-.tutorial-demo--btn-star .tut-btn-demo{border-color:var(--zd-gold-300);color:#c89a00;box-shadow:0 2px 10px rgba(245,215,110,.18);width:46px;height:46px;animation-delay:.6s}
-.tutorial-demo--btn-star .tut-btn-demo svg{width:18px;height:18px}
-.tutorial-demo--btn-eye .tut-btn-demo{border-color:var(--zd-purple-400);color:var(--zd-purple-600);box-shadow:0 2px 10px rgba(124,77,255,.15);width:46px;height:46px;animation-delay:1.2s}
-.tutorial-demo--btn-eye .tut-btn-demo svg{width:18px;height:18px}
-.tutorial-demo--btn-like .tut-btn-demo{border-color:var(--zd-mint-400);color:var(--zd-mint-600);box-shadow:0 2px 10px rgba(46,153,77,.15);animation-delay:1.8s}
-@keyframes tut-btn-pulse{0%,70%,100%{transform:scale(1)}35%{transform:scale(1.12)}}
-.tutorial-label{font:600 11px/1.25 var(--zd-font);color:rgba(255,255,255,.85);text-align:center}
-.tutorial-filter-hint{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:14px 18px;max-width:300px}
-.tutorial-filter-hint svg{flex-shrink:0}
-.tutorial-filter-hint span{font:500 13px/1.4 var(--zd-font);color:rgba(255,255,255,.85)}
-.tutorial-filter-hint b{color:#fff}
-.tutorial-dismiss{height:48px;padding:0 36px;border-radius:24px;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);color:#fff;font:700 15px/1 var(--zd-font);cursor:pointer;margin-top:8px;transition:background .15s}
-.tutorial-dismiss:active{background:rgba(255,255,255,.25)}
+/* ═══ TUTORIAL v4 — single coachmark for the scroll-snap feed ═══ */
+.tutorial-v4{position:absolute;left:50%;bottom:24%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;opacity:0;transition:opacity .3s ease}
+.tutorial-v4.visible{opacity:1}
+.tutorial-v4.hidden{display:none}
+.tut4-arrow{width:46px;height:46px;border-radius:50%;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;color:#fff;animation:tut4-bounce 1.4s cubic-bezier(.4,0,.2,1) infinite}
+.tut4-arrow svg{width:22px;height:22px}
+.tut4-label{font:600 13px/1.2 var(--zd-font);color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5);background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:6px 14px;border-radius:14px;white-space:nowrap}
+@keyframes tut4-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@media (prefers-reduced-motion: reduce){.tut4-arrow{animation:none}.tutorial-v4{transition:none}}
 
 /* ═══ MOBILE APP SHELL ═══ */
-.app{display:flex;flex-direction:column;min-height:100vh}
+/* Fixed viewport height (height, not min-height) so the scroll-snap feed has a
+   bounded ancestor; .stack-area can then claim the remaining space via flex:1. */
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
 .top-bar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.05)}
 .top-row{display:flex;gap:8px;align-items:center}
 .city-btn{height:40px;padding:0 12px;border-radius:12px;border:1.5px solid var(--zd-gray-200);background:#fff;font:600 13px/1 var(--zd-font);color:var(--zd-gray-800);cursor:pointer;display:flex;align-items:center;gap:6px;flex-shrink:0;max-width:45%}
@@ -920,13 +909,11 @@ a.zd-name:hover { text-decoration: underline; }
 .zd-mode-mobile .results-count{font-size:13px;font-weight:600;color:var(--zd-gray-400)}
 .zd-mode-mobile .results-count span{color:var(--zd-purple-600);font-weight:700}
 
-/* ═══ STACK ═══ */
-.stack-view{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 16px 80px;position:relative}
-.stack-area{position:relative;width:100%;max-width:380px;flex:1;min-height:480px;margin:0 auto}
-.card-wrap{position:absolute;inset:0;perspective:1200px}
-.card-wrap.behind{z-index:0;pointer-events:none}
-.card-wrap.behind .card-inner{transform:scale(.94) translateY(10px);opacity:.35;filter:blur(1px)}
-.card-wrap.on-top{z-index:1}
+/* ═══ STACK (vertical scroll-snap feed — Reels-style) ═══ */
+.stack-view{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 16px 80px;position:relative;min-height:0}
+.stack-area{position:relative;width:100%;max-width:380px;flex:1;min-height:0;margin:0 auto;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior:contain}
+.stack-area::-webkit-scrollbar{display:none}
+.card-wrap{position:relative;width:100%;height:100%;flex-shrink:0;perspective:1200px;scroll-snap-align:start;scroll-snap-stop:always;padding-bottom:8px}
 .card-inner{width:100%;height:100%;position:relative;transition:transform .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
 .card-inner.flipped{transform:rotateY(180deg)}
 .card-inner.flipped .card-front{pointer-events:none}
@@ -970,12 +957,24 @@ a.cf-name:active{text-decoration:underline}
 .cf-badge--online{background:rgba(25,118,210,.3);color:#fff}
 .cf-score{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:3px;font-size:12px;font-weight:700;padding:4px 9px;border-radius:9px;z-index:3;background:rgba(255,255,255,.8);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.5);box-shadow:0 2px 8px rgba(0,0,0,.08);color:var(--accent,var(--zd-gray-800))}
 .cf-score svg{width:13px;height:13px}
+/* Hero action cluster — anchors the score + bookmark to the right edge so
+   they always sit together regardless of whether the score is rendered. */
+.cf-hero-actions{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:8px;z-index:3}
+.cf-hero-actions .cf-score{position:static;top:auto;right:auto}
+.cf-bookmark{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.5);box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer;color:var(--zd-gray-600);transition:transform .15s ease,background .15s ease,color .15s ease;-webkit-tap-highlight-color:transparent;padding:0}
+.cf-bookmark svg{width:16px;height:16px;display:block}
+.cf-bookmark:active{transform:scale(.92)}
+.cf-bookmark.is-saved{color:var(--accent,var(--zd-purple-600));background:#fff}
+.cf-bookmark.is-saved svg{fill:currentColor;animation:bookmarkPop .3s cubic-bezier(.2,.8,.3,1)}
+.cf-bookmark:focus-visible{outline:2px solid var(--zd-purple-600);outline-offset:2px}
+@keyframes bookmarkPop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){.cf-bookmark.is-saved svg{animation:none}}
 .cf-logo{position:absolute;top:18px;left:18px;width:108px;height:108px;border-radius:22px;overflow:hidden;z-index:3;background:transparent;box-shadow:0 4px 14px rgba(0,0,0,.22)}
 .cf-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .cf-nudge{font-size:10px;font-weight:600;color:var(--zd-gold-300);text-decoration:none;margin-left:2px}
-.on-top .cf-hero{animation:revealScale .4s cubic-bezier(.2,.8,.3,1) both}
-.on-top .cf-meta{animation:revealUp .35s cubic-bezier(.2,.8,.3,1) .15s both}
-.on-top .cf-actions{animation:revealUp .3s cubic-bezier(.2,.8,.3,1) .25s both}
+.card-wrap.is-active .cf-hero{animation:revealScale .4s cubic-bezier(.2,.8,.3,1) both}
+.card-wrap.is-active .cf-meta{animation:revealUp .35s cubic-bezier(.2,.8,.3,1) .15s both}
+.card-wrap.is-active .cf-actions{animation:revealUp .3s cubic-bezier(.2,.8,.3,1) .25s both}
 @keyframes revealScale{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes revealUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 .cf-tagline-block{padding:5px 14px 0}
@@ -1004,43 +1003,6 @@ a.cf-name:active{text-decoration:underline}
 .cf-detail-btn:active{gap:8px}
 .cf-detail-btn svg{width:14px;height:14px;transition:transform .2s}
 .stack-counter{text-align:center;padding:4px 0;font-size:12px;font-weight:600;color:var(--zd-gray-400)}
-.tinder-actions{display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 0 4px}
-.tinder-btn{width:52px;height:52px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s;background:#fff;-webkit-tap-highlight-color:transparent}
-.tinder-btn:active{transform:scale(.9)}
-.tinder-btn svg{width:22px;height:22px}
-.tinder-btn--nope{border-color:var(--zd-nope);color:var(--zd-nope);box-shadow:0 2px 10px rgba(200,80,80,.12)}
-.tinder-btn--nope:active{box-shadow:0 0 20px rgba(200,80,80,.3)}
-.tinder-btn--star{border-color:var(--zd-gold-300);color:#c89a00;width:44px;height:44px;box-shadow:0 2px 10px rgba(245,215,110,.15)}
-.tinder-btn--star svg{width:18px;height:18px}
-.tinder-btn--star:active{box-shadow:0 0 20px rgba(245,215,110,.4)}
-.tinder-btn--like{border-color:var(--zd-mint-400);color:var(--zd-mint-600);box-shadow:0 2px 10px rgba(46,153,77,.12)}
-.tinder-btn--like:active{box-shadow:0 0 20px rgba(46,153,77,.3)}
-.tinder-btn--profile{border-color:var(--zd-purple-400);color:var(--zd-purple-600);width:44px;height:44px;box-shadow:0 2px 10px rgba(124,77,255,.12)}
-.tinder-btn--profile svg{width:18px;height:18px}
-.tinder-btn--profile:active{box-shadow:0 0 20px rgba(124,77,255,.3)}
-
-/* Review bottom sheet */
-.review-sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;z-index:9999;border-radius:24px 24px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.15);max-height:75vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.16,1,.3,1);padding:24px 20px calc(20px + var(--safe-b))}
-.review-sheet.open{transform:translateY(0)}
-.review-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:9998;display:none;opacity:0;transition:opacity .3s}
-.review-sheet-overlay.open{display:block;opacity:1}
-.review-sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--zd-gray-200);margin:0 auto 16px}
-.review-sheet-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.review-sheet-logo{width:44px;height:44px;border-radius:12px;overflow:hidden;border:2px solid var(--zd-gray-200);flex-shrink:0}
-.review-sheet-logo img{width:100%;height:100%;object-fit:cover}
-.review-sheet-name{font:700 16px/1.2 var(--zd-font);flex:1}
-.review-sheet-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--zd-gray-100);cursor:pointer;display:flex;align-items:center;justify-content:center}
-.review-sheet h3{font:700 18px/1.3 var(--zd-font);margin-bottom:12px;text-align:center}
-.review-stars{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
-.review-star{width:48px;height:48px;border-radius:14px;border:2px solid var(--zd-gray-200);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--zd-gray-400);transition:border-color .2s,color .2s,transform .15s}
-.review-star:active{transform:scale(1.15)}
-.review-star.filled{color:var(--zd-gold-300);border-color:var(--zd-gold-300);background:rgba(245,215,110,.06)}
-.review-textarea{width:100%;min-height:90px;padding:14px;border:1.5px solid var(--zd-gray-200);border-radius:14px;font:400 14px/1.6 var(--zd-font);color:var(--zd-gray-800);resize:vertical;outline:none}
-.review-textarea:focus{border-color:var(--zd-purple-400)}
-.review-textarea::placeholder{color:var(--zd-gray-400)}
-.review-submit{width:100%;padding:14px;border-radius:14px;border:none;background:var(--zd-purple-600);color:#fff;font:600 15px/1 var(--zd-font);cursor:pointer;margin-top:12px;box-shadow:0 4px 16px rgba(124,77,255,.2);transition:transform .2s}
-.review-submit:active{transform:scale(.97)}
-.review-skip{text-align:center;padding:10px;font:500 13px/1 var(--zd-font);color:var(--zd-gray-600);cursor:pointer}
 
 /* Card back (flippable detail face) */
 .card-back{transform:rotateY(180deg);background:#fff;color:var(--zd-gray-800);border-left:4px solid var(--accent, var(--zd-gray-400));box-shadow:inset 0 0 0 1px var(--card-border, var(--zd-gray-200)), 0 4px 20px rgba(0,0,0,0.06)}
@@ -1157,9 +1119,6 @@ input:checked+.t-slider:before{transform:translateX(20px)}
 #savedBarMobile .saved-count{font:600 12px/1 var(--zd-font);color:var(--zd-gray-600)}
 #savedBarMobile .saved-view-btn{height:34px;padding:0 16px;border-radius:10px;border:none;background:var(--zd-purple-600);color:#fff;font:600 12px/1 var(--zd-font);cursor:pointer}
 
-.undo-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--zd-gray-800);color:#fff;padding:10px 20px;border-radius:14px;font:600 13px/1 var(--zd-font);display:flex;align-items:center;gap:10px;z-index:90;opacity:0;transition:transform .3s,opacity .3s;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.25)}
-.undo-toast.visible{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
-.undo-toast button{background:none;border:none;color:var(--zd-purple-200);font:700 13px/1 var(--zd-font);cursor:pointer;text-decoration:underline}
 .empty-state{display:flex;flex-direction:column;align-items:center;padding:48px 24px;text-align:center;gap:14px}
 .empty-state svg{width:48px;height:48px;color:var(--zd-gray-200)}
 .empty-state h3{font:700 18px/1 var(--zd-display);color:var(--zd-gray-800)}
@@ -1537,6 +1496,20 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
     .variant-rigor .rig-soc svg { display: block; }
 
     .variant-rigor .rig-free-note { font-size: 11px; color: var(--rig-ink-mute); font-style: italic; margin-top: var(--rig-s-1); }
+    /* "Това е моят бизнес?" inline mailto link next to the rig-free-note. Small,
+       underlined, accent-colored so it reads as interactive without competing
+       with the primary CTAs. */
+    /* purple-800 (not 600) for WCAG AA contrast on white card background.
+       inline-block + padding gives a ≥24×24 tap target per WCAG 2.5.5. */
+    .variant-rigor .rig-claim-link { display: inline-block; font-style: normal; color: var(--zd-purple-800); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; padding: 6px 8px; cursor: pointer; }
+    .variant-rigor .rig-claim-link:hover { color: var(--zd-purple-600); }
+    .variant-rigor .rig-claim-link:focus-visible { outline: 2px solid var(--zd-purple-600); outline-offset: 2px; border-radius: 2px; }
+    /* Desktop bookmark: overlay the rig-thumb at top-right. Reuses .cf-bookmark
+       (defined in the mobile CSS block) so visual state + toggleSave wiring
+       are shared across breakpoints. Lives in the top band of .rig-thumb;
+       the flip-btn (z-index 4) lives in the bottom-right band. Bookmark uses
+       z-index 5 so it always wins click priority if the bands ever overlap. */
+    .variant-rigor .rig-thumb > .cf-bookmark { position: absolute; top: 10px; right: 10px; z-index: 5; }
 
     .variant-rigor .rig-actions {
       display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--rig-s-2);
@@ -1771,7 +1744,8 @@ body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-
     }
     .variant-rigor .rig-back-soc-list { display: flex; flex-direction: column; gap: 5px; }
     .variant-rigor .rig-back-soc-row { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--rig-ink-soft); font-family: var(--font-sans); letter-spacing: 0.005em; }
-    .variant-rigor .rig-back-soc-i { font-size: 13px; line-height: 1; opacity: 0.7; min-width: 14px; }
+    .variant-rigor .rig-back-soc-i { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; line-height: 1; opacity: 0.7; color: var(--rig-ink-mute); flex-shrink: 0; }
+    .variant-rigor .rig-back-soc-i svg { width: 13px; height: 13px; display: block; }
     .variant-rigor .rig-card--back.rig-card--free { background: #fafaf8; border-style: dashed; border-color: var(--zd-gray-300); }
     .variant-rigor .rig-card--back.rig-card--free .rig-back-head { border-bottom-color: var(--zd-gray-200); }
     .variant-rigor .rig-card--back.rig-card--free .rig-name { color: var(--rig-ink-soft); }
@@ -2048,35 +2022,6 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
      ═══════════════════════════════════════════════════════════════ -->
 <div class="zd-mode-mobile">
 
-  <!-- Tutorial overlay (first visit) — teaches the bottom button row -->
-  <div class="tutorial hidden" id="tutorial">
-    <div class="tutorial-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></div>
-    <p class="tutorial-title">Използвай бутоните долу, за да преглеждаш специалистите</p>
-    <div class="tutorial-demos">
-      <div class="tutorial-demo tutorial-demo--btn-nope">
-        <div class="tut-btn-demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
-        <div class="tutorial-label">Пропусни</div>
-      </div>
-      <div class="tutorial-demo tutorial-demo--btn-star">
-        <div class="tut-btn-demo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-        <div class="tutorial-label">Оцени</div>
-      </div>
-      <div class="tutorial-demo tutorial-demo--btn-eye">
-        <div class="tut-btn-demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-        <div class="tutorial-label">Профил</div>
-      </div>
-      <div class="tutorial-demo tutorial-demo--btn-like">
-        <div class="tut-btn-demo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
-        <div class="tutorial-label">Запази</div>
-      </div>
-    </div>
-    <div class="tutorial-filter-hint">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;color:rgba(255,255,255,.6);flex-shrink:0"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
-      <span>Използвай <b>филтрите</b> за град, възраст и категория</span>
-    </div>
-    <button class="tutorial-dismiss" onclick="dismissTutorial()">Разбрах</button>
-  </div>
-
   <!-- App shell -->
   <div class="app">
     <div class="top-bar">
@@ -2091,11 +2036,10 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
     <div class="stack-view">
       <div class="stack-area" id="stackArea"></div>
       <div class="stack-counter" id="stackCounter"></div>
-      <div class="tinder-actions">
-        <button class="tinder-btn tinder-btn--nope" onclick="btnDismiss()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-        <button class="tinder-btn tinder-btn--star" onclick="btnReview()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>
-        <button class="tinder-btn tinder-btn--profile" id="btnProfile" onclick="btnViewProfile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-        <button class="tinder-btn tinder-btn--like" onclick="btnLike()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+      <!-- v4 coachmark: floats above the active card on first visit -->
+      <div class="tutorial-v4 hidden" id="tutorialV4" aria-hidden="true">
+        <div class="tut4-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></div>
+        <div class="tut4-label">Превърти нагоре</div>
       </div>
     </div>
   </div>
@@ -2111,29 +2055,6 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
 
   <!-- Mobile saved bar -->
   <div id="savedBarMobile"><div class="saved-avatars" id="savedAvatarsMobile"></div><div class="saved-count"><span id="savedCountMobile">0</span> запазени</div><button class="saved-view-btn">Виж списък</button></div>
-  <div class="undo-toast" id="undoToast">Отхвърлено <button onclick="undoLast()">Върни</button></div>
-
-  <!-- Review bottom sheet (mobile) -->
-  <div class="review-sheet-overlay" id="reviewOverlay" onclick="closeReview()"></div>
-  <div class="review-sheet" id="reviewSheet">
-    <div class="review-sheet-handle"></div>
-    <div class="review-sheet-header">
-      <div class="review-sheet-logo" id="reviewLogo"></div>
-      <div class="review-sheet-name" id="reviewName"></div>
-      <button class="review-sheet-close" onclick="closeReview()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <h3>Как оценявате тази услуга?</h3>
-    <div class="review-stars" id="reviewStars">
-      <button class="review-star" onclick="setReviewStars(1)">★</button>
-      <button class="review-star" onclick="setReviewStars(2)">★</button>
-      <button class="review-star" onclick="setReviewStars(3)">★</button>
-      <button class="review-star" onclick="setReviewStars(4)">★</button>
-      <button class="review-star" onclick="setReviewStars(5)">★</button>
-    </div>
-    <textarea class="review-textarea" id="reviewText" placeholder="Споделете вашия опит с тази услуга... (незадължително)"></textarea>
-    <button class="review-submit" onclick="submitReview()">Изпрати оценка</button>
-    <div class="review-skip" onclick="closeReview()">Пропусни</div>
-  </div>
 
   <!-- Mobile feedback wizard -->
   <div class="mfb-overlay" id="mfbOverlay" onclick="closeMobileFeedback()"></div>
@@ -2816,13 +2737,50 @@ function buildCardHTML(d) {
     frontSocialsInner += `<span class="rig-soc">${SOC_SVG[k]}</span>`;
   });
 
-  // Free-tier inline notxt socials
+  // Free-tier inline notxt socials. Use the same Lucide stroke SVGs as the
+  // paid-tier socials so the icon style is consistent across tiers (the old
+  // 📞 / ✉ emoji rendered colored on Windows and broke the gray monochrome look).
   let freeNotxtHTML = '';
   if (isFree) {
     let inner = '';
-    if (d.phone) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">📞</span><span class="notxt">${esc(d.phone)}</span></span>`;
-    if (d.email) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">✉</span><span class="notxt">${esc(d.email)}</span></span>`;
+    if (d.phone) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">${SOC_SVG.phone}</span><span class="notxt">${esc(d.phone)}</span></span>`;
+    if (d.email) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">${SOC_SVG.email}</span><span class="notxt">${esc(d.email)}</span></span>`;
     if (inner) freeNotxtHTML = `<div class="rig-back-soc-list">${inner}</div>`;
+  }
+
+  // Bookmark save button — overlays the rig-thumb at top-right. Uses the same
+  // .cf-bookmark class + toggleSave handler as the mobile card so save state
+  // syncs across breakpoints. Initial filled state mirrors likedIds.
+  const _isSaved = (typeof likedIds !== 'undefined' && likedIds.has(d.id));
+  const _saveLabel = _isSaved ? 'Премахни от запазени' : 'Запази';
+  const bookmarkHTML = `<button type="button" class="cf-bookmark${_isSaved?' is-saved':''}" data-id="${esc(String(d.id))}" aria-pressed="${_isSaved}" aria-label="${_saveLabel}" title="${_saveLabel}" onclick="event.stopPropagation();toggleSave('${esc(String(d.id))}',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>`;
+
+  // Free-tier "Това е моят бизнес?" mailto claim link — pre-fills subject and
+  // body with the business identifiers so the admin inbox receives a structured
+  // request and can issue a real claim token via the existing claim.html flow.
+  // No new pages, no new tables; mailto is the lightest possible flow.
+  let claimLinkHTML = '';
+  if (isFree) {
+    // Subject stays fixed (no business name) so long Cyrillic names don't
+    // overflow Outlook's ~255-char practical subject cap. Name lives in body.
+    const claimSubject = encodeURIComponent('Заявка за активиране на профил');
+    const claimBody = encodeURIComponent(
+      `Здравейте,\n\nИскам да активирам профила на следния бизнес в ZaDeteto:\n\n` +
+      `Име: ${d.name || ''}\n` +
+      `ID: ${d.id || ''}\n` +
+      `Град: ${d.city || ''}\n` +
+      `Адрес: ${d.address || ''}\n` +
+      `Текущ телефон: ${d.phone || '—'}\n` +
+      `Текущ имейл: ${d.email || '—'}\n\n` +
+      `Моите данни (моля, попълнете):\n` +
+      `Име и фамилия: \n` +
+      `Длъжност: \n` +
+      `Имейл за връзка: \n` +
+      `Телефон за връзка: \n` +
+      `ЕИК на фирмата: \n\n` +
+      `Потвърждавам, че съм собственик или упълномощено лице.\n`
+    );
+    claimLinkHTML = `<a class="rig-claim-link" href="mailto:hello@zadeteto.com?subject=${claimSubject}&body=${claimBody}" onclick="event.stopPropagation()">Това е моят бизнес?</a>`;
   }
 
   // CTAs
@@ -2909,6 +2867,7 @@ function buildCardHTML(d) {
       <div class="rig-body">
         <div class="rig-slot rig-slot--thumb rig-thumb${isFree ? ' rig-thumb--muted' : ''}">
           ${thumbInner}
+          ${bookmarkHTML}
           ${isFree ? '' : `<button type="button" class="rig-flip-btn" data-action="flip">Виж подробности</button>`}
         </div>
         <h3 class="rig-slot rig-slot--name rig-name">${safeName}</h3>
@@ -2922,7 +2881,7 @@ function buildCardHTML(d) {
           ? `<ul class="rig-slot rig-slot--chips rig-chips" aria-label="Услуги">${cityChipHTML}${services.map(s => `<li>${esc(s)}</li>`).join('')}</ul>`
           : `<div class="rig-slot rig-slot--chips" data-empty></div>`}
         <div class="rig-slot rig-slot--ratings">${ratingsHTML}</div>
-        <div class="rig-slot rig-slot--socials">${isFree ? freeNotxtHTML : (frontSocialsInner ? `<div class="rig-socials">${frontSocialsInner}</div>` : '')}${isFree ? `<p class="rig-free-note">Профилът не е активиран от собственика.</p>` : ''}</div>
+        <div class="rig-slot rig-slot--socials">${isFree ? freeNotxtHTML : (frontSocialsInner ? `<div class="rig-socials">${frontSocialsInner}</div>` : '')}${isFree ? `<p class="rig-free-note">Профилът не е активиран от собственика. ${claimLinkHTML}</p>` : ''}</div>
       </div>
       ${actionsHTML}
     </div>`;
@@ -3079,17 +3038,15 @@ function flipCard(card) {
   card.classList.toggle('flipped');
 }
 
-/* Hybrid auth prompt: show the parent auth modal after the user has dismissed
-   3 cards or liked any card in this session — but only once per session, and
-   only if not already logged in. Lets anonymous users browse freely while
-   nudging them to save their progress at the right moment. Called from the
-   mobile tinder-button flow (doLike / doDismiss). */
-let _sessionDismissCount = 0;
+/* Hybrid auth prompt: shows the parent auth modal once per session after the
+   user saves their first card, only if not already logged in. Anonymous users
+   browse freely; the first save is the moment to nudge sign-up so progress
+   persists across sessions. */
 function _maybePromptAuth(reason) {
   try {
     if (localStorage.getItem('zd_parent_logged_in') === 'true') return;
     if (sessionStorage.getItem('zd_auth_prompted') === '1') return;
-    if (reason === 'like' || _sessionDismissCount >= 3) {
+    if (reason === 'like') {
       sessionStorage.setItem('zd_auth_prompted', '1');
       if (typeof openAuthModal === 'function') openAuthModal();
     }
@@ -3100,6 +3057,7 @@ function updateSavedBar() {
   const bar = document.getElementById('savedBar');
   const avatars = document.getElementById('savedAvatars');
   const count = document.getElementById('savedCount');
+  if (!bar || !avatars || !count) return;
   if (savedItems.length === 0) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible');
   count.textContent = savedItems.length;
@@ -4086,8 +4044,6 @@ function fbSubmit() {
 
 /* Mobile-only state */
 let stackIdx = 0;
-let lastDismissedId = null;
-let undoTimer = null;
 let pendingF = null;
 const tierColMap = {"Премиум":"d4af37","Доверен":"7c4dff","Проверен":"2e994d","Стандартен":"999","Безплатен":"bbb"};
 const TC_MAP = {"Премиум":"premium","Доверен":"elite","Проверен":"verified","Стандартен":"standard","Безплатен":"free"};
@@ -4155,6 +4111,13 @@ function buildStackCard(d){
   if(d.sop)badges+=`<span class="cf-badge cf-badge--sop">СОП</span>`;
   if(d.city==="Онлайн")badges+=`<span class="cf-badge cf-badge--online">Online</span>`;
   const scoreHTML=`<div class="cf-score"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${auditScore}</div>`;
+  // Bookmark save button — sits to the right of the score in a flex cluster.
+  // Initial filled state mirrors likedIds so a previously-saved card opens
+  // already-saved. Toggle handler is toggleSave (defined below renderStack).
+  const _isSaved = (typeof likedIds !== 'undefined' && likedIds.has(d.id));
+  const _saveLabel = _isSaved ? 'Премахни от запазени' : 'Запази';
+  const bookmarkHTML = `<button type="button" class="cf-bookmark${_isSaved?' is-saved':''}" data-id="${ZdSec.escapeHtml(String(d.id))}" aria-pressed="${_isSaved}" aria-label="${_saveLabel}" title="${_saveLabel}" onclick="event.stopPropagation();toggleSave('${ZdSec.escapeHtml(String(d.id))}',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>`;
+  const heroActionsHTML = `<div class="cf-hero-actions">${scoreHTML}${bookmarkHTML}</div>`;
   const nameHTML=isFree?`<div class="cf-name">${_hl(d.name)}</div>`:`<a class="cf-name" href="listing.html?id=${d.id}" onclick="event.stopPropagation()">${_hl(d.name)}</a>`;
   const heroImg=getCardPhoto(d);
   const heroHTML = heroImg
@@ -4165,7 +4128,7 @@ function buildStackCard(d){
   const _galleryJson=(Array.isArray(d.gallery_urls)&&d.gallery_urls.length>1)?ZdSec.escapeHtml(JSON.stringify(d.gallery_urls)):'';
   return`<div class="card-wrap" data-id="${d.id}" data-name="${ZdSec.escapeHtml(d.name)}" data-logo="${ZdSec.escapeHtml(heroImg)}"${_galleryJson?` data-gallery="${_galleryJson}"`:``}><div class="card-inner">
   <div class="card-front tier-${tc}">
-    ${scoreHTML}
+    ${heroActionsHTML}
     ${logoHTML}
     <div class="cf-hero">
       ${heroHTML}
@@ -4210,20 +4173,35 @@ function renderMobile(){
 }
 function renderStack(cards){
   const area = document.getElementById('stackArea'); if (!area) return;
-  if (stackIdx >= cards.length) stackIdx = Math.max(0, cards.length - 1);
-  if (!cards.length) { area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`; document.getElementById('stackCounter').textContent=''; return; }
-  let h = '';
-  if (stackIdx + 1 < cards.length) h += buildStackCard(cards[stackIdx + 1]).replace('card-wrap', 'card-wrap behind');
-  h += buildStackCard(cards[stackIdx]).replace('card-wrap', 'card-wrap on-top');
-  area.innerHTML = h;
-  document.getElementById('stackCounter').textContent = `${stackIdx + 1} / ${cards.length}`;
-  const top = area.querySelector('.on-top'); if (top) { _startGalleryRotation(top); }
+  const counter = document.getElementById('stackCounter');
+  if (!cards.length) {
+    area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`;
+    if (counter) counter.textContent = '';
+    return;
+  }
+  // Fresh card list = always start from the top. The observer will resync
+  // stackIdx as the user scrolls, but re-renders (filter change, search) reset.
+  stackIdx = 0;
+  // Render every card as a sibling so the user can scroll through the feed.
+  // Each .card-wrap is a scroll-snap target (CSS scroll-snap-align:start).
+  area.innerHTML = cards.map(c => buildStackCard(c)).join('');
+  area.scrollTop = 0;
+  if (counter) counter.textContent = `1 / ${cards.length}`;
+  // Pre-mark the first card active so reveal animations fire immediately, then
+  // hand off to the IntersectionObserver for subsequent scroll-driven changes.
+  const wraps = area.querySelectorAll('.card-wrap');
+  if (wraps[0]) {
+    wraps[0].classList.add('is-active');
+    _startGalleryRotation(wraps[0]);
+  }
+  _bindFeedObserver(area, cards);
 }
 
 /* Gallery rotation — crossfade through gallery_urls every 5s */
 var _galleryTimer = null;
 function _startGalleryRotation(wrap) {
   if (_galleryTimer) { clearInterval(_galleryTimer); _galleryTimer = null; }
+  if (!wrap) return;
   var raw = wrap.getAttribute('data-gallery'); if (!raw) return;
   try { var urls = JSON.parse(raw); } catch(e) { return; }
   if (!Array.isArray(urls) || urls.length < 2) return;
@@ -4236,62 +4214,87 @@ function _startGalleryRotation(wrap) {
   }, 5000);
 }
 
-/* Tinder buttons */
-function _topCardsM(){ const f=_getFilteredM(),s=_getSortedM(f); return s.filter(d=>!dismissedIds.has(d.id)); }
-function getCurrentCard(){ return _topCardsM()[stackIdx] || null; }
-function btnLike(){ const cards = _topCardsM(); const card = document.querySelector('.zd-mode-mobile .on-top .card-front'); if (card) { card.style.transition='transform .3s'; card.style.transform='translateX(120%) rotate(12deg)'; setTimeout(() => doLike(cards), 280); } }
-function btnDismiss(){ const cards = _topCardsM(); const card = document.querySelector('.zd-mode-mobile .on-top .card-front'); if (card) { card.style.transition='transform .3s'; card.style.transform='translateX(-120%) rotate(-12deg)'; setTimeout(() => doDismiss(cards), 280); } }
-function btnReview(){ openReviewSheet(_topCardsM()); }
-function btnViewProfile(){ const d = getCurrentCard(); if (d && d.tier !== 'Безплатен') window.location.href = 'listing.html?id=' + d.id; }
+/* Scroll-snap feed observer — flips .is-active to whichever card is most visible
+   inside .stack-area, restarts gallery rotation, updates the X / N counter.
+   Re-creates the observer on every renderStack so it tracks the current DOM. */
+var _feedObserver = null;
+function _bindFeedObserver(area, cards) {
+  if (_feedObserver) { _feedObserver.disconnect(); _feedObserver = null; }
+  if (!('IntersectionObserver' in window)) return;
+  const wraps = Array.from(area.querySelectorAll('.card-wrap'));
+  const counter = document.getElementById('stackCounter');
+  _feedObserver = new IntersectionObserver(entries => {
+    // Prefer the highest-ratio entry that crossed 0.6. If a card is taller than
+    // the viewport the threshold may never trigger; fall back to any visible
+    // entry so the active marker still advances.
+    let best = null;
+    entries.forEach(e => {
+      if (e.intersectionRatio >= 0.6 && (!best || e.intersectionRatio > best.intersectionRatio)) best = e;
+    });
+    if (!best) best = entries.find(e => e.isIntersecting) || null;
+    if (!best) return;
+    const idx = wraps.indexOf(best.target);
+    if (idx === -1 || idx === stackIdx) return;
+    wraps.forEach(w => w.classList.remove('is-active'));
+    best.target.classList.add('is-active');
+    stackIdx = idx;
+    if (counter) counter.textContent = `${idx + 1} / ${cards.length}`;
+    _startGalleryRotation(best.target);
+  }, { root: area, threshold: [0.6] });
+  wraps.forEach(w => _feedObserver.observe(w));
+}
 
-/* Review bottom sheet */
-let reviewCardId = null, reviewStarVal = 0;
-function openReviewSheet(cards){
-  const d = cards[stackIdx]; if (!d) return;
-  reviewCardId = d.id; reviewStarVal = 0;
-  document.getElementById('reviewLogo').innerHTML = `<img src="${d.logo||`https://placehold.co/88x88/${tierColMap[d.tier]||'999'}/white?text=${_initials(d.name)}`}" alt="">`;
-  document.getElementById('reviewName').textContent = d.name;
-  document.getElementById('reviewText').value = '';
-  document.querySelectorAll('.review-star').forEach(s => s.classList.remove('filled'));
-  document.getElementById('reviewOverlay').classList.add('open');
-  document.getElementById('reviewSheet').classList.add('open');
-}
-function closeReview(){
-  document.getElementById('reviewOverlay').classList.remove('open');
-  document.getElementById('reviewSheet').classList.remove('open');
-  reviewCardId = null;
-}
-function setReviewStars(n){
-  reviewStarVal = n;
-  document.querySelectorAll('.review-star').forEach((s, i) => s.classList.toggle('filled', i < n));
-}
-function submitReview(){
-  const text = document.getElementById('reviewText').value.trim();
-  if (reviewCardId && reviewStarVal > 0) {
-    const entry = { business_id: reviewCardId, stars: reviewStarVal, text, timestamp: new Date().toISOString() };
-    localStorage.setItem(`zd_review_${reviewCardId}`, JSON.stringify(entry));
-    const log = JSON.parse(localStorage.getItem('zd_review_log') || '[]'); log.push(entry);
-    localStorage.setItem('zd_review_log', JSON.stringify(log));
-    // Fire-and-forget to backend stub
-    if (window.ZdApi) {
-      ZdApi.submitForm('reviews', entry).catch(function (err) { console.warn('[submitReview] backend sync failed (kept locally):', err); });
+/* Save toggle wired to the bookmark button on each card. Idempotent: tap once
+   to save, tap again to remove. Updates likedIds + savedItems, syncs to
+   Supabase liked_businesses, refreshes any visible bookmark buttons + the
+   saved bar UI. Does NOT advance stackIdx (scroll-snap drives that). */
+function toggleSave(id, btnEl){
+  // Per-button reentrancy guard: rapid double-taps would otherwise read a stale
+  // isSaved snapshot and produce two like calls (or like+unlike) before the DOM
+  // class flip. Latch the button until this invocation finishes.
+  if (btnEl && btnEl._toggling) return;
+  if (btnEl) btnEl._toggling = true;
+  try {
+    const d = (typeof data !== 'undefined' ? data : []).find(x => x.id === id);
+    if (!d) return;
+    const isSaved = likedIds.has(id);
+    if (isSaved) {
+      likedIds.delete(id);
+      const i = savedItems.findIndex(s => s.id === id);
+      if (i !== -1) savedItems.splice(i, 1);
+      _syncLikeDismissToSupabase(id, 'unlike');
+    } else {
+      likedIds.add(id);
+      if (!savedItems.find(s => s.id === id)) {
+        savedItems.push({
+          id,
+          img: d.logo || `https://placehold.co/64x64/${tierColMap[d.tier]||'999'}/white?text=${_initials(d.name)}`,
+          name: d.name
+        });
+      }
+      _maybePromptAuth('like');
+      _syncLikeDismissToSupabase(id, 'like');
     }
+    // Sync visual state across any bookmark for this id (currently one per card,
+    // but defensive against future re-renders).
+    document.querySelectorAll(`.cf-bookmark[data-id="${CSS.escape(String(id))}"]`).forEach(b => {
+      b.classList.toggle('is-saved', !isSaved);
+      b.setAttribute('aria-pressed', String(!isSaved));
+      b.setAttribute('aria-label', !isSaved ? 'Премахни от запазени' : 'Запази');
+    });
+    if (typeof updateSavedBarMobile === 'function') updateSavedBarMobile();
+    if (typeof updateSavedBar === 'function') updateSavedBar();
+  } finally {
+    if (btnEl) btnEl._toggling = false;
   }
-  closeReview();
-  const t = document.getElementById('mfbToast'); if (t) { t.textContent='Благодарим за оценката!'; t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 2500); }
 }
 
-function doLike(cards){ const d = cards[stackIdx]; if (!d) return; likedIds.add(d.id); if (!savedItems.find(s => s.id === d.id)) savedItems.push({ id: d.id, img: d.logo || `https://placehold.co/64x64/${tierColMap[d.tier]||'999'}/white?text=${_initials(d.name)}`, name: d.name }); _maybePromptAuth('like'); _syncLikeDismissToSupabase(d.id, 'like'); stackIdx++; render(); }
-function doDismiss(cards){ const d = cards[stackIdx]; if (!d) return; dismissedIds.add(d.id); lastDismissedId = d.id; _sessionDismissCount++; _maybePromptAuth('dismiss'); _syncLikeDismissToSupabase(d.id, 'dismiss'); showUndo(); stackIdx++; render(); }
 function flipCardMobile(btn){ btn.closest('.card-inner').classList.add('flipped'); }
 function flipBack(btn){ btn.closest('.card-inner').classList.remove('flipped'); }
-function showUndo(){ clearTimeout(undoTimer); document.getElementById('undoToast').classList.add('visible'); undoTimer = setTimeout(hideUndo, 4000); }
-function hideUndo(){ clearTimeout(undoTimer); document.getElementById('undoToast').classList.remove('visible'); }
-function undoLast(){ if (lastDismissedId !== null) { _syncLikeDismissToSupabase(lastDismissedId, 'undismiss'); dismissedIds.delete(lastDismissedId); lastDismissedId = null; hideUndo(); if (stackIdx > 0) stackIdx--; render(); } }
 
 function updateSavedBarMobile(){
   const bar = document.getElementById('savedBarMobile'), av = document.getElementById('savedAvatarsMobile'), ct = document.getElementById('savedCountMobile');
-  if (!bar) return;
+  if (!bar || !av || !ct) return;
   if (!savedItems.length) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible'); ct.textContent = savedItems.length;
   av.innerHTML = savedItems.slice(-4).map(s => `<div class="saved-avatar"><img src="${s.img}" alt="${s.name}"></div>`).join('');
@@ -4313,10 +4316,32 @@ function renderAppliedMobile(){
   w.innerHTML = h;
 }
 
-// Bumped to v3 when swipe was removed and the demos rewritten to teach the
-// bottom button row. Existing users see the new tutorial once.
-function showTutorial(){ if (localStorage.getItem('zd_tutorial_seen_v3')) return; const t = document.getElementById('tutorial'); if (t) t.classList.remove('hidden'); }
-function dismissTutorial(){ const t = document.getElementById('tutorial'); if (t) t.classList.add('hidden'); localStorage.setItem('zd_tutorial_seen_v3', '1'); }
+// v4: Tinder buttons removed, feed is vertical scroll-snap. Single coachmark
+// "Превърти нагоре" appears once over the active card, auto-dismisses on first
+// scroll or after 4 seconds. Fresh storage key so v3-dismissed users see v4.
+let _tutorialTimer = null;
+let _tutorialScrollHandler = null;
+function showTutorial(){
+  if (localStorage.getItem('zd_tutorial_seen_v4')) return;
+  const t = document.getElementById('tutorialV4'); if (!t) return;
+  t.classList.remove('hidden');
+  // Next frame so the opacity transition fires.
+  requestAnimationFrame(() => t.classList.add('visible'));
+  const area = document.getElementById('stackArea');
+  _tutorialScrollHandler = () => { dismissTutorial(); };
+  if (area) area.addEventListener('scroll', _tutorialScrollHandler, { once: true, passive: true });
+  _tutorialTimer = setTimeout(() => { dismissTutorial(); }, 4000);
+}
+function dismissTutorial(){
+  if (_tutorialTimer) { clearTimeout(_tutorialTimer); _tutorialTimer = null; }
+  const area = document.getElementById('stackArea');
+  if (area && _tutorialScrollHandler) { area.removeEventListener('scroll', _tutorialScrollHandler); _tutorialScrollHandler = null; }
+  const t = document.getElementById('tutorialV4'); if (!t) return;
+  if (t.classList.contains('hidden')) return;
+  t.classList.remove('visible');
+  setTimeout(() => t.classList.add('hidden'), 300);
+  localStorage.setItem('zd_tutorial_seen_v4', '1');
+}
 
 /* Mobile filter panel */
 function openMobileFilters(){
