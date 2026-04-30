@@ -870,6 +870,19 @@ a.zd-name:hover { text-decoration: underline; }
   .zd-mode-desktop { display: none !important; }
   body { background: radial-gradient(ellipse at 50% 0%, #f3f1ef 0%, #ebe9e6 55%); }
   body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.025;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  /* Rigor card lives inside the mobile scroll-snap feed: stretch it so each
+     .card-wrap (one viewport per snap stop) hosts exactly one full Rigor card.
+     Cancels the desktop min-height:540px on .zd-card AND min-height:660px on
+     .zd-flipper (both would push the card past the viewport on small phones). */
+  .zd-mode-mobile .stack-area .card-wrap > .zd-card { width: 100%; height: 100%; min-height: 0; max-width: none; margin: 0; }
+  .zd-mode-mobile .stack-area .card-wrap .zd-flipper { height: 100%; min-height: 0; }
+  .zd-mode-mobile .stack-area .card-wrap .face { height: 100%; }
+  .zd-mode-mobile .stack-area .card-wrap .face--front { display: flex; flex-direction: column; }
+  /* Internal scroll inside the rig-body so Премиум cards (5 chips + long
+     desc + 3 ratings + 6 socials + footer) stay fully reachable on tall-content
+     viewports. overscroll-behavior:contain stops the inner scroll from spilling
+     out and triggering the outer scroll-snap. */
+  .zd-mode-mobile .stack-area .card-wrap .rig-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 }
 
 /* === Mobile CSS variables === */
@@ -4187,8 +4200,16 @@ function renderStack(cards){
   // stackIdx as the user scrolls, but re-renders (filter change, search) reset.
   stackIdx = 0;
   // Render every card as a sibling so the user can scroll through the feed.
-  // Each .card-wrap is a scroll-snap target (CSS scroll-snap-align:start).
-  area.innerHTML = cards.map(c => buildStackCard(c)).join('');
+  // Each .card-wrap is a scroll-snap target (CSS scroll-snap-align:start). The
+  // wrapper hosts the Rigor card (buildCardHTML) so mobile + desktop share the
+  // same visual structure (tier pill on top, white tray with structured info
+  // below the photo, partner-customised CTAs in the footer).
+  area.innerHTML = cards.map(c => {
+    const galleryAttr = (Array.isArray(c.gallery_urls) && c.gallery_urls.length > 1)
+      ? ` data-gallery="${ZdSec.escapeHtml(JSON.stringify(c.gallery_urls))}"`
+      : '';
+    return `<div class="card-wrap" data-id="${ZdSec.escapeHtml(String(c.id))}"${galleryAttr}>${buildCardHTML(c)}</div>`;
+  }).join('');
   area.scrollTop = 0;
   if (counter) counter.textContent = `1 / ${cards.length}`;
   // Pre-mark the first card active so reveal animations fire immediately, then
@@ -4209,7 +4230,8 @@ function _startGalleryRotation(wrap) {
   var raw = wrap.getAttribute('data-gallery'); if (!raw) return;
   try { var urls = JSON.parse(raw); } catch(e) { return; }
   if (!Array.isArray(urls) || urls.length < 2) return;
-  var img = wrap.querySelector('.cf-hero img'); if (!img) return;
+  // Rigor cards put the photo at .rig-thumb img; legacy cf-* uses .cf-hero img.
+  var img = wrap.querySelector('.rig-thumb img, .cf-hero img'); if (!img) return;
   var idx = 0;
   _galleryTimer = setInterval(function() {
     idx = (idx + 1) % urls.length;
