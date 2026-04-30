@@ -241,19 +241,16 @@ main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 /* Loading */
 .loading-msg { text-align: center; padding: 40px 20px; color: var(--zd-gray-400); font-size: 14px; }
 
-/* ═══ BASE CARD ═══ */
-/* ═══════════════════════════════════════════════════════════════
-   TINDER FLIP CARD SYSTEM (5 tiers, desktop)
-   ───────────────────────────────────────────────────────────────
-   Replaces the old white-body card from the demo polish bundle.
-   Reference mockup: temporary screenshots/flip-comparison.html
+/* ═══ BASE CARD (desktop, 5 tiers) ═══════════════════════════════
+   Outer flip-card scaffolding. The card body inside .zd-face--front
+   is rendered by the Rigor builder (rig-* classes, see buildCardHTML).
    ─ .zd-card        outer perspective container, click target
    ─ .zd-flipper     preserve-3d transformer (gets .flipped class)
    ─ .zd-face        each face — backface-visibility:hidden
    ─ .zd-face--front photo full-bleed + bottom info overlay
    ─ .zd-face--back  light tier-tinted background + sections
-   IMPORTANT: NO overflow:hidden on .zd-card or .zd-flipper.
-   That breaks transform-style:preserve-3d. The faces clip themselves.
+   IMPORTANT: NO overflow:hidden on .zd-card or .zd-flipper —
+   that would break transform-style:preserve-3d. Faces clip themselves.
    ═══════════════════════════════════════════════════════════════ */
 .zd-card {
   --accent: var(--zd-gray-400);
@@ -799,7 +796,7 @@ a.zd-name:hover { text-decoration: underline; }
     min-width: 0;
   }
   .zd-card {
-    /* Tinder cards are taller than the old expand-panel cards */
+    /* Flip cards run taller than the original expand-panel design. */
     min-height: 580px; height: 100%;
     max-width: 440px; width: 100%; justify-self: center;
   }
@@ -969,7 +966,7 @@ a.cf-name:active{text-decoration:underline}
 .cf-bookmark:focus-visible{outline:2px solid var(--zd-purple-600);outline-offset:2px}
 @keyframes bookmarkPop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion: reduce){.cf-bookmark.is-saved svg{animation:none}}
-.cf-logo{position:absolute;top:18px;left:18px;width:108px;height:108px;border-radius:22px;overflow:hidden;z-index:3;background:transparent;box-shadow:0 4px 14px rgba(0,0,0,.22)}
+.cf-logo{position:absolute;top:14px;left:14px;width:59px;height:59px;border-radius:12px;overflow:hidden;z-index:3;background:transparent;box-shadow:0 3px 10px rgba(0,0,0,.18)}
 .cf-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .cf-nudge{font-size:10px;font-weight:600;color:var(--zd-gold-300);text-decoration:none;margin-left:2px}
 .card-wrap.is-active .cf-hero{animation:revealScale .4s cubic-bezier(.2,.8,.3,1) both}
@@ -2158,10 +2155,10 @@ const allowedIconsByTier = {
 const tagLimits = { "Премиум": 5, "Доверен": 4, "Проверен": 3, "Стандартен": 2, "Безплатен": 1 };
 
 /* ─── CARD PHOTO FALLBACKS ───
- * Many businesses have empty gallery_urls. To stop the new Tinder cards from
- * rendering as empty boxes (or showing the old M004 letter placeholder), we
- * fall back to a category-themed Unsplash photo. Real partners can override
- * this by uploading their own photos via business-dashboard later.
+ * Many businesses have empty gallery_urls. To stop cards from rendering as
+ * empty boxes (or showing the old M004 letter placeholder), we fall back to
+ * a category-themed Unsplash photo. Real partners can override this by
+ * uploading their own photos via business-dashboard later.
  *
  * Order of preference (per business):
  *   1. d.gallery_urls[0]   ← real partner photo
@@ -2672,9 +2669,10 @@ const passCity = d => !cityTerm || d.city.toLowerCase() === cityTerm;
 const passSop = d => sopFilter === null || d.sop === sopFilter;
 const passOnline = d => !onlineFilter || d.city === "Онлайн";
 
-/* ═══ CARD HTML BUILDER (Tinder 3D flip — 5 tiers) ═══
- * Replaces the old white-body card with the Tinder mockup design.
- * Reference: temporary screenshots/flip-comparison.html
+/* ═══ CARD HTML BUILDER (3D flip card, 5 tiers, desktop) ═══
+ * Renders the Rigor card body inside a flip-card outer (.zd-card / .zd-flipper).
+ * Front face shows the Rigor layout (rig-* classes); back face shows extended
+ * details. Free tier renders front-only.
  *
  * Structure:
  *   .zd-card[--tier]               outer perspective container, click target
@@ -4242,6 +4240,57 @@ function _bindFeedObserver(area, cards) {
     _startGalleryRotation(best.target);
   }, { root: area, threshold: [0.6] });
   wraps.forEach(w => _feedObserver.observe(w));
+  _bindHorizontalSwipe(area, wraps, cards);
+}
+
+/* Horizontal swipe = same as vertical scroll: advance to next/prev card. Lets
+   users navigate the feed left/right too, not only up/down. Listeners are
+   attached fresh on every renderStack via re-binding (the observer rebind
+   already happens) — we store handlers on the area element so we can detach
+   on next bind without leaking. Passive listeners (no preventDefault); the
+   horizontal axis isn't bound to native scroll on a y-mandatory snap container,
+   so we don't need to block default. */
+function _bindHorizontalSwipe(area, wraps, cards) {
+  if (!area) return;
+  // Detach prior listeners FIRST, even on an empty re-render, so the previous
+  // closure (with stale wraps/cards) doesn't keep firing.
+  if (area._swipeBound) {
+    area.removeEventListener('touchstart', area._swipeStart);
+    area.removeEventListener('touchend', area._swipeEnd);
+    area.removeEventListener('touchcancel', area._swipeCancel);
+    area._swipeBound = false;
+  }
+  if (!wraps || !wraps.length) return;
+  let startX = 0, startY = 0, startTime = 0, swiping = false;
+  area._swipeStart = (e) => {
+    if (e.touches.length !== 1) { swiping = false; return; }
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    startTime = Date.now();
+    swiping = true;
+  };
+  area._swipeCancel = () => { swiping = false; };
+  area._swipeEnd = (e) => {
+    if (!swiping || e.changedTouches.length !== 1) return;
+    swiping = false;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    const dt = Date.now() - startTime;
+    // Trigger only on clearly horizontal, fast swipes. Threshold 50px,
+    // dominant over vertical by 1.5x, and quicker than 600ms (slow drags
+    // are scroll attempts, not swipes).
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5 || dt > 600) return;
+    const dir = dx < 0 ? 1 : -1; // swipe left → next card; swipe right → prev card
+    const target = stackIdx + dir;
+    if (target < 0 || target >= cards.length) return;
+    const next = wraps[target]; if (!next) return;
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    next.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+  };
+  area.addEventListener('touchstart', area._swipeStart, { passive: true });
+  area.addEventListener('touchend', area._swipeEnd, { passive: true });
+  area.addEventListener('touchcancel', area._swipeCancel, { passive: true });
+  area._swipeBound = true;
 }
 
 /* Save toggle wired to the bookmark button on each card. Idempotent: tap once
