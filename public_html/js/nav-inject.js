@@ -88,6 +88,11 @@
       '.zd-hamburger svg{width:24px;height:24px;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;fill:none;}' +
       '.zd-hamburger .bar1,.zd-hamburger .bar2,.zd-hamburger .bar3{transition:transform 0.3s cubic-bezier(0.16,1,0.3,1),opacity 0.2s;stroke:#1a103c!important;}' +
       '@media(max-width:768px){' +
+        /* Compact mobile nav: 80px desktop -> 56px mobile, frees vertical
+           space for the search-page card feed (esp. with Chrome's bottom
+           address bar reducing the viewport). */
+        'nav{min-height:56px!important;padding:8px 14px!important;}' +
+        'nav .nav-logo img{height:40px!important;}' +
         '.zd-hamburger{display:flex!important;align-items:center;justify-content:center;color:#1a103c!important;background:rgba(255,255,255,0.9)!important;border:1.5px solid #ece8f3!important;box-shadow:0 2px 8px rgba(0,0,0,0.08);}' +
         '.zd-hamburger svg line{stroke:#1a103c!important;}' +
         '.nav-links{position:fixed!important;top:0!important;right:0!important;left:auto!important;width:300px!important;height:100vh!important;height:100dvh!important;background:#ffffff!important;flex-direction:column!important;align-items:stretch!important;padding:88px 28px 40px!important;gap:4px!important;z-index:10000!important;box-shadow:-8px 0 32px rgba(0,0,0,0.15)!important;transform:translateX(100%)!important;transition:transform 0.35s cubic-bezier(0.16,1,0.3,1)!important;will-change:transform;}' +
