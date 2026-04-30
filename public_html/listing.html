@@ -30,9 +30,14 @@
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
 <link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c4dff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="За Детето">
+<meta name="mobile-web-app-capable" content="yes">
 
 <link rel="stylesheet" href="brand_assets/fonts/fonts.css">
-<script src="js/nav-inject.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous"></script>
 <style>
@@ -52,6 +57,7 @@
   --zd-gray-50: #fafafa;
   --zd-gray-100: #f3f3f3;
   --zd-gray-200: #e8e8e8;
+  --zd-gray-300: #d6d6d6;
   --zd-gray-400: #b0b0b0;
   --zd-gray-600: #777;
   --zd-gray-800: #333;
@@ -69,7 +75,6 @@
   --border: #ece8f3;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { overflow-x: hidden; }
 body {
   font-family: var(--zd-font);
   background: var(--bg);
@@ -78,7 +83,19 @@ body {
 }
 h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 
-/* Nav layout is provided by nav-inject.js — no per-page overrides needed */
+/* ═══ NAV ═══ */
+nav {
+  position: sticky; top: 0; display: flex; justify-content: space-between;
+  align-items: center; padding: 12px 24px; z-index: 900;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid #e8e8e8;
+}
+.nav-logo img { height: 80px; }
+.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-links a { color: var(--text); text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-auth-btn { padding: 8px 20px; background: var(--zd-purple-600); border-radius: 10px; color: #fff !important; font-weight: 600; box-shadow: 0 4px 12px rgba(124,77,255,0.2); }
+@media(max-width:768px) { .nav-links { gap: 16px; } .nav-links a:not(.nav-auth-btn) { display: none; } nav { padding: 12px 20px; } .nav-logo img { height: 36px; } }
 
 /* ═══ BREADCRUMB ═══ */
 .breadcrumb {
@@ -94,32 +111,88 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 
 /* ═══ TWO-COLUMN LAYOUT ═══ */
 .listing-layout {
-  max-width: 1280px; margin: 0 auto; padding: 32px 40px 80px;
-  display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px;
+  max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px;
+  display: grid; grid-template-columns: 1fr 320px; gap: 32px;
   align-items: start;
 }
-.listing-main { min-width: 0; }
 @media(max-width:900px) {
-  .listing-layout { grid-template-columns: minmax(0, 1fr); padding: 20px 16px 120px; }
+  .listing-layout { grid-template-columns: 1fr; padding: 20px 16px 120px; }
 }
 
 /* ═══ HERO SECTION ═══ */
 .listing-hero {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: 24px; padding: 32px; position: relative; overflow: hidden;
+  border-radius: 24px; padding: 28px; position: relative; overflow: hidden;
+  box-sizing: border-box;
 }
 .listing-hero::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0;
   height: 6px; background: var(--accent); opacity: 0.15;
 }
-.hero-top { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
+.hero-top { display: flex; gap: 24px; align-items: center; margin-bottom: 16px; min-width: 0; }
+.hero-top > * { min-width: 0; }
+/* Hero logo: no more flat purple border. Soft drop-shadow + subtle 3D tilt
+   on hover, plus an animated purple "glissando" shimmer that sweeps along
+   the logo's edge via a conic-gradient mask. Keeps the logo itself clean.
+   Positioned on the RIGHT of the hero so name + rating + city align to
+   the same left edge as the contact icons below. 2× larger footprint
+   (200×200) for brand presence on the detail page. */
+.hero-top .hero-info { order: 1; }
+.hero-top .hero-logo { order: 2; }
 .hero-logo {
-  width: 100px; height: 100px; border-radius: 20px;
-  border: 3px solid var(--accent-light); overflow: hidden; flex-shrink: 0;
+  position: relative;
+  width: 200px; height: 200px; border-radius: 32px;
+  overflow: visible; flex-shrink: 0;
+  transform: perspective(900px) rotateY(0deg) rotateX(0deg);
+  transition: transform .45s cubic-bezier(.2,.8,.3,1), box-shadow .45s;
+  box-shadow: 0 10px 32px rgba(124,77,255,.22), 0 3px 8px rgba(0,0,0,.08);
+  will-change: transform;
 }
-.hero-logo img { width: 100%; height: 100%; object-fit: cover; }
+/* The inner wrapper carries the image clip + the shimmer pseudo-element. */
+.hero-logo::before {
+  content: ""; position: absolute; inset: -3px;
+  border-radius: 35px; padding: 3px;
+  background: conic-gradient(from var(--shimmer-angle, 0deg),
+    rgba(124,77,255,0) 0deg,
+    rgba(124,77,255,0) 270deg,
+    rgba(180,140,255,.9) 310deg,
+    rgba(124,77,255,.95) 330deg,
+    rgba(200,165,255,.8) 350deg,
+    rgba(124,77,255,0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: hero-logo-shimmer 4s linear infinite;
+  pointer-events: none;
+}
+@property --shimmer-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes hero-logo-shimmer {
+  to { --shimmer-angle: 360deg; }
+}
+/* Firefox / older browsers don't support @property — fall back to a subtle
+   opacity pulse so the logo still has life without the rotating gradient. */
+@supports not (background: conic-gradient(from var(--x, 0deg), red, red)) {
+  .hero-logo::before {
+    background: conic-gradient(rgba(124,77,255,.0), rgba(124,77,255,.7), rgba(124,77,255,.0));
+    animation: hero-logo-pulse 3s ease-in-out infinite;
+  }
+  @keyframes hero-logo-pulse { 0%,100% { opacity:.4 } 50% { opacity:1 } }
+}
+.hero-logo img {
+  width: 100%; height: 100%; object-fit: cover;
+  border-radius: 32px; display: block;
+  position: relative; z-index: 1;
+}
+.hero-logo:hover {
+  transform: perspective(900px) rotateY(-8deg) rotateX(4deg);
+  box-shadow: 0 18px 42px rgba(124,77,255,.4), 0 6px 14px rgba(0,0,0,.12);
+}
 .hero-info { flex: 1; min-width: 0; }
-.hero-name { font-size: clamp(24px, 3.5vw, 36px); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 6px; }
+.hero-name { font-size: clamp(24px, 3.5vw, 36px); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 10px; }
 .hero-city { font-size: 14px; font-weight: 500; color: var(--zd-gray-600); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
 .hero-city svg { width: 14px; height: 14px; }
 .hero-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -128,11 +201,56 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .zd-badge--sop { background: rgba(156,39,176,.08); color: var(--zd-sop); }
 .zd-badge--online { background: rgba(25,118,210,.08); color: var(--zd-online); }
 
-/* Rating */
-.hero-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
-.hero-stars { color: var(--zd-gold-300); font-size: 18px; letter-spacing: -1px; }
-.hero-rating-num { font-size: 18px; font-weight: 700; }
-.hero-rating-count { font-size: 13px; color: var(--muted); font-weight: 500; }
+/* Dual rating (Zadeteto hearts on top, Google stars below) — mirrors
+   the search-page card. SVG icons + width-clipped overlay so 4.6/5
+   cleanly becomes 4 full + 1 partial glyph. */
+.hero-rating { display: flex; flex-direction: column; gap: 4px; margin-bottom: 0; }
+.hero-rating-row { display: flex; align-items: center; gap: 8px; }
+.hero-rating-row .num   { font-size: 18px; font-weight: 700; min-width: 32px; text-align: right; color: var(--zd-gray-900); }
+.hero-rating-row .cnt   { font-size: 13px; color: var(--muted); font-weight: 500; }
+.hero-rating-icons {
+  position: relative; display: inline-block;
+  height: 20px; line-height: 0;
+  user-select: none; -webkit-user-select: none;
+}
+.hero-rating-icons .row {
+  display: flex; gap: 3px; height: 20px;
+}
+.hero-rating-icons .fill {
+  position: absolute; top: 0; left: 0; overflow: hidden;
+}
+.hero-rating-icons svg {
+  width: 20px; height: 20px; flex: 0 0 20px; display: block; fill: currentColor;
+}
+.hero-rating-icons .outline { color: var(--zd-gray-300); }
+.hero-rating-row--google   .fill { color: #eab308; filter: drop-shadow(0 0 3px rgba(234,179,8,.35)); }
+.hero-rating-row--zadeteto .fill { color: #7c4dff; filter: drop-shadow(0 0 3px rgba(124,77,255,.35)); }
+
+/* Two-column hero meta: rating stack on the left, city + tier badge on the
+   right. Tightened spacing — children rely on the parent's `gap` instead
+   of their own margin-bottom so the block doesn't double up vertically. */
+.hero-meta {
+  display: flex; align-items: center; gap: 20px;
+  margin-bottom: 0; flex-wrap: wrap;
+}
+.hero-meta-left  { flex: 0 0 auto; }
+.hero-meta-right {
+  display: flex; flex-direction: column; gap: 6px;
+  align-items: flex-start;
+  margin-top: 0;
+}
+/* Kill compound margins — inside .hero-meta-right, city/badges rely on the
+   parent flex `gap`; no extra bottom space. */
+.hero-meta .hero-rating  { margin-bottom: 0; }
+.hero-meta .hero-city    { margin-bottom: 0; }
+.hero-meta .hero-badges  { margin-bottom: 0; }
+@media(max-width:480px) {
+  .hero-meta { flex-direction: column; gap: 10px; align-items: center; }
+  .hero-meta-right { align-items: center; }
+  /* Shrink the logo on narrow screens so it doesn't dominate the stack. */
+  .hero-logo { width: 120px; height: 120px; border-radius: 22px; }
+  .hero-logo img { border-radius: 22px; }
+}
 
 /* Contact icons in hero */
 .hero-contacts { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -158,11 +276,13 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .listing-section {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 20px; padding: 28px; margin-top: 24px;
+  box-sizing: border-box;
 }
 .listing-section h2 { font-size: clamp(20px, 3vw, 26px); margin-bottom: 16px; }
 
 /* About */
 .about-desc { font-size: 15px; line-height: 1.7; color: var(--zd-gray-600); margin-bottom: 20px; }
+.about-desc:last-of-type { margin-bottom: 8px; }
 .about-placeholder { font-size: 14px; color: var(--zd-gray-400); font-style: italic; }
 
 /* Categories */
@@ -197,9 +317,16 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
   padding: 20px; background: var(--zd-gray-50); border-radius: 14px;
   margin-bottom: 24px;
 }
-.reviews-big-num { font-size: clamp(32px, 6vw, 42px); font-weight: 700; letter-spacing: -1px; line-height: 1; }
-.reviews-stars-col { display: flex; flex-direction: column; gap: 2px; }
-.reviews-stars-col .stars { color: var(--zd-gold-300); font-size: 20px; letter-spacing: -1px; }
+.reviews-big-num { font-size: 42px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+.reviews-stars-col { display: flex; flex-direction: column; gap: 4px; }
+/* Old .stars text color kept for the fallback case (e.g. empty string).
+   The actual Zadeteto summary icon is now an SVG heart widget — sized
+   and coloured via .hero-rating-icons below, reused here. */
+.reviews-stars-col .stars { color: #7c4dff; font-size: 20px; }
+.reviews-stars-col .stars .hero-rating-icons { height: 20px; }
+.reviews-stars-col .stars .hero-rating-icons .row { gap: 3px; height: 20px; }
+.reviews-stars-col .stars .hero-rating-icons svg { width: 20px; height: 20px; flex: 0 0 20px; }
+.reviews-stars-col .stars .hero-rating-icons .hearts-fill { color: #7c4dff; filter: drop-shadow(0 0 3px rgba(124,77,255,.3)); }
 .reviews-stars-col .count { font-size: 13px; color: var(--muted); }
 .review-card {
   padding: 20px; background: var(--zd-gray-50); border-radius: 14px;
@@ -215,16 +342,15 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .review-meta { flex: 1; }
 .review-name { font-size: 14px; font-weight: 600; }
 .review-date { font-size: 12px; color: var(--muted); }
-.review-stars { color: var(--zd-gold-300); font-size: 14px; letter-spacing: -1px; }
+.review-stars { font-size: 0; line-height: 0; /* SVG-based hearts inside; zero text-size prevents inline whitespace gaps */ }
 .review-text { font-size: 14px; line-height: 1.6; color: var(--zd-gray-600); }
 .write-review-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  margin-top: 16px; min-height: 48px; padding: 12px 24px; background: var(--accent);
+  margin-top: 16px; padding: 12px 24px; background: var(--accent);
   color: #fff; border: none; border-radius: 12px; font-family: var(--zd-font);
   font-size: 14px; font-weight: 600; cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 4px 16px rgba(124,77,255,0.2);
-  -webkit-tap-highlight-color: transparent;
 }
 .write-review-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,77,255,0.3); }
 .write-review-btn:active { transform: scale(0.97); }
@@ -297,15 +423,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .demo-data-badge::before { content: '◉'; font-size: 8px; }
 
 /* ═══ RELATED SPECIALISTS ═══ */
-.related-section { margin-top: 24px; min-width: 0; }
-/* Wrap lets us put a right-edge fade-out gradient on top of the scroll track
-   as a scroll affordance; pointer-events:none so the fade never blocks a tap. */
-.related-scroll-wrap { position: relative; min-width: 0; max-width: 100%; }
-.related-scroll-wrap::after {
-  content: ""; position: absolute; top: 0; right: 0; bottom: 16px; width: 32px;
-  pointer-events: none; background: linear-gradient(to right, transparent, var(--surface, #fff));
-  border-radius: 0 14px 14px 0;
-}
+.related-section { margin-top: 24px; }
 .related-scroll {
   display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr);
   gap: 16px; overflow-x: auto; overflow-y: hidden;
@@ -419,7 +537,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 /* Elite */
 .listing--elite { --accent: var(--zd-purple-600); --accent-light: var(--zd-purple-50); --accent-text: var(--zd-purple-800); }
 .listing--elite .listing-hero::before { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-400)); opacity: 0.12; }
-.listing--elite .hero-logo { border-color: var(--zd-purple-400); }
+.listing--elite .hero-logo { /* border removed; rely on shimmer + tilt from base .hero-logo */ }
 .listing--elite .zd-badge--tier { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-400)); color: #fff; }
 .listing--elite .zd-tag { background: var(--zd-purple-50); border-color: var(--zd-purple-100); color: var(--zd-purple-800); }
 .listing--elite .sidebar-cta--primary { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-400)); }
@@ -428,7 +546,13 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 /* Verified */
 .listing--verified { --accent: var(--zd-mint-600); --accent-light: var(--zd-mint-50); --accent-text: var(--zd-mint-800); }
 .listing--verified .listing-hero::before { background: var(--zd-mint-600); }
-.listing--verified .hero-logo { border-color: var(--zd-mint-400); }
+.listing--verified .hero-logo { /* border removed */ }
+.listing--verified .hero-logo::before {
+  background: conic-gradient(from var(--shimmer-angle, 0deg),
+    rgba(46,153,77,0) 0deg, rgba(46,153,77,0) 270deg,
+    rgba(120,210,150,.9) 310deg, rgba(46,153,77,.95) 330deg,
+    rgba(170,230,190,.8) 350deg, rgba(46,153,77,0) 360deg);
+}
 .listing--verified .zd-tag { background: var(--zd-mint-50); border-color: var(--zd-mint-100); color: var(--zd-mint-800); }
 .listing--verified .sidebar-cta--primary { background: var(--zd-mint-600); box-shadow: 0 4px 16px rgba(46,153,77,0.2); }
 .listing--verified .sidebar-cta--primary:hover { box-shadow: 0 8px 24px rgba(46,153,77,0.3); }
@@ -448,7 +572,8 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 
 /* Free */
 .listing--free { --accent: var(--zd-gray-400); --accent-light: var(--zd-gray-100); --accent-text: var(--zd-gray-600); }
-.listing--free .hero-logo { filter: saturate(0.5); border-color: var(--zd-gray-200); }
+.listing--free .hero-logo { filter: saturate(0.5); }
+.listing--free .hero-logo::before { display: none; } /* no shimmer on free tier */
 .listing--free .sidebar-cta--primary { background: var(--zd-gray-400); box-shadow: none; }
 .listing--free .write-review-btn { display: none; }
 .listing--free .age-section,
@@ -498,7 +623,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .auth-tab.active { background:#fff; color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
 .auth-btn { display:flex; align-items:center; justify-content:center; gap:12px; width:100%; padding:14px; background:var(--surface); border:1px solid var(--border); border-radius:12px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; margin-bottom:12px; transition:border-color 0.2s, background 0.2s; }
 .auth-btn:hover { border-color:var(--zd-purple-200); background:var(--zd-purple-50); }
-.auth-btn img { width:20px; height:20px; }
+.auth-btn img, .auth-btn svg { width:20px; height:20px; flex-shrink:0; }
 .auth-email-wrap { margin-top:16px; border-top:1px solid var(--border); padding-top:16px; }
 .auth-email-input { width:100%; padding:14px; border:1px solid var(--border); border-radius:12px; outline:none; font-family:'DM Sans',sans-serif; font-size:15px; transition:border-color 0.2s; }
 .auth-email-input:focus { border-color:var(--accent); }
@@ -506,112 +631,20 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .otp-input:focus { border-color:var(--accent); }
 .auth-verify-btn { width:100%; padding:14px; background:var(--accent); color:#fff; border:none; border-radius:12px; font-weight:600; font-size:15px; cursor:pointer; box-shadow:0 4px 16px rgba(124,77,255,0.2); transition:transform 0.2s; }
 .auth-verify-btn:active { transform:scale(0.98); }
-@media(max-width:480px){
-  .listing-hero { padding:24px 16px; }
-  .listing-layout { padding:16px 12px 120px; }
-  .listing-section { padding:20px 16px; }
-  .gallery-grid { grid-template-columns:1fr; }
-  .auth-modal { padding:24px 16px; border-radius:20px; margin:0 12px; }
-  .auth-email-input, .otp-input { font-size:16px; }
-  .zd-footer { padding:24px 16px; }
-}
-
-/* ═══ REVIEW SHEET — mobile-first bottom sheet with a low-rating feedback state ═══ */
-.rv-overlay {
-  position: fixed; inset: 0; background: rgba(10,5,30,0.5);
-  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-  z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s;
-}
-.rv-overlay.open { opacity: 1; pointer-events: auto; }
-.rv-sheet {
-  position: fixed; left: 50%; bottom: 0; transform: translate(-50%, 100%);
-  width: 100%; max-width: 520px;
-  background: #fff; border-radius: 24px 24px 0 0;
-  box-shadow: 0 -12px 48px rgba(10,5,30,0.25);
-  z-index: 9999; padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  max-height: 90vh; max-height: 90dvh; overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.rv-sheet.open { transform: translate(-50%, 0); }
-.rv-grabber {
-  width: 44px; height: 4px; border-radius: 2px;
-  background: var(--zd-gray-200); margin: 0 auto 16px;
-}
-.rv-title { font: 700 20px/1.2 'DM Serif Display', serif; color: var(--zd-gray-800); margin: 0 0 4px; }
-.rv-sub { font-size: 13px; color: var(--muted); margin: 0 0 18px; }
-.rv-stars-row {
-  display: flex; justify-content: center; gap: 10px;
-  padding: 12px 0 20px;
-}
-.rv-star {
-  width: 48px; height: 48px; border: none; background: none;
-  padding: 0; cursor: pointer; color: var(--zd-gray-200);
-  font-size: 44px; line-height: 1;
-  transition: transform 0.15s, color 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-.rv-star:hover, .rv-star:focus-visible { transform: scale(1.1); color: var(--zd-gold-300); outline: none; }
-.rv-star.filled { color: var(--zd-gold-300); }
-.rv-star:active { transform: scale(0.95); }
-.rv-field { margin-bottom: 14px; }
-.rv-label {
-  display: block; font-size: 13px; font-weight: 600;
-  color: var(--zd-gray-600); margin-bottom: 6px;
-}
-.rv-textarea {
-  width: 100%; min-height: 92px; padding: 12px 14px; border-radius: 12px;
-  border: 1.5px solid var(--zd-gray-200); font: 400 15px/1.5 var(--zd-font);
-  color: var(--zd-gray-800); background: #fff; resize: vertical;
-  box-sizing: border-box; font-family: var(--zd-font);
-}
-.rv-textarea:focus { outline: none; border-color: var(--accent); }
-.rv-textarea::placeholder { color: var(--zd-gray-400); }
-.rv-actions { display: flex; gap: 10px; margin-top: 6px; }
-.rv-btn {
-  flex: 1; min-height: 48px; padding: 12px 18px;
-  border-radius: 12px; border: none; cursor: pointer;
-  font: 700 15px/1 var(--zd-font); transition: transform 0.15s, opacity 0.2s;
-  -webkit-tap-highlight-color: transparent;
-}
-.rv-btn:active { transform: scale(0.97); }
-.rv-btn--primary { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(124,77,255,0.3); }
-.rv-btn--primary[disabled] { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
-.rv-btn--ghost { background: var(--zd-gray-50); color: var(--zd-gray-800); border: 1.5px solid var(--zd-gray-200); }
-.rv-error { font-size: 12px; color: #c85050; margin-top: 8px; min-height: 16px; }
-.rv-note {
-  background: rgba(231,76,111,0.08); border-left: 3px solid #e74c6f;
-  padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5;
-  color: var(--zd-gray-800); margin-bottom: 14px;
-}
-.rv-note b { color: #c1264c; }
-.rv-toast {
-  position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 40px);
-  background: var(--zd-gray-800); color: #fff; padding: 12px 20px;
-  border-radius: 14px; font: 600 14px/1 var(--zd-font);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25); z-index: 10000;
-  opacity: 0; transition: opacity 0.25s, transform 0.25s;
-  pointer-events: none;
-}
-.rv-toast.visible { opacity: 1; transform: translate(-50%, 0); }
-@media(max-width:480px){
-  .rv-sheet { padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
-  .rv-star { width: 44px; height: 44px; font-size: 40px; }
-  .rv-title { font-size: 18px; }
-}
 </style>
 </head>
 <body>
 
 <!-- ═══ NAV ═══ -->
 <nav>
-  <a href="index.html" class="nav-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></a>
+  <a href="index.html" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето" class="nav-logo" style="height:80px;">
+  </a>
   <div class="nav-links">
-    <a href="index.html" class="nav-link">Начало</a>
-    <a href="search.html" class="nav-btn-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Търсене</a>
-    <a href="partners.html" class="nav-btn-partner">Стани партньор</a>
-    <a href="pricing.html" class="nav-link">Абонаменти</a>
-    <a href="contacts.html" class="nav-link">Контакти</a>
+    <a href="index.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Начало</a>
+    <a href="partners.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">За партньори</a>
+    <a href="contacts.html" style="color:#333;text-decoration:none;font-size:13px;font-weight:600;">Контакти</a>
+    <a href="pricing.html" class="nav-btn-partner">Стани партньор</a>
     <a href="#" class="nav-btn-login" onclick="openAuthModal(event); return false;">Вход</a>
   </div>
 </nav>
@@ -641,12 +674,18 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
         <div class="hero-logo" id="heroLogo"></div>
         <div class="hero-info">
           <h1 class="hero-name" id="heroName"></h1>
-          <div class="hero-city" id="heroCity">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span></span>
+          <div class="hero-meta">
+            <div class="hero-meta-left">
+              <div class="hero-rating" id="heroRating"></div>
+            </div>
+            <div class="hero-meta-right">
+              <div class="hero-city" id="heroCity">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span></span>
+              </div>
+              <div class="hero-badges" id="heroBadges"></div>
+            </div>
           </div>
-          <div class="hero-badges" id="heroBadges"></div>
-          <div class="hero-rating" id="heroRating"></div>
         </div>
       </div>
       <div class="hero-contacts" id="heroContacts"></div>
@@ -685,9 +724,7 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
     <!-- Related specialists ("You might also like") -->
     <div class="listing-section listing-anim related-section" id="relatedSection" style="display:none;">
       <h2>Подобни специалисти</h2>
-      <div class="related-scroll-wrap">
-        <div class="related-scroll" id="relatedScroll"></div>
-      </div>
+      <div class="related-scroll" id="relatedScroll"></div>
     </div>
   </div>
 
@@ -718,10 +755,10 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
       <h3 class="auth-title" id="authTitle">Добре дошли отново</h3>
       <p class="auth-sub" id="authSub">Влезте, за да запазвате специалисти и да оставяте отзиви от опит.</p>
       <button class="auth-btn" onclick="triggerAuthOTP()">
-        <img src="https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da7b02a4e6aa34cbca2b37.png" alt="Google" loading="lazy" decoding="async"> Продължи с Google
+        <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg> Продължи с Google
       </button>
       <button class="auth-btn" onclick="triggerAuthOTP()">
-        <img src="https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779aa4e6aa34cbc97684.svg" alt="Facebook" loading="lazy" decoding="async"> Продължи с Facebook
+        <img src="https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg" alt="Facebook" loading="lazy" decoding="async"> Продължи с Facebook
       </button>
       <div class="auth-email-wrap">
         <p style="font-size:13px;color:var(--muted);margin-bottom:8px;text-align:center;">Или продължете с имейл:</p>
@@ -760,26 +797,25 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 const tierClassMap = { "Доверен": "elite", "Проверен": "verified", "Стандартен": "standard", "Безплатен": "free" };
 
 const icons = {
-  phone: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da92e1a4e6aa34cbd04ee4.png",
-  viber: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da78d6ecab277f79b90e7b.svg",
-  email: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a77bcdd31bb6f4160.png",
-  website: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da79cc019dc508d34359a1.gif",
-  facebook: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779aa4e6aa34cbc97684.svg",
-  instagram: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a77bcdd31bb6f417b.svg",
-  tiktok: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779aa4e6aa34cbc976a8.svg",
-  linkedin: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a019dc508d342f768.svg",
-  x: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779a982fd67a3560f3e4.png",
-  youtube: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779b982fd67a3560f3e6.svg",
-  maps: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da779ad7871cddf74e837d.png",
-  reviews: "https://assets.cdn.filesafe.space/EiVgrua1Bi7nEWRXtm8R/media/69da907c019dc508d349407b.png"
+  phone: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165ce6566161a.svg",
+  email: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f3b45fe711.svg",
+  website: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e39f520486ca465431130.svg",
+  facebook: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165167a66161c.svg",
+  instagram: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa1c1165b73b661619.svg",
+  tiktok: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c80d255fe70e.svg",
+  linkedin: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45f958ee9ecb86249762.svg",
+  x: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933def5016cb73723d0adc.svg",
+  youtube: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/688e45fa4f59c8f88b5fe710.svg",
+  maps: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68933df9ed9c8fc6588920f1.svg",
+  reviews: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68939cebd69f994a4dd582e5.png"
 };
 
-const allContactKeys = ["phone","viber","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps"];
+const allContactKeys = ["phone","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps"];
 
 const allowedIconsByTier = {
-  "Доверен": ["phone","viber","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps","reviews"],
-  "Проверен": ["phone","viber","email","website","facebook","instagram","maps"],
-  "Стандартен": ["phone","viber","email","website","facebook"],
+  "Доверен": ["phone","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps","reviews"],
+  "Проверен": ["phone","email","website","facebook","instagram","maps"],
+  "Стандартен": ["phone","email","website","facebook"],
   "Безплатен": ["phone","email"]
 };
 
@@ -855,29 +891,17 @@ function confirmAuth() {
   localStorage.setItem('zd_parent_logged_in', 'true');
   closeAuthModal();
   updateAuthUI();
-  // If the user started this login to write a review, replay that intent now.
-  if (localStorage.getItem('zd_review_intent')) {
-    localStorage.removeItem('zd_review_intent');
-    setTimeout(() => openReviewSheet(window._currentBusinessData), 400);
-  }
 }
 
 function updateAuthUI() {
   if (localStorage.getItem('zd_parent_logged_in') === 'true') {
-    document.querySelectorAll('.nav-btn-login').forEach(btn => {
-      btn.innerHTML = '<span style="font-size:16px;margin-right:4px;">👤</span>Профил';
-      btn.style.background = 'rgba(124,77,255,0.08)';
-      btn.style.color = 'var(--zd-purple-700, #5a2ecf)';
+    document.querySelectorAll('.nav-auth-btn').forEach(btn => {
+      btn.innerHTML = '<span style="font-size:16px;">👤</span> Профил';
+      btn.style.background = 'transparent';
+      btn.style.color = '#333';
       btn.style.boxShadow = 'none';
-      btn.style.border = '1.5px solid var(--zd-purple-200, #d4b6ff)';
-      btn.onclick = (e) => {
-        e && e.preventDefault();
-        if (confirm('Излез от профила?')) {
-          localStorage.removeItem('zd_parent_logged_in');
-          if (window.ZdSupabase) { try { window.ZdSupabase.auth.signOut(); } catch(err) {} }
-          location.reload();
-        }
-      };
+      btn.style.border = '1px solid #ccc';
+      btn.onclick = () => { alert("Тук ще се отваря профила на родителя."); };
     });
   }
 }
@@ -941,15 +965,53 @@ function hydratePage(d) {
   if (d.city === 'Онлайн') badgesHTML += `<span class="zd-badge zd-badge--online">Online</span>`;
   document.getElementById('heroBadges').innerHTML = badgesHTML;
 
-  // Hero: Rating
+  // Hero: Dual rating (Zadeteto hearts + Google stars). Same widget as
+  // the search-page mini card — SVG icons with a width-clipped coloured
+  // overlay. Zadeteto value is the hash-based mock until the real
+  // reviews table feeds it; Google row only shows if google_rating is set.
+  const heroIconsHTML = (avg, kind) => {
+    const pathStar  = 'M12 2.5l2.62 5.93 6.48.57-4.9 4.28 1.48 6.34L12 16.3l-5.68 3.32 1.48-6.34-4.9-4.28 6.48-.57z';
+    const pathHeart = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
+    const p = kind === 'heart' ? pathHeart : pathStar;
+    const g = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${p}"/></svg>`;
+    const row = g.repeat(5);
+    const pct = Math.max(0, Math.min(100, (parseFloat(avg) / 5) * 100));
+    return `<span class="hero-rating-icons">
+      <span class="row outline">${row}</span>
+      <span class="row fill" style="width:${pct}%">${row}</span>
+    </span>`;
+  };
+
+  // Zadeteto: prefer the hash mock for now (real reviews land through loadRealReviews below)
+  const zdAvg   = rating;          // already a "4.x" string
+  const zdCount = reviewCount;     // mock integer
+  const zadRowHTML = `
+    <div class="hero-rating-row hero-rating-row--zadeteto" title="Оценки от родители в ZaDeteto">
+      ${heroIconsHTML(zdAvg, 'heart')}
+      <span class="num">${zdAvg}</span>
+      <span class="cnt">/ ${zdCount}</span>
+    </div>`;
+
+  // Google: only if the row carries real GMB data
+  let googleRowHTML = '';
+  const gr = typeof d.google_rating === 'number' ? d.google_rating : parseFloat(d.google_rating);
+  if (isFinite(gr) && gr > 0) {
+    const gc = typeof d.google_review_count === 'number' ? d.google_review_count : parseInt(d.google_review_count, 10);
+    const gcOut = isFinite(gc) && gc > 0 ? gc : 0;
+    googleRowHTML = `
+      <div class="hero-rating-row hero-rating-row--google" title="Google Maps">
+        ${heroIconsHTML(gr, 'star')}
+        <span class="num">${gr.toFixed(1)}</span>
+        <span class="cnt">/ ${gcOut}</span>
+      </div>`;
+  }
+
+  document.getElementById('heroRating').innerHTML = zadRowHTML + googleRowHTML;
+  // Back-compat: downstream reviews block reads starsHTML / rating / reviewCount.
+  // Keep the old star string for that block (it refers to the Zadeteto average).
   const filledStars = Math.round(parseFloat(rating));
   let starsHTML = '';
   for (let i = 0; i < 5; i++) starsHTML += i < filledStars ? '★' : '☆';
-  document.getElementById('heroRating').innerHTML = `
-    <span class="hero-stars">${starsHTML}</span>
-    <span class="hero-rating-num">${rating}</span>
-    <span class="hero-rating-count">(${reviewCount} отзива)</span>
-  `;
 
   // Hero: Contact icons — show all that exist on profile page
   document.getElementById('heroContacts').innerHTML = buildContactIcons(d, allContactKeys);
@@ -959,8 +1021,19 @@ function hydratePage(d) {
   if (isExpandable && d.description) {
     let catPills = cats.map(c => `<span class="category-pill">${ZdSec.escapeHtml(c)}</span>`).join('');
     let tagsHTML = (d.services || []).map(s => `<span class="zd-tag">${ZdSec.escapeHtml(s)}</span>`).join('');
+    // Render description as rich text: normalise CRLF/CR to LF, split on
+    // blank lines → one <p> per paragraph; single newlines within a
+    // paragraph become <br>. Each chunk is escaped BEFORE <br> is injected
+    // so user content can never smuggle tags through.
+    const paragraphsHTML = d.description
+      .replace(/\r\n?/g, '\n')
+      .split(/\n{2,}/)
+      .map(p => p.trim())
+      .filter(p => p.length > 0)
+      .map(p => `<p class="about-desc">${ZdSec.escapeHtml(p).replace(/\n/g, '<br>')}</p>`)
+      .join('');
     aboutEl.innerHTML = `
-      <p class="about-desc">${ZdSec.escapeHtml(d.description)}</p>
+      ${paragraphsHTML}
       <div class="category-pills">${catPills}</div>
       <div class="service-tags">${tagsHTML}</div>
     `;
@@ -1056,9 +1129,6 @@ function hydratePage(d) {
     <a class="sidebar-cta sidebar-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl1 || d.ctaUrl || '#')}" target="_blank">${ZdSec.escapeHtml(d.ctaLabel1 || d.ctaLabel || 'Свържете се')}</a>
     <a class="phone-btn" href="${phoneHref}"><img src="${icons.phone}" alt="Обади се"></a>
   `;
-
-  // Stash the business for the review sheet (needs id + name for the prompt copy)
-  window._currentBusinessData = d;
 
   // Show content, hide loading
   document.getElementById('listingLoading').style.display = 'none';
@@ -1200,12 +1270,25 @@ function renderWorkingHours(hours) {
 
 /* renderReviewsBlock — pure function, returns HTML string */
 function renderReviewsBlock(d, isMock, realReviews, rand, rating, starsHTML, reviewCount, isExpandable) {
-  // Show summary header
+  // This is the ZADETETO parent-reviews section — the icon beside the big
+  // number should be a filled heart (matching the search-page card), not a
+  // star (which we reserve for Google ratings). Build a 5-heart overlay
+  // widget sized to the big-num column.
+  const _heartPath = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
+  const _heartGlyph = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${_heartPath}"/></svg>`;
+  const _heartsRow = _heartGlyph.repeat(5);
+  const _heartsPct = Math.max(0, Math.min(100, (parseFloat(rating) / 5) * 100));
+  const heartsWidgetHTML = `
+    <span class="hero-rating-icons" style="display:inline-block;">
+      <span class="row outline">${_heartsRow}</span>
+      <span class="row fill hearts-fill" style="width:${_heartsPct}%">${_heartsRow}</span>
+    </span>`;
+  // Show summary header (Zadeteto hearts, NOT Google stars)
   let html = `
     <div class="reviews-summary">
       <div class="reviews-big-num">${rating}</div>
       <div class="reviews-stars-col">
-        <div class="stars">${starsHTML}</div>
+        <div class="stars">${heartsWidgetHTML}</div>
         <div class="count">от ${reviewCount} отзива</div>
       </div>
     </div>
@@ -1224,8 +1307,18 @@ function renderReviewsBlock(d, isMock, realReviews, rand, rating, starsHTML, rev
       const rText = reviewTexts[Math.floor(rand() * reviewTexts.length)];
       const rDate = reviewDates[i % reviewDates.length];
       const rRating = Math.min(5, Math.floor(rand() * 2) + 4);
+      // Individual parent review on ZaDeteto → heart icons (match the
+      // dual-rating widget). 5 hearts, `rRating` of them filled in brand
+      // purple, rest muted grey. Uses inline SVG so sizing matches the
+      // hero/summary widgets exactly.
       let rStars = '';
-      for (let j = 0; j < 5; j++) rStars += j < rRating ? '★' : '☆';
+      {
+        const _hp = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
+        for (let j = 0; j < 5; j++) {
+          const col = j < rRating ? '#7c4dff' : 'rgba(0,0,0,.18)';
+          rStars += `<svg viewBox="0 0 24 24" width="14" height="14" style="fill:${col};display:inline-block;vertical-align:middle;margin-right:1px" aria-hidden="true"><path d="${_hp}"/></svg>`;
+        }
+      }
       const initials = rName.split(' ').map(n => n[0]).join('');
       html += `
         <div class="review-card">
@@ -1245,17 +1338,26 @@ function renderReviewsBlock(d, isMock, realReviews, rand, rating, starsHTML, rev
     // Render REAL reviews from Supabase
     realReviews.forEach(r => {
       const rRating = r.stars || 5;
+      // Individual parent review on ZaDeteto → heart icons (match the
+      // dual-rating widget). 5 hearts, `rRating` of them filled in brand
+      // purple, rest muted grey. Uses inline SVG so sizing matches the
+      // hero/summary widgets exactly.
       let rStars = '';
-      for (let j = 0; j < 5; j++) rStars += j < rRating ? '★' : '☆';
+      {
+        const _hp = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
+        for (let j = 0; j < 5; j++) {
+          const col = j < rRating ? '#7c4dff' : 'rgba(0,0,0,.18)';
+          rStars += `<svg viewBox="0 0 24 24" width="14" height="14" style="fill:${col};display:inline-block;vertical-align:middle;margin-right:1px" aria-hidden="true"><path d="${_hp}"/></svg>`;
+        }
+      }
       // Anonymous reviews have no parent_id → show "Анонимен родител"
       // (Future: join parents table to get display_name)
-      const rNameRaw = r.parent_display_name || 'Анонимен родител';
-      const rName = ZdSec.escapeHtml(rNameRaw);
-      const initials = ZdSec.escapeHtml(rNameRaw.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase());
+      const rName = r.parent_display_name || 'Анонимен родител';
+      const initials = rName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
       const rDate = r.created_at
         ? new Date(r.created_at).toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })
         : '';
-      const rText = ZdSec.escapeHtml(r.text || '');
+      const rText = (r.text || '').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
       html += `
         <div class="review-card">
           <div class="review-header">
@@ -1273,7 +1375,7 @@ function renderReviewsBlock(d, isMock, realReviews, rand, rating, starsHTML, rev
   }
 
   if (isExpandable) {
-    html += `<button class="write-review-btn" onclick="triggerWriteReview(event)">
+    html += `<button class="write-review-btn" onclick="openAuthModal(event)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       Напиши отзив
     </button>`;
@@ -1324,17 +1426,22 @@ async function loadRelatedSpecialists(d) {
   const scrollEl = document.getElementById('relatedScroll');
   if (!sectionEl || !scrollEl) return;
 
-  const cats = Array.isArray(d.categories) ? d.categories : (d.categories ? [d.categories] : []);
+  // Use visible_categories (tier-gated) so hidden/disabled categories don't
+  // pull in unrelated recommendations. Fall back to categories for any pre-
+  // migration rows where visible_categories hasn't been backfilled yet.
+  const cats = (Array.isArray(d.visible_categories) && d.visible_categories.length)
+    ? d.visible_categories
+    : (Array.isArray(d.categories) ? d.categories : (d.categories ? [d.categories] : []));
   if (!cats.length) return;  // no categories → can't recommend
 
   try {
     // 1. First try: same category + same city
     let { data: rows, error } = await window.ZdSupabase
       .from('businesses')
-      .select('id, slug, name, tier, city, logo, audit_score, categories')
+      .select('id, slug, name, tier, city, logo, audit_score, categories, visible_categories')
       .eq('published', true)
       .neq('id', d.id)            // exclude current business
-      .overlaps('categories', cats) // category overlap (jsonb @> works for arrays)
+      .overlaps('visible_categories', cats)
       .eq('city', d.city)
       .order('tier', { ascending: true })  // 'Доверен' < 'Проверен' < 'Стандартен' < 'Безплатен' alphabetically. NOT desired order, will sort client-side
       .limit(8);
@@ -1346,10 +1453,10 @@ async function loadRelatedSpecialists(d) {
     if (!rows || rows.length < 4) {
       const more = await window.ZdSupabase
         .from('businesses')
-        .select('id, slug, name, tier, city, logo, audit_score, categories')
+        .select('id, slug, name, tier, city, logo, audit_score, categories, visible_categories')
         .eq('published', true)
         .neq('id', d.id)
-        .overlaps('categories', cats)
+        .overlaps('visible_categories', cats)
         .limit(8);
       if (!more.error && more.data) {
         // Merge, dedupe by id
@@ -1376,17 +1483,14 @@ async function loadRelatedSpecialists(d) {
       const score = r.audit_score || '';
       // Synthesize a star rating from audit_score (real reviews would override later)
       const stars = score >= 100 ? '★★★★★' : score >= 70 ? '★★★★☆' : '★★★☆☆';
-      const rName = ZdSec.escapeHtml(r.name || '');
-      const rTier = ZdSec.escapeHtml(r.tier || '');
-      const rLogo = r.logo ? ZdSec.sanitizeUrl(r.logo) : '';
       return `
         <a class="related-card related-card--${cls}" href="${href}">
           <div class="related-card-top">
-            <div class="related-card-logo">${rLogo ? `<img src="${rLogo}" alt="${rName}" loading="lazy">` : ''}</div>
-            <div class="related-card-name"><div class="related-card-name-text">${rName}</div></div>
+            <div class="related-card-logo">${r.logo ? `<img src="${r.logo}" alt="${r.name}" loading="lazy">` : ''}</div>
+            <div class="related-card-name"><div class="related-card-name-text">${r.name}</div></div>
           </div>
           <div class="related-card-meta">
-            <span class="related-card-tier">${rTier}</span>
+            <span class="related-card-tier">${r.tier}</span>
             <span class="related-card-rating"><span class="stars">${stars}</span></span>
           </div>
         </a>
@@ -1445,7 +1549,7 @@ async function init() {
         });
       }
       if (window.ZdSupabase) {
-        let query = window.ZdSupabase.from('businesses').select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups').eq('published', true);
+        let query = window.ZdSupabase.from('businesses').select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,visible_categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups,google_rating,google_review_count').eq('published', true);
         if (id) query = query.eq('id', id);
         else if (slug) query = query.eq('slug', slug);
         const { data: rows, error } = await query.limit(1);
@@ -1501,210 +1605,10 @@ async function init() {
   }
 }
 
-/* ═══ REVIEW SHEET ═══
-   Two-view bottom sheet: pick stars → optional comment → submit.
-   If stars ≤ 3, Submit routes to a mandatory-feedback view (rvViewLow)
-   before the POST to Supabase.                                          */
-let _rvStars = 0;
-let _rvBusiness = null;
-let _rvLastOpener = null;
-const LOW_RATING_THRESHOLD = 3;
-
-function openReviewSheet(businessData) {
-  _rvBusiness = businessData || window._currentBusinessData || null;
-  if (!_rvBusiness) { console.warn('[openReviewSheet] no business in context'); return; }
-  _rvStars = 0;
-  _rvRenderStars();
-  document.getElementById('rvViewRating').style.display = '';
-  document.getElementById('rvViewLow').style.display = 'none';
-  document.getElementById('rvText').value = '';
-  document.getElementById('rvLowText').value = '';
-  document.getElementById('rvError').textContent = '';
-  document.getElementById('rvLowError').textContent = '';
-  document.getElementById('rvSubmitBtn').disabled = true;
-  document.getElementById('rvLowSubmitBtn').disabled = true;
-  document.getElementById('rvSub').textContent = _rvBusiness.name
-    ? `Сподели опита си с ${_rvBusiness.name}.`
-    : 'Твоят отзив помага на други родители.';
-  _rvLastOpener = document.activeElement;
-  document.getElementById('rvOverlay').classList.add('open');
-  document.getElementById('rvSheet').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  // Move focus into the dialog so AT announces the sheet and keyboard nav works.
-  setTimeout(() => {
-    const firstStar = document.querySelector('#rvViewRating .rv-star');
-    if (firstStar) firstStar.focus();
-  }, 50);
-}
-function closeReviewSheet() {
-  document.getElementById('rvOverlay').classList.remove('open');
-  document.getElementById('rvSheet').classList.remove('open');
-  document.body.style.overflow = '';
-  if (_rvLastOpener && typeof _rvLastOpener.focus === 'function') {
-    _rvLastOpener.focus();
-  }
-}
-function _rvSetStars(n) {
-  _rvStars = n;
-  _rvRenderStars();
-  document.getElementById('rvSubmitBtn').disabled = n === 0;
-  document.getElementById('rvError').textContent = '';
-}
-function _rvRenderStars() {
-  document.querySelectorAll('#rvViewRating .rv-star').forEach((el, i) => {
-    const on = i < _rvStars;
-    el.classList.toggle('filled', on);
-    el.setAttribute('aria-checked', on ? 'true' : 'false');
-  });
-}
-function rvBackToRating() {
-  document.getElementById('rvViewLow').style.display = 'none';
-  document.getElementById('rvViewRating').style.display = '';
-}
-async function submitReview() {
-  if (!_rvStars) {
-    document.getElementById('rvError').textContent = 'Моля избери оценка.';
-    return;
-  }
-  if (_rvStars <= LOW_RATING_THRESHOLD) {
-    // Route to the mandatory-feedback view — no immediate submit.
-    document.getElementById('rvViewRating').style.display = 'none';
-    document.getElementById('rvViewLow').style.display = '';
-    return;
-  }
-  await _rvPostReview({ stars: _rvStars, text: document.getElementById('rvText').value.trim() });
-}
-async function submitReviewLow() {
-  const text = document.getElementById('rvLowText').value.trim();
-  if (text.length < 10) {
-    document.getElementById('rvLowError').textContent = 'Моля опиши с поне няколко думи какво се случи (поне 10 символа).';
-    return;
-  }
-  await _rvPostReview({ stars: _rvStars, text });
-}
-async function _rvPostReview({ stars, text }) {
-  const btnA = document.getElementById('rvSubmitBtn');
-  const btnB = document.getElementById('rvLowSubmitBtn');
-  btnA.disabled = true; btnB.disabled = true;
-  const biz = _rvBusiness;
-  const entry = {
-    business_id: biz && biz.id,
-    stars,
-    text: text || null,
-    approved: false,
-    created_at: new Date().toISOString()
-  };
-  // Local shadow log + fire-and-forget backend sync.
-  try {
-    const log = JSON.parse(localStorage.getItem('zd_review_log') || '[]');
-    log.push(entry);
-    localStorage.setItem('zd_review_log', JSON.stringify(log));
-  } catch (e) { /* quota / disabled — ignore */ }
-  try {
-    if (window.ZdSupabase && biz && biz.id) {
-      const { error } = await window.ZdSupabase.from('reviews').insert([entry]);
-      if (error) console.warn('[submitReview] supabase insert failed (kept locally):', error);
-    }
-  } catch (e) {
-    console.warn('[submitReview] exception (kept locally):', e);
-  }
-  closeReviewSheet();
-  _rvToast('Благодарим за отзива! Ще го прегледаме преди да бъде публикуван.');
-  btnA.disabled = false; btnB.disabled = false;
-}
-function _rvToast(msg) {
-  const t = document.getElementById('rvToast');
-  if (!t) return;
-  t.textContent = msg;
-  t.classList.add('visible');
-  setTimeout(() => t.classList.remove('visible'), 3200);
-}
-/* Writer entry point — called by the "Напиши отзив" button in the reviews
-   section. Gates on auth: if not logged in, open the auth modal, which on
-   successful login should call `updateAuthUI` → then re-open the sheet. */
-function triggerWriteReview(event) {
-  if (event) { event.preventDefault(); event.stopPropagation(); }
-  const isLoggedIn = !!localStorage.getItem('zd_parent_logged_in');
-  if (!isLoggedIn) {
-    localStorage.setItem('zd_review_intent', '1');
-    if (typeof openAuthModal === 'function') openAuthModal(event);
-    return;
-  }
-  openReviewSheet(window._currentBusinessData);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  init();
-  // Wire star buttons (event delegation keeps it cheap).
-  document.querySelectorAll('#rvViewRating .rv-star').forEach(btn => {
-    btn.addEventListener('click', () => _rvSetStars(+btn.dataset.star));
-  });
-  // Enable low-view submit only when user types something meaningful.
-  const lowText = document.getElementById('rvLowText');
-  if (lowText) {
-    lowText.addEventListener('input', e => {
-      document.getElementById('rvLowSubmitBtn').disabled = e.target.value.trim().length < 10;
-    });
-  }
-  // Escape key closes the sheet if open.
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && document.getElementById('rvSheet').classList.contains('open')) {
-      closeReviewSheet();
-    }
-  });
-  // If the user just logged in and had a pending review intent, auto-open the sheet.
-  if (localStorage.getItem('zd_review_intent') && localStorage.getItem('zd_parent_logged_in')) {
-    localStorage.removeItem('zd_review_intent');
-    setTimeout(() => openReviewSheet(window._currentBusinessData), 400);
-  }
-});
+document.addEventListener('DOMContentLoaded', init);
 </script>
 
-<!-- ═══ REVIEW SHEET ═══ -->
-<div class="rv-overlay" id="rvOverlay" onclick="closeReviewSheet()" aria-hidden="true"></div>
-<div class="rv-sheet" id="rvSheet" role="dialog" aria-modal="true" aria-labelledby="rvTitle">
-  <div class="rv-grabber" aria-hidden="true"></div>
-  <!-- View 1 — rating + optional comment -->
-  <div id="rvViewRating">
-    <h2 class="rv-title" id="rvTitle">Оцени този партньор</h2>
-    <p class="rv-sub" id="rvSub">Твоят отзив помага на други родители.</p>
-    <div class="rv-stars-row" role="radiogroup" aria-label="Оценка">
-      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="1" aria-label="1 звезда">★</button>
-      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="2" aria-label="2 звезди">★</button>
-      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="3" aria-label="3 звезди">★</button>
-      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="4" aria-label="4 звезди">★</button>
-      <button type="button" class="rv-star" role="radio" aria-checked="false" data-star="5" aria-label="5 звезди">★</button>
-    </div>
-    <div class="rv-field">
-      <label class="rv-label" for="rvText">Коментар <span style="font-weight:400;color:var(--zd-gray-400)">(по избор)</span></label>
-      <textarea id="rvText" class="rv-textarea" placeholder="Разкажи накратко за твоя опит..." maxlength="2000"></textarea>
-    </div>
-    <div class="rv-error" id="rvError"></div>
-    <div class="rv-actions">
-      <button type="button" class="rv-btn rv-btn--ghost" onclick="closeReviewSheet()">Отказ</button>
-      <button type="button" class="rv-btn rv-btn--primary" id="rvSubmitBtn" onclick="submitReview()" disabled>Изпрати</button>
-    </div>
-  </div>
-  <!-- View 2 — low-rating follow-up prompt (stars ≤ 3) -->
-  <div id="rvViewLow" style="display:none;">
-    <h2 class="rv-title">Съжаляваме, че опитът ти не е бил добър</h2>
-    <p class="rv-sub">Помогни ни да разберем какво се е случило. Това ще помогне и на други родители.</p>
-    <div class="rv-note">
-      <b>Моля, опиши какъв беше проблемът.</b> Отзиви с ниска оценка без описание не се публикуват, за да защитим партньорите от несправедливи оценки.
-    </div>
-    <div class="rv-field">
-      <label class="rv-label" for="rvLowText">Какво не беше наред?</label>
-      <textarea id="rvLowText" class="rv-textarea" placeholder="Например: неточна информация, лошо отношение, закъснение, липса на отговор..." maxlength="2000" required></textarea>
-    </div>
-    <div class="rv-error" id="rvLowError"></div>
-    <div class="rv-actions">
-      <button type="button" class="rv-btn rv-btn--ghost" onclick="rvBackToRating()">Назад</button>
-      <button type="button" class="rv-btn rv-btn--primary" id="rvLowSubmitBtn" onclick="submitReviewLow()" disabled>Изпрати</button>
-    </div>
-  </div>
-</div>
-<div class="rv-toast" id="rvToast" role="status" aria-live="polite"></div>
-
+<script src="js/nav-inject.js"></script>
 <script src="js/cookie-banner.js"></script>
 <script src="js/analytics-loader.js"></script>
 <script src="js/supabase-init.js"></script>

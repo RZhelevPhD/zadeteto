@@ -1,0 +1,24 @@
+{
+  "name": "За Детето: директория за детски специалисти",
+  "short_name": "За Детето",
+  "description": "Първата национална директория с верифицирани детски специалисти, школи и услуги.",
+  "lang": "bg-BG",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fdfcfb",
+  "theme_color": "#7c4dff",
+  "categories": ["education", "lifestyle", "entertainment"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "brand_assets/zadeteto-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
