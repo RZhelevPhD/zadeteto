@@ -921,9 +921,6 @@ a.zd-name:hover { text-decoration: underline; }
 .applied-chips:empty{display:none}
 .ap-chip{height:28px;padding:0 10px;border-radius:8px;background:var(--zd-purple-50);border:1px solid var(--zd-purple-200);font:600 11px/1 var(--zd-font);color:var(--zd-purple-800);display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;flex-shrink:0}
 .ap-chip .x{font-size:10px;opacity:.5}
-.results-info{display:flex;align-items:center;justify-content:center;padding:6px 14px 2px}
-.zd-mode-mobile .results-count{font-size:13px;font-weight:600;color:var(--zd-gray-400)}
-.zd-mode-mobile .results-count span{color:var(--zd-purple-600);font-weight:700}
 
 /* ═══ STACK (vertical scroll-snap feed — Reels-style) ═══ */
 .stack-view{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 16px 80px;position:relative;min-height:0}
@@ -1018,7 +1015,25 @@ a.cf-name:active{text-decoration:underline}
 .cf-detail-btn{display:flex;align-items:center;justify-content:center;gap:4px;padding:3px 0 5px;font:600 11px/1 var(--zd-font);color:var(--accent,var(--zd-gray-600));cursor:pointer;transition:gap .2s}
 .cf-detail-btn:active{gap:8px}
 .cf-detail-btn svg{width:14px;height:14px;transition:transform .2s}
-.stack-counter{text-align:center;padding:4px 0;font-size:12px;font-weight:600;color:var(--zd-gray-400)}
+/* Mobile search counter pill — single sticky element above the snap-scroll feed.
+   Replaces the redundant top "N резултата" + bottom "X / N" pair. */
+.zd-counter-pill-row{display:flex;align-items:center;justify-content:center;padding:4px 14px 12px;background:transparent}
+.zd-counter-pill-row:empty{display:none}
+.zd-counter-pill{display:inline-flex;align-items:baseline;gap:6px;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:500;letter-spacing:-0.05px;font-variant-numeric:tabular-nums;background:#fff;border:1px solid #ece6f4;color:#5b5170}
+.zd-counter-pill.is-filtered{background:#f3edff;border-color:transparent}
+.zd-counter-pill .zdc-pos{color:var(--zd-purple-600);font-weight:700}
+.zd-counter-pill .zdc-of{color:#8c849a}
+.zd-counter-pill .zdc-total{color:#1a1424;font-weight:700}
+.zd-counter-pill .zdc-scope{color:#5b5170}
+/* Quick-chips row — fast toggles that sit between the top bar and applied-chips. */
+.quick-chips{display:flex;flex-wrap:wrap;gap:8px;padding:8px 14px}
+.quick-chips:empty{display:none}
+.qc-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;font:600 13px/1 var(--zd-font);color:var(--zd-gray-800);background:#fff;border:1px solid var(--zd-gray-200);cursor:pointer;transition:transform .12s ease, background .15s, border-color .15s, color .15s}
+@media (hover: hover) and (pointer: fine){.qc-chip:hover{border-color:var(--zd-purple-200)}}
+.qc-chip:active{transform:scale(.97)}
+.qc-chip:focus-visible{outline:2px solid var(--zd-purple-400);outline-offset:2px}
+.qc-chip.is-on{background:var(--zd-purple-50);border-color:var(--zd-purple-400);color:var(--zd-purple-600)}
+.qc-chip svg{flex:0 0 auto}
 
 /* Card back (flippable detail face) */
 .card-back{transform:rotateY(180deg);background:#fff;color:var(--zd-gray-800);border-left:4px solid var(--accent, var(--zd-gray-400));box-shadow:inset 0 0 0 1px var(--card-border, var(--zd-gray-200)), 0 4px 20px rgba(0,0,0,0.06)}
@@ -1036,8 +1051,11 @@ a.cf-name:active{text-decoration:underline}
 .cb-services{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
 .cb-service{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--accent-light, var(--zd-gray-50));color:var(--accent-text, var(--zd-gray-600));border:1px solid var(--card-border, var(--zd-gray-200))}
 .cb-map{width:100%;height:100px;border-radius:12px;background:var(--zd-gray-50);border:1px solid var(--zd-gray-200);display:flex;align-items:center;justify-content:center;gap:6px;color:var(--zd-gray-400);font:600 12px/1 var(--zd-font);overflow:hidden;text-decoration:none}
-.cb-map img{width:100%;height:100%;object-fit:cover}
 .cb-map svg{width:18px;height:18px}
+/* Load-more sentinel for the lazy mobile feed. Zero-height invisible probe
+   that the IntersectionObserver watches; opts out of scroll-snap so it
+   doesn't introduce a stop between cards. */
+.feed-load-sentinel{height:0;margin:0;padding:0;visibility:hidden;scroll-snap-align:none;pointer-events:none}
 .cb-map-fallback{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:100%;color:var(--accent,var(--zd-gray-400));font:600 12px/1 var(--zd-font)}
 .cb-flip-back{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;margin:auto 16px 16px;height:44px;border-radius:22px;background:var(--accent-light, var(--zd-gray-100));border:1px solid var(--card-border, var(--zd-gray-200));font:600 13px/1 var(--zd-font);color:var(--accent-text, var(--zd-gray-800));cursor:pointer;transition:transform 0.4s cubic-bezier(.16, 1, .3, 1);flex-shrink:0}
 .cb-flip-back:active{transform:scale(0.96)}
@@ -1146,7 +1164,7 @@ mark{background:rgba(124,77,255,.15);color:var(--zd-purple-800);border-radius:2p
 .mfb-overlay.open{display:block;opacity:1}
 body.mfb-active .card-wrap{filter:grayscale(1) brightness(0.8);opacity:0.4;transition:filter .35s,opacity .35s;pointer-events:none}
 body.mfb-active .card-wrap.mfb-focus{filter:none;opacity:1;z-index:9997;position:relative;transform:scale(1.02);pointer-events:auto}
-body.mfb-active .top-bar,body.mfb-active .results-info,body.mfb-active .applied-chips{filter:grayscale(1);opacity:0.3;pointer-events:none;transition:filter .35s,opacity .35s}
+body.mfb-active .top-bar,body.mfb-active .zd-counter-pill-row,body.mfb-active .applied-chips,body.mfb-active .quick-chips{filter:grayscale(1);opacity:0.3;pointer-events:none;transition:filter .35s,opacity .35s}
 .mfb-panel{position:fixed;left:12px;right:12px;bottom:12px;background:#fff;z-index:9999;border-radius:20px;box-shadow:0 12px 48px rgba(0,0,0,0.18);display:flex;flex-direction:column;max-height:65vh;overflow-y:auto;opacity:0;transform:translateY(20px);transition:opacity .3s cubic-bezier(.16,1,.3,1),transform .3s cubic-bezier(.16,1,.3,1);pointer-events:none}
 .mfb-panel.open{opacity:1;transform:translateY(0);pointer-events:auto}
 .mfb-header{padding:16px 16px 12px;border-bottom:1px solid var(--zd-gray-200);display:flex;align-items:center;gap:10px;flex-shrink:0}
@@ -1984,6 +2002,10 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
           <label class="toggle-label">Онлайн доставчици</label>
           <label class="toggle-switch"><input type="checkbox" id="online-toggle"><span class="toggle-slider"></span></label>
         </div>
+        <div class="toggle-group">
+          <label class="toggle-label">Само със снимка</label>
+          <label class="toggle-switch"><input type="checkbox" id="withphoto-toggle"><span class="toggle-slider"></span></label>
+        </div>
       </div>
     </div>
     <div class="filter-section">
@@ -2047,11 +2069,16 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
         <button class="filter-btn" onclick="openMobileFilters()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg><span class="filter-badge" id="filterBadge">0</span></button>
       </div>
     </div>
+    <div class="quick-chips" id="quickChips">
+      <button class="qc-chip" id="qcWithPhoto" type="button" aria-pressed="false" onclick="toggleWithPhoto()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>Със снимка</span>
+      </button>
+    </div>
     <div class="applied-chips" id="appliedChips"></div>
-    <div class="results-info"><div class="results-count"><span id="resultCount">0</span> резултата</div></div>
+    <div class="zd-counter-pill-row" id="zdCounterRow"></div>
     <div class="stack-view">
       <div class="stack-area" id="stackArea"></div>
-      <div class="stack-counter" id="stackCounter"></div>
       <!-- v4 coachmark: floats above the active card on first visit -->
       <div class="tutorial-v4 hidden" id="tutorialV4" aria-hidden="true">
         <div class="tut4-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></div>
@@ -2248,7 +2275,7 @@ let data = [];
 let searchTerm = "", cityTerm = "";
 let ageFrom = null, ageTo = null;
 const active = { level: { include: new Set(), exclude: new Set() }, category: { include: new Set(), exclude: new Set() } };
-let sopFilter = null, onlineFilter = false;
+let sopFilter = null, onlineFilter = false, withPhotoFilter = false;
 let selectedCat = null;
 let nearMeActive = false;
 let userLat = null, userLng = null;
@@ -2637,6 +2664,13 @@ function renderPills() {
     p.onclick = () => { onlineFilter = false; $("#online-toggle").checked = false; resetLazyAndRender(); };
     box.appendChild(p);
   }
+  if (withPhotoFilter) {
+    count++;
+    const p = document.createElement("span"); p.className = "active-filter-pill";
+    p.innerHTML = `Със снимка <span class="remove-filter">✕</span>`;
+    p.onclick = () => { withPhotoFilter = false; const t = $("#withphoto-toggle"); if (t) t.checked = false; _syncQuickChips(); resetLazyAndRender(); };
+    box.appendChild(p);
+  }
   Object.entries(active).forEach(([type, { include, exclude }]) => {
     include.forEach(v => { count++; const p = document.createElement("span"); p.className = "active-filter-pill"; p.innerHTML = `${v} <span class="remove-filter">✕</span>`; p.onclick = () => { include.delete(v); updateChipStates(); resetLazyAndRender(); }; box.appendChild(p); });
     exclude.forEach(v => { count++; const p = document.createElement("span"); p.className = "active-filter-pill"; p.innerHTML = `<s>${v}</s> <span class="remove-filter">✕</span>`; p.onclick = () => { exclude.delete(v); updateChipStates(); resetLazyAndRender(); }; box.appendChild(p); });
@@ -2646,10 +2680,12 @@ function renderPills() {
     clear.innerHTML = `Изчисти всички <span class="remove-filter">✕</span>`;
     clear.onclick = () => {
       Object.values(active).forEach(o => { o.include.clear(); o.exclude.clear(); });
-      sopFilter = null; onlineFilter = false;
+      sopFilter = null; onlineFilter = false; withPhotoFilter = false;
       ageFrom = ageTo = null;
       $("#age-from").value = ""; $("#age-to").value = "";
       $("#sop-toggle").checked = false; $("#online-toggle").checked = false;
+      const wpt = $("#withphoto-toggle"); if (wpt) wpt.checked = false;
+      _syncQuickChips();
       updateChipStates(); resetLazyAndRender();
     };
     box.prepend(clear);
@@ -2687,6 +2723,7 @@ const passLevel = d => !(active.level.include.size && !active.level.include.has(
 const passCity = d => !cityTerm || d.city.toLowerCase() === cityTerm;
 const passSop = d => sopFilter === null || d.sop === sopFilter;
 const passOnline = d => !onlineFilter || d.city === "Онлайн";
+const passWithPhoto = d => !withPhotoFilter || (typeof getCardPhoto === 'function' && getCardPhoto(d) !== "");
 
 /* ═══ CARD HTML BUILDER (3D flip card, 5 tiers, desktop) ═══
  * Renders the Rigor card body inside a flip-card outer (.zd-card / .zd-flipper).
@@ -2965,9 +3002,10 @@ function buildCardHTML(d) {
 /* ═══ RENDER ═══ */
 function render() {
   renderPills();
+  _syncQuickChips();
 
   const filtered = data.filter(d =>
-    passSearch(d) && passCity(d) && passLevel(d) && passCat(d) && passAge(d) && passSop(d) && passOnline(d)
+    passSearch(d) && passCity(d) && passLevel(d) && passCat(d) && passAge(d) && passSop(d) && passOnline(d) && passWithPhoto(d)
   );
   updateCityList(filtered);
 
@@ -3133,6 +3171,8 @@ async function init() {
   $("#age-to").addEventListener("input", debounce(e => { ageTo = e.target.value ? +e.target.value : null; resetLazyAndRender(); }, 250));
   $("#sop-toggle").addEventListener("change", e => { sopFilter = e.target.checked ? true : null; resetLazyAndRender(); });
   $("#online-toggle").addEventListener("change", e => { onlineFilter = e.target.checked; resetLazyAndRender(); });
+  const _wpt = $("#withphoto-toggle");
+  if (_wpt) _wpt.addEventListener("change", e => { withPhotoFilter = e.target.checked; _syncQuickChips(); resetLazyAndRender(); });
 
   // Honour URL params so shareable links like ?city=Стара Загора land pre-filtered.
   // Populates both the input value (for user-facing feedback) and the filter state
@@ -3153,68 +3193,89 @@ async function init() {
     }
   } catch (_) {}
 
+  // ─── Stale-while-revalidate ───
+  // F5 used to re-fetch every published business before painting anything,
+  // costing ~1s TTFB + ~120KB even with gzip. Now: render from localStorage
+  // immediately if present (paint in <50ms), then fetch fresh in the
+  // background and re-render unconditionally so DOM never lags `data`.
+  // Empty fresh responses (auth issue, RLS, table briefly empty) do NOT
+  // overwrite the cache — that would poison localStorage for the visitor.
+  const cacheKey = 'companyData_v4';
+  const SELECT_COLS = 'id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,visible_categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups,google_rating,google_review_count';
+  let cacheRendered = false;
+
   try {
-    const cacheKey = 'companyData_v4';
-
-    // 1. Try Supabase if available (network path)
-    if (window.ZdSupabase) {
-      const { data: rows, error } = await window.ZdSupabase
-        .from('businesses')
-        .select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,visible_categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups,google_rating,google_review_count')
-        .eq('published', true);
-      if (error) throw error;
-      data = (rows || []).map(_aliasBusinessRow);
-      try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch (e) {}
-      render();
-      // Fire-and-forget: load real ratings, patch the rendered cards in-place when ready
-      loadAllCardRatings();
-      if (typeof showTutorial === 'function') showTutorial();
-      return;
-    }
-
-    // 2. ZdSupabase not yet loaded — wait for it briefly, then retry
-    if (window.ZdSupabaseConfig && !window.ZdSupabase) {
-      await new Promise(resolve => {
-        const t = setTimeout(resolve, 1500);
-        window.addEventListener('zd-supabase-ready', () => { clearTimeout(t); resolve(); }, { once: true });
-      });
-      if (window.ZdSupabase) {
-        const { data: rows, error } = await window.ZdSupabase
-          .from('businesses')
-          .select('id,name,slug,description,city,address,phone,email,website,logo,tier,sop,published,categories,visible_categories,services,cta_label_1,cta_url_1,cta_label_2,cta_url_2,cta_label,cta_url,gallery_urls,working_hours,facebook,instagram,tiktok,lat,lng,age_groups,google_rating,google_review_count')
-          .eq('published', true);
-        if (!error) {
-          data = (rows || []).map(_aliasBusinessRow);
-          try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch (e) {}
-          render();
-          loadAllCardRatings();
-          if (typeof showTutorial === 'function') showTutorial();
-          return;
-        }
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const arr = JSON.parse(cached);
+      if (Array.isArray(arr) && arr.length) {
+        data = arr;
+        render();
+        cacheRendered = true;
+        if (typeof showTutorial === 'function') showTutorial();
       }
     }
+  } catch (_) {
+    // Corrupt cache — drop it so next visit doesn't repeat the throw.
+    try { localStorage.removeItem(cacheKey); } catch (e) {}
+  }
 
-    // 3. Offline / Supabase unreachable → fall back to localStorage cache
-    const cachedData = localStorage.getItem(cacheKey);
-    if (cachedData) {
-      data = JSON.parse(cachedData);
+  // Background revalidate. Use .range(0, 9999) to bypass the PostgREST 1000-
+  // row default cap — the table has >1000 published rows and the old query
+  // silently dropped the tail.
+  async function _fetchFresh() {
+    if (!window.ZdSupabase && window.ZdSupabaseConfig) {
+      await new Promise(resolve => {
+        const t = setTimeout(resolve, 2500);
+        window.addEventListener('zd-supabase-ready', () => { clearTimeout(t); resolve(); }, { once: true });
+        // Race-window safety: if ZdSupabase initialised between the outer
+        // null-check and this listener attach, resolve immediately rather
+        // than wait the full 2.5s.
+        if (window.ZdSupabase) { clearTimeout(t); resolve(); }
+      });
+    }
+    if (!window.ZdSupabase) return null;
+    const { data: rows, error } = await window.ZdSupabase
+      .from('businesses')
+      .select(SELECT_COLS)
+      .eq('published', true)
+      .range(0, 9999);
+    if (error) throw error;
+    return (rows || []).map(_aliasBusinessRow);
+  }
+
+  try {
+    const fresh = await _fetchFresh();
+    if (fresh) {
+      data = fresh;
+      // Only persist non-empty results — an empty fresh array (auth/RLS/
+      // transient zero-result) should not overwrite a good cache.
+      if (fresh.length > 0) {
+        try { localStorage.setItem(cacheKey, JSON.stringify(fresh)); } catch (_) {}
+      }
+      // Always re-render: row-count-equal-but-content-changed (edited
+      // descriptions, new photos, tier upgrades) would otherwise leave the
+      // DOM diverged from `data`.
       render();
-      if (typeof showTutorial === 'function') showTutorial();
+      loadAllCardRatings();
+      if (!cacheRendered && typeof showTutorial === 'function') showTutorial();
       return;
     }
+  } catch (err) {
+    console.error('Data load error:', err);
+    // If the cache already painted, leave it on screen — better than an error.
+    if (cacheRendered) return;
+  }
 
-    // 4. Nothing cached → render empty state
+  // No cache and no network: empty state.
+  if (!cacheRendered) {
     data = [];
     render();
     if (typeof showTutorial === 'function') showTutorial();
-  } catch (err) {
-    console.error("Data load error:", err);
-    // Final fallback: try localStorage cache before giving up
-    try {
-      const cached = localStorage.getItem('companyData_v4');
-      if (cached) { data = JSON.parse(cached); render(); return; }
-    } catch (e) {}
-    $("#cardStack").innerHTML = `<p class="loading-msg">Грешка при зареждане: ${err.message}</p>`;
+    const stack = $("#cardStack");
+    if (stack && !data.length) {
+      stack.innerHTML = '<p class="loading-msg">Няма достъп до данни. Провери връзката и опитай отново.</p>';
+    }
   }
 }
 
@@ -4061,6 +4122,13 @@ function fbSubmit() {
 
 /* Mobile-only state */
 let stackIdx = 0;
+// Lazy-load batch for the mobile feed. The feed used to render every card
+// (1400+) into the DOM on every render, which dominated mobile main-thread
+// time. Now we render the first MOBILE_BATCH and append more as the user
+// scrolls near the bottom — same idea as desktop's _visibleCount.
+const MOBILE_BATCH = 20;
+let _mobileVisible = MOBILE_BATCH;
+var _mobileLoadMoreObserver = null;
 let pendingF = null;
 const tierColMap = {"Премиум":"d4af37","Доверен":"7c4dff","Проверен":"2e994d","Стандартен":"999","Безплатен":"bbb"};
 const TC_MAP = {"Премиум":"premium","Доверен":"elite","Проверен":"verified","Стандартен":"standard","Безплатен":"free"};
@@ -4068,150 +4136,90 @@ const TC_MAP = {"Премиум":"premium","Доверен":"elite","Прове�
 function _initials(n){return n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()}
 function _hl(t){const s=ZdSec.escapeHtml(t);if(!searchTerm||!t)return s;const e=searchTerm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return s.replace(new RegExp(`(${e})`,'gi'),'<mark>$1</mark>')}
 
-function _getFilteredM(){return data.filter(d=>passSearch(d)&&passCity(d)&&passLevel(d)&&passCat(d)&&passAge(d)&&passSop(d)&&passOnline(d))}
+function _getFilteredM(){return data.filter(d=>passSearch(d)&&passCity(d)&&passLevel(d)&&passCat(d)&&passAge(d)&&passSop(d)&&passOnline(d)&&passWithPhoto(d))}
 function _getSortedM(l){return[...l].sort((a,b)=>getTierScore(b)-getTierScore(a)||a.name.localeCompare(b.name,'bg'))}
 
-function _buildSocialsM(d){
-  const allowed = allowedIconsByTier[d.tier]||[];
-  // Build the regular social icons (skip 'maps' — we always append a custom Google Maps pin at the end)
-  let html = allowed.filter(k=>k!=='maps'&&d[k]&&d[k]!=='#').map(k=>{
-    const href=k==='phone'?'tel:'+d[k]:k==='email'?'mailto:'+d[k]:ZdSec.sanitizeUrl(d[k]);
-    return`<a class="cf-social" href="${href}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
-  }).join('');
-  // Always append Google Maps pin (no embedded map on the card)
-  if (d.tier !== 'Безплатен') {
-    const mapsUrl = (d.lat && d.lng)
-      ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
-      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address||d.name)+' '+(d.city||''))}`;
-    html += `<a class="cf-social cf-social--maps" href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Google Maps" style="background:transparent;border:none;padding:0"><svg viewBox="0 0 64 64" width="15" height="15"><path d="M32 2C20.4 2 11 11.4 11 23c0 17.2 19 37.4 20 38.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4C53 11.4 43.6 2 32 2z" fill="#34A853"/><path d="M32 2v30l21-9C53 11.4 43.6 2 32 2z" fill="#4285F4"/><path d="M11 23c0-9 5.4-16.7 13.1-20.1L32 32 12 32.5C11.4 29.5 11 26.3 11 23z" fill="#FBBC05"/><path d="M12 32.5L32 32l-8 29c-7-7.7-13-16.2-13-16.2S11.5 34 12 32.5z" fill="#EA4335"/><path d="M32 32l-8 29c3 3.2 7 9.4 8 10.4.6.6 1.4.6 2 0 1-1 20-21.2 20-38.4 0-1-.1-2-.1-3L32 32z" fill="#34A853"/><circle cx="32" cy="23" r="8" fill="#fff"/></svg></a>`;
-  }
-  return html;
-}
-function _buildCTAsM(d){
-  // Премиум gets the same dual-CTA layout as Доверен (the rare top tier)
-  if(d.tier==="Премиум"||d.tier==="Доверен")return`<div class="cf-ctas"><a class="cf-cta cf-cta--secondary" href="${ZdSec.sanitizeUrl(d.ctaUrl2)||'listing.html?id='+d.id}" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.ctaLabel2||'Профил')}</a><a class="cf-cta cf-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl1||'#')}" target="_blank" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.ctaLabel1||'Запази час')}</a></div>`;
-  if(d.tier==="Проверен"&&d.ctaLabel)return`<div class="cf-ctas single"><a class="cf-cta cf-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl||'#')}" target="_blank" onclick="event.stopPropagation()">${ZdSec.escapeHtml(d.ctaLabel)}</a></div>`;
-  return'';
-}
-function _buildBackM(d){
-  let det='';
-  if(d.description)det+=`<div class="cb-glass"><div class="cb-section-label">Описание</div><div class="cb-desc">${ZdSec.escapeHtml(d.description)}</div></div>`;
-  if(d.ageGroups&&d.ageGroups.length)det+=`<div class="cb-glass"><div class="cb-detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div><div class="cb-section-label">Възраст</div><div class="cb-detail-text">${d.ageGroups.map(a=>ZdSec.escapeHtml(a)).join(', ')}</div></div></div></div>`;
-  if(d.address||d.city)det+=`<div class="cb-glass"><div class="cb-detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><div><div class="cb-section-label">Адрес</div><div class="cb-detail-text">${ZdSec.escapeHtml(d.address||d.city)}</div></div></div></div>`;
-  if(d.services&&d.services.length)det+=`<div class="cb-glass"><div class="cb-section-label">Всички услуги</div><div class="cb-services">${d.services.map(s=>`<span class="cb-service">${ZdSec.escapeHtml(s)}</span>`).join('')}</div></div>`;
-  const _mapsUrl = (d.lat && d.lng)
-    ? `https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}`
-    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.address||d.name)+' '+(d.city||''))}`;
-  const _tileLat = d.lat || 42.6977, _tileLng = d.lng || 23.3219;
-  det+=`<a class="cb-map cb-map--live" href="${_mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><img src="https://maps.googleapis.com/maps/api/staticmap?center=${_tileLat},${_tileLng}&zoom=14&size=400x120&scale=2&maptype=roadmap&style=feature:all|saturation:-30&markers=color:red|${_tileLat},${_tileLng}&key=" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt="Карта"><div class="cb-map-fallback" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Отвори в Google Maps</div></a>`;
-  return`<div class="cb-name">${ZdSec.escapeHtml(d.name)}</div><div class="cb-city">${ZdSec.escapeHtml(d.city)}</div><div class="cb-line"></div><div class="cb-body">${det}</div><div class="cb-flip-back" onclick="event.stopPropagation();flipBack(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6"/><path d="M2.67 12A10 10 0 1 0 4.09 5.41L2.5 8"/></svg>Обратно</div>`;
-}
-
-function buildStackCard(d){
-  const tc=TC_MAP[d.tier]||'free',col=tierColMap[d.tier]||'999';
-  const isFree=d.tier==="Безплатен";
-  // Премиум gets the back panel like Доверен/Проверен (the rare top tier)
-  const isExpandable=d.tier==="Премиум"||d.tier==="Доверен"||d.tier==="Проверен";
-  const auditScore=getTierScore(d);
-  const tags=(d.services||[]).slice(0,tagLimits[d.tier]||1);
-  // Dual rating: Google (real) + Zadeteto (hearts — real if in cache, else hash mock)
-  const _googleM = getGoogleRating(d);
-  const _zadM    = getZadetetoRating(d);
-  const nudge=(!_zadM.real&&_zadM.count<10)?`<a class="cf-nudge" href="#" onclick="event.stopPropagation();event.preventDefault();openAuthModal(event)">Оцени!</a>`:'';
-  const _googleRowM = _googleM
-    ? `<div class="cf-hero-rating zd-rating zd-rating-google" title="Google Maps">${ratingIconsHTML(_googleM.avg, 'star')}<span class="num">${_googleM.avg}</span><span class="cnt">/ ${_googleM.count}</span></div>`
-    : '';
-  const _zadRowM = `<div class="cf-hero-rating zd-rating zd-rating-zadeteto" title="Оценки от родители в ZaDeteto">${ratingIconsHTML(_zadM.avg, 'heart')}<span class="num">${_zadM.avg}</span><span class="cnt">/ ${_zadM.count}${nudge}</span></div>`;
-  // ZD on top, Google below
-  const _ratingStackM = `<div class="cf-rating-stack">${_zadRowM}${_googleRowM}</div>`;
-  let badges=`<span class="cf-badge cf-badge--tier">${ZdSec.escapeHtml(d.tier)}</span>`;
-  if(d.sop)badges+=`<span class="cf-badge cf-badge--sop">СОП</span>`;
-  if(d.city==="Онлайн")badges+=`<span class="cf-badge cf-badge--online">Online</span>`;
-  const scoreHTML=`<div class="cf-score"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${auditScore}</div>`;
-  // Bookmark save button — sits to the right of the score in a flex cluster.
-  // Initial filled state mirrors likedIds so a previously-saved card opens
-  // already-saved. Toggle handler is toggleSave (defined below renderStack).
-  const _isSaved = (typeof likedIds !== 'undefined' && likedIds.has(d.id));
-  const _saveLabel = _isSaved ? 'Премахни от запазени' : 'Запази';
-  const bookmarkHTML = `<button type="button" class="cf-bookmark${_isSaved?' is-saved':''}" data-id="${ZdSec.escapeHtml(String(d.id))}" aria-pressed="${_isSaved}" aria-label="${_saveLabel}" title="${_saveLabel}" onclick="event.stopPropagation();toggleSave('${ZdSec.escapeHtml(String(d.id))}',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>`;
-  const heroActionsHTML = `<div class="cf-hero-actions">${scoreHTML}${bookmarkHTML}</div>`;
-  const nameHTML=isFree?`<div class="cf-name">${_hl(d.name)}</div>`:`<a class="cf-name" href="listing.html?id=${d.id}" onclick="event.stopPropagation()">${_hl(d.name)}</a>`;
-  const heroImg=getCardPhoto(d);
-  const heroHTML = heroImg
-    ? `<img src="${heroImg}" alt="${ZdSec.escapeHtml(d.name)}" loading="lazy">`
-    : `<div class="cf-hero-empty"></div>`;
-  const hasRealLogo=d.logo&&d.logo!=='#'&&!d.logo.includes('placehold.co');
-  const logoHTML=hasRealLogo?`<div class="cf-logo"><img src="${ZdSec.escapeHtml(d.logo)}" alt="" loading="lazy"></div>`:'';
-  const _galleryJson=(Array.isArray(d.gallery_urls)&&d.gallery_urls.length>1)?ZdSec.escapeHtml(JSON.stringify(d.gallery_urls)):'';
-  return`<div class="card-wrap" data-id="${d.id}" data-name="${ZdSec.escapeHtml(d.name)}" data-logo="${ZdSec.escapeHtml(heroImg)}"${_galleryJson?` data-gallery="${_galleryJson}"`:``}><div class="card-inner">
-  <div class="card-front tier-${tc}">
-    ${heroActionsHTML}
-    ${logoHTML}
-    <div class="cf-hero">
-      ${heroHTML}
-      <div class="cf-hero-overlay">
-        ${tags.length?`<div class="cf-hero-tags">${tags.map(t=>`<span class="cf-tag">${_hl(t)}</span>`).join('')}</div>`:''}
-        <div class="cf-hero-top">
-          ${nameHTML}
-          ${_ratingStackM}
-        </div>
-        <div class="cf-hero-bottom"><span class="cf-hero-city">${_hl(d.city)}</span>${badges}</div>
-      </div>
-    </div>
-    <div class="cf-content-tray">
-    ${isExpandable && d.description ? (() => {
-      const desc = d.description.trim();
-      let tagline = desc.length <= 45 ? desc : desc.slice(0, desc.lastIndexOf(' ', 44) || 44).trim() + '…';
-      let oneliner = '';
-      if (desc.length > 45) {
-        const rest = desc.slice(tagline.length - (tagline.endsWith('…') ? 1 : 0)).trim();
-        oneliner = rest.length <= 150 ? rest : rest.slice(0, rest.lastIndexOf(' ', 149) || 149).trim() + '…';
-      }
-      return `<div class="cf-tagline-block"><div class="cf-tagline">${ZdSec.escapeHtml(tagline)}</div>${oneliner ? `<div class="cf-oneliner">${ZdSec.escapeHtml(oneliner)}</div>` : ''}</div>`;
-    })() : ''}
-    <div class="cf-meta">
-      <div class="cf-socials">${_buildSocialsM(d)}</div>
-    </div>
-    ${_buildCTAsM(d)}
-    ${isFree
-      ? `<div class="cf-detail-btn" style="visibility:hidden" aria-hidden="true"><span>Детайли</span></div>`
-      : `<div class="cf-detail-btn" onclick="event.stopPropagation();flipCardMobile(this)"><span>Детайли</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></div>`}
-    </div>
-  </div>
-  <div class="card-back tier-${tc}">${_buildBackM(d)}</div>
-  </div></div>`;
-}
+// Legacy `cf-*` mobile card builder + helpers (`_buildSocialsM`, `_buildCTAsM`,
+// `_buildBackM`, `buildStackCard`) were removed in 2026-05 — the mobile feed
+// has rendered Rigor cards via `buildCardHTML` (see `renderStack` below) for
+// some time, so the cf-* path was unreachable. Removing them shrinks initial
+// JS parse and eliminates a confusing dead path.
 
 function renderMobile(){
   const filtered = _getFilteredM(), sorted = _getSortedM(filtered);
   const act = sorted.filter(d => !dismissedIds.has(d.id));
-  const rc = document.getElementById('resultCount'); if (rc) rc.textContent = act.length;
-  updateBadgeMobile(); updateSavedBarMobile(); renderAppliedMobile(); renderStack(act);
+  _mobileTotal = act.length;
+  updateBadgeMobile(); updateSavedBarMobile(); renderAppliedMobile(); _syncQuickChips(); renderStack(act);
 }
+/* Sync the quick-chip toggle (mobile) AND the desktop sidebar checkbox with
+   the underlying withPhotoFilter state. Single sync point for both surfaces. */
+function _syncQuickChips(){
+  const btn = document.getElementById('qcWithPhoto');
+  if (btn) {
+    btn.classList.toggle('is-on', !!withPhotoFilter);
+    btn.setAttribute('aria-pressed', String(!!withPhotoFilter));
+  }
+  const dt = document.getElementById('withphoto-toggle');
+  if (dt) dt.checked = !!withPhotoFilter;
+}
+function toggleWithPhoto(){
+  withPhotoFilter = !withPhotoFilter;
+  _syncQuickChips();
+  resetLazyAndRender();
+}
+/* True if any mobile filter is engaged. Mirrors the badge counter. */
+function _isFilterActiveMobile(){
+  return (active.category.include.size + active.category.exclude.size
+       + active.level.include.size + active.level.exclude.size) > 0
+    || !!sopFilter || !!onlineFilter || !!withPhotoFilter || ageFrom !== null || ageTo !== null || !!cityTerm;
+}
+var _mobileTotal = 0;
+/* Render the "Показан X от Y [в Z]" pill. idx is 0-based. */
+function _renderCounterPill(idx){
+  const row = document.getElementById('zdCounterRow'); if (!row) return;
+  const total = _mobileTotal;
+  if (!total) { row.innerHTML = ''; return; }
+  const pos = Math.min(idx + 1, total);
+  const filterActive = _isFilterActiveMobile();
+  const scope = cityTerm ? `<span class="zdc-scope">в ${ZdSec.escapeHtml(cityTerm)}</span>` : '';
+  row.innerHTML =
+    `<div class="zd-counter-pill${filterActive ? ' is-filtered' : ''}">`
+    + `<span>Показан</span>`
+    + `<span class="zdc-pos">${pos.toLocaleString('bg')}</span>`
+    + `<span class="zdc-of">от</span>`
+    + `<span class="zdc-total">${total.toLocaleString('bg')}</span>`
+    + scope
+    + `</div>`;
+}
+function _buildMobileWrapHTML(c) {
+  const galleryAttr = (Array.isArray(c.gallery_urls) && c.gallery_urls.length > 1)
+    ? ` data-gallery="${ZdSec.escapeHtml(JSON.stringify(c.gallery_urls))}"`
+    : '';
+  return `<div class="card-wrap" data-id="${ZdSec.escapeHtml(String(c.id))}"${galleryAttr}>${buildCardHTML(c)}</div>`;
+}
+
 function renderStack(cards){
   const area = document.getElementById('stackArea'); if (!area) return;
-  const counter = document.getElementById('stackCounter');
+  _renderCounterPill(0);
   if (!cards.length) {
     area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`;
-    if (counter) counter.textContent = '';
     return;
   }
   // Fresh card list = always start from the top. The observer will resync
   // stackIdx as the user scrolls, but re-renders (filter change, search) reset.
   stackIdx = 0;
-  // Render every card as a sibling so the user can scroll through the feed.
-  // Each .card-wrap is a scroll-snap target (CSS scroll-snap-align:start). The
-  // wrapper hosts the Rigor card (buildCardHTML) so mobile + desktop share the
-  // same visual structure (tier pill on top, white tray with structured info
-  // below the photo, partner-customised CTAs in the footer).
-  area.innerHTML = cards.map(c => {
-    const galleryAttr = (Array.isArray(c.gallery_urls) && c.gallery_urls.length > 1)
-      ? ` data-gallery="${ZdSec.escapeHtml(JSON.stringify(c.gallery_urls))}"`
-      : '';
-    return `<div class="card-wrap" data-id="${ZdSec.escapeHtml(String(c.id))}"${galleryAttr}>${buildCardHTML(c)}</div>`;
-  }).join('');
+  _mobileVisible = MOBILE_BATCH;
+  // Slice to the first batch only — appending the rest as the user scrolls
+  // keeps initial paint fast even with 1000+ filtered results. Each
+  // .card-wrap is a scroll-snap target; the sentinel sits past the last
+  // visible card so the observer fires before the user reaches the end.
+  const slice = cards.slice(0, _mobileVisible);
+  let html = slice.map(_buildMobileWrapHTML).join('');
+  if (_mobileVisible < cards.length) {
+    html += '<div id="mobileLoadMoreSentinel" class="feed-load-sentinel" aria-hidden="true"></div>';
+  }
+  area.innerHTML = html;
   area.scrollTop = 0;
-  if (counter) counter.textContent = `1 / ${cards.length}`;
   // Pre-mark the first card active so reveal animations fire immediately, then
   // hand off to the IntersectionObserver for subsequent scroll-driven changes.
   const wraps = area.querySelectorAll('.card-wrap');
@@ -4219,7 +4227,61 @@ function renderStack(cards){
     wraps[0].classList.add('is-active');
     _startGalleryRotation(wraps[0]);
   }
-  _bindFeedObserver(area, cards);
+  _bindFeedObserver(area);
+  _bindMobileLoadMoreSentinel(area, cards);
+}
+
+/* Append the next MOBILE_BATCH of cards before the sentinel and observe ONLY
+   the freshly-inserted wraps (no full observer rebuild). Append-not-replace:
+   replacing innerHTML would yank the user's scroll position back to card 0
+   every time the sentinel fired. */
+function _appendNextMobileBatch(area, cards) {
+  const sentinel = document.getElementById('mobileLoadMoreSentinel');
+  if (!sentinel) return;
+  const start = _mobileVisible;
+  const end = Math.min(_mobileVisible + MOBILE_BATCH, cards.length);
+  if (end <= start) return;
+  const html = cards.slice(start, end).map(_buildMobileWrapHTML).join('');
+  // Snapshot the sibling immediately before the sentinel so we can observe
+  // only the just-added wraps after insertion (querying `.card-wrap` would
+  // also re-observe everything already attached).
+  const beforeAnchor = sentinel.previousElementSibling;
+  sentinel.insertAdjacentHTML('beforebegin', html);
+  _mobileVisible = end;
+  if (_feedObserver) {
+    let n = beforeAnchor ? beforeAnchor.nextElementSibling : area.firstElementChild;
+    while (n && n !== sentinel) {
+      if (n.classList && n.classList.contains('card-wrap')) _feedObserver.observe(n);
+      n = n.nextElementSibling;
+    }
+  }
+  if (_mobileVisible >= cards.length) {
+    sentinel.remove();
+    if (_mobileLoadMoreObserver) {
+      _mobileLoadMoreObserver.disconnect();
+      _mobileLoadMoreObserver = null;
+    }
+  }
+}
+
+function _bindMobileLoadMoreSentinel(area, cards) {
+  if (_mobileLoadMoreObserver) { _mobileLoadMoreObserver.disconnect(); _mobileLoadMoreObserver = null; }
+  if (!('IntersectionObserver' in window)) return;
+  const sentinel = document.getElementById('mobileLoadMoreSentinel');
+  if (!sentinel) return;
+  // rootMargin = 1500px ahead so the next batch is in DOM well before the
+  // user reaches it — covers fast-flick scrolls on tall mobile cards.
+  // The observer fires again on each subsequent intersection-state change
+  // (sentinel exits rootMargin once new cards push it down, then re-enters
+  // when the user scrolls toward it). No recursive rebind needed — the
+  // single observer keeps the sentinel covered until _appendNextMobileBatch
+  // removes it on the final batch and disconnects.
+  _mobileLoadMoreObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) _appendNextMobileBatch(area, cards);
+    });
+  }, { root: area, rootMargin: '1500px 0px' });
+  _mobileLoadMoreObserver.observe(sentinel);
 }
 
 /* Gallery rotation — crossfade through gallery_urls every 5s */
@@ -4242,13 +4304,15 @@ function _startGalleryRotation(wrap) {
 
 /* Scroll-snap feed observer — flips .is-active to whichever card is most visible
    inside .stack-area, restarts gallery rotation, updates the X / N counter.
-   Re-creates the observer on every renderStack so it tracks the current DOM. */
+   The observer persists across batch appends; new wraps are added via
+   `_feedObserver.observe(w)` in `_appendNextMobileBatch` rather than rebuilding
+   the whole observer (the prior pattern caused O(N) churn per batch). The
+   active-card lookup queries the current DOM live so newly-appended wraps
+   participate immediately. */
 var _feedObserver = null;
-function _bindFeedObserver(area, cards) {
+function _bindFeedObserver(area) {
   if (_feedObserver) { _feedObserver.disconnect(); _feedObserver = null; }
   if (!('IntersectionObserver' in window)) return;
-  const wraps = Array.from(area.querySelectorAll('.card-wrap'));
-  const counter = document.getElementById('stackCounter');
   _feedObserver = new IntersectionObserver(entries => {
     // Prefer the highest-ratio entry that crossed 0.6. If a card is taller than
     // the viewport the threshold may never trigger; fall back to any visible
@@ -4259,36 +4323,36 @@ function _bindFeedObserver(area, cards) {
     });
     if (!best) best = entries.find(e => e.isIntersecting) || null;
     if (!best) return;
+    // Live query so freshly-appended wraps from `_appendNextMobileBatch` are
+    // immediately findable — closure-captured arrays would have missed them.
+    const wraps = Array.from(area.querySelectorAll('.card-wrap'));
     const idx = wraps.indexOf(best.target);
     if (idx === -1 || idx === stackIdx) return;
     wraps.forEach(w => w.classList.remove('is-active'));
     best.target.classList.add('is-active');
     stackIdx = idx;
-    if (counter) counter.textContent = `${idx + 1} / ${cards.length}`;
+    _renderCounterPill(idx);
     _startGalleryRotation(best.target);
   }, { root: area, threshold: [0.6] });
-  wraps.forEach(w => _feedObserver.observe(w));
-  _bindHorizontalSwipe(area, wraps, cards);
+  area.querySelectorAll('.card-wrap').forEach(w => _feedObserver.observe(w));
+  _bindHorizontalSwipe(area);
 }
 
 /* Horizontal swipe = same as vertical scroll: advance to next/prev card. Lets
-   users navigate the feed left/right too, not only up/down. Listeners are
-   attached fresh on every renderStack via re-binding (the observer rebind
-   already happens) — we store handlers on the area element so we can detach
-   on next bind without leaking. Passive listeners (no preventDefault); the
-   horizontal axis isn't bound to native scroll on a y-mandatory snap container,
-   so we don't need to block default. */
-function _bindHorizontalSwipe(area, wraps, cards) {
+   users navigate the feed left/right too, not only up/down. Bound once per
+   renderStack and queries wraps lazily inside the swipe-end handler so cards
+   appended after the initial bind are still reachable. Listeners are stored
+   on the area element so we can detach cleanly on next bind. Passive
+   listeners (no preventDefault); the horizontal axis isn't bound to native
+   scroll on a y-mandatory snap container, so we don't need to block default. */
+function _bindHorizontalSwipe(area) {
   if (!area) return;
-  // Detach prior listeners FIRST, even on an empty re-render, so the previous
-  // closure (with stale wraps/cards) doesn't keep firing.
   if (area._swipeBound) {
     area.removeEventListener('touchstart', area._swipeStart);
     area.removeEventListener('touchend', area._swipeEnd);
     area.removeEventListener('touchcancel', area._swipeCancel);
     area._swipeBound = false;
   }
-  if (!wraps || !wraps.length) return;
   let startX = 0, startY = 0, startTime = 0, swiping = false;
   area._swipeStart = (e) => {
     if (e.touches.length !== 1) { swiping = false; return; }
@@ -4310,7 +4374,9 @@ function _bindHorizontalSwipe(area, wraps, cards) {
     if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5 || dt > 600) return;
     const dir = dx < 0 ? 1 : -1; // swipe left → next card; swipe right → prev card
     const target = stackIdx + dir;
-    if (target < 0 || target >= cards.length) return;
+    // Lazy lookup so appended wraps are reachable without re-binding.
+    const wraps = area.querySelectorAll('.card-wrap');
+    if (target < 0 || target >= wraps.length) return;
     const next = wraps[target]; if (!next) return;
     const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     next.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
@@ -4366,8 +4432,9 @@ function toggleSave(id, btnEl){
   }
 }
 
-function flipCardMobile(btn){ btn.closest('.card-inner').classList.add('flipped'); }
-function flipBack(btn){ btn.closest('.card-inner').classList.remove('flipped'); }
+// `flipCardMobile` / `flipBack` were the cf-* path's flip handlers. Removed
+// alongside `buildStackCard` — Rigor cards do their own flip via
+// data-flip-card="true" + data-action="flip".
 
 function updateSavedBarMobile(){
   const bar = document.getElementById('savedBarMobile'), av = document.getElementById('savedAvatarsMobile'), ct = document.getElementById('savedCountMobile');
@@ -4378,7 +4445,7 @@ function updateSavedBarMobile(){
 }
 function updateBadgeMobile(){
   let c = active.category.include.size + active.category.exclude.size + active.level.include.size + active.level.exclude.size;
-  if (sopFilter) c++; if (onlineFilter) c++; if (ageFrom !== null || ageTo !== null) c++; if (cityTerm) c++;
+  if (sopFilter) c++; if (onlineFilter) c++; if (withPhotoFilter) c++; if (ageFrom !== null || ageTo !== null) c++; if (cityTerm) c++;
   const b = document.getElementById('filterBadge'); if (b) { b.textContent = c; b.classList.toggle('visible', c > 0); }
 }
 function renderAppliedMobile(){
@@ -4390,6 +4457,7 @@ function renderAppliedMobile(){
   active.level.include.forEach(v => { h += `<div class="ap-chip" onclick="active.level.include.delete('${v}');render()">${v} <span class="x">✕</span></div>`; });
   if (sopFilter) h += `<div class="ap-chip" onclick="sopFilter=null;render()">СОП <span class="x">✕</span></div>`;
   if (onlineFilter) h += `<div class="ap-chip" onclick="onlineFilter=false;render()">Онлайн <span class="x">✕</span></div>`;
+  if (withPhotoFilter) h += `<div class="ap-chip" onclick="withPhotoFilter=false;render()">📷 Със снимка <span class="x">✕</span></div>`;
   w.innerHTML = h;
 }
 

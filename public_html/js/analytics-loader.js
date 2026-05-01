@@ -175,16 +175,61 @@
     }
   }
 
-  /* ─────────────── Init ─────────────── */
-  // 1. Try immediately (in case ZdConsent is already available)
-  if (window.ZdConsent) {
-    _loadIfConsented();
-  } else {
-    // ZdConsent isn't ready yet (cookie-banner.js hasn't run). Wait briefly.
-    document.addEventListener('DOMContentLoaded', _loadIfConsented);
+  /* Defer non-essential tracker loads off the critical path. The Consent
+   * Mode v2 default at the top of this IIFE has already run synchronously,
+   * so Google has its denied "ping" baseline before gtag.js arrives. The
+   * heavy injects (Contentsquare, fbevents, gtag.js) and any chained loads
+   * those scripts trigger (Meta Pixel pulls Google Maps JS for Advanced
+   * Matching) are pushed onto requestIdleCallback so they don't compete
+   * with the search page's first paint. Safari falls back to a 1.5s
+   * timeout.
+   *
+   * Consent-change events (banner accept / revoke) fire the loader
+   * immediately — those are user-driven and shouldn't feel delayed. */
+  function _scheduleIdle(fn) {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(fn, { timeout: 4000 });
+    } else {
+      setTimeout(fn, 1500);
+    }
   }
 
-  // 2. React to consent changes from the banner UI
+  /* For returning visitors who already accepted analytics, the stored
+   * consent is known synchronously from localStorage via ZdConsent. Apply it
+   * to the Consent Mode dataLayer immediately, BEFORE deferring gtag.js load.
+   * Otherwise the 2000ms wait_for_update window (set in the synchronous
+   * 'default' call above) can expire before the deferred gtag.js loads —
+   * Google then sends the first pageview ping in 'denied' state and modelled
+   * conversions never get the chance to apply the user's actual choice.
+   * Marketing flag handled the same way for completeness. */
+  function _applyStoredConsentToDataLayer() {
+    var c = window.ZdConsent && window.ZdConsent.get && window.ZdConsent.get();
+    if (!c) return;
+    var update = {};
+    if (c.analytics) update.analytics_storage = 'granted';
+    if (c.marketing) {
+      update.ad_storage = 'granted';
+      update.ad_user_data = 'granted';
+      update.ad_personalization = 'granted';
+    }
+    if (Object.keys(update).length) window.gtag('consent', 'update', update);
+  }
+
+  /* ─────────────── Init ─────────────── */
+  // 1. Schedule the initial consented-tool load for browser idle. Heavy
+  //    third-party JS waits until the page is interactive.
+  if (window.ZdConsent) {
+    _applyStoredConsentToDataLayer();
+    _scheduleIdle(_loadIfConsented);
+  } else {
+    document.addEventListener('DOMContentLoaded', function () {
+      _applyStoredConsentToDataLayer();
+      _scheduleIdle(_loadIfConsented);
+    });
+  }
+
+  // 2. React to consent changes from the banner UI — no defer; user just
+  //    clicked Accept/Revoke and should see the effect immediately.
   window.addEventListener('zd-consent-change', function (e) {
     _loadIfConsented();
   });
