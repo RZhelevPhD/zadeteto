@@ -1,32 +1,36 @@
 /* === ZaDeteto Analytics Loader ===
  *
  * Single point of integration for all third-party analytics + session-replay
- * tools. Loads each tool ONLY after the visitor has explicitly opted in via
- * the cookie banner.
+ * + advertising pixel tools. Loads each tool ONLY after the visitor has
+ * explicitly opted in via the cookie banner.
  *
  * Currently wired:
  *   - Contentsquare (UXA) — session replay + heatmaps + funnel analytics
  *     Gated on:  ZdConsent.has('analytics')
  *     Privacy:   form fields auto-masked at the source via data-cs-mask
  *
- * Easy to extend later:
- *   - Umami / Plausible / Cloudflare Web Analytics — add in same pattern
- *     by wiring _loadIfConsented() to fire their respective script tags
+ *   - Meta Pixel (Facebook + Instagram remarketing)
+ *     Gated on:  ZdConsent.has('marketing')
+ *     On revoke: fires fbq('consent','revoke') so Meta stops collection mid-session
+ *     Cookies:   _fbp (and _fbc when CAPI is later wired) — already in
+ *                cookie-banner.js COOKIE_MAP under 'marketing'
  *
- * Architecture:
- *   1. On page load, check current consent via ZdConsent.has('analytics')
- *   2. If true → inject the third-party script tag asynchronously
- *   3. If false → do nothing, sit and wait
- *   4. Listen for the 'zd-consent-change' event from cookie-banner.js so
- *      the moment a user clicks "Accept" the script loads without a reload
- *   5. Idempotent — once a script is loaded, never load it twice
+ * Pending (waiting on IDs from user):
+ *   - Google Tag (GA4 -> analytics, Google Ads -> marketing)
+ *   - TikTok Pixel (-> marketing)
  *
- * Why a separate file (not inline in each page):
- *   - Single source of truth for analytics integrations
- *   - Adding/removing a tool is a 1-line edit, not a 12-page sweep
- *   - Easier to audit for GDPR compliance reviews
+ * ─── ID config (public, not secrets) ─────────────────────────────────────
+ * These IDs are intentionally embedded in client-side JS. Browsers expose
+ * them in network requests by design. NOT for .env. See memory file
+ * project_zadeteto_pixel_ids.md for context.
  */
 (function () {
+  /* ─── IDs ─── */
+  var META_PIXEL_ID    = '1291940649013805';
+  var GA4_ID           = null;  // pending: 'G-XXXXXXX'
+  var GOOGLE_ADS_ID    = null;  // pending: 'AW-XXXXXXX'
+  var TIKTOK_PIXEL_ID  = null;  // pending: 'CXXXXXXXX...'
+
   var _loaded = {}; // map of tool names → boolean
 
   function _injectScript(src, attrs) {
@@ -48,20 +52,68 @@
     console.info('[analytics] Contentsquare loaded (consent: analytics=true)');
   }
 
+  /* ─────────────── Meta Pixel (Facebook + Instagram) ─────────────── */
+  function _loadMetaPixel() {
+    if (_loaded.metaPixel) return;
+    if (!META_PIXEL_ID) return;
+    _loaded.metaPixel = true;
+
+    // Inline Meta bootstrap (per official Meta Pixel snippet, minus the auto
+    // PageView call so we control event firing order).
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return;
+      n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = !0;
+      n.version = '2.0';
+      n.queue = [];
+      t = b.createElement(e);
+      t.async = !0;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+
+    window.fbq('init', META_PIXEL_ID);
+    // Explicit Meta Consent Mode signal so server-side knows this load is opted-in.
+    window.fbq('consent', 'grant');
+    window.fbq('track', 'PageView');
+    _revoked = false;
+    console.info('[analytics] Meta Pixel loaded (consent: marketing=true)');
+  }
+
+  var _revoked = false;
+  function _revokeMetaPixel() {
+    if (!_loaded.metaPixel || _revoked) return;
+    if (typeof window.fbq !== 'function') return;
+    window.fbq('consent', 'revoke');
+    _revoked = true;
+    console.info('[analytics] Meta Pixel consent revoked');
+  }
+
   /* ─────────────── Master loader — runs for every tool ─────────────── */
   function _loadIfConsented() {
     var consent = window.ZdConsent && window.ZdConsent.get();
     if (!consent) return;  // banner not yet shown / no choice made → load nothing
 
+    /* analytics-tier tools */
     if (consent.analytics) {
       _loadContentsquare();
-      // Future tools (Umami, Plausible, etc.) go here, gated on the same flag
     } else if (_loaded.contentsquare) {
-      // Contentsquare was previously loaded but consent has been revoked —
-      // send runtime opt-out so it stops collecting data this session.
+      // Contentsquare runtime opt-out (consent revoked mid-session)
       window._uxa = window._uxa || [];
       window._uxa.push(['optout']);
       console.info('[analytics] Contentsquare opt-out sent (consent revoked)');
+    }
+
+    /* marketing-tier tools (advertising pixels) */
+    if (consent.marketing) {
+      _loadMetaPixel();
+    } else {
+      _revokeMetaPixel();
     }
   }
 
