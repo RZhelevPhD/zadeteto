@@ -15,8 +15,15 @@
  *     Cookies:   _fbp (and _fbc when CAPI is later wired) — already in
  *                cookie-banner.js COOKIE_MAP under 'marketing'
  *
+ *   - Google Analytics 4 (GA4 — site analytics)
+ *     Gated on:  ZdConsent.has('analytics')
+ *     Consent:   uses Google Consent Mode v2 — defaults to 'denied' before
+ *                opt-in, switches to 'granted' on accept, back to 'denied'
+ *                on revoke (no full unload, but data collection stops)
+ *     Cookies:   _ga, _ga_MT3ENS0YGX — in cookie-banner.js COOKIE_MAP under 'analytics'
+ *
  * Pending (waiting on IDs from user):
- *   - Google Tag (GA4 -> analytics, Google Ads -> marketing)
+ *   - Google Ads (-> marketing) — separate AW-XXX ID, will piggyback on gtag.js
  *   - TikTok Pixel (-> marketing)
  *
  * ─── ID config (public, not secrets) ─────────────────────────────────────
@@ -27,11 +34,28 @@
 (function () {
   /* ─── IDs ─── */
   var META_PIXEL_ID    = '1291940649013805';
-  var GA4_ID           = null;  // pending: 'G-XXXXXXX'
+  var GA4_ID           = 'G-MT3ENS0YGX';
   var GOOGLE_ADS_ID    = null;  // pending: 'AW-XXXXXXX'
   var TIKTOK_PIXEL_ID  = null;  // pending: 'CXXXXXXXX...'
 
-  var _loaded = {}; // map of tool names → boolean
+  var _loaded = {};       // map of tool names → boolean
+  var _revoked = false;   // Meta Pixel revoke flag
+  var _ga4Revoked = false; // GA4 revoke flag
+
+  /* ─── Google Consent Mode v2 default — MUST run before gtag.js loads,
+   *     on every page load, regardless of prior consent state.
+   *     Google requires denied "pings" to model conversions for users who
+   *     never opt in. We flip these to 'granted' inside _loadGA4() once
+   *     the visitor accepts analytics consent. */
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  window.gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    wait_for_update: 2000
+  });
 
   function _injectScript(src, attrs) {
     var s = document.createElement('script');
@@ -85,13 +109,43 @@
     console.info('[analytics] Meta Pixel loaded (consent: marketing=true)');
   }
 
-  var _revoked = false;
   function _revokeMetaPixel() {
     if (!_loaded.metaPixel || _revoked) return;
     if (typeof window.fbq !== 'function') return;
     window.fbq('consent', 'revoke');
     _revoked = true;
     console.info('[analytics] Meta Pixel consent revoked');
+  }
+
+  /* ─────────────── Google Analytics 4 (gtag.js) ─────────────── */
+  function _loadGA4() {
+    if (_loaded.ga4) return;
+    if (!GA4_ID) return;
+    _loaded.ga4 = true;
+
+    // dataLayer + gtag shim + denied 'default' already initialised at IIFE top.
+    // Flip analytics_storage to granted; ad_* stays denied until Google Ads wires in.
+    window.gtag('consent', 'update', { analytics_storage: 'granted' });
+
+    window.gtag('js', new Date());
+    window.gtag('config', GA4_ID, { anonymize_ip: true });
+
+    _injectScript('https://www.googletagmanager.com/gtag/js?id=' + GA4_ID);
+    _ga4Revoked = false;
+    console.info('[analytics] GA4 loaded (consent: analytics=true)');
+  }
+
+  function _revokeGA4() {
+    if (!_loaded.ga4 || _ga4Revoked) return;
+    if (typeof window.gtag !== 'function') return;
+    window.gtag('consent', 'update', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
+    _ga4Revoked = true;
+    console.info('[analytics] GA4 consent revoked');
   }
 
   /* ─────────────── Master loader — runs for every tool ─────────────── */
@@ -102,11 +156,15 @@
     /* analytics-tier tools */
     if (consent.analytics) {
       _loadContentsquare();
-    } else if (_loaded.contentsquare) {
-      // Contentsquare runtime opt-out (consent revoked mid-session)
-      window._uxa = window._uxa || [];
-      window._uxa.push(['optout']);
-      console.info('[analytics] Contentsquare opt-out sent (consent revoked)');
+      _loadGA4();
+    } else {
+      if (_loaded.contentsquare) {
+        // Contentsquare runtime opt-out (consent revoked mid-session)
+        window._uxa = window._uxa || [];
+        window._uxa.push(['optout']);
+        console.info('[analytics] Contentsquare opt-out sent (consent revoked)');
+      }
+      _revokeGA4();
     }
 
     /* marketing-tier tools (advertising pixels) */
