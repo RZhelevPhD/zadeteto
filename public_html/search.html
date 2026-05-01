@@ -1017,23 +1017,10 @@ a.cf-name:active{text-decoration:underline}
 .cf-detail-btn svg{width:14px;height:14px;transition:transform .2s}
 /* Mobile search counter pill — single sticky element above the snap-scroll feed.
    Replaces the redundant top "N резултата" + bottom "X / N" pair. */
-.zd-counter-pill-row{display:flex;align-items:center;justify-content:center;padding:4px 14px 12px;background:transparent}
-.zd-counter-pill-row:empty{display:none}
-.zd-counter-pill{display:inline-flex;align-items:baseline;gap:6px;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:500;letter-spacing:-0.05px;font-variant-numeric:tabular-nums;background:#fff;border:1px solid #ece6f4;color:#5b5170}
-.zd-counter-pill.is-filtered{background:#f3edff;border-color:transparent}
-.zd-counter-pill .zdc-pos{color:var(--zd-purple-600);font-weight:700}
-.zd-counter-pill .zdc-of{color:#8c849a}
-.zd-counter-pill .zdc-total{color:#1a1424;font-weight:700}
-.zd-counter-pill .zdc-scope{color:#5b5170}
-/* Quick-chips row — fast toggles that sit between the top bar and applied-chips. */
-.quick-chips{display:flex;flex-wrap:wrap;gap:8px;padding:8px 14px}
-.quick-chips:empty{display:none}
-.qc-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;font:600 13px/1 var(--zd-font);color:var(--zd-gray-800);background:#fff;border:1px solid var(--zd-gray-200);cursor:pointer;transition:transform .12s ease, background .15s, border-color .15s, color .15s}
-@media (hover: hover) and (pointer: fine){.qc-chip:hover{border-color:var(--zd-purple-200)}}
-.qc-chip:active{transform:scale(.97)}
-.qc-chip:focus-visible{outline:2px solid var(--zd-purple-400);outline-offset:2px}
-.qc-chip.is-on{background:var(--zd-purple-50);border-color:var(--zd-purple-400);color:var(--zd-purple-600)}
-.qc-chip svg{flex:0 0 auto}
+/* "Показан X от Y" counter pill + quick-chips ("Със снимка") row
+   removed 2026-05-02 per user request. Both ate vertical space on the
+   mobile feed and squashed cards. Old `.zd-counter-pill-row`,
+   `.zd-counter-pill*`, `.quick-chips`, and `.qc-chip` rules deleted. */
 
 /* Card back (flippable detail face) */
 .card-back{transform:rotateY(180deg);background:#fff;color:var(--zd-gray-800);border-left:4px solid var(--accent, var(--zd-gray-400));box-shadow:inset 0 0 0 1px var(--card-border, var(--zd-gray-200)), 0 4px 20px rgba(0,0,0,0.06)}
@@ -1164,7 +1151,7 @@ mark{background:rgba(124,77,255,.15);color:var(--zd-purple-800);border-radius:2p
 .mfb-overlay.open{display:block;opacity:1}
 body.mfb-active .card-wrap{filter:grayscale(1) brightness(0.8);opacity:0.4;transition:filter .35s,opacity .35s;pointer-events:none}
 body.mfb-active .card-wrap.mfb-focus{filter:none;opacity:1;z-index:9997;position:relative;transform:scale(1.02);pointer-events:auto}
-body.mfb-active .top-bar,body.mfb-active .zd-counter-pill-row,body.mfb-active .applied-chips,body.mfb-active .quick-chips{filter:grayscale(1);opacity:0.3;pointer-events:none;transition:filter .35s,opacity .35s}
+body.mfb-active .top-bar,body.mfb-active .applied-chips{filter:grayscale(1);opacity:0.3;pointer-events:none;transition:filter .35s,opacity .35s}
 .mfb-panel{position:fixed;left:12px;right:12px;bottom:12px;background:#fff;z-index:9999;border-radius:20px;box-shadow:0 12px 48px rgba(0,0,0,0.18);display:flex;flex-direction:column;max-height:65vh;overflow-y:auto;opacity:0;transform:translateY(20px);transition:opacity .3s cubic-bezier(.16,1,.3,1),transform .3s cubic-bezier(.16,1,.3,1);pointer-events:none}
 .mfb-panel.open{opacity:1;transform:translateY(0);pointer-events:auto}
 .mfb-header{padding:16px 16px 12px;border-bottom:1px solid var(--zd-gray-200);display:flex;align-items:center;gap:10px;flex-shrink:0}
@@ -2069,14 +2056,7 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
         <button class="filter-btn" onclick="openMobileFilters()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg><span class="filter-badge" id="filterBadge">0</span></button>
       </div>
     </div>
-    <div class="quick-chips" id="quickChips">
-      <button class="qc-chip" id="qcWithPhoto" type="button" aria-pressed="false" onclick="toggleWithPhoto()">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        <span>Със снимка</span>
-      </button>
-    </div>
     <div class="applied-chips" id="appliedChips"></div>
-    <div class="zd-counter-pill-row" id="zdCounterRow"></div>
     <div class="stack-view">
       <div class="stack-area" id="stackArea"></div>
       <!-- v4 coachmark: floats above the active card on first visit -->
@@ -4174,23 +4154,11 @@ function _isFilterActiveMobile(){
     || !!sopFilter || !!onlineFilter || !!withPhotoFilter || ageFrom !== null || ageTo !== null || !!cityTerm;
 }
 var _mobileTotal = 0;
-/* Render the "Показан X от Y [в Z]" pill. idx is 0-based. */
-function _renderCounterPill(idx){
-  const row = document.getElementById('zdCounterRow'); if (!row) return;
-  const total = _mobileTotal;
-  if (!total) { row.innerHTML = ''; return; }
-  const pos = Math.min(idx + 1, total);
-  const filterActive = _isFilterActiveMobile();
-  const scope = cityTerm ? `<span class="zdc-scope">в ${ZdSec.escapeHtml(cityTerm)}</span>` : '';
-  row.innerHTML =
-    `<div class="zd-counter-pill${filterActive ? ' is-filtered' : ''}">`
-    + `<span>Показан</span>`
-    + `<span class="zdc-pos">${pos.toLocaleString('bg')}</span>`
-    + `<span class="zdc-of">от</span>`
-    + `<span class="zdc-total">${total.toLocaleString('bg')}</span>`
-    + scope
-    + `</div>`;
-}
+/* "Показан X от Y" pill removed 2026-05-02 per user request — was eating
+   ~25px of feed height for marginal value. Stub kept so existing call sites
+   (_bindFeedObserver) compile without churn; safe to delete the call sites
+   and this stub together in a future cleanup. */
+function _renderCounterPill(/* idx */) {}
 function _buildMobileWrapHTML(c) {
   const galleryAttr = (Array.isArray(c.gallery_urls) && c.gallery_urls.length > 1)
     ? ` data-gallery="${ZdSec.escapeHtml(JSON.stringify(c.gallery_urls))}"`
