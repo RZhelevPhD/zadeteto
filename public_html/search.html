@@ -1212,6 +1212,19 @@ body.mfb-active .top-bar,body.mfb-active .applied-chips{filter:grayscale(1);opac
   -moz-user-select: none;
   pointer-events: none;
 }
+/* Tier-aware contact text. Standard tier sees phone/email as plain text in
+   the same slot Free uses, but with selectable text so Ctrl+C / long-press
+   copy works. Free keeps `.notxt` (non-selectable) — must hand-type. */
+.contact-selectable {
+  user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  -moz-user-select: text;
+  cursor: text;
+}
+/* Visually-hidden helper for aria-live regions (clipboard copy announcer).
+   Standard sr-only pattern. */
+.zd-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
     .variant-rigor {
       --rig-s-1: 4px; --rig-s-2: 8px; --rig-s-3: 12px; --rig-s-4: 16px; --rig-s-5: 20px; --rig-s-6: 24px;
       --rig-radius: 14px; --rig-radius-sm: 8px;
@@ -1511,9 +1524,21 @@ body.mfb-active .top-bar,body.mfb-active .applied-chips{filter:grayscale(1);opac
     }
     .variant-rigor .rig-chip-city svg { opacity: 0.85; }
 
-    .variant-rigor .rig-socials { display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--rig-s-1); }
-    .variant-rigor .rig-soc { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; background: var(--zd-gray-100); color: var(--rig-ink-mute); pointer-events: none; }
+    .variant-rigor .rig-socials { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--rig-s-1); }
+    .variant-rigor .rig-soc { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; background: var(--zd-gray-100); color: var(--rig-ink-mute); pointer-events: none; border: 0; padding: 0; text-decoration: none; }
     .variant-rigor .rig-soc svg { display: block; }
+    /* Clickable variant for Verified (copy) and Trusted/Premium (native action).
+       The visible 22×22 box is below WCAG 24×24 minimum on its own; an
+       invisible ::before extends the hit area to 30×30 without affecting
+       layout. Container `gap: 8px` + `inset: -4px` keeps adjacent hit-zones
+       just touching with no overlap into a sibling's visible icon. */
+    .variant-rigor .rig-soc.rig-soc--clickable { pointer-events: auto; cursor: pointer; transition: transform 120ms ease-out, background-color 150ms ease-out; position: relative; }
+    .variant-rigor .rig-soc.rig-soc--clickable::before { content: ''; position: absolute; inset: -4px; }
+    .variant-rigor .rig-soc.rig-soc--clickable:active { transform: scale(.94); }
+    @media (hover: hover) and (pointer: fine) {
+      .variant-rigor .rig-soc.rig-soc--clickable:hover { background: var(--zd-purple-50, #efe8ff); color: var(--zd-purple-600, #7c4dff); }
+    }
+    .variant-rigor .rig-soc.is-copied { background: #d4f7e1; color: #1f7d4f; }
 
     .variant-rigor .rig-free-note { font-size: 11px; color: var(--rig-ink-mute); font-style: italic; margin-top: var(--rig-s-1); }
     /* "Това е моят бизнес?" inline mailto link next to the rig-free-note. Small,
@@ -1931,6 +1956,8 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
 </style>
 </head>
 <body class="variant-rigor">
+<!-- Live region for clipboard-copy announcements (Verified-tier contact icons). -->
+<div id="zdCopyAnnouncer" class="zd-sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <nav style="position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:12px 24px; z-index:900; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(0,0,0,0.05);">
   <a href="index.html" class="nav-logo" style="display:flex;align-items:center;text-decoration:none;">
@@ -2169,12 +2196,36 @@ const icons = {
   reviews: "https://storage.googleapis.com/msgsndr/cmgJfxv52lTcq2pgpVB3/media/68939cebd69f994a4dd582e5.png"
 };
 
+/* Bulgarian labels for the contact / social icons. Used as aria-label and
+   title so screen readers announce a Bulgarian word, not the bare English
+   key. Falls back to the key itself if not mapped. */
+const SOC_LABELS = {
+  phone: 'Телефон', email: 'Имейл', website: 'Уебсайт',
+  facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok',
+  linkedin: 'LinkedIn', x: 'X', youtube: 'YouTube',
+  maps: 'Google Maps', reviews: 'Отзиви'
+};
 const allowedIconsByTier = {
   "Премиум":   ["phone", "email", "website", "facebook", "instagram", "tiktok", "linkedin", "x", "youtube", "maps", "reviews"],
   "Доверен":   ["phone", "email", "website", "facebook", "instagram", "tiktok", "linkedin", "x", "youtube", "maps", "reviews"],
   "Проверен":  ["phone", "email", "website", "facebook", "instagram", "maps"],
-  "Стандартен": ["phone", "email", "website", "facebook"],
-  "Безплатен": ["phone", "email"]
+  // Стандартен + Безплатен don't show phone/email as front icons — they get
+  // a plain-text block in the bottom socials slot instead. Other social icons
+  // (website/facebook) stay as decorative pills on Стандартен.
+  "Стандартен": ["website", "facebook"],
+  "Безплатен": []
+};
+/* Per-tier behavior for clickable contact icons (phone/email/website/etc.):
+ *   "native"  — opens tel:/mailto: or the URL directly (Trusted+).
+ *   "copy"    — copies the value to the clipboard with visual feedback (Verified).
+ *   "decor"   — decorative-only pill, no click action (Standard).
+ *   "none"    — no front icons at all (Free shows plain text below). */
+const contactBehaviorByTier = {
+  "Премиум":   "native",
+  "Доверен":   "native",
+  "Проверен":  "copy",
+  "Стандартен": "decor",
+  "Безплатен": "none"
 };
 
 const tagLimits = { "Премиум": 5, "Доверен": 4, "Проверен": 3, "Стандартен": 2, "Безплатен": 1 };
@@ -2763,22 +2814,50 @@ function buildCardHTML(d) {
     maps:     '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>'
   };
   const allowedKeys = (typeof allowedIconsByTier !== 'undefined' ? allowedIconsByTier[d.tier] : null) || [];
+  const contactBehavior = (typeof contactBehaviorByTier !== 'undefined' ? contactBehaviorByTier[d.tier] : 'decor') || 'decor';
+  /* Returns the appropriate href for a given social key. Phone uses tel:, email
+     uses mailto:, everything else falls through safeUrl so http(s) links get
+     the https:// prefix when missing. */
+  function _socHref(k) {
+    if (k === 'phone') return 'tel:' + String(d.phone || '').replace(/[^+\d]/g, '');
+    if (k === 'email') return 'mailto:' + d.email;
+    return safeUrl(d[k]);
+  }
   let frontSocialsInner = '';
   allowedKeys.forEach(k => {
     if (!SOC_SVG[k]) return;
     if (k !== 'maps' && (!d[k] || d[k] === '#')) return;
-    frontSocialsInner += `<span class="rig-soc">${SOC_SVG[k]}</span>`;
+    const label = esc((typeof SOC_LABELS !== 'undefined' && SOC_LABELS[k]) || k);
+    if (contactBehavior === 'native') {
+      // Trusted+ / Премиум: tappable anchor that opens tel:/mailto: or URL.
+      const hrefAttr = esc(_socHref(k));
+      const target = (k === 'phone' || k === 'email') ? '' : ' target="_blank" rel="noopener"';
+      frontSocialsInner += `<a class="rig-soc rig-soc--clickable" href="${hrefAttr}"${target} aria-label="${label}" title="${label}" onclick="event.stopPropagation()">${SOC_SVG[k]}</a>`;
+    } else if (contactBehavior === 'copy') {
+      // Verified / Проверен: tappable button that copies the value.
+      const copyVal = esc(_socHref(k));
+      frontSocialsInner += `<button type="button" class="rig-soc rig-soc--clickable" data-copy="${copyVal}" data-copy-key="${label}" aria-label="${label}" title="${label}" onclick="event.stopPropagation();copyContactClick(this)">${SOC_SVG[k]}</button>`;
+    } else {
+      // Decorative — no click action. Hide from AT since it conveys no info
+      // beyond the social name, which the user already sees in the bottom
+      // socials block (for Standard) or has no use for (other tiers).
+      frontSocialsInner += `<span class="rig-soc" aria-hidden="true">${SOC_SVG[k]}</span>`;
+    }
   });
 
-  // Free-tier inline notxt socials. Use the same Lucide stroke SVGs as the
-  // paid-tier socials so the icon style is consistent across tiers (the old
-  // 📞 / ✉ emoji rendered colored on Windows and broke the gray monochrome look).
-  let freeNotxtHTML = '';
-  if (isFree) {
+  // Free + Standard tiers render phone/email as plain text in the bottom
+  // socials slot instead of as front icons. Free uses .notxt (locked, must
+  // hand-type); Standard uses .contact-selectable (Ctrl+C / long-press copy
+  // works). Same SVG icons either way so the visual rhythm matches the
+  // paid-tier icon row.
+  const isStandard = d.tier === 'Стандартен';
+  let plainContactHTML = '';
+  if (isFree || isStandard) {
+    const textCls = isFree ? 'notxt' : 'contact-selectable';
     let inner = '';
-    if (d.phone) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">${SOC_SVG.phone}</span><span class="notxt">${esc(d.phone)}</span></span>`;
-    if (d.email) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">${SOC_SVG.email}</span><span class="notxt">${esc(d.email)}</span></span>`;
-    if (inner) freeNotxtHTML = `<div class="rig-back-soc-list">${inner}</div>`;
+    if (d.phone) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">${SOC_SVG.phone}</span><span class="${textCls}">${esc(d.phone)}</span></span>`;
+    if (d.email) inner += `<span class="rig-back-soc-row"><span class="rig-back-soc-i">${SOC_SVG.email}</span><span class="${textCls}">${esc(d.email)}</span></span>`;
+    if (inner) plainContactHTML = `<div class="rig-back-soc-list">${inner}</div>`;
   }
 
   // Bookmark save button — overlays the rig-thumb at top-right. Uses the same
@@ -2816,18 +2895,21 @@ function buildCardHTML(d) {
     claimLinkHTML = `<a class="rig-claim-link" href="mailto:hello@zadeteto.com?subject=${claimSubject}&body=${claimBody}" onclick="event.stopPropagation()">Това е моят бизнес?</a>`;
   }
 
-  // CTAs
-  const primaryLabel = esc(d.cta_label_1 || d.cta_label || (isFree ? 'Контакт' : 'Виж профила'));
-  const primaryUrl   = safeUrl(d.cta_url_1 || d.cta_url || (isFree ? (d.phone ? 'tel:' + d.phone : '#') : profileUrl));
+  // CTAs. Free tier has no primary CTA — phone/email render as plain text in
+  // the bottom socials slot, and the existing "Това е моят бизнес?" claim
+  // link lives there too. A clickable footer CTA would either dial the phone
+  // (violates the Free-tier "no clickable contact" rule) or duplicate the
+  // claim link, so we just omit the footer for Free.
+  const primaryLabel = esc(d.cta_label_1 || d.cta_label || 'Виж профила');
+  const primaryUrl   = safeUrl(d.cta_url_1 || d.cta_url || profileUrl);
   const primaryAttrs = /^(https?:)/i.test(primaryUrl) ? 'target="_blank" rel="noopener"' : '';
   const ghostLabel = esc(d.cta_label_2 || 'Запази');
   const ghostUrl   = safeUrl(d.cta_url_2 || profileUrl);
 
   let actionsHTML;
   if (isFree) {
-    actionsHTML = `<footer class="rig-actions rig-actions--single">
-      <a class="rig-cta rig-cta--primary rig-cta--solo" href="${primaryUrl}" ${primaryAttrs} onclick="event.stopPropagation()">${primaryLabel}</a>
-    </footer>`;
+    // No footer CTA on Free — see comment above primaryLabel.
+    actionsHTML = '';
   } else {
     actionsHTML = `<footer class="rig-actions">
       <a class="rig-cta rig-cta--ghost" href="${ghostUrl}" onclick="event.stopPropagation()">${ghostLabel}</a>
@@ -2914,7 +2996,7 @@ function buildCardHTML(d) {
           ? `<ul class="rig-slot rig-slot--chips rig-chips" aria-label="Услуги">${cityChipHTML}${services.map(s => `<li>${esc(s)}</li>`).join('')}</ul>`
           : `<div class="rig-slot rig-slot--chips" data-empty></div>`}
         <div class="rig-slot rig-slot--ratings">${ratingsHTML}</div>
-        <div class="rig-slot rig-slot--socials">${isFree ? freeNotxtHTML : (frontSocialsInner ? `<div class="rig-socials">${frontSocialsInner}</div>` : '')}${isFree ? `<p class="rig-free-note">Профилът не е активиран от собственика. ${claimLinkHTML}</p>` : ''}</div>
+        <div class="rig-slot rig-slot--socials">${(isFree || isStandard) ? plainContactHTML : ''}${frontSocialsInner ? `<div class="rig-socials">${frontSocialsInner}</div>` : ''}${isFree ? `<p class="rig-free-note">Профилът не е активиран от собственика. ${claimLinkHTML}</p>` : ''}</div>
       </div>
       ${actionsHTML}
     </div>`;
@@ -3070,6 +3152,71 @@ function updateCityList(arr) {
 function flipCard(card) {
   if (card.classList.contains('zd-card--free')) return;
   card.classList.toggle('flipped');
+}
+
+/* Verified-tier contact icon: copies the underlying tel:/mailto:/url value
+ * to the clipboard. Strips the tel: / mailto: prefix so the clipboard ends
+ * up with the bare phone or email rather than the URL scheme. Falls back
+ * to document.execCommand('copy') for browsers without async clipboard
+ * (older Safari / WebView). Visual feedback: swaps the icon for a checkmark
+ * for 1.4s via the .is-copied class on the .rig-soc element. */
+function _stripContactPrefix(v) {
+  if (!v) return '';
+  const s = String(v);
+  if (/^tel:/i.test(s))    return s.replace(/^tel:/i, '');
+  if (/^mailto:/i.test(s)) return s.replace(/^mailto:/i, '');
+  return s;
+}
+function _copyToClipboard(text) {
+  if (!text) return Promise.resolve(false);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).then(() => true).catch(() => _execCopyFallback(text));
+  }
+  return Promise.resolve(_execCopyFallback(text));
+}
+function _execCopyFallback(text) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '-1000px'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, ta.value.length);
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) { return false; }
+}
+const _COPY_CHECK_SVG = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+function _announceCopy(msg) {
+  const a = document.getElementById('zdCopyAnnouncer');
+  if (!a) return;
+  a.textContent = '';
+  // Force reflow so consecutive copies of the same value re-announce.
+  void a.offsetWidth;
+  a.textContent = msg || '';
+}
+function copyContactClick(btn) {
+  if (!btn || btn.classList.contains('is-copied')) return;
+  const raw = btn.getAttribute('data-copy') || '';
+  const value = _stripContactPrefix(raw);
+  _copyToClipboard(value).then(ok => {
+    if (!ok) {
+      console.warn('[zd] clipboard copy failed for', value);
+      _announceCopy('Копирането не е успешно. Стойност: ' + value);
+      return;
+    }
+    const original = btn.innerHTML;
+    btn.classList.add('is-copied');
+    btn.innerHTML = _COPY_CHECK_SVG;
+    btn.setAttribute('aria-label', 'Копирано');
+    _announceCopy('Копирано: ' + value);
+    setTimeout(() => {
+      btn.classList.remove('is-copied');
+      btn.innerHTML = original;
+      btn.setAttribute('aria-label', btn.getAttribute('data-copy-key') || '');
+    }, 1400);
+  });
 }
 
 /* Hybrid auth prompt: shows the parent auth modal once per session after the

@@ -264,6 +264,30 @@ nav {
 .zd-contact-icon:hover { background: var(--accent-light); border-color: var(--accent); transform: translateY(-2px); }
 .zd-contact-icon:active { transform: scale(0.95); }
 .zd-contact-icon img { width: 20px; height: 20px; display: block; }
+/* Reset button-default styling so .zd-contact-icon as a <button> matches the <a> version. */
+button.zd-contact-icon { padding: 0; font: inherit; color: inherit; }
+/* Verified-tier copy success state — green tint flashes for 1.4s. */
+.zd-contact-icon.is-copied { background: #d4f7e1; border-color: #1f7d4f; color: #1f7d4f; }
+.zd-contact-icon .zd-copy-check { font-size: 18px; font-weight: 700; line-height: 1; color: #1f7d4f; }
+/* Standard-tier decorative icons — no hover/click affordance. */
+.zd-contact-icon--decor { cursor: default; opacity: 0.55; }
+.zd-contact-icon--decor:hover { background: var(--zd-gray-50); border-color: var(--zd-gray-200); transform: none; }
+/* Tier-aware contact text — selectable so Ctrl+C / long-press copy works.
+   Mirrors search.html's .contact-selectable. */
+.contact-selectable {
+  user-select: text; -webkit-user-select: text;
+  -ms-user-select: text; -moz-user-select: text;
+  cursor: text;
+}
+/* Visually-hidden helper for aria-live regions (clipboard copy announcer). */
+.zd-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+/* Standard-tier plain-text contact block (above the contact icons row).
+   `.hero-contacts` is `display:flex; flex-wrap:wrap`, so this needs full
+   width to break onto its own row above the icons. */
+.zd-plain-contact { display: flex; flex-direction: column; gap: 6px; margin: 12px 0 4px; padding: 10px 12px; background: var(--zd-gray-50); border: 1px solid var(--zd-gray-200); border-radius: 10px; flex: 1 1 100%; min-width: 100%; }
+.zd-plain-contact-row { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
+.zd-plain-contact-label { font-weight: 600; color: var(--zd-gray-600); min-width: 56px; flex-shrink: 0; }
+.zd-plain-contact-val { color: var(--zd-gray-800); word-break: break-all; }
 
 @media(max-width:480px) {
   .hero-top { flex-direction: column; align-items: center; text-align: center; }
@@ -528,6 +552,9 @@ nav {
 }
 .mobile-cta-bar .phone-btn:hover { background: var(--accent-light); }
 .mobile-cta-bar .phone-btn img { width: 20px; height: 20px; }
+/* Reset button defaults so phone-btn as a <button> matches the <a> version. */
+.mobile-cta-bar button.phone-btn { padding: 0; font: inherit; color: inherit; cursor: pointer; }
+.mobile-cta-bar .phone-btn.is-copied { background: #d4f7e1; border-color: #1f7d4f; }
 @media(max-width:900px) {
   .mobile-cta-bar { display: flex; }
   .listing-sidebar { display: none; }
@@ -634,6 +661,8 @@ nav {
 </style>
 </head>
 <body>
+<!-- Live region for clipboard-copy announcements (Verified-tier contact icons). -->
+<div id="zdCopyAnnouncer" class="zd-sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <!-- ═══ NAV ═══ -->
 <nav>
@@ -812,11 +841,33 @@ const icons = {
 
 const allContactKeys = ["phone","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps"];
 
+/* Bulgarian labels for contact / social icons — used as aria-label and title.
+   Mirrors search.html's SOC_LABELS. */
+const SOC_LABELS = {
+  phone: 'Телефон', email: 'Имейл', website: 'Уебсайт',
+  facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok',
+  linkedin: 'LinkedIn', x: 'X', youtube: 'YouTube',
+  maps: 'Google Maps', reviews: 'Отзиви'
+};
 const allowedIconsByTier = {
   "Доверен": ["phone","email","website","facebook","instagram","tiktok","linkedin","x","youtube","maps","reviews"],
   "Проверен": ["phone","email","website","facebook","instagram","maps"],
-  "Стандартен": ["phone","email","website","facebook"],
-  "Безплатен": ["phone","email"]
+  // Стандартен doesn't show phone/email as front icons here — they render as
+  // plain selectable text in the contact section instead.
+  "Стандартен": ["website","facebook"],
+  "Безплатен": []
+};
+/* Per-tier behavior for clickable contact icons (mirror of search.html):
+ *   "native"  — opens tel:/mailto: or URL directly (Trusted+).
+ *   "copy"    — copies the value to the clipboard with visual feedback (Verified).
+ *   "decor"   — decorative-only icon, no click action (Standard).
+ *   "none"    — no front icons at all (Free, but Free is blocked from listing). */
+const contactBehaviorByTier = {
+  "Доверен":   "native",
+  "Премиум":   "native",
+  "Проверен":  "copy",
+  "Стандартен": "decor",
+  "Безплатен": "none"
 };
 
 /* ═══ MOCK REVIEWS DATA ═══ */
@@ -919,16 +970,106 @@ function switchAuthTab(type) {
   }
 }
 
-/* ═══ BUILD CONTACT ICONS HTML ═══ */
-function buildContactIcons(d, keysToUse) {
+/* ═══ BUILD CONTACT ICONS HTML ═══
+   Tier-aware. `behavior` is one of:
+   - "native": <a href="tel:/mailto:/url"> — opens directly (Trusted+, Premium).
+   - "copy":   <button data-copy="..."> — copies the value via copyContactClick (Verified).
+   - "decor":  <span> — decorative, no click action (Standard).
+   When omitted (back-compat), defaults to "native". */
+function buildContactIcons(d, keysToUse, behavior) {
+  const mode = behavior || 'native';
   let html = '';
   keysToUse.forEach(k => {
-    if (d[k] && d[k] !== '#') {
-      const href = k === 'phone' ? 'tel:' + d[k] : k === 'email' ? 'mailto:' + d[k] : ZdSec.sanitizeUrl(d[k]);
-      html += `<a class="zd-contact-icon" href="${href}" target="_blank" rel="noopener" title="${k}"><img src="${icons[k]}" alt="${k}" loading="lazy"></a>`;
+    if (!d[k] || d[k] === '#') return;
+    const href = k === 'phone' ? 'tel:' + d[k] : k === 'email' ? 'mailto:' + d[k] : ZdSec.sanitizeUrl(d[k]);
+    const labelText = (typeof SOC_LABELS !== 'undefined' && SOC_LABELS[k]) || k;
+    const labelAttr = ZdSec.escapeHtml(labelText);
+    const imgTag = `<img src="${icons[k]}" alt="" loading="lazy">`;
+    if (mode === 'copy') {
+      html += `<button type="button" class="zd-contact-icon zd-contact-icon--copy" data-copy="${ZdSec.escapeHtml(href)}" data-copy-key="${labelAttr}" aria-label="${labelAttr}" title="${labelAttr}" onclick="copyContactClick(this)">${imgTag}</button>`;
+    } else if (mode === 'decor') {
+      html += `<span class="zd-contact-icon zd-contact-icon--decor" title="${labelAttr}" aria-hidden="true">${imgTag}</span>`;
+    } else {
+      html += `<a class="zd-contact-icon" href="${ZdSec.escapeHtml(href)}" target="_blank" rel="noopener" aria-label="${labelAttr}" title="${labelAttr}">${imgTag}</a>`;
     }
   });
   return html;
+}
+
+/* Plain-text contact block for Стандартен tier — phone/email rendered as
+ * selectable text (Ctrl+C / long-press copy works) instead of clickable icons.
+ * Empty string for any other tier or when no phone/email exists. */
+function buildPlainContactBlock(d) {
+  if (d.tier !== 'Стандартен') return '';
+  const rows = [];
+  if (d.phone) rows.push(`<div class="zd-plain-contact-row"><span class="zd-plain-contact-label">Телефон</span><span class="zd-plain-contact-val contact-selectable">${ZdSec.escapeHtml(d.phone)}</span></div>`);
+  if (d.email) rows.push(`<div class="zd-plain-contact-row"><span class="zd-plain-contact-label">Имейл</span><span class="zd-plain-contact-val contact-selectable">${ZdSec.escapeHtml(d.email)}</span></div>`);
+  if (!rows.length) return '';
+  return `<div class="zd-plain-contact">${rows.join('')}</div>`;
+}
+
+/* Verified-tier copy-on-click for contact icons. Same shape as search.html's
+ * version (kept as a separate copy because the two pages don't share JS).
+ * Strips the tel:/mailto: prefix so the clipboard receives the bare phone
+ * or email rather than the URL scheme. */
+function _stripContactPrefix(v) {
+  if (!v) return '';
+  const s = String(v);
+  if (/^tel:/i.test(s))    return s.replace(/^tel:/i, '');
+  if (/^mailto:/i.test(s)) return s.replace(/^mailto:/i, '');
+  return s;
+}
+function _copyToClipboard(text) {
+  if (!text) return Promise.resolve(false);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).then(() => true).catch(() => _execCopyFallback(text));
+  }
+  return Promise.resolve(_execCopyFallback(text));
+}
+function _execCopyFallback(text) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '-1000px'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, ta.value.length);
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) { return false; }
+}
+const _COPY_CHECK_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+function _announceCopy(msg) {
+  const a = document.getElementById('zdCopyAnnouncer');
+  if (!a) return;
+  a.textContent = '';
+  // Force a reflow so the live region announces the same string twice in a row
+  // (two consecutive copies of the same icon shouldn't go silent).
+  void a.offsetWidth;
+  a.textContent = msg || '';
+}
+function copyContactClick(btn) {
+  if (!btn || btn.classList.contains('is-copied')) return;
+  const raw = btn.getAttribute('data-copy') || '';
+  const value = _stripContactPrefix(raw);
+  _copyToClipboard(value).then(ok => {
+    if (!ok) {
+      console.warn('[zd] clipboard copy failed for', value);
+      _announceCopy('Копирането не е успешно. Стойност: ' + value);
+      return;
+    }
+    const original = btn.innerHTML;
+    btn.classList.add('is-copied');
+    btn.innerHTML = _COPY_CHECK_SVG;
+    btn.setAttribute('aria-label', 'Копирано');
+    _announceCopy('Копирано: ' + value);
+    setTimeout(() => {
+      btn.classList.remove('is-copied');
+      btn.innerHTML = original;
+      btn.setAttribute('aria-label', btn.getAttribute('data-copy-key') || '');
+    }, 1400);
+  });
 }
 
 /* ═══ HYDRATE PAGE ═══ */
@@ -1013,8 +1154,16 @@ function hydratePage(d) {
   let starsHTML = '';
   for (let i = 0; i < 5; i++) starsHTML += i < filledStars ? '★' : '☆';
 
-  // Hero: Contact icons — show all that exist on profile page
-  document.getElementById('heroContacts').innerHTML = buildContactIcons(d, allContactKeys);
+  // Hero: Contact icons — tier-aware. Trusted+ get native tel:/mailto:,
+  // Verified gets copy-on-click. Standard gets a plain selectable phone/email
+  // block above the icon row, so phone+email are dropped from the icon-row
+  // keys to avoid rendering them twice.
+  const heroBehavior = (typeof contactBehaviorByTier !== 'undefined' && contactBehaviorByTier[d.tier]) || 'native';
+  const heroPlainBlock = buildPlainContactBlock(d);
+  const heroKeys = (d.tier === 'Стандартен')
+    ? allContactKeys.filter(k => k !== 'phone' && k !== 'email')
+    : allContactKeys;
+  document.getElementById('heroContacts').innerHTML = heroPlainBlock + buildContactIcons(d, heroKeys, heroBehavior);
 
   // About section
   const aboutEl = document.getElementById('aboutContent');
@@ -1118,16 +1267,30 @@ function hydratePage(d) {
       </div>
     </div>
     ${ctaHTML}
-    <div class="sidebar-contacts">${buildContactIcons(d, sidebarIcons)}</div>
+    ${buildPlainContactBlock(d)}
+    <div class="sidebar-contacts">${buildContactIcons(d, sidebarIcons, (typeof contactBehaviorByTier !== 'undefined' && contactBehaviorByTier[d.tier]) || 'native')}</div>
     ${hoursHTML}
   `;
 
-  // Mobile CTA bar
+  // Mobile CTA bar — phone button behavior follows the tier ladder.
+  // Trusted+ → native tel: link. Verified → copy button. Standard → omit
+  // the phone button entirely (the plain selectable phone is in the hero
+  // contact block above). Free is unreachable (blocked at 1586).
   const mobileCtaEl = document.getElementById('mobileCta');
-  const phoneHref = d.phone ? `tel:${d.phone}` : '#';
+  const mobileBehavior = (typeof contactBehaviorByTier !== 'undefined' && contactBehaviorByTier[d.tier]) || 'native';
+  let phoneBtnHTML = '';
+  if (d.phone) {
+    if (mobileBehavior === 'native') {
+      phoneBtnHTML = `<a class="phone-btn" href="${ZdSec.escapeHtml('tel:' + d.phone)}" aria-label="Обади се"><img src="${icons.phone}" alt=""></a>`;
+    } else if (mobileBehavior === 'copy') {
+      phoneBtnHTML = `<button type="button" class="phone-btn phone-btn--copy" data-copy="${ZdSec.escapeHtml('tel:' + d.phone)}" data-copy-key="Копирай телефон" aria-label="Копирай телефон" onclick="copyContactClick(this)"><img src="${icons.phone}" alt=""></button>`;
+    }
+    // 'decor' / Standard: skip the phone button — the number is in the
+    // hero plain-contact block above as selectable text.
+  }
   mobileCtaEl.innerHTML = `
     <a class="sidebar-cta sidebar-cta--primary" href="${ZdSec.sanitizeUrl(d.ctaUrl1 || d.ctaUrl || '#')}" target="_blank">${ZdSec.escapeHtml(d.ctaLabel1 || d.ctaLabel || 'Свържете се')}</a>
-    <a class="phone-btn" href="${phoneHref}"><img src="${icons.phone}" alt="Обади се"></a>
+    ${phoneBtnHTML}
   `;
 
   // Show content, hide loading
