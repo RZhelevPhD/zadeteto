@@ -89,10 +89,15 @@
     });
   }
 
-  // Known cookies per consent category — used to delete on revoke
+  // Known cookies per consent category — used to delete on revoke.
+  // NOTE: this only deletes cookies the tracker set as FIRST-PARTY on
+  // zadeteto.com (which is what Meta/TikTok/LinkedIn pixels do via their
+  // first-party-mode wrappers). Cookies the platforms set on their own
+  // domains (.linkedin.com, .tiktok.com, .facebook.com) cannot be cleared
+  // from our origin — the user has to clear those via browser settings.
   var COOKIE_MAP = {
     analytics: ['_cs_c', '_cs_id', '_cs_s', '_cs_mk', '_cs_ex', '_ga', '_ga_MT3ENS0YGX', '_gid', '_gat'],
-    marketing: ['_fbp', '_gcl_au', '_gcl_aw', '_ttp', 'ttwid'],
+    marketing: ['_fbp', '_gcl_au', '_gcl_aw', '_ttp', 'ttwid', 'bcookie', 'lidc', 'UserMatchHistory', 'AnalyticsSyncHistory', 'li_gc'],
     ab: ['zd_ab_bucket']
   };
   function _deleteCookiesFor(category) {

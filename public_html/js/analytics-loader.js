@@ -30,6 +30,15 @@
  *     Cookies:   _ttp (in cookie-banner.js COOKIE_MAP under 'marketing')
  *     Loader:    no-op until TIKTOK_PIXEL_ID below is filled in
  *
+ *   - LinkedIn Insight Tag (B2B audience demographics + retargeting)
+ *     Gated on:  ZdConsent.has('marketing')
+ *     On revoke: LinkedIn has no runtime revoke API — relies on
+ *                _deleteCookiesFor('marketing') to purge cookies. The
+ *                guard flag prevents re-init within the same session.
+ *     Cookies:   bcookie, lidc, UserMatchHistory, AnalyticsSyncHistory,
+ *                li_gc (in cookie-banner.js COOKIE_MAP under 'marketing')
+ *     Loader:    no-op until LINKEDIN_PARTNER_ID below is filled in
+ *
  * Pending (waiting on IDs from user):
  *   - Google Ads (-> marketing) — separate AW-XXX ID, will piggyback on gtag.js
  *
@@ -40,15 +49,17 @@
  */
 (function () {
   /* ─── IDs ─── */
-  var META_PIXEL_ID    = '1291940649013805';
-  var GA4_ID           = 'G-MT3ENS0YGX';
-  var GOOGLE_ADS_ID    = null;  // pending: 'AW-XXXXXXX'
-  var TIKTOK_PIXEL_ID  = null;  // pending: 'CXXXXXXXX...'
+  var META_PIXEL_ID      = '1291940649013805';
+  var GA4_ID             = 'G-MT3ENS0YGX';
+  var GOOGLE_ADS_ID      = null;  // pending: 'AW-XXXXXXX'
+  var TIKTOK_PIXEL_ID    = null;  // pending: 'CXXXXXXXX...'
+  var LINKEDIN_PARTNER_ID = null; // pending: '1234567' (numeric Partner ID, not Account ID)
 
   var _loaded = {};         // map of tool names → boolean
   var _revoked = false;     // Meta Pixel revoke flag
   var _ga4Revoked = false;  // GA4 revoke flag
   var _ttqRevoked = false;  // TikTok Pixel revoke flag
+  var _liRevoked = false;   // LinkedIn Insight Tag revoke flag
 
   /* ─── Google Consent Mode v2 default — MUST run before gtag.js loads,
    *     on every page load, regardless of prior consent state.
@@ -210,6 +221,43 @@
     console.info('[analytics] TikTok Pixel consent revoked');
   }
 
+  /* ─────────────── LinkedIn Insight Tag ─────────────── */
+  function _loadLinkedInInsight() {
+    if (_loaded.linkedin) return;
+    if (!LINKEDIN_PARTNER_ID) return;  // no-op until ID is configured
+    _loaded.linkedin = true;
+
+    // Inline LinkedIn Insight Tag bootstrap (per official LinkedIn snippet).
+    window._linkedin_partner_id = String(LINKEDIN_PARTNER_ID);
+    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+    window._linkedin_data_partner_ids.push(window._linkedin_partner_id);
+
+    (function (l) {
+      if (!l) {
+        window.lintrk = function (a, b) { window.lintrk.q.push([a, b]); };
+        window.lintrk.q = [];
+      }
+      var b = document.createElement('script');
+      b.type = 'text/javascript';
+      b.async = true;
+      b.src = 'https://snap.licdn.com/li.lms-analytics/insight.min.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(b, s);
+    })(window.lintrk);
+
+    _liRevoked = false;
+    console.info('[analytics] LinkedIn Insight Tag loaded (consent: marketing=true)');
+  }
+
+  function _revokeLinkedInInsight() {
+    if (!_loaded.linkedin || _liRevoked) return;
+    // LinkedIn has no documented runtime consent-revoke API. The cookie
+    // banner's _deleteCookiesFor('marketing') will purge bcookie/lidc/etc;
+    // we just flip the guard flag so we don't re-init within the session.
+    _liRevoked = true;
+    console.info('[analytics] LinkedIn Insight Tag consent revoked (cookies cleared by banner)');
+  }
+
   /* ─────────────── Master loader — runs for every tool ─────────────── */
   function _loadIfConsented() {
     var consent = window.ZdConsent && window.ZdConsent.get();
@@ -233,9 +281,11 @@
     if (consent.marketing) {
       _loadMetaPixel();
       _loadTikTokPixel();
+      _loadLinkedInInsight();
     } else {
       _revokeMetaPixel();
       _revokeTikTokPixel();
+      _revokeLinkedInInsight();
     }
   }
 
