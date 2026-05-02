@@ -1015,12 +1015,11 @@ a.cf-name:active{text-decoration:underline}
 .cf-detail-btn{display:flex;align-items:center;justify-content:center;gap:4px;padding:3px 0 5px;font:600 11px/1 var(--zd-font);color:var(--accent,var(--zd-gray-600));cursor:pointer;transition:gap .2s}
 .cf-detail-btn:active{gap:8px}
 .cf-detail-btn svg{width:14px;height:14px;transition:transform .2s}
-/* Mobile search counter pill — single sticky element above the snap-scroll feed.
-   Replaces the redundant top "N резултата" + bottom "X / N" pair. */
-/* "Показан X от Y" counter pill + quick-chips ("Със снимка") row
-   removed 2026-05-02 per user request. Both ate vertical space on the
-   mobile feed and squashed cards. Old `.zd-counter-pill-row`,
-   `.zd-counter-pill*`, `.quick-chips`, and `.qc-chip` rules deleted. */
+/* "Показан X от Y" counter pill + "Със снимка" mobile quick-chip removed
+   2026-05-02 per user request — both ate vertical space and squashed cards
+   on the mobile feed. Old `.zd-counter-pill-row`, `.zd-counter-pill*`,
+   `.quick-chips`, and `.qc-chip` rules deleted with them. The withPhoto
+   filter still ships on the desktop sidebar (#withphoto-toggle). */
 
 /* Card back (flippable detail face) */
 .card-back{transform:rotateY(180deg);background:#fff;color:var(--zd-gray-800);border-left:4px solid var(--accent, var(--zd-gray-400));box-shadow:inset 0 0 0 1px var(--card-border, var(--zd-gray-200)), 0 4px 20px rgba(0,0,0,0.06)}
@@ -4128,24 +4127,14 @@ function _getSortedM(l){return[...l].sort((a,b)=>getTierScore(b)-getTierScore(a)
 function renderMobile(){
   const filtered = _getFilteredM(), sorted = _getSortedM(filtered);
   const act = sorted.filter(d => !dismissedIds.has(d.id));
-  _mobileTotal = act.length;
   updateBadgeMobile(); updateSavedBarMobile(); renderAppliedMobile(); _syncQuickChips(); renderStack(act);
 }
-/* Sync the quick-chip toggle (mobile) AND the desktop sidebar checkbox with
-   the underlying withPhotoFilter state. Single sync point for both surfaces. */
+/* Sync the desktop sidebar's "Само със снимка" checkbox with the underlying
+   withPhotoFilter state. Mobile has no toggle UI for this filter; the only
+   mobile surface is the applied-filters ✕ chip in renderAppliedMobile. */
 function _syncQuickChips(){
-  const btn = document.getElementById('qcWithPhoto');
-  if (btn) {
-    btn.classList.toggle('is-on', !!withPhotoFilter);
-    btn.setAttribute('aria-pressed', String(!!withPhotoFilter));
-  }
   const dt = document.getElementById('withphoto-toggle');
   if (dt) dt.checked = !!withPhotoFilter;
-}
-function toggleWithPhoto(){
-  withPhotoFilter = !withPhotoFilter;
-  _syncQuickChips();
-  resetLazyAndRender();
 }
 /* True if any mobile filter is engaged. Mirrors the badge counter. */
 function _isFilterActiveMobile(){
@@ -4153,12 +4142,6 @@ function _isFilterActiveMobile(){
        + active.level.include.size + active.level.exclude.size) > 0
     || !!sopFilter || !!onlineFilter || !!withPhotoFilter || ageFrom !== null || ageTo !== null || !!cityTerm;
 }
-var _mobileTotal = 0;
-/* "Показан X от Y" pill removed 2026-05-02 per user request — was eating
-   ~25px of feed height for marginal value. Stub kept so existing call sites
-   (_bindFeedObserver) compile without churn; safe to delete the call sites
-   and this stub together in a future cleanup. */
-function _renderCounterPill(/* idx */) {}
 function _buildMobileWrapHTML(c) {
   const galleryAttr = (Array.isArray(c.gallery_urls) && c.gallery_urls.length > 1)
     ? ` data-gallery="${ZdSec.escapeHtml(JSON.stringify(c.gallery_urls))}"`
@@ -4168,7 +4151,6 @@ function _buildMobileWrapHTML(c) {
 
 function renderStack(cards){
   const area = document.getElementById('stackArea'); if (!area) return;
-  _renderCounterPill(0);
   if (!cards.length) {
     area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`;
     return;
@@ -4299,7 +4281,6 @@ function _bindFeedObserver(area) {
     wraps.forEach(w => w.classList.remove('is-active'));
     best.target.classList.add('is-active');
     stackIdx = idx;
-    _renderCounterPill(idx);
     _startGalleryRotation(best.target);
   }, { root: area, threshold: [0.6] });
   area.querySelectorAll('.card-wrap').forEach(w => _feedObserver.observe(w));
