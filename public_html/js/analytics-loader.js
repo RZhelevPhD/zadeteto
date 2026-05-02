@@ -22,9 +22,16 @@
  *                on revoke (no full unload, but data collection stops)
  *     Cookies:   _ga, _ga_MT3ENS0YGX — in cookie-banner.js COOKIE_MAP under 'analytics'
  *
+ *   - TikTok Pixel (TikTok Ads remarketing + conversion tracking)
+ *     Gated on:  ZdConsent.has('marketing')
+ *     On revoke: no native consent-revoke API — we set a guard flag so the
+ *                loader skips re-init, but cookies must be deleted by
+ *                cookie-banner's _deleteCookiesFor('marketing') on revoke
+ *     Cookies:   _ttp (in cookie-banner.js COOKIE_MAP under 'marketing')
+ *     Loader:    no-op until TIKTOK_PIXEL_ID below is filled in
+ *
  * Pending (waiting on IDs from user):
  *   - Google Ads (-> marketing) — separate AW-XXX ID, will piggyback on gtag.js
- *   - TikTok Pixel (-> marketing)
  *
  * ─── ID config (public, not secrets) ─────────────────────────────────────
  * These IDs are intentionally embedded in client-side JS. Browsers expose
@@ -38,9 +45,10 @@
   var GOOGLE_ADS_ID    = null;  // pending: 'AW-XXXXXXX'
   var TIKTOK_PIXEL_ID  = null;  // pending: 'CXXXXXXXX...'
 
-  var _loaded = {};       // map of tool names → boolean
-  var _revoked = false;   // Meta Pixel revoke flag
-  var _ga4Revoked = false; // GA4 revoke flag
+  var _loaded = {};         // map of tool names → boolean
+  var _revoked = false;     // Meta Pixel revoke flag
+  var _ga4Revoked = false;  // GA4 revoke flag
+  var _ttqRevoked = false;  // TikTok Pixel revoke flag
 
   /* ─── Google Consent Mode v2 default — MUST run before gtag.js loads,
    *     on every page load, regardless of prior consent state.
@@ -148,6 +156,60 @@
     console.info('[analytics] GA4 consent revoked');
   }
 
+  /* ─────────────── TikTok Pixel ─────────────── */
+  function _loadTikTokPixel() {
+    if (_loaded.ttq) return;
+    if (!TIKTOK_PIXEL_ID) return;  // no-op until ID is configured
+    _loaded.ttq = true;
+
+    // Inline TikTok bootstrap (per official ttq snippet, minus auto PageView
+    // so we control event firing order).
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject = t;
+      var ttq = w[t] = w[t] || [];
+      ttq.methods = ['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie','holdConsent','revokeConsent','grantConsent'];
+      ttq.setAndDefer = function (t, e) {
+        t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))); };
+      };
+      for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
+      ttq.instance = function (t) {
+        for (var e = ttq._i[t] || [], n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]);
+        return e;
+      };
+      ttq.load = function (e, n) {
+        var r = 'https://analytics.tiktok.com/i18n/pixel/events.js';
+        var o = n && n.partner;
+        ttq._i = ttq._i || {};
+        ttq._i[e] = [];
+        ttq._i[e]._u = r;
+        ttq._t = ttq._t || {};
+        ttq._t[e] = +new Date();
+        ttq._o = ttq._o || {};
+        ttq._o[e] = n || {};
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = !0;
+        s.src = r + '?sdkid=' + e + '&lib=' + t;
+        var u = d.getElementsByTagName('script')[0];
+        u.parentNode.insertBefore(s, u);
+      };
+    }(window, document, 'ttq');
+
+    window.ttq.load(TIKTOK_PIXEL_ID);
+    window.ttq.grantConsent();
+    window.ttq.page();
+    _ttqRevoked = false;
+    console.info('[analytics] TikTok Pixel loaded (consent: marketing=true)');
+  }
+
+  function _revokeTikTokPixel() {
+    if (!_loaded.ttq || _ttqRevoked) return;
+    if (!window.ttq || typeof window.ttq.revokeConsent !== 'function') return;
+    window.ttq.revokeConsent();
+    _ttqRevoked = true;
+    console.info('[analytics] TikTok Pixel consent revoked');
+  }
+
   /* ─────────────── Master loader — runs for every tool ─────────────── */
   function _loadIfConsented() {
     var consent = window.ZdConsent && window.ZdConsent.get();
@@ -170,8 +232,10 @@
     /* marketing-tier tools (advertising pixels) */
     if (consent.marketing) {
       _loadMetaPixel();
+      _loadTikTokPixel();
     } else {
       _revokeMetaPixel();
+      _revokeTikTokPixel();
     }
   }
 

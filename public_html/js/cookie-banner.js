@@ -92,7 +92,7 @@
   // Known cookies per consent category — used to delete on revoke
   var COOKIE_MAP = {
     analytics: ['_cs_c', '_cs_id', '_cs_s', '_cs_mk', '_cs_ex', '_ga', '_ga_MT3ENS0YGX', '_gid', '_gat'],
-    marketing: ['_fbp', '_gcl_au', '_gcl_aw'],
+    marketing: ['_fbp', '_gcl_au', '_gcl_aw', '_ttp', 'ttwid'],
     ab: ['zd_ab_bucket']
   };
   function _deleteCookiesFor(category) {
