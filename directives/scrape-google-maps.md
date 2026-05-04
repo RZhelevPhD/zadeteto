@@ -145,6 +145,19 @@ Google Maps caps results at approximately 120 per search query.
 
 ---
 
+## Search Flow
+
+The scraper tries two routes per keyword/city pair, in order:
+
+1. **City-first flow (primary, preferred)** — For cities listed in `CITY_COORDS` (София, Пловдив, Варна, Бургас, Стара Загора, Русе, Велико Търново, Плевен, Сливен, Добрич, Шумен, Перник, Хасково, Ямбол, Пазарджик, Благоевград, Асеновград, Враца): open `https://www.google.com/maps/@lat,lng,12z?hl=bg` (zoom `CITY_MAP_ZOOM = 12`), wait for the search box (`input#searchboxinput`), type the keyword, and press Enter. This mimics a manual user search and lets Google pick a natural viewport, which typically returns more businesses than jumping straight to a `/maps/search/...` URL.
+2. **Fallback flow** — Runs if the primary flow raises a Playwright timeout or any other exception, or if the city is not in `CITY_COORDS`. For known cities it uses the viewport-anchor URL `/maps/search/{keyword}/@lat,lng,13z` (`DEFAULT_ZOOM = 13`). For unknown cities it falls back further to a raw `/maps/search/{keyword} {city}` query. If the results feed still doesn't render within 15s on this path, the scrape returns zero results for that pair.
+
+> **Current known issue:** the primary city-first flow is timing out waiting for `input#searchboxinput` to become visible, so in practice the fallback flow is what actually produces results today. The console prints `City-first flow timed out ... Falling back to viewport-anchor URL.` when this happens. This is expected until the search-box selector logic is fixed. No action is required from the operator — results still land in the CSV via the fallback path.
+
+Scrolling: once the results feed is visible, the scraper jumps the feed to `el.scrollHeight` on each tick (not a fixed 600px step). Between ticks it sleeps `SCROLL_PAUSE_MIN`–`SCROLL_PAUSE_MAX` seconds (currently 2.0–4.0s, randomised). It stops after `MAX_SCROLL_ATTEMPTS` (60) ticks, after `NO_NEW_RESULTS_THRESHOLD` (4) consecutive ticks with no new cards, or when the end-of-list sentinel appears.
+
+---
+
 ## Known Constraints
 
 | Constraint | Notes |
@@ -153,7 +166,8 @@ Google Maps caps results at approximately 120 per search query.
 | Phone not in scraper output | Only available on business detail pages. Recovered via website crawl in enrichment |
 | CAPTCHAs | Rare in headless mode. If it happens, run with `--headed` to solve manually, then `--resume` |
 | Selector instability | Google Maps DOM changes occasionally. If extraction looks empty, check `div.fontBodyMedium` and `a[aria-label]` in Chrome DevTools |
-| End-of-list sentinel `span.HlvSq` | May change on Google Maps updates — if scrolling never stops, the `NO_NEW_RESULTS_THRESHOLD` (3 consecutive empty scrolls) will still stop it |
+| End-of-list sentinel `span.HlvSq` | May change on Google Maps updates — if scrolling never stops, the `NO_NEW_RESULTS_THRESHOLD` (4 consecutive empty scrolls) will still stop it |
+| City-first flow timing out | The primary flow currently times out on `input#searchboxinput`; the fallback flow delivers results until this is fixed (see Search Flow above) |
 | Cyrillic in filenames | Non-word characters in keyword/city are replaced with `_` in the output filename |
 
 ---
@@ -188,3 +202,9 @@ keyword,city
 детска ясла,София
 частна детска градина,София
 ```
+
+---
+
+## Changelog
+- 2026-05-03: Added Асеновград (42.0167, 24.8694) and Враца (43.2069, 23.5436) to the documented `CITY_COORDS` list in Search Flow to support Tier D scrape coverage. No behaviour change beyond two new known-city entries.
+- 2026-04-20: Documented the new city-first search flow (opens `/maps/@lat,lng,12z` and types into `input#searchboxinput`), the viewport/raw-query fallbacks, the `scrollTo(0, scrollHeight)` scroll step, and the tuned scroll constants (`SCROLL_PAUSE_MIN/MAX` 2.0/4.0s, `MAX_SCROLL_ATTEMPTS` 60, `NO_NEW_RESULTS_THRESHOLD` 4, `CITY_MAP_ZOOM` 12). Added a known-issue note that the primary city-first flow currently times out on the search-box selector and the fallback path is what actually returns results today. Corrected the end-of-list constraint row from 3 to 4 consecutive empty scrolls.

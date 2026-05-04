@@ -24,15 +24,53 @@ UA_POOL = [
 ]
 
 VIEWPORT = {"width": 1280, "height": 900}
-SCROLL_PAUSE_MIN = 1.0
-SCROLL_PAUSE_MAX = 3.0
-MAX_SCROLL_ATTEMPTS = 40
-NO_NEW_RESULTS_THRESHOLD = 3
+SCROLL_PAUSE_MIN = 2.0
+SCROLL_PAUSE_MAX = 4.0
+MAX_SCROLL_ATTEMPTS = 60
+NO_NEW_RESULTS_THRESHOLD = 4
 
 OUTPUT_COLUMNS = [
     "name", "category", "address", "city",
     "phone", "website", "rating", "reviews", "google maps url",
 ]
+
+# Viewport anchors for Bulgarian cities. When the city is in this map, the
+# search URL becomes `/maps/search/{keyword}/@{lat},{lng},13z` — keyword only,
+# no city in the query string. This avoids Google's "brand-name hijack" where a
+# query like `Детски психолог Стара Загора` fuzzy-matches a specific business
+# whose name contains that exact phrase and opens its profile page directly
+# (no results feed rendered). Google's own UI relies on viewport context, not
+# the query text, to scope results to a city — we mirror that.
+CITY_COORDS: dict[str, tuple[float, float]] = {
+    "София": (42.6977, 23.3219),
+    "Пловдив": (42.1354, 24.7453),
+    "Варна": (43.2141, 27.9147),
+    "Бургас": (42.5048, 27.4626),
+    "Стара Загора": (42.4258, 25.6345),
+    "Русе": (43.8356, 25.9657),
+    "Велико Търново": (43.0757, 25.6172),
+    "Плевен": (43.4170, 24.6169),
+    "Сливен": (42.6824, 26.3150),
+    "Добрич": (43.5726, 27.8271),
+    "Шумен": (43.2706, 26.9229),
+    "Перник": (42.6055, 23.0374),
+    "Хасково": (41.9344, 25.5556),
+    "Ямбол": (42.4845, 26.5036),
+    "Пазарджик": (42.1928, 24.3329),
+    "Благоевград": (42.0119, 23.0935),
+    "Асеновград": (42.0167, 24.8694),
+    "Враца": (43.2069, 23.5436),
+}
+DEFAULT_ZOOM = 13
+CITY_MAP_ZOOM = 12  # wider viewport for the city-first search flow so Google's backend returns more businesses per query
+
+_CITY_COORDS_NORM = {k.strip().casefold(): v for k, v in CITY_COORDS.items()}
+
+
+def _lookup_city(city: str) -> tuple[float, float] | None:
+    if not city:
+        return None
+    return _CITY_COORDS_NORM.get(city.strip().casefold())
 
 
 async def _dismiss_consent(page):
@@ -159,20 +197,65 @@ async def scrape(keyword: str, city: str, headed: bool = False) -> list[dict]:
         )
         page = await context.new_page()
 
-        search_query = f"{keyword} {city}"
-        url = f"https://www.google.com/maps/search/{quote(search_query)}"
-        print(f"  Navigating to Google Maps: {search_query}")
-        await page.goto(url, wait_until="domcontentloaded")
-        await page.wait_for_timeout(2000)
+        coords = _lookup_city(city)
 
-        await _dismiss_consent(page)
+        # Primary flow: replicate the manual user behavior — open the city
+        # place page so Google picks a natural viewport, then type the keyword
+        # into the search box and press Enter. This yields far more results
+        # than jumping straight to /maps/search/... with a hardcoded zoom,
+        # because Google's backend uses the map's actual viewport to decide
+        # how many businesses to return in the feed.
+        primary_success = False
+        search_label = ""
+        if coords:
+            try:
+                lat, lng = coords
+                city_url = f"https://www.google.com/maps/@{lat},{lng},{CITY_MAP_ZOOM}z?hl=bg"
+                search_label = f"'{keyword}' via city map @ {city} (zoom {CITY_MAP_ZOOM})"
+                print(f"  Navigating to Google Maps: {search_label}")
+                await page.goto(city_url, wait_until="domcontentloaded")
+                await page.wait_for_timeout(3000)
+                await _dismiss_consent(page)
 
-        try:
-            await page.wait_for_selector('div[role="feed"]', timeout=15000)
-        except PlaywrightTimeout:
-            print(f"  WARNING: Results feed not found for '{search_query}'. Zero results or CAPTCHA.")
-            await browser.close()
-            return []
+                search_box = page.locator('input#searchboxinput')
+                await search_box.wait_for(state="visible", timeout=15000)
+                await search_box.click()
+                await search_box.fill("")
+                await search_box.type(keyword, delay=60)
+                await page.wait_for_timeout(500)
+                await search_box.press("Enter")
+
+                await page.wait_for_selector('div[role="feed"]', timeout=20000)
+                primary_success = True
+            except PlaywrightTimeout as e:
+                print(f"  City-first flow timed out ({e.__class__.__name__}). Falling back to viewport-anchor URL.")
+            except Exception as e:
+                print(f"  City-first flow failed: {e}. Falling back to viewport-anchor URL.")
+
+        # Fallback flow: viewport-anchor URL (for cities in CITY_COORDS) or
+        # raw {keyword} {city} query (for unknown cities). Kept so the scraper
+        # still works if Google's UI changes and the search box selector
+        # breaks, or if the city place page returns unexpected content.
+        if not primary_success:
+            if coords:
+                lat, lng = coords
+                url = f"https://www.google.com/maps/search/{quote(keyword, safe='')}/@{lat},{lng},{DEFAULT_ZOOM}z"
+                search_label = f"'{keyword}' @ {city} ({lat},{lng})"
+            else:
+                search_query = f"{keyword} {city}"
+                url = f"https://www.google.com/maps/search/{quote(search_query)}"
+                search_label = f"{search_query} (no viewport anchor)"
+            print(f"  Fallback: {search_label}")
+            await page.goto(url, wait_until="domcontentloaded")
+            await page.wait_for_timeout(2000)
+            await _dismiss_consent(page)
+
+            try:
+                await page.wait_for_selector('div[role="feed"]', timeout=15000)
+            except PlaywrightTimeout:
+                print(f"  WARNING: Results feed not found for {search_label}. Zero results or CAPTCHA.")
+                await browser.close()
+                return []
 
         feed = page.locator('div[role="feed"]')
         prev_count = 0
@@ -197,7 +280,7 @@ async def scrape(keyword: str, city: str, headed: bool = False) -> list[dict]:
                 print("  Reached end of list.")
                 break
 
-            await feed.evaluate("el => el.scrollBy(0, 600)")
+            await feed.evaluate("el => el.scrollTo(0, el.scrollHeight)")
             pause = random.uniform(SCROLL_PAUSE_MIN, SCROLL_PAUSE_MAX) * 1000
             await page.wait_for_timeout(pause)
 
