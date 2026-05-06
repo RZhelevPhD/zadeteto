@@ -151,9 +151,23 @@
     var oldSearchIcon = document.querySelector('.nav-search-icon');
     if (oldSearchIcon) oldSearchIcon.remove();
 
-    /* ---- REPORT BUTTON INJECTION (top nav, before login) ---- */
+    /* ---- MAP LINK + REPORT BUTTON INJECTION (top nav) ---- */
     var _nav = document.querySelector('nav');
     var _navLinks = _nav ? _nav.querySelector('.nav-links') : null;
+
+    if (_navLinks && !_navLinks.querySelector('a.nav-link-map')) {
+      var mapLink = document.createElement('a');
+      mapLink.href = 'map.html';
+      mapLink.className = 'nav-link nav-link-map';
+      mapLink.textContent = 'Карта';
+      if (/\/map\.html$/i.test(location.pathname)) {
+        mapLink.setAttribute('aria-current', 'page');
+      }
+      var searchBtn = _navLinks.querySelector('.nav-btn-search');
+      if (searchBtn) _navLinks.insertBefore(mapLink, searchBtn);
+      else _navLinks.appendChild(mapLink);
+    }
+
     if (_navLinks && !_navLinks.querySelector('.nav-btn-report')) {
       var reportBtn = document.createElement('a');
       reportBtn.href = 'report.html';
@@ -520,4 +534,82 @@
   } else {
     init();
   }
+})();
+
+/* === PWA: SERVICE WORKER REGISTRATION + UPDATE TOAST ============================
+ *
+ * Phase 1 of the PWA push-to-its-limits plan. Registers /sw.js and shows a
+ * non-blocking toast when a new SW version is waiting. Tapping the toast tells
+ * the new SW to skipWaiting and reloads the page so users get fresh code.
+ *
+ * Skips registration on file:// (local Chrome screenshot runs) and when the
+ * browser doesn't support service workers.
+ */
+(function () {
+  if (!('serviceWorker' in navigator)) return;
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') return;
+
+  // Set to true only when the user clicks "Обнови" — the resulting
+  // controllerchange (after skipWaiting) is the only one that should reload.
+  // First-visit activation also fires controllerchange (because sw.js calls
+  // clients.claim()), but we don't want to reload that one.
+  var userTriggeredUpdate = false;
+
+  function showUpdateToast(worker) {
+    if (document.getElementById('zd-pwa-update-toast')) return;
+    var toast = document.createElement('div');
+    toast.id = 'zd-pwa-update-toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    toast.style.cssText = [
+      'position:fixed', 'left:50%', 'bottom:24px', 'transform:translateX(-50%)',
+      'background:#1a103c', 'color:#fff', 'padding:14px 20px', 'border-radius:14px',
+      'font:600 14px/1.4 \'DM Sans\',system-ui,sans-serif', 'z-index:99999',
+      'display:flex', 'align-items:center', 'gap:14px',
+      'box-shadow:0 12px 32px -8px rgba(26,16,60,.45)',
+      'max-width:calc(100vw - 32px)'
+    ].join(';');
+    toast.innerHTML =
+      '<span>Налична е нова версия.</span>' +
+      '<button type="button" style="appearance:none;border:0;background:#7c4dff;color:#fff;font:inherit;padding:8px 16px;border-radius:999px;cursor:pointer">Обнови</button>' +
+      '<button type="button" aria-label="Затвори" style="appearance:none;border:0;background:transparent;color:#cfc6ec;font:inherit;cursor:pointer;padding:4px 6px">×</button>';
+    var btns = toast.querySelectorAll('button');
+    btns[0].addEventListener('click', function () {
+      userTriggeredUpdate = true;
+      worker.postMessage({ type: 'SKIP_WAITING' });
+    });
+    btns[1].addEventListener('click', function () { toast.remove(); });
+    document.body.appendChild(toast);
+  }
+
+  function trackWaiting(reg) {
+    if (reg.waiting) showUpdateToast(reg.waiting);
+    reg.addEventListener('updatefound', function () {
+      var sw = reg.installing;
+      if (!sw) return;
+      sw.addEventListener('statechange', function () {
+        if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateToast(sw);
+        }
+      });
+    });
+  }
+
+  // After the user clicks "Обнови", the new SW takes over and fires
+  // controllerchange — that's our cue to reload so the fresh worker
+  // serves the next request. Guard the user-triggered flag and also
+  // guard against double-reload from a rapid sequence of events.
+  var reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (!userTriggeredUpdate || reloading) return;
+    reloading = true;
+    location.reload();
+  });
+
+  window.addEventListener('load', function () {
+    navigator.serviceWorker
+      .register('/sw.js', { updateViaCache: 'none' })
+      .then(trackWaiting)
+      .catch(function () {});
+  });
 })();

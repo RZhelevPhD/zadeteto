@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Без връзка — За Детето</title>
+<meta name="theme-color" content="#7c4dff">
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<style>
+  :root {
+    --zd-purple: #7c4dff;
+    --zd-purple-light: #efe8ff;
+    --bg: #fdfcfb;
+    --text: #1a103c;
+    --muted: #8b80b0;
+    --border: #ece8f3;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+  .wrap {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+  }
+  .icon {
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 24px;
+    border-radius: 22px;
+    background: var(--zd-purple-light);
+    display: grid;
+    place-items: center;
+  }
+  .icon svg { width: 44px; height: 44px; color: var(--zd-purple); }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 5vw, 36px);
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  p {
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .btn {
+    appearance: none;
+    border: 0;
+    background: var(--zd-purple);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+    box-shadow: 0 8px 20px -8px rgba(124, 77, 255, 0.5);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 24px -8px rgba(124, 77, 255, 0.6); }
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:focus-visible { outline: 2px solid var(--zd-purple); outline-offset: 3px; }
+  .links {
+    margin-top: 24px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 1px solid transparent;
+    transition: color 160ms ease, border-color 160ms ease;
+  }
+  .links a:hover { color: var(--zd-purple); border-color: var(--zd-purple); }
+  @media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
+    .btn:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 1l22 22"/>
+        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+        <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
+        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+        <path d="M12 20h.01"/>
+      </svg>
+    </div>
+    <h1>Изглежда си без връзка</h1>
+    <p>Провери интернета и опитай пак. Запазените страници остават достъпни и без мрежа.</p>
+    <button class="btn" type="button" id="retry">Опитай отново</button>
+    <nav class="links">
+      <a href="/">Начало</a>
+      <a href="/search.html">Търсене</a>
+      <a href="/partners.html">Партньори</a>
+    </nav>
+  </main>
+  <script>
+    document.getElementById('retry').addEventListener('click', function () {
+      location.reload();
+    });
+  </script>
+</body>
+</html>

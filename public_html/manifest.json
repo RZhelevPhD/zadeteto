@@ -19,6 +19,24 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
+    },
+    {
+      "src": "brand_assets/zadeteto-app-icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Търсене",
+      "short_name": "Търси",
+      "url": "/search.html"
+    },
+    {
+      "name": "За партньори",
+      "short_name": "Партньори",
+      "url": "/partners.html"
     }
   ]
 }

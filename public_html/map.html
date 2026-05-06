@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Картата идва скоро · За Детето</title>
+<meta name="description" content="Подреждаме проверените детски места по град. Скоро ще можеш да ги откриваш и на карта.">
+
+<!-- SEO -->
+<link rel="canonical" href="https://zadeteto.com/map.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="За Детето">
+<meta property="og:locale" content="bg_BG">
+<meta property="og:url" content="https://zadeteto.com/map.html">
+<meta property="og:title" content="Картата идва скоро · За Детето">
+<meta property="og:description" content="Подреждаме проверените детски места по град. Скоро ще можеш да ги откриваш и на карта.">
+<meta property="og:image" content="https://zadeteto.com/brand_assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Картата идва скоро · За Детето">
+<meta name="twitter:description" content="Подреждаме проверените детски места по град. Скоро ще можеш да ги откриваш и на карта.">
+<meta name="twitter:image" content="https://zadeteto.com/brand_assets/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#fdfcfb">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<script src="js/nav-inject.js"></script>
+
+<style>
+  :root {
+    --zd-purple: #7c4dff;
+    --zd-purple-dark: #5a2ecf;
+    --zd-purple-soft: #f0eaff;
+    --zd-gold: #d4af37;
+    --zd-green: #2e994d;
+    --zd-charcoal: #36454f;
+    --zd-grey: #9b94b8;
+    --bg: #fdfcfb;
+    --surface: #ffffff;
+    --text: #1a103c;
+    --muted: #8b80b0;
+    --accent: var(--zd-purple);
+    --border: #ece8f3;
+    --nav-h: 80px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+  h1, h2, h3 { font-family: 'DM Serif Display', serif; }
+
+  main {
+    flex: 1;
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* ═══ TEASER STAGE ═══
+     A faux "map" canvas: layered radial gradients suggest a city, scattered
+     pins use the real category icons + tier palette so the user can read the
+     finished feature's visual language at a glance. */
+  .stage {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+    height: calc(100vh - var(--nav-h));
+    height: calc(100dvh - var(--nav-h));
+    overflow: hidden;
+    /* Flex centring for the overlay panel. Children that should sit on top
+       of the map (the absolute pins + radius preview) are still positioned
+       absolutely; the overlay is the one normal-flow child and gets margin
+       auto from the flex container so it can never exceed the parent box
+       even when its inline content (h1, paragraph) has long words. */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background:
+      radial-gradient(circle at 22% 32%, rgba(124, 77, 255, 0.10) 0%, transparent 38%),
+      radial-gradient(circle at 78% 68%, rgba(212, 175, 55, 0.08) 0%, transparent 42%),
+      radial-gradient(circle at 50% 80%, rgba(46, 153, 77, 0.06) 0%, transparent 35%),
+      linear-gradient(180deg, #fbf8ff 0%, #f6f1eb 100%);
+  }
+
+  /* Subtle "street" lines so the canvas reads as a map and not a flat panel.
+     Two overlapping grids at off-axis angles, very low opacity. */
+  .stage::before {
+    content: "";
+    position: absolute;
+    inset: -10%;
+    background-image:
+      linear-gradient(73deg, rgba(124, 77, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(163deg, rgba(124, 77, 255, 0.04) 1px, transparent 1px);
+    background-size: 84px 84px, 96px 96px;
+    pointer-events: none;
+  }
+
+  /* SVG noise overlay — adds depth and breaks the flat-gradient look. */
+  .stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.2 0 0 0 0 0.2 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  /* ═══ FAKE PINS ═══ */
+  .pin {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #ffffff;
+    box-shadow:
+      0 1px 2px rgba(26, 16, 60, 0.18),
+      0 8px 20px rgba(26, 16, 60, 0.14);
+    border: 2px solid #ffffff;
+    transform: translate(-50%, -50%);
+    animation: pinFloat 6s ease-in-out infinite;
+    will-change: transform;
+  }
+  .pin svg { width: 56%; height: 56%; display: block; }
+
+  /* Stagger animation start so eleven pins do not bob in lock-step (also
+     spreads compositor work across frames on mid-range mobile). */
+  .pin:nth-child(1)  { animation-delay: 0.0s;  }
+  .pin:nth-child(2)  { animation-delay: 0.45s; }
+  .pin:nth-child(3)  { animation-delay: 0.9s;  }
+  .pin:nth-child(4)  { animation-delay: 1.35s; }
+  .pin:nth-child(5)  { animation-delay: 1.8s;  }
+  .pin:nth-child(6)  { animation-delay: 2.25s; }
+  .pin:nth-child(7)  { animation-delay: 2.7s;  }
+  .pin:nth-child(8)  { animation-delay: 3.15s; }
+  .pin:nth-child(9)  { animation-delay: 3.6s;  }
+  .pin:nth-child(10) { animation-delay: 4.05s; }
+  .pin:nth-child(11) { animation-delay: 4.5s;  }
+
+  /* Tier sizing: paid tiers larger and layered above. */
+  .pin--premium    { width: 44px; height: 44px; background: var(--zd-gold);     z-index: 4; }
+  .pin--dovreen    { width: 42px; height: 42px; background: var(--zd-purple);   z-index: 3; }
+  .pin--proveren   { width: 40px; height: 40px; background: var(--zd-green);    z-index: 2; }
+  .pin--standarten { width: 36px; height: 36px; background: var(--zd-charcoal); z-index: 1; }
+
+  @keyframes pinFloat {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+    50%      { transform: translate(-50%, -50%) translateY(-3px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pin { animation: none; }
+    .overlay-eyebrow::before { animation: none; }
+  }
+
+  /* ═══ 2 km RADIUS PREVIEW ═══ */
+  .radius-ring {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124, 77, 255, 0.14) 0%, rgba(124, 77, 255, 0.04) 70%);
+    border: 2px dashed rgba(124, 77, 255, 0.55);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .radius-dot {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--zd-purple);
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 6px rgba(124, 77, 255, 0.18);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  @media (max-width: 768px) {
+    .radius-ring { width: 130px; height: 130px; }
+  }
+
+  /* ═══ OVERLAY PANEL ═══ */
+  .overlay {
+    position: relative;
+    width: 100%;
+    /* Belt-and-suspenders viewport clamp: width:100% should be enough since
+       the parent .stage clamps to viewport width, but min-width:auto on
+       flex/grid ancestors has bitten us in the past, so we also cap against
+       100vw directly. */
+    max-width: min(560px, calc(100vw - 32px));
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(124, 77, 255, 0.12);
+    border-radius: 24px;
+    padding: 40px 36px 32px;
+    text-align: center;
+    box-shadow:
+      0 1px 2px rgba(26, 16, 60, 0.04),
+      0 12px 40px rgba(124, 77, 255, 0.18),
+      0 32px 80px rgba(26, 16, 60, 0.10);
+    z-index: 10;
+  }
+  .overlay-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--zd-purple-dark);
+    background: var(--zd-purple-soft);
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  .overlay-eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--zd-purple);
+    box-shadow: 0 0 0 4px rgba(124, 77, 255, 0.25);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(124, 77, 255, 0.25); }
+    50%      { box-shadow: 0 0 0 7px rgba(124, 77, 255, 0.05); }
+  }
+  .overlay h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 16px;
+    overflow-wrap: break-word;
+  }
+  .overlay p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-bottom: 28px;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .overlay-cta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+    border: 2px solid transparent;
+  }
+  .btn:focus-visible {
+    outline: 3px solid rgba(124, 77, 255, 0.4);
+    outline-offset: 2px;
+  }
+  .btn-primary {
+    background: var(--zd-purple);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(26, 16, 60, 0.18);
+  }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--zd-purple-dark);
+    border-color: rgba(124, 77, 255, 0.28);
+  }
+  .btn-secondary:active { transform: scale(0.97); }
+  /* Hover effects only on devices with a precise pointer — avoids sticky-hover
+     on touch devices where :hover persists after a tap. */
+  @media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover {
+      background: var(--zd-purple-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(26, 16, 60, 0.24);
+    }
+    .btn-secondary:hover {
+      background: var(--zd-purple-soft);
+      border-color: rgba(124, 77, 255, 0.45);
+    }
+  }
+
+  /* ═══ TIER LEGEND ═══ */
+  .legend {
+    margin: 24px 0 0;
+    padding: 20px 0 0;
+    list-style: none;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+  }
+
+  @media (max-width: 640px) {
+    .overlay {
+      padding: 28px 20px 24px;
+      border-radius: 20px;
+    }
+    .overlay h1 {
+      font-size: 26px;
+      /* Force a line break before the last word so the headline breaks
+         predictably ("Картата идва\nскоро") instead of relying on browser
+         wrapping which lets the title push the panel wider than the
+         viewport. */
+      max-width: 11ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .overlay p { font-size: 15px; }
+    .overlay-cta { flex-direction: column; }
+    .btn { width: 100%; justify-content: center; }
+    /* 2x2 grid keeps all four tier labels visible without horizontal overflow. */
+    .legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+      font-size: 11px;
+    }
+    .legend-item { justify-content: flex-start; }
+    /* Hide the lower tiers on narrow screens so the panel stays readable.
+       Premium + Доверен still show — those carry the most visual weight. */
+    .pin--standarten,
+    .pin--proveren { display: none; }
+  }
+
+  /* ═══ GLOBAL FOOTER ═══ */
+  .zd-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 32px 24px;
+    background: var(--surface);
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .zd-footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .zd-footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .zd-footer-links a:hover { color: var(--accent); }
+  .zd-footer-copy {
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.6;
+  }
+  @media (max-width: 768px) {
+    :root { --nav-h: 56px; }
+  }
+  @media (max-width: 640px) {
+    .zd-footer { padding: 24px 16px; }
+    .zd-footer-links { gap: 16px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Начало</a>
+    <a href="about.html" class="nav-link">За нас</a>
+    <a href="search.html" class="nav-btn-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Търсене</a>
+    <a href="partners.html" class="nav-btn-partner">Стани партньор</a>
+    <a href="pricing.html" class="nav-link">Абонаменти</a>
+    <a href="contacts.html" class="nav-link">Контакти</a>
+    <a href="search.html?login=true" class="nav-btn-login">Вход</a>
+  </div>
+</nav>
+
+<main id="zd-main-content">
+  <div class="stage">
+
+    <!-- 2 km radius preview, off-centre so it does not collide with the panel.
+         Decorative — hidden from assistive tech so screen readers focus on the
+         overlay headline + CTAs instead. -->
+    <div class="radius-ring" style="left: 22%; top: 36%;" aria-hidden="true"></div>
+    <div class="radius-dot"  style="left: 22%; top: 36%;" aria-hidden="true"></div>
+
+    <!-- Scattered pins. Coordinates picked by hand to spread the eye around
+         the canvas without crowding the centre overlay. Each pin uses the
+         same category SVG and tier colour as the live map. -->
+
+    <!-- Top-left cluster -->
+    <div class="pin pin--dovreen"    style="left: 14%; top: 22%;" aria-hidden="true">
+      <!-- Специалисти / stethoscope -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v6a4 4 0 0 0 8 0V3"/><path d="M4 3h2"/><path d="M10 3h2"/><path d="M8 13v3a5 5 0 0 0 10 0v-2"/><circle cx="18" cy="11" r="2"/></svg>
+    </div>
+    <div class="pin pin--proveren"   style="left: 30%; top: 18%;" aria-hidden="true">
+      <!-- Учене / graduation cap -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v4c0 1.5 3 3 6 3s6-1.5 6-3v-4"/><path d="M22 10v6"/></svg>
+    </div>
+    <div class="pin pin--standarten" style="left: 8%; top: 50%;" aria-hidden="true">
+      <!-- Стоки / shopping bag -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    </div>
+    <div class="pin pin--premium"    style="left: 32%; top: 56%;" aria-hidden="true">
+      <!-- Спорт / trophy -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0z"/></svg>
+    </div>
+
+    <!-- Top-right cluster -->
+    <div class="pin pin--premium"    style="left: 70%; top: 16%;" aria-hidden="true">
+      <!-- Култура / theatre mask -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v8a8 8 0 0 1-16 0z"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/><path d="M9 15c1 1 2 1.5 3 1.5s2-.5 3-1.5"/></svg>
+    </div>
+    <div class="pin pin--dovreen"    style="left: 86%; top: 28%;" aria-hidden="true">
+      <!-- Игри / gamepad -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15.5" cy="13" r="0.6" fill="currentColor"/><circle cx="18" cy="11" r="0.6" fill="currentColor"/></svg>
+    </div>
+    <div class="pin pin--standarten" style="left: 78%; top: 46%;" aria-hidden="true">
+      <!-- Тържества / cake -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s1-1 3-1 3 1 5 1 3-1 5-1 3 1 3 1"/><path d="M2 21h20"/><path d="M8 7v4"/><path d="M12 7v4"/><path d="M16 7v4"/><path d="M8 4v1"/><path d="M12 4v1"/><path d="M16 4v1"/></svg>
+    </div>
+    <div class="pin pin--proveren"   style="left: 92%; top: 60%;" aria-hidden="true">
+      <!-- Домашна грижа / house with heart -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10 12 3l9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 18c-1.2-1-3-2.4-3-4.2 0-1.1.9-1.8 1.8-1.8.7 0 1.2.4 1.5 1 .3-.6.8-1 1.5-1 .9 0 1.8.7 1.8 1.8 0 1.8-1.8 3.2-3 4.2"/></svg>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="pin pin--proveren"   style="left: 18%; top: 84%;" aria-hidden="true">
+      <!-- Учене -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v4c0 1.5 3 3 6 3s6-1.5 6-3v-4"/><path d="M22 10v6"/></svg>
+    </div>
+    <div class="pin pin--dovreen"    style="left: 44%; top: 88%;" aria-hidden="true">
+      <!-- Специалисти -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v6a4 4 0 0 0 8 0V3"/><path d="M4 3h2"/><path d="M10 3h2"/><path d="M8 13v3a5 5 0 0 0 10 0v-2"/><circle cx="18" cy="11" r="2"/></svg>
+    </div>
+    <div class="pin pin--premium"    style="left: 64%; top: 82%;" aria-hidden="true">
+      <!-- Спорт -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0z"/></svg>
+    </div>
+    <div class="pin pin--standarten" style="left: 86%; top: 86%;" aria-hidden="true">
+      <!-- Култура -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v8a8 8 0 0 1-16 0z"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/><path d="M9 15c1 1 2 1.5 3 1.5s2-.5 3-1.5"/></svg>
+    </div>
+
+    <!-- Centre overlay -->
+    <div class="overlay">
+      <span class="overlay-eyebrow">Идва скоро</span>
+      <h1>Картата идва скоро</h1>
+      <p>Подреждаме проверените детски места по град. Дотогава виж пълния каталог и запази любимите си.</p>
+      <div class="overlay-cta">
+        <a class="btn btn-primary" href="search.html">
+          Виж каталога
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
+        </a>
+        <a class="btn btn-secondary" href="partners.html">Партньори</a>
+      </div>
+
+      <ul class="legend" role="list" aria-label="Какво ще видиш на картата">
+        <li class="legend-item"><span class="legend-dot" style="background: var(--zd-gold);"></span>Премиум</li>
+        <li class="legend-item"><span class="legend-dot" style="background: var(--zd-purple);"></span>Доверен</li>
+        <li class="legend-item"><span class="legend-dot" style="background: var(--zd-green);"></span>Проверен</li>
+        <li class="legend-item"><span class="legend-dot" style="background: var(--zd-charcoal);"></span>Стандартен</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="zd-footer">
+  <div class="zd-footer-links">
+    <a href="index.html">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="report.html">Докладвай</a>
+    <a href="business-login.html">Бизнес Вход</a>
+  </div>
+  <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+</body>
+</html>
