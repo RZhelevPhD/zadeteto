@@ -1,0 +1,3323 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Карта (embed) · ZaDeteto</title>
+  <!-- Standalone widget loaded via iframe from map.html. Direct visits should
+       not be indexed; the wrapper page is the public surface. -->
+  <meta name="robots" content="noindex,nofollow" />
+
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.css" />
+
+  <style>
+    :root {
+      --brand: #6E3CFF;
+      --brand-soft: #EFE9FF;
+      --brand-deep: #4D2BB8;
+      --ink: #1A1430;
+      --ink-mute: #6B6486;
+      --bg-base: #FAF7FF;
+      --shadow-pin: 0 4px 14px -4px rgba(110, 60, 255, 0.55);
+      --shadow-pop: 0 18px 38px -16px rgba(26, 20, 48, 0.28),
+                    0 4px 14px -6px rgba(110, 60, 255, 0.18);
+      --radius-pop: 18px;
+      --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      /* Tier palette — mirrors public_html/search.html so the map and the
+         search list stay visually in sync. Update both files together. */
+      --zd-purple-600: #7c4dff;   /* Доверен */
+      --zd-purple-800: #5a2ecf;
+      --zd-mint-600:   #2e994d;   /* Проверен */
+      --zd-mint-800:   #1a6e34;
+      --zd-gold-500:   #d4af37;   /* Премиум */
+      --zd-gold-700:   #8a6800;
+      --zd-charcoal:   #36454f;   /* Стандартен */
+      --zd-gray-400:   #b0b0b0;   /* Безплатен */
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: var(--font-body);
+      color: var(--ink);
+      background: var(--bg-base);
+      overflow: hidden;
+    }
+
+    #map {
+      position: absolute;
+      inset: 0;
+    }
+
+    .map-overlay-top {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 5;
+      display: flex;
+      gap: 12px;
+      pointer-events: none;
+    }
+    .map-overlay-top > * { pointer-events: auto; }
+
+    .city-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #fff;
+      border-radius: 999px;
+      box-shadow: var(--shadow-pop);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .city-pill svg { width: 16px; height: 16px; color: var(--brand); }
+
+    .legend {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-pop);
+      font-size: 12px;
+      color: var(--ink-mute);
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .legend-dot.premium   { background: var(--zd-gold-500); }
+    .legend-dot.dovreen   { background: var(--zd-purple-600); }
+    .legend-dot.proveren  { background: var(--zd-mint-600); }
+    .legend-dot.standarten{ background: #c8c2d4; border: 1px solid var(--zd-gray-400); }
+    .legend-dot.bezplaten { background: #fff; border: 2px solid var(--zd-gray-400); }
+    .legend[hidden] { display: none !important; }
+
+    /* City selector pill bar */
+    .city-tabs-wrap {
+      position: absolute;
+      top: 70px;
+      left: 16px;
+      right: 16px;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .city-tabs {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-radius: 999px;
+      box-shadow: var(--shadow-pop);
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      pointer-events: auto;
+    }
+    .city-tabs::-webkit-scrollbar { display: none; }
+    .city-tab {
+      flex-shrink: 0;
+      appearance: none;
+      border: none;
+      background: transparent;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-mute);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background-color 140ms ease-out, color 140ms ease-out;
+      white-space: nowrap;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .city-tab:hover { background: var(--brand-soft); color: var(--brand-deep); }
+    }
+    .city-tab[aria-selected="true"] {
+      background: var(--brand);
+      color: #fff;
+    }
+    .city-tab:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .stat-pill {
+      position: absolute;
+      bottom: 24px;
+      left: 16px;
+      z-index: 5;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      box-shadow: var(--shadow-pop);
+      font-size: 12px;
+      color: var(--ink-mute);
+    }
+    .stat-pill strong { color: var(--ink); font-weight: 600; }
+
+    /* Empty state card */
+    .empty-state {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 6;
+      width: min(340px, calc(100% - 32px));
+      padding: 24px 22px 22px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: var(--shadow-pop);
+      text-align: center;
+    }
+    .empty-state .empty-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--brand-soft);
+      border-radius: 50%;
+      color: var(--brand);
+    }
+    .empty-state .empty-icon svg { width: 24px; height: 24px; }
+    .empty-state h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .empty-state p {
+      margin: 0 0 18px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--ink-mute);
+    }
+    .empty-state a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      background: var(--brand);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), background-color 140ms ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .empty-state a:hover { background: var(--brand-deep); transform: translateY(-1px); }
+    }
+    .empty-state a:active { transform: scale(0.97); }
+
+    /* Mapbox popup override — Airbnb-style card. Wider than the default to
+       give the layered card chrome (tier accent strip, ratings strip,
+       services chips, socials row) room to read. */
+    .mapboxgl-popup-content {
+      padding: 0;
+      border-radius: var(--radius-pop);
+      box-shadow: var(--shadow-pop);
+      overflow: hidden;
+      width: 320px;
+    }
+    .mapboxgl-popup-close-button {
+      font-size: 22px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      top: 6px;
+      right: 6px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 50%;
+      z-index: 2;
+    }
+    .mapboxgl-popup-close-button:hover {
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+    }
+    .mapboxgl-popup-tip { display: none; }
+
+    /* ═══ Popup card — search-style, tier-tinted, fit-for-popup ═══ */
+    /* Card width is wider on the popup itself so the layered visual treatment
+       below has room to read. Mapbox's `.mapboxgl-popup-content` width is
+       overridden further down to 320px (240px on mobile). */
+    .pop-card {
+      font-family: var(--font-body);
+      position: relative;
+      /* Layered tier-tinted shadow mirrors search.html `.rig-card` —
+         soft outer glow + inner ridge so the card lifts off the basemap. */
+    }
+    /* Tier-coloured top accent strip — 3 px ribbon at the very top of the
+       card. Matches search.html's `.cf-hero` border-bottom-2px in spirit. */
+    .pop-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 2;
+      background: var(--zd-purple-600);
+    }
+    .pop-card[data-tier="premium"]::before    { background: var(--zd-gold-500); }
+    .pop-card[data-tier="dovreen"]::before    { background: var(--zd-purple-600); }
+    .pop-card[data-tier="proveren"]::before   { background: var(--zd-mint-600); }
+    .pop-card[data-tier="standarten"]::before { background: var(--zd-charcoal); }
+    .pop-card[data-tier="bezplaten"]::before  { background: var(--ink-mute); }
+
+    .pop-img {
+      position: relative;
+      height: 150px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Brand-mark placeholder when no photo — mirrors search.html
+       `.rig-thumb-empty` with a centered ZaDeteto icon mark. */
+    .pop-img-mark {
+      width: 56px;
+      height: 56px;
+      opacity: 0.55;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
+    }
+    .pop-img:not(.pop-img--empty) .pop-img-mark { display: none; }
+    /* Tier-themed empty placeholders mirror search.html .zd-photo--empty */
+    .pop-img--empty.pop-img--premium    { background: linear-gradient(145deg, #fdf8e7 0%, #f5e8b3 100%); }
+    .pop-img--empty.pop-img--dovreen    { background: linear-gradient(145deg, #f8f5ff 0%, #d4b6ff 100%); }
+    .pop-img--empty.pop-img--proveren   { background: linear-gradient(145deg, #edf9f0 0%, #c7e7d0 100%); }
+    .pop-img--empty.pop-img--standarten { background: linear-gradient(145deg, #f3f3f3 0%, #d6d6d6 100%); }
+    .pop-img--empty.pop-img--bezplaten  { background: linear-gradient(145deg, #fafafa 0%, #e8e8e8 100%); }
+    .pop-img:not(.pop-img--empty)::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent 55%);
+    }
+
+    .pop-tier {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #fff;
+      border-radius: 999px;
+      z-index: 1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    }
+    .pop-tier--premium    { background: linear-gradient(135deg, var(--zd-gold-500), var(--zd-gold-700)); }
+    .pop-tier--dovreen    { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-800)); }
+    .pop-tier--proveren   { background: linear-gradient(135deg, var(--zd-mint-600), var(--zd-mint-800)); }
+    .pop-tier--standarten { background: linear-gradient(135deg, var(--zd-charcoal), #1f2a33); }
+
+    /* Bookmark — visual only inside popup; clicking the CTA lands on the
+       listing page, where save state is the canonical source of truth. */
+    .pop-bookmark {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ink);
+      border-radius: 50%;
+      z-index: 1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      pointer-events: none;
+    }
+    .pop-bookmark svg { width: 14px; height: 14px; }
+
+    .pop-body { padding: 14px 16px 14px; }
+    .pop-title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .pop-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.3;
+      flex: 1;
+      min-width: 0;
+    }
+    /* Category icon — currentColor follows the tier-class set on the wrap. */
+    .pop-cat-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      padding: 2px;
+      background: rgba(110, 60, 255, 0.06);
+      color: var(--zd-purple-600);
+      margin-top: -1px;
+    }
+    .pop-cat-icon svg { width: 100%; height: 100%; display: block; }
+    .pop-cat-icon--premium    { color: var(--zd-gold-500);   background: rgba(212, 175, 55, 0.12); }
+    .pop-cat-icon--dovreen    { color: var(--zd-purple-600); background: rgba(124, 77, 255, 0.10); }
+    .pop-cat-icon--proveren   { color: var(--zd-mint-600);   background: rgba(46, 153, 77, 0.10); }
+    .pop-cat-icon--standarten { color: var(--zd-charcoal);   background: rgba(54, 69, 79, 0.08); }
+    .pop-cat-icon--bezplaten  { color: var(--ink-mute);      background: rgba(107, 100, 134, 0.08); }
+    .pop-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+      margin-bottom: 10px;
+      font-size: 12.5px;
+      color: var(--ink-mute);
+    }
+    .pop-rating { display: inline-flex; align-items: center; gap: 4px; color: var(--ink); font-weight: 600; }
+    .pop-rating svg { width: 13px; height: 13px; color: #F5B800; }
+    .pop-meta-sep {
+      width: 3px;
+      height: 3px;
+      background: currentColor;
+      border-radius: 50%;
+      opacity: 0.45;
+    }
+    .pop-meta-loc { display: inline-flex; align-items: center; gap: 4px; }
+    .pop-meta-loc svg { width: 11px; height: 11px; flex-shrink: 0; opacity: 0.8; }
+
+    /* Description preview — clamped to 3 lines, mirrors search.html `.rig-desc` */
+    .pop-desc {
+      margin: 0 0 10px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--ink);
+      opacity: 0.78;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+      overflow-wrap: break-word;
+    }
+
+    /* 3-row ratings strip — Audit / Google / ZaDeteto. Mirrors search.html
+       `.rig-ratings`. Ratings without data render with a `—` placeholder
+       in muted style. */
+    .pop-ratings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+      padding: 8px 0;
+      border-top: 1px solid #f1eff7;
+      border-bottom: 1px solid #f1eff7;
+    }
+    .pop-rblock {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 10.5px;
+    }
+    .pop-rblock-icn { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
+    .pop-rblock-icn svg { width: 14px; height: 14px; }
+    .pop-rblock-lbl { color: var(--ink-mute); font-weight: 500; letter-spacing: 0.02em; }
+    .pop-rblock-num { color: var(--ink); font-weight: 700; font-size: 12.5px; line-height: 1.1; }
+    .pop-rblock-num small { color: var(--ink-mute); font-weight: 500; font-size: 10px; margin-left: 2px; }
+    .pop-rblock--empty .pop-rblock-num { color: var(--ink-mute); opacity: 0.6; }
+    .pop-rblock--empty .pop-rblock-icn { opacity: 0.45; }
+
+    /* Service tags — chip-style, tier-tinted */
+    .pop-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+    .pop-tag {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      line-height: 1.4;
+    }
+    .pop-tag--premium    { background: #fbf3d8; color: var(--zd-gold-700);   border: 1px solid #ead78a; }
+    .pop-tag--dovreen    { background: #f6f1ff; color: var(--zd-purple-800); border: 1px solid #efe8ff; }
+    .pop-tag--proveren   { background: var(--zd-mint-50, #edf9f0); color: var(--zd-mint-800); border: 1px solid #d4f5dc; }
+    .pop-tag--standarten { background: #f3f3f3; color: #333; border: 1px solid #e8e8e8; }
+    .pop-tag--bezplaten  { background: #fafafa; color: #777; border: 1px solid #e8e8e8; }
+
+    /* Bottom row — primary CTA + decorative social mini-icons */
+    .pop-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pop-cta {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      padding: 9px 14px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), filter 140ms ease;
+    }
+    .pop-cta--premium    { background: linear-gradient(135deg, var(--zd-gold-500), var(--zd-gold-700)); }
+    .pop-cta--dovreen    { background: linear-gradient(135deg, var(--zd-purple-600), var(--zd-purple-800)); }
+    .pop-cta--proveren   { background: linear-gradient(135deg, var(--zd-mint-600), var(--zd-mint-800)); }
+    .pop-cta--standarten { background: linear-gradient(135deg, var(--zd-charcoal), #1f2a33); }
+    .pop-cta--bezplaten  { background: var(--brand); }
+    @media (hover: hover) and (pointer: fine) {
+      .pop-cta:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    }
+    .pop-cta:active { transform: scale(0.97); }
+    .pop-cta svg { width: 14px; height: 14px; }
+
+    .pop-socials {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .pop-soc {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      color: var(--ink-mute);
+      background: #f5f3fa;
+      text-decoration: none;
+      transition: background 140ms ease, color 140ms ease, transform 140ms ease;
+    }
+    .pop-soc svg { width: 13px; height: 13px; }
+    @media (hover: hover) and (pointer: fine) {
+      .pop-soc:hover {
+        background: var(--brand-soft);
+        color: var(--brand-deep);
+        transform: translateY(-1px);
+      }
+    }
+    .pop-soc--decor { cursor: default; opacity: 0.55; }
+    @media (hover: hover) and (pointer: fine) {
+      .pop-soc--decor:hover { background: #f5f3fa; color: var(--ink-mute); transform: none; }
+    }
+
+    .loading-msg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      padding: 14px 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-pop);
+      font-size: 14px;
+      color: var(--ink-mute);
+    }
+
+    @media (max-width: 640px) {
+      .legend { display: none; }
+      .city-pill { font-size: 13px; padding: 8px 14px; }
+      .city-tabs-wrap { top: 64px; justify-content: flex-start; padding-right: 16px; }
+      .city-tab { font-size: 12.5px; padding: 7px 12px; }
+      .mapboxgl-popup-content { width: 280px; }
+      .pop-img { height: 120px; }
+      .pop-img-mark { width: 44px; height: 44px; }
+      .pop-ratings { padding: 6px 0; }
+      .pop-rblock-num { font-size: 11.5px; }
+    }
+
+    /* ═══ Filter trigger + panel + active pills ═══════════════════════════ */
+
+    .filter-trigger {
+      appearance: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #fff;
+      border-radius: 999px;
+      box-shadow: var(--shadow-pop);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      transition: background-color 140ms ease-out;
+    }
+    .filter-trigger svg { width: 16px; height: 16px; color: var(--brand); }
+    @media (hover: hover) and (pointer: fine) {
+      .filter-trigger:hover { background: var(--brand-soft); }
+    }
+    .filter-trigger:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+    .filter-trigger-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .filter-trigger-count[hidden] { display: none; }
+
+    /* "Близо до мен" trigger — distinct from generic filters because it's a
+       location-grant flow, not a UI-only toggle. */
+    .near-trigger {
+      appearance: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #fff;
+      color: var(--ink);
+      border-radius: 999px;
+      box-shadow: var(--shadow-pop);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 140ms ease-out, color 140ms ease-out;
+    }
+    .near-trigger svg { width: 16px; height: 16px; color: var(--brand); transition: color 140ms ease-out; }
+    @media (hover: hover) and (pointer: fine) {
+      .near-trigger:hover { background: var(--brand-soft); }
+    }
+    .near-trigger:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+    .near-trigger.is-active {
+      background: var(--brand);
+      color: #fff;
+    }
+    .near-trigger.is-active svg { color: #fff; }
+    .near-trigger.is-loading svg { animation: nearSpin 800ms linear infinite; }
+    @keyframes nearSpin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) {
+      .near-trigger.is-loading svg { animation: none; }
+    }
+
+    /* Toast (geolocation result) */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 200;
+      padding: 12px 20px;
+      background: var(--ink);
+      color: #fff;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease-out, transform 200ms ease-out;
+      max-width: calc(100% - 32px);
+    }
+    .toast.is-show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .toast { transition: none; }
+    }
+
+    /* Active filters row — sits below the city tabs row */
+    .active-filters-wrap {
+      position: absolute;
+      top: 122px;
+      left: 16px;
+      right: 16px;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .active-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-width: 100%;
+      pointer-events: auto;
+    }
+    .active-filters[hidden] { display: none; }
+    .af-pill {
+      appearance: none;
+      border: 1px solid var(--brand-soft);
+      background: #fff;
+      color: var(--brand-deep);
+      padding: 5px 10px 5px 12px;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(110, 60, 255, 0.12);
+      transition: background-color 140ms ease-out;
+    }
+    .af-pill .af-x {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--brand-soft);
+      color: var(--brand-deep);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 1;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .af-pill:hover { background: var(--brand-soft); }
+    }
+    .af-clear {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--ink-mute);
+      padding: 5px 8px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .af-clear:hover { color: var(--brand); }
+    }
+
+    /* Filter panel (desktop: slide-in right; mobile: bottom sheet) */
+    .filter-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(26, 20, 48, 0.42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease-out;
+    }
+    .filter-backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .filter-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(380px, 100vw);
+      z-index: 101;
+      background: #fff;
+      box-shadow: -18px 0 38px -12px rgba(26, 20, 48, 0.32);
+      transform: translateX(100%);
+      transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .filter-panel.is-open { transform: translateX(0); }
+    @media (prefers-reduced-motion: reduce) {
+      .filter-backdrop, .filter-panel { transition: none; }
+    }
+
+    .fp-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid #efedf6;
+    }
+    .fp-head h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .fp-close {
+      appearance: none;
+      border: none;
+      background: #f5f3fa;
+      color: var(--ink);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .fp-close:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+    .fp-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px 20px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .fp-section { margin-bottom: 22px; }
+    .fp-section:last-child { margin-bottom: 0; }
+    .fp-label {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+    .fp-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #ece8f3;
+      border-radius: 10px;
+      background: #fafafa;
+      font: inherit;
+      font-size: 14px;
+      color: var(--ink);
+      transition: border-color 140ms ease-out, background-color 140ms ease-out;
+    }
+    .fp-input:focus {
+      outline: none;
+      border-color: var(--brand);
+      background: #fff;
+    }
+    .fp-input::placeholder { color: #b0b0b0; }
+
+    .fp-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .fp-chip {
+      appearance: none;
+      border: 1.5px solid #ece8f3;
+      background: #fff;
+      color: var(--ink);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 140ms ease-out, background-color 140ms ease-out, color 140ms ease-out;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .fp-chip:hover {
+        border-color: var(--brand);
+        background: var(--brand-soft);
+      }
+    }
+    .fp-chip[aria-pressed="true"] {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: #fff;
+    }
+    /* Tier-coloured chips when active */
+    .fp-chip[data-tier="Премиум"][aria-pressed="true"]   { background: var(--zd-gold-500); border-color: var(--zd-gold-500); }
+    .fp-chip[data-tier="Доверен"][aria-pressed="true"]   { background: var(--zd-purple-600); border-color: var(--zd-purple-600); }
+    .fp-chip[data-tier="Проверен"][aria-pressed="true"]  { background: var(--zd-mint-600); border-color: var(--zd-mint-600); }
+    .fp-chip[data-tier="Стандартен"][aria-pressed="true"]{ background: var(--zd-charcoal); border-color: var(--zd-charcoal); }
+    .fp-chip[data-tier="Безплатен"][aria-pressed="true"] { background: var(--ink-mute); border-color: var(--ink-mute); }
+
+    .fp-subcat-group {
+      margin-bottom: 10px;
+    }
+    .fp-subcat-group:last-child { margin-bottom: 0; }
+    .fp-subcat-summary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      padding: 6px 0;
+      list-style: none;
+      user-select: none;
+    }
+    .fp-subcat-summary::-webkit-details-marker { display: none; }
+    .fp-subcat-summary::before {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 5px solid var(--ink-mute);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      transition: transform 140ms ease-out;
+    }
+    .fp-subcat-group[open] > .fp-subcat-summary::before {
+      transform: rotate(90deg);
+    }
+    .fp-subcat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 6px 0 4px 16px;
+    }
+    .fp-subcat-row .fp-chip {
+      font-size: 11.5px;
+      padding: 4px 10px;
+    }
+
+    .fp-age-row {
+      display: flex;
+      gap: 8px;
+    }
+    .fp-age-row .fp-input { flex: 1; }
+
+    .fp-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+    }
+    .fp-toggle-row + .fp-toggle-row { border-top: 1px solid #f3f1f8; }
+    .fp-toggle-label {
+      font-size: 13.5px;
+      color: var(--ink);
+    }
+    .fp-toggle {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .fp-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+    .fp-toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #d6d6d6;
+      border-radius: 999px;
+      transition: background-color 140ms ease-out;
+    }
+    .fp-toggle-slider::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+      transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .fp-toggle input:checked + .fp-toggle-slider { background: var(--brand); }
+    .fp-toggle input:checked + .fp-toggle-slider::before { transform: translateX(18px); }
+    .fp-toggle input:focus-visible + .fp-toggle-slider {
+      box-shadow: 0 0 0 3px rgba(110, 60, 255, 0.25);
+    }
+
+    .fp-foot {
+      padding: 14px 20px;
+      border-top: 1px solid #efedf6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .fp-clear {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--ink-mute);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 4px;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .fp-clear:hover { color: var(--brand); }
+    }
+    .fp-apply {
+      appearance: none;
+      border: none;
+      flex: 1;
+      padding: 11px 16px;
+      background: var(--brand);
+      color: #fff;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 140ms ease-out, transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .fp-apply:hover { background: var(--brand-deep); transform: translateY(-1px); }
+    }
+    .fp-apply:active { transform: scale(0.98); }
+
+    /* Mobile: bottom sheet */
+    @media (max-width: 640px) {
+      .filter-panel {
+        top: auto;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        max-height: 80vh;
+        max-height: 80dvh;
+        border-radius: 22px 22px 0 0;
+        transform: translateY(100%);
+      }
+      .filter-panel.is-open { transform: translateY(0); }
+      .filter-panel::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 38px;
+        height: 4px;
+        background: #d6d6d6;
+        border-radius: 2px;
+      }
+      .fp-head { padding-top: 22px; }
+      .active-filters-wrap {
+        top: 110px;
+        padding-top: 4px;
+        justify-content: flex-start;
+        padding-right: 16px;
+        overflow-x: auto;
+      }
+      .active-filters { flex-wrap: nowrap; }
+      .af-pill { white-space: nowrap; flex-shrink: 0; }
+      /* Bigger toggle row touch targets for thumb accuracy on small screens. */
+      .fp-toggle-row { padding: 11px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="map-overlay-top">
+    <div class="city-pill" id="current-city-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+      <span data-current-city>София</span>
+    </div>
+    <button type="button" class="filter-trigger" id="filter-trigger" aria-haspopup="dialog" aria-controls="filter-panel" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="8" y1="12" x2="20" y2="12"/>
+        <line x1="12" y1="18" x2="20" y2="18"/>
+      </svg>
+      Филтри
+      <span class="filter-trigger-count" id="filter-trigger-count" hidden>0</span>
+    </button>
+    <button type="button" class="near-trigger" id="near-trigger" aria-pressed="false" title="Покажи места близо до мен">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <circle cx="12" cy="12" r="3" fill="currentColor"/>
+        <line x1="12" y1="2" x2="12" y2="5"/>
+        <line x1="12" y1="19" x2="12" y2="22"/>
+        <line x1="2" y1="12" x2="5" y2="12"/>
+        <line x1="19" y1="12" x2="22" y2="12"/>
+      </svg>
+      Близо до мен
+    </button>
+    <div class="legend" id="legend">
+      <span class="legend-item"><span class="legend-dot premium"></span>Премиум</span>
+      <span class="legend-item"><span class="legend-dot dovreen"></span>Доверен</span>
+      <span class="legend-item"><span class="legend-dot proveren"></span>Проверен</span>
+      <span class="legend-item"><span class="legend-dot standarten"></span>Стандартен</span>
+      <span class="legend-item"><span class="legend-dot bezplaten"></span>Безплатен</span>
+    </div>
+  </div>
+
+  <div class="city-tabs-wrap">
+    <div class="city-tabs" role="tablist" aria-label="Избери град" id="city-tabs"></div>
+  </div>
+
+  <div class="active-filters-wrap">
+    <div class="active-filters" id="active-filters" hidden></div>
+  </div>
+
+  <!-- Filter panel (slide-in right on desktop, bottom sheet on mobile) -->
+  <div class="filter-backdrop" id="filter-backdrop" hidden></div>
+  <aside class="filter-panel" id="filter-panel" role="dialog" aria-modal="true" aria-labelledby="fp-title" hidden>
+    <div class="fp-head">
+      <h2 id="fp-title">Филтри</h2>
+      <button type="button" class="fp-close" id="fp-close" aria-label="Затвори филтрите">&times;</button>
+    </div>
+    <div class="fp-body">
+      <div class="fp-section">
+        <label class="fp-label" for="fp-q">Име или услуга</label>
+        <input type="text" class="fp-input" id="fp-q" placeholder="напр. логопед, балет…" autocomplete="off">
+      </div>
+
+      <div class="fp-section">
+        <span class="fp-label">Категории</span>
+        <div class="fp-chip-row" id="fp-cats"></div>
+      </div>
+
+      <div class="fp-section">
+        <span class="fp-label">Подкатегории</span>
+        <div id="fp-subcats"></div>
+      </div>
+
+      <div class="fp-section">
+        <span class="fp-label">Възраст</span>
+        <div class="fp-age-row">
+          <input type="number" class="fp-input" id="fp-age-from" placeholder="От (г.)" min="0" max="18">
+          <input type="number" class="fp-input" id="fp-age-to" placeholder="До (г.)" min="0" max="18">
+        </div>
+      </div>
+
+      <div class="fp-section">
+        <span class="fp-label">Абонамент</span>
+        <div class="fp-chip-row" id="fp-tiers"></div>
+      </div>
+
+      <div class="fp-section">
+        <span class="fp-label">Допълнителни</span>
+        <label class="fp-toggle-row">
+          <span class="fp-toggle-label">
+            Топ препоръки
+            <span style="display:block;font-size:11.5px;font-weight:500;color:var(--ink-mute);margin-top:2px">Само високо оценени, разпределени из града</span>
+          </span>
+          <span class="fp-toggle">
+            <input type="checkbox" id="fp-top">
+            <span class="fp-toggle-slider"></span>
+          </span>
+        </label>
+        <label class="fp-toggle-row">
+          <span class="fp-toggle-label">Със снимка</span>
+          <span class="fp-toggle">
+            <input type="checkbox" id="fp-photo">
+            <span class="fp-toggle-slider"></span>
+          </span>
+        </label>
+        <label class="fp-toggle-row">
+          <span class="fp-toggle-label">За деца със СОП</span>
+          <span class="fp-toggle">
+            <input type="checkbox" id="fp-sop">
+            <span class="fp-toggle-slider"></span>
+          </span>
+        </label>
+        <label class="fp-toggle-row">
+          <span class="fp-toggle-label">Онлайн</span>
+          <span class="fp-toggle">
+            <input type="checkbox" id="fp-online">
+            <span class="fp-toggle-slider"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+    <div class="fp-foot">
+      <button type="button" class="fp-clear" id="fp-clear">Изчисти всички</button>
+      <button type="button" class="fp-apply" id="fp-apply">Покажи резултатите</button>
+    </div>
+  </aside>
+
+  <div id="loading" class="loading-msg">Зареждам картата…</div>
+  <div class="stat-pill" id="stat" hidden></div>
+  <div class="empty-state" id="empty-state" hidden>
+    <div class="empty-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+    </div>
+    <h2 id="empty-title">Скоро добавяме този град</h2>
+    <p id="empty-text" aria-live="polite">Работим по проверени бизнеси за този град. Засега виж София и Стара Загора.</p>
+    <a id="empty-cta" href="search.html">Виж списъка със заявени бизнеси</a>
+  </div>
+
+  <div id="map"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="js/supabase-init.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.js"></script>
+
+  <script>
+    // Public token — URL-restricted to localhost / zadeteto.com / www.zadeteto.com.
+    const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVzaXoiLCJhIjoiY21vb2M5YnA0MGcyeTJyczZsa2xzNGhvYyJ9.Y-u9iMl0zwHTZPIXymjcCw';
+
+    const PIN_COLOR = '#6E3CFF';
+
+    // Single source of truth for supported cities.
+    // Key = URL slug. `bg` = Cyrillic name as stored in Supabase `businesses.city`.
+    const CITIES = {
+      sofia:          { bg: 'София',        center: [23.3219, 42.6977], zoom: 12 },
+      'stara-zagora': { bg: 'Стара Загора', center: [25.6345, 42.4258], zoom: 12 },
+      plovdiv:        { bg: 'Пловдив',      center: [24.7453, 42.1354], zoom: 12 },
+      varna:          { bg: 'Варна',        center: [27.9147, 43.2141], zoom: 12 },
+      burgas:         { bg: 'Бургас',       center: [27.4626, 42.5048], zoom: 12 },
+      pleven:         { bg: 'Плевен',       center: [24.6066, 43.4170], zoom: 12 },
+      ruse:           { bg: 'Русе',         center: [25.9694, 43.8564], zoom: 12 },
+    };
+    const DEFAULT_CITY = 'sofia';
+
+    function citySlugFromUrl() {
+      const slug = (new URLSearchParams(location.search).get('city') || '').toLowerCase();
+      return CITIES[slug] ? slug : DEFAULT_CITY;
+    }
+
+    mapboxgl.accessToken = MAPBOX_TOKEN;
+
+    const initialSlug = citySlugFromUrl();
+    let currentSlug = initialSlug;
+    let currentLoadToken = 0;
+    let cachedCityPillEl = null;
+
+    // Apply the city to the chrome synchronously so the pill text + tabs match
+    // the URL immediately, before Mapbox finishes loading. Prevents a
+    // "София" → "Пловдив" flash on direct ?city= URLs and ensures the tabs
+    // row is visible even while tiles are still streaming in.
+    document.addEventListener('DOMContentLoaded', () => {
+      cachedCityPillEl = document.querySelector('[data-current-city]');
+      if (cachedCityPillEl) cachedCityPillEl.textContent = CITIES[currentSlug].bg;
+      buildCityTabs();
+
+      // Filter init: hydrate state from URL → render the panel chips →
+      // reflect state into chips/inputs → render active-filter pill row.
+      // Has to run before the user can possibly click anything; the actual
+      // applyFilters() runs once data lands (in selectCity / map load).
+      hydrateFiltersFromUrl();
+      buildFilterPanelChips();
+      syncFilterPanelInputs();
+      wireActiveFiltersDelegate();
+      updateActiveFiltersUi();
+      const nearBtn = document.getElementById('near-trigger');
+      if (nearBtn) nearBtn.addEventListener('click', toggleNearMe);
+      const triggerCount = document.getElementById('filter-trigger-count');
+      const n = activeFilterCount();
+      if (triggerCount) {
+        triggerCount.textContent = String(n);
+        triggerCount.hidden = n === 0;
+      }
+    });
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: CITIES[initialSlug].center,
+      zoom: CITIES[initialSlug].zoom,
+      minZoom: 8,
+      maxZoom: 17,
+      pitchWithRotate: false,
+      dragRotate: false,
+    });
+
+    // Surface tile / style failures during local development. Mapbox swallows
+    // these by default, which made it look like the map was just rendering on
+    // a blank canvas when the access token was URL-restricted to a domain that
+    // does not match the current origin (e.g. opening this file via file://).
+    // The first 401/403 we see triggers a one-line banner in #loading with the
+    // dev-server hint so the next person does not chase a phantom bug.
+    let _zdMapErrorBannerShown = false;
+    map.on('error', (e) => {
+      const msg = (e && e.error && e.error.message) || String(e);
+      const status = e && e.error && e.error.status;
+      const looksLikeAuthFailure =
+        status === 401 || status === 403 ||
+        /Unauthorized|Forbidden|access token/i.test(msg);
+      // Only warn on errors we actually care about — Mapbox emits benign
+      // tile-cancellation events during pan/zoom that would flood DevTools.
+      if (looksLikeAuthFailure || (e && e.error && e.error.status)) {
+        console.warn('[map]', msg, e && e.error);
+      }
+      if (_zdMapErrorBannerShown) return;
+      if (!looksLikeAuthFailure) return;
+      _zdMapErrorBannerShown = true;
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.hidden = false;
+        loading.textContent =
+          'Картата не може да зареди плочки от този адрес. ' +
+          'Стартирай dev server (python -m http.server 8000 от public_html/) ' +
+          'и отвори http://localhost:8000/map-lab.html.';
+      }
+    });
+
+    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right');
+    // GeolocateControl needs a secure context (HTTPS or localhost). On file:// or
+    // unsecured http://, the browser silently rejects geolocation requests, so we
+    // skip the control entirely instead of showing a button that does nothing.
+    if (window.isSecureContext) {
+      map.addControl(new mapboxgl.GeolocateControl({
+        positionOptions: { enableHighAccuracy: true },
+        trackUserLocation: false,
+        showUserHeading: false,
+      }), 'bottom-right');
+    }
+
+    // ───── Helpers ─────
+
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function pickHero(props) {
+      const candidate = props.logo || props.gallery_first;
+      if (!candidate) return null;
+      try {
+        const u = new URL(candidate, location.href);
+        if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+        return u.href;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    // Popup card — visually mirrors public_html/search.html buildCardHTML but
+    // trimmed for a 280px popup. No flip, no save state, no copy-on-click —
+    // those flows live on listing.html.
+    const TIER_KEY = {
+      'Премиум':    'premium',
+      'Доверен':    'dovreen',
+      'Проверен':   'proveren',
+      'Стандартен': 'standarten',
+      'Безплатен':  'bezplaten',
+    };
+    // Per-tier service tag cap — matches search.html line 2231 `tagLimits`.
+    const TAG_LIMITS = {
+      'Премиум': 5, 'Доверен': 4, 'Проверен': 3, 'Стандартен': 2, 'Безплатен': 1,
+    };
+    // Allowed social channels per tier — matches search.html allowedIconsByTier.
+    // Trimmed to channels useful in a popup (no LinkedIn/X/YouTube clutter).
+    const ALLOWED_SOCIALS = {
+      'Премиум':    ['phone', 'email', 'website', 'facebook', 'instagram'],
+      'Доверен':    ['phone', 'email', 'website', 'facebook', 'instagram'],
+      'Проверен':   ['phone', 'email', 'website', 'facebook', 'instagram'],
+      'Стандартен': ['phone', 'email', 'website'],
+      'Безплатен':  ['phone'],
+    };
+    // Free + Standard render socials decoratively (no real link); higher tiers
+    // get tappable native links. Mirrors search.html contactBehaviorByTier.
+    const SOCIALS_CLICKABLE = new Set(['Премиум', 'Доверен', 'Проверен']);
+
+    const SOC_SVG = {
+      phone:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+      email:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>',
+      website:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+      facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 0 1 1-1h3v-4h-3a5 5 0 0 0-5 5v2.01h-2l-.396 3.98h2.396z"/></svg>',
+      instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37a4 4 0 1 1-7.91 1.18A4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>',
+    };
+    const SOC_LABELS = {
+      phone: 'Телефон', email: 'Имейл', website: 'Уебсайт',
+      facebook: 'Facebook', instagram: 'Instagram',
+    };
+
+    // ── Category icons (8 главни + fallback) ────────────────────────────────
+    // 24×24 stroke-only SVGs that paint via `currentColor`, so the popup card
+    // can colour them per tier with a CSS class. Keyed by главна name from
+    // CATEGORY_ROLLUP, plus a sentinel CAT_FALLBACK_KEY for businesses whose
+    // `visible_categories` do not match any rollup — those pins still get a
+    // generic star glyph instead of falling back to a featureless dot.
+    const CAT_FALLBACK_KEY = '__zd_fallback__';
+    const CAT_ICON = {
+      // Специалисти — stethoscope
+      'Специалисти':
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M4 3v6a4 4 0 0 0 8 0V3"/><path d="M4 3h2"/><path d="M10 3h2"/>' +
+        '<path d="M8 13v3a5 5 0 0 0 10 0v-2"/>' +
+        '<circle cx="18" cy="11" r="2"/></svg>',
+      // Учене и умения — graduation cap
+      'Учене и умения':
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M22 10 12 5 2 10l10 5 10-5z"/>' +
+        '<path d="M6 12v4c0 1.5 3 3 6 3s6-1.5 6-3v-4"/>' +
+        '<path d="M22 10v6"/></svg>',
+      // Игри и забавления — gamepad
+      'Игри и забавления':
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<rect x="2" y="7" width="20" height="11" rx="5"/>' +
+        '<line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/>' +
+        '<circle cx="15.5" cy="13" r="0.6" fill="currentColor"/>' +
+        '<circle cx="18" cy="11" r="0.6" fill="currentColor"/></svg>',
+      // Култура — theater masks (single mask for clarity)
+      'Култура':
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M4 4h16v8a8 8 0 0 1-16 0z"/>' +
+        '<circle cx="9" cy="10" r="1" fill="currentColor"/>' +
+        '<circle cx="15" cy="10" r="1" fill="currentColor"/>' +
+        '<path d="M9 15c1 1 2 1.5 3 1.5s2-.5 3-1.5"/></svg>',
+      // Спорт и движение — trophy
+      'Спорт и движение':
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>' +
+        '<path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>' +
+        '<path d="M4 22h16"/>' +
+        '<path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>' +
+        '<path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>' +
+        '<path d="M18 2H6v7a6 6 0 0 0 12 0z"/></svg>',
+      // Тържества и събития — birthday cake
+      'Тържества и събития':
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>' +
+        '<path d="M4 16s1-1 3-1 3 1 5 1 3-1 5-1 3 1 3 1"/>' +
+        '<path d="M2 21h20"/>' +
+        '<path d="M8 7v4"/><path d="M12 7v4"/><path d="M16 7v4"/>' +
+        '<path d="M8 4v1"/><path d="M12 4v1"/><path d="M16 4v1"/></svg>',
+      // Стоки — shopping bag
+      'Стоки':
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>' +
+        '<line x1="3" y1="6" x2="21" y2="6"/>' +
+        '<path d="M16 10a4 4 0 0 1-8 0"/></svg>',
+      // Домашна грижа и помощ — house with heart
+      'Домашна грижа и помощ':
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M3 10 12 3l9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>' +
+        '<path d="M12 18c-1.2-1-3-2.4-3-4.2 0-1.1.9-1.8 1.8-1.8.7 0 1.2.4 1.5 1 .3-.6.8-1 1.5-1 .9 0 1.8.7 1.8 1.8 0 1.8-1.8 3.2-3 4.2"/></svg>',
+      // Fallback — used for businesses whose `visible_categories` do not match
+      // any rollup. A small star-in-circle so the pin never reads as a
+      // featureless dark dot. CAT_FALLBACK_KEY is also used as a sentinel
+      // value for `cats_main` upstream so the symbol layer's `match` finds it.
+      [CAT_FALLBACK_KEY]:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<circle cx="12" cy="12" r="9"/>' +
+        '<path d="m12 8 1.5 3 3.3.5-2.4 2.4.6 3.3L12 15.5 9 17.2l.6-3.3L7.2 11.5l3.3-.5z"/></svg>',
+    };
+
+    function primaryCategoryFor(catsArr) {
+      // Map a row's `visible_categories[]` to the first matching главна.
+      // We try direct hits (the row is tagged with the umbrella label) first,
+      // then the rollup. Returns null if nothing matches.
+      const cats = Array.isArray(catsArr) ? catsArr : [];
+      const set = new Set(cats);
+      for (const main of Object.keys(CATEGORY_ROLLUP)) {
+        if (set.has(main)) return main;
+      }
+      for (const [main, subs] of Object.entries(CATEGORY_ROLLUP)) {
+        if (subs.some(s => set.has(s))) return main;
+      }
+      return null;
+    }
+
+    function safeUrl(u) {
+      if (!u) return '';
+      const s = String(u).trim();
+      if (/^(javascript|data|vbscript):/i.test(s)) return '';
+      try {
+        const parsed = new URL(/^https?:|^mailto:|^tel:/.test(s) ? s : 'https://' + s);
+        return parsed.href;
+      } catch (_) { return ''; }
+    }
+    function socHref(key, props) {
+      if (key === 'phone') return 'tel:' + String(props.phone || '').replace(/[^+\d]/g, '');
+      if (key === 'email') return 'mailto:' + (props.email || '');
+      return safeUrl(props[key]);
+    }
+
+    function buildPopupHTML(props) {
+      const tierKey = TIER_KEY[props.tier] || 'bezplaten';
+      const safeName = escapeHtml(props.name || 'Без име');
+
+      // ── Photo / placeholder ──────────────────────────────────────────────
+      const hero = pickHero(props);
+      // We render an empty `.pop-img` placeholder element initially; if a real
+      // photo URL is available the click handler will inject it via
+      // `style.backgroundImage` (CSS-injection-safe path). When no photo, we
+      // keep the tier-themed gradient placeholder.
+      const imgClass = hero ? 'pop-img' : `pop-img pop-img--empty pop-img--${tierKey}`;
+
+      // ── Tier badge (skipped for Безплатен) ───────────────────────────────
+      const tierBadge = props.tier && props.tier !== 'Безплатен'
+        ? `<span class="pop-tier pop-tier--${tierKey}">${escapeHtml(props.tier)}</span>`
+        : '';
+
+      // ── Bookmark icon (visual cue only — saving happens on listing page) ─
+      const bookmarkHtml = `
+        <span class="pop-bookmark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+        </span>`;
+
+      // ── Rating + neighbourhood meta row ──────────────────────────────────
+      const ratingHtml = props.google_rating
+        ? `<span class="pop-rating">
+             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+             ${Number(props.google_rating).toFixed(1)}<span style="opacity:0.7;font-weight:500">·${Number(props.google_review_count) || 0}</span>
+           </span>`
+        : '';
+      // Show address as the location line — keeps the rating row compact.
+      const locHtml = props.address
+        ? `<span class="pop-meta-loc">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+               <circle cx="12" cy="10" r="3"/>
+             </svg>
+             ${escapeHtml(props.address)}
+           </span>`
+        : '';
+      const sepHtml = (ratingHtml && locHtml) ? '<span class="pop-meta-sep" aria-hidden="true"></span>' : '';
+
+      // ── Category icon (главна, tier-coloured) ─────────────────────────────
+      let catsList = [];
+      try {
+        catsList = typeof props.cats_raw === 'string' ? JSON.parse(props.cats_raw) : (props.cats_raw || []);
+      } catch (_) { catsList = []; }
+      const primaryCat = primaryCategoryFor(catsList);
+      const catIconHtml = primaryCat && CAT_ICON[primaryCat]
+        ? `<span class="pop-cat-icon pop-cat-icon--${tierKey}" aria-label="${escapeHtml(primaryCat)}" title="${escapeHtml(primaryCat)}">${CAT_ICON[primaryCat]}</span>`
+        : '';
+
+      // ── Description preview (3-line clamp) ───────────────────────────────
+      const descHtml = props.description
+        ? `<p class="pop-desc">${escapeHtml(props.description)}</p>`
+        : '';
+
+      // ── 3-row ratings strip — Audit / Google / ZaDeteto ──────────────────
+      // Mirrors search.html `.rig-ratings`. Slots without data render greyed.
+      const ICN_AUDIT  = '<svg viewBox="0 0 24 24" fill="none" stroke="#1a1820" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>';
+      const ICN_GOOGLE = '<svg viewBox="0 0 24 24" fill="#e0a800" stroke="#9c7600" stroke-width="0.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 17.6l-6.2 3.6 1.6-6.9L2.1 9.6l7-.7L12 2.5z"/></svg>';
+      const ICN_ZD     = '<svg viewBox="0 0 24 24" fill="#9c5fff" aria-hidden="true"><path d="M12 21.2s-7.8-4.7-9.7-9.9C1 7.5 3.7 4 7.4 4c2.1 0 3.7 1 4.6 2.6C12.9 5 14.5 4 16.6 4c3.7 0 6.4 3.5 5.1 7.3-1.9 5.2-9.7 9.9-9.7 9.9z"/></svg>';
+      const auditScore = (props.audit_score != null && Number.isFinite(props.audit_score)) ? props.audit_score : null;
+      const gNum = props.google_rating ? Number(props.google_rating).toFixed(1) : null;
+      const gCount = Number(props.google_review_count) || 0;
+      const ratingsStripHtml = `
+        <div class="pop-ratings" aria-label="Оценки">
+          <div class="pop-rblock${auditScore == null ? ' pop-rblock--empty' : ''}" title="Одит на ZaDeteto">
+            <span class="pop-rblock-icn">${ICN_AUDIT}</span>
+            <span class="pop-rblock-lbl">Одит</span>
+            <span class="pop-rblock-num">${auditScore != null ? auditScore : '—'}</span>
+          </div>
+          <div class="pop-rblock${gNum ? '' : ' pop-rblock--empty'}" title="Google Maps">
+            <span class="pop-rblock-icn">${ICN_GOOGLE}</span>
+            <span class="pop-rblock-lbl">Google</span>
+            <span class="pop-rblock-num">${gNum ? gNum : '—'}${gNum && gCount ? `<small>·${gCount}</small>` : ''}</span>
+          </div>
+          <div class="pop-rblock pop-rblock--empty" title="Оценки от родители в ZaDeteto">
+            <span class="pop-rblock-icn">${ICN_ZD}</span>
+            <span class="pop-rblock-lbl">ZaDeteto</span>
+            <span class="pop-rblock-num">—</span>
+          </div>
+        </div>`;
+
+      // ── Service tags (capped per tier) ───────────────────────────────────
+      const tagLimit = TAG_LIMITS[props.tier] || 1;
+      let servicesList = [];
+      try {
+        // Mapbox stores feature.properties values as primitives only; we
+        // stringified the array in loadBusinessesFor so parse it back here.
+        servicesList = typeof props.services === 'string'
+          ? JSON.parse(props.services)
+          : (Array.isArray(props.services) ? props.services : []);
+      } catch (_) { servicesList = []; }
+      const services = servicesList.slice(0, tagLimit);
+      const tagsHtml = services.length
+        ? `<div class="pop-tags">${services.map(s =>
+            `<span class="pop-tag pop-tag--${tierKey}">${escapeHtml(s)}</span>`
+          ).join('')}</div>`
+        : '';
+
+      // ── Bottom row: CTA + social mini-icons ──────────────────────────────
+      const ctaHtml = props.slug
+        ? `<a class="pop-cta pop-cta--${tierKey}" href="listing.html?slug=${encodeURIComponent(props.slug)}" aria-label="Виж профил на ${safeName}">
+             Виж профил
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+           </a>`
+        : '';
+
+      const allowedSocials = ALLOWED_SOCIALS[props.tier] || [];
+      const isClickable = SOCIALS_CLICKABLE.has(props.tier);
+      const visibleSocials = allowedSocials
+        .filter(k => SOC_SVG[k] && props[k])
+        .slice(0, 3);
+      const socialsHtml = visibleSocials.length
+        ? `<div class="pop-socials">${visibleSocials.map(k => {
+            const label = escapeHtml(SOC_LABELS[k] || k);
+            if (isClickable) {
+              const href = socHref(k, props);
+              if (!href) return '';
+              const target = (k === 'phone' || k === 'email') ? '' : ' target="_blank" rel="noopener noreferrer"';
+              return `<a class="pop-soc" href="${escapeHtml(href)}"${target} aria-label="${label}" title="${label}">${SOC_SVG[k]}</a>`;
+            }
+            return `<span class="pop-soc pop-soc--decor" aria-label="${label}" title="${label}">${SOC_SVG[k]}</span>`;
+          }).join('')}</div>`
+        : '';
+
+      return `
+        <div class="pop-card" data-tier="${tierKey}">
+          <div class="${imgClass}" data-pop-img>
+            <img class="pop-img-mark" src="brand_assets/zadeteto-icon-mark.svg" alt="" />
+            ${tierBadge}
+            ${bookmarkHtml}
+          </div>
+          <div class="pop-body">
+            <div class="pop-title-row">
+              ${catIconHtml}
+              <h3 class="pop-title">${safeName}</h3>
+            </div>
+            <div class="pop-meta">${locHtml}</div>
+            ${descHtml}
+            ${ratingsStripHtml}
+            ${tagsHtml}
+            <div class="pop-actions">
+              ${ctaHtml}
+              ${socialsHtml}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Spatially down-sample a list of point Features by bucketing them into
+    // a `gridSize`×`gridSize` grid over their bounding box and keeping
+    // ceil(cellSize × retentionRatio) features per cell. Unlike a flat
+    // random sample, this preserves an even visual distribution across
+    // neighbourhoods — dense areas stay visibly denser than sparse areas,
+    // but every cell with ≥1 feature retains at least one pin.
+    // Used to lighten Sofia's ~1338-row dataset for snappier initial paint.
+    function spatialSample(features, gridSize, retentionRatio) {
+      if (!features.length || gridSize < 1 || retentionRatio >= 1) return features;
+      let minLng = Infinity, maxLng = -Infinity;
+      let minLat = Infinity, maxLat = -Infinity;
+      for (const f of features) {
+        const [lng, lat] = f.geometry.coordinates;
+        if (lng < minLng) minLng = lng;
+        if (lng > maxLng) maxLng = lng;
+        if (lat < minLat) minLat = lat;
+        if (lat > maxLat) maxLat = lat;
+      }
+      // Guard against zero-extent bbox (single point or all-coincident).
+      const cellW = ((maxLng - minLng) / gridSize) || 1e-9;
+      const cellH = ((maxLat - minLat) / gridSize) || 1e-9;
+      const buckets = new Map();
+      for (const f of features) {
+        const [lng, lat] = f.geometry.coordinates;
+        const cx = Math.min(gridSize - 1, Math.max(0, Math.floor((lng - minLng) / cellW)));
+        const cy = Math.min(gridSize - 1, Math.max(0, Math.floor((lat - minLat) / cellH)));
+        const key = cx * gridSize + cy;
+        let cell = buckets.get(key);
+        if (!cell) { cell = []; buckets.set(key, cell); }
+        cell.push(f);
+      }
+      const out = [];
+      for (const cell of buckets.values()) {
+        const keep = Math.max(1, Math.ceil(cell.length * retentionRatio));
+        // Deterministic subset — first N rows in Supabase return order.
+        // Stable across reloads, which keeps the demo from feeling janky.
+        for (let i = 0; i < keep; i++) out.push(cell[i]);
+      }
+      return out;
+    }
+
+    async function loadBusinessesFor(cityBg) {
+      // Supabase JS client defaults to range 0-999. We explicitly request 0-4999 so
+      // Sofia's 1338 published rows all render — `.limit()` alone is not enough
+      // because PostgREST also applies the server-side `Prefer: count=...` cap.
+      const { data, error } = await ZdSupabase
+        .from('businesses')
+        .select('slug,name,tier,city,address,lat,lng,google_rating,google_review_count,logo,gallery_urls,services,phone,email,website,facebook,instagram,visible_categories,age_groups,is_online,sop,description,audit_score')
+        .eq('city', cityBg)
+        .eq('published', true)
+        .not('lat', 'is', null)
+        .not('lng', 'is', null)
+        // Stable row order is required for spatialSample's "deterministic
+        // first-N within each cell" guarantee — without this, PostgREST
+        // returns rows in implementation-defined heap order which can
+        // change after VACUUM/UPDATE and make the demo flicker between
+        // different visible subsets across reloads.
+        .order('slug', { ascending: true })
+        .range(0, 4999);
+
+      if (error) {
+        console.error('[map] supabase error', error);
+        return null;
+      }
+      if (!data) return [];
+
+      const features = data
+        .filter(b => Number.isFinite(b.lat) && Number.isFinite(b.lng))
+        // Drop Безплатен entirely — they shouldn't appear on the map per
+        // product decision. They remain in the search list page but aren't
+        // surfaced spatially. NULL tier is coerced to Безплатен upstream so
+        // the same filter catches both.
+        .filter(b => (b.tier || 'Безплатен') !== 'Безплатен')
+        .map(b => {
+          const galleryFirst = Array.isArray(b.gallery_urls) && b.gallery_urls.length
+            ? b.gallery_urls[0] : null;
+          return {
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [b.lng, b.lat] },
+            properties: {
+              slug: b.slug,
+              name: b.name,
+              // Defensive coercion — rows with NULL tier render visually
+              // identical to Безплатен (no badge, outlined pin).
+              tier: b.tier || 'Безплатен',
+              address: b.address,
+              google_rating: b.google_rating,
+              google_review_count: b.google_review_count,
+              logo: b.logo,
+              gallery_first: galleryFirst,
+              // Mapbox serialises non-primitive feature properties to JSON
+              // strings on read-back; stringify here and parse in popup +
+              // featureMatches.
+              services: JSON.stringify(Array.isArray(b.services) ? b.services : []),
+              cats_raw: JSON.stringify(Array.isArray(b.visible_categories) ? b.visible_categories : []),
+              // Pre-computed primary main category — drives the map-pin icon
+              // layer (Mapbox `match` expression on `cats_main`). When no
+              // rollup matches we fall back to CAT_FALLBACK_KEY so every pin
+              // still renders a glyph (a generic star) instead of a featureless
+              // dark dot. The fallback never escapes to the URL because
+              // CAT_SLUG_REVERSE filters it out.
+              cats_main: primaryCategoryFor(b.visible_categories) || CAT_FALLBACK_KEY,
+              age_groups: JSON.stringify(Array.isArray(b.age_groups) ? b.age_groups : []),
+              has_photo: !!(b.logo || galleryFirst),
+              is_online: !!b.is_online,
+              sop: !!b.sop,
+              phone: b.phone || '',
+              email: b.email || '',
+              website: b.website || '',
+              facebook: b.facebook || '',
+              instagram: b.instagram || '',
+              description: b.description || '',
+              audit_score: b.audit_score != null ? Number(b.audit_score) : null,
+            },
+          };
+        });
+
+      // Sofia has ~1338 published rows which slows initial render in the lab.
+      // Spatially down-sample to ~1/3 (8×8 grid → 64 cells, keeping ⌈n/3⌉
+      // pins per cell) so the demo feels snappy while preserving an even
+      // visual distribution across the city. Other cities pass through
+      // unmodified — they're already small enough.
+      if (cityBg === 'София' && features.length > 500) {
+        return spatialSample(features, 8, 1 / 3);
+      }
+      return features;
+    }
+
+    let activePopup = null;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function flyOrJump(opts) {
+      if (reduceMotion) map.jumpTo(opts);
+      else map.easeTo(opts);
+    }
+
+    let layersAttached = false;
+    let iconsLoaded = false;
+    // Cache the in-flight icon-loading Promise so concurrent callers (initial
+    // attachLayers + a possible styleimagemissing re-trigger) all wait on the
+    // same async chain instead of racing one another.
+    let iconsLoadingPromise = null;
+
+    // Load each category SVG into the Mapbox sprite as a white-tinted image
+    // so the `pin-icons` symbol layer can reference it by name. Uses an
+    // off-screen Canvas to rasterise the SVG to a deterministic 48×48 RGBA
+    // bitmap — passing the SVG via `<img>` directly to Mapbox's `addImage`
+    // is unreliable because some browsers honour the SVG's viewBox over the
+    // explicit width/height attributes, producing mismatched bitmap sizes.
+    // Returns a Promise that resolves once every CAT_ICON entry has either
+    // been registered as a Mapbox image or failed (and we have moved on).
+    // The caller in attachLayers() awaits this BEFORE adding the symbol
+    // layers that reference `cat-${slug}` images, which is the documented
+    // workaround for mapbox/mapbox-gl-js#6231 — adding a symbol layer
+    // before its icon-image is registered makes the tile worker cache a
+    // "missing image" verdict that triggerRepaint cannot invalidate, so
+    // glyphs never appear at initial zoom.
+    function loadCategoryIcons() {
+      if (iconsLoaded) return Promise.resolve();
+      if (iconsLoadingPromise) return iconsLoadingPromise;
+
+      iconsLoadingPromise = new Promise((resolve) => {
+        const entries = Object.entries(CAT_ICON);
+        if (entries.length === 0) {
+          // Edge case — no categories to load. Mark as "loaded" so the
+          // fast-path short-circuit at the top of loadCategoryIcons is
+          // reachable on subsequent calls.
+          iconsLoaded = true;
+          resolve();
+          return;
+        }
+        let pending = entries.length;
+        let successCount = 0;
+
+        const settle = () => {
+          if (--pending !== 0) return;
+          iconsLoaded = successCount > 0;
+          // triggerRepaint is no longer load-bearing for initial render
+          // (caller awaits this Promise before adding the symbol layer),
+          // but kept defensively for the styleimagemissing re-trigger
+          // path where the symbol layer is already live.
+          if (successCount > 0) {
+            try { map.triggerRepaint(); } catch (_) { /* ignore */ }
+          }
+          resolve();
+        };
+
+        entries.forEach(([cat, svg]) => {
+          const slug = CAT_SLUG[cat];
+          if (!slug) { settle(); return; }
+          if (map.hasImage(`cat-${slug}`)) {
+            // Already registered (e.g. survived a style hot-reload).
+            successCount++;
+            settle();
+            return;
+          }
+
+          // Force explicit pixel size on the root <svg> so even browsers that
+          // honour the viewBox over <img width/height> rasterise to 48×48.
+          const whiteSvg = svg
+            .replace(/stroke="currentColor"/g, 'stroke="#ffffff"')
+            .replace(/fill="currentColor"/g, 'fill="#ffffff"')
+            .replace(/<svg\s/, '<svg width="48" height="48" ');
+          const blob = new Blob([whiteSvg], { type: 'image/svg+xml' });
+          const url = URL.createObjectURL(blob);
+          const img = new Image();
+          img.width = 48;
+          img.height = 48;
+
+          // Defensive timeout — converts a possible permanent hang (img neither
+          // fires onload nor onerror, e.g. aborted page navigation) into a
+          // degraded render where the styleimagemissing handler can recover.
+          // Without this, `await iconsReady` in attachLayers could block the
+          // entire map indefinitely on a single image-thread misbehaviour.
+          let settled = false;
+          const settleOnce = () => { if (settled) return; settled = true; settle(); };
+          const timeoutId = setTimeout(() => {
+            console.warn('[map] icon load timed out for', slug);
+            URL.revokeObjectURL(url);
+            settleOnce();
+          }, 3000);
+
+          img.onload = () => {
+            clearTimeout(timeoutId);
+            try {
+              // Off-screen canvas → guaranteed 48×48 RGBA buffer regardless of
+              // how the browser interpreted the SVG's intrinsic dimensions.
+              const canvas = document.createElement('canvas');
+              canvas.width = 48;
+              canvas.height = 48;
+              const ctx = canvas.getContext('2d');
+              ctx.clearRect(0, 0, 48, 48);
+              ctx.drawImage(img, 0, 0, 48, 48);
+              // pixelRatio: 2 — this 48×48 bitmap is the @2x retina source,
+              // so Mapbox treats its base size as 24 CSS px.
+              // sdf: true — Mapbox treats the alpha channel as a mask so the
+              // pin-icons-* layers can recolour the glyph at runtime via the
+              // `icon-color` paint property (white on paid pins, dark muted
+              // lilac on Стандартен pins for the demoted-but-readable look).
+              // NOTE: this canvas produces a binary alpha mask with a ~1 px AA
+              // gradient at stroke edges, NOT a true distance-field encoding.
+              // Renders cleanly at our 10–20 CSS px range; if these icons are
+              // ever scaled past ~32 px, regenerate from a real SDF tool to
+              // avoid stair-stepping at the edges.
+              map.addImage(`cat-${slug}`, canvas, { pixelRatio: 2, sdf: true });
+              successCount++;
+            } catch (e) {
+              console.warn('[map] icon rasterise/add failed for', slug, e);
+            }
+            URL.revokeObjectURL(url);
+            settleOnce();
+          };
+          img.onerror = () => {
+            clearTimeout(timeoutId);
+            console.warn('[map] icon load failed for', slug);
+            URL.revokeObjectURL(url);
+            settleOnce();
+          };
+          img.src = url;
+        });
+      });
+
+      return iconsLoadingPromise;
+    }
+
+    async function attachLayers() {
+      if (layersAttached) return;
+      layersAttached = true;
+      // Kick off icon-loading immediately so it runs in parallel with the
+      // synchronous addSource/addLayer calls below. We `await` it only at
+      // the boundary where pin-icons-* are attached so the symbol layer
+      // never sees a missing-image state. Race condition fix per
+      // mapbox/mapbox-gl-js#6231.
+      const iconsReady = loadCategoryIcons();
+
+      // Register the safety-net listener BEFORE the symbol layers attach so
+      // there is no window where pin-icons-* could request a missing image
+      // and have no recovery path. If Mapbox ever asks for a `cat-${slug}`
+      // image we don't have (e.g. after a future setStyle hot-reload that
+      // wipes the sprite), reset state and re-run loadCategoryIcons.
+      map.on('styleimagemissing', (e) => {
+        if (!e || typeof e.id !== 'string' || !e.id.startsWith('cat-')) return;
+        iconsLoaded = false;
+        iconsLoadingPromise = null;
+        loadCategoryIcons();
+      });
+
+      // "Близо до мен" overlay — empty until the user grants location.
+      // Two layers: a soft purple disc + dashed outline for the radius, and
+      // a small solid dot at the user's exact position.
+      map.addSource('near-radius', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addSource('near-user', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addLayer({
+        id: 'near-radius-fill', type: 'fill', source: 'near-radius',
+        paint: { 'fill-color': '#7c4dff', 'fill-opacity': 0.06 },
+      });
+      map.addLayer({
+        id: 'near-radius-line', type: 'line', source: 'near-radius',
+        paint: {
+          'line-color': '#7c4dff',
+          'line-width': 2,
+          'line-opacity': 0.55,
+          'line-dasharray': [3, 2],
+        },
+      });
+      map.addLayer({
+        id: 'near-user-halo', type: 'circle', source: 'near-user',
+        paint: {
+          'circle-radius': 18,
+          'circle-color': '#7c4dff',
+          'circle-opacity': 0.18,
+          'circle-stroke-width': 0,
+        },
+      });
+      map.addLayer({
+        id: 'near-user-dot', type: 'circle', source: 'near-user',
+        paint: {
+          'circle-radius': 7,
+          'circle-color': '#7c4dff',
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-width': 3,
+        },
+      });
+
+      // City boundary source — empty until selectCity() lazy-loads the
+      // current city's GeoJSON. Added FIRST so the fill/line layers render
+      // beneath the pin layers we add below.
+      map.addSource('boundary', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addLayer({
+        id: 'boundary-fill', type: 'fill', source: 'boundary',
+        paint: {
+          'fill-color': '#7c4dff',
+          'fill-opacity': 0.07,
+        },
+      });
+      map.addLayer({
+        id: 'boundary-line', type: 'line', source: 'boundary',
+        paint: {
+          'line-color': '#5a2ecf',
+          'line-width': [
+            'interpolate', ['linear'], ['zoom'],
+            10, 1.5,
+            13, 2.5,
+            16, 3.5,
+          ],
+          'line-opacity': 0.75,
+          'line-dasharray': [4, 2],
+        },
+      });
+
+      map.addSource('businesses', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+        cluster: true,
+        // Clusters only form at zoom ≤ 11. At default city zoom 12 every
+        // point renders individually so the category icons (which only paint
+        // on unclustered pins) are visible from first paint.
+        clusterMaxZoom: 11,
+        clusterRadius: 48,
+      });
+
+      map.addLayer({
+        id: 'clusters', type: 'circle', source: 'businesses',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': PIN_COLOR,
+          'circle-opacity': 0.92,
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-width': 3,
+          'circle-radius': ['step', ['get', 'point_count'], 18, 10, 22, 30, 28, 80, 34],
+        },
+      });
+      map.addLayer({
+        id: 'cluster-count', type: 'symbol', source: 'businesses',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': ['get', 'point_count_abbreviated'],
+          'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 13,
+        },
+        paint: { 'text-color': '#ffffff' },
+      });
+
+      // Single tier-aware pin layer — colour, stroke and radius all driven by
+      // the row's `tier` value via Mapbox `match` expressions. Tier palette
+      // mirrors search.html (see CSS vars in :root).
+      // Visual hierarchy: Премиум gold > Доверен purple > Проверен green
+      //                   > Стандартен light lilac-grey.
+      // (Безплатен palette retained below for legend parity but never renders
+      // as a pin — those rows are filtered out at loadBusinessesFor.)
+      // Paid tiers are saturated so the white category icon overlaid by the
+      // `pin-icons-paid` layer pops. Стандартен is intentionally low-contrast
+      // (light lilac disc + dark glyph via `pin-icons-standard.icon-color`)
+      // so the pin reads as demoted, nudging owners toward upgrading.
+      const TIER_COLOR = [
+        'match', ['get', 'tier'],
+        'Премиум',    '#d4af37',  // gold
+        'Доверен',    '#7c4dff',  // purple
+        'Проверен',   '#2e994d',  // green
+        'Стандартен', '#c8c2d4',  // light muted lilac-grey — intentionally low contrast to push upgrade
+        'Безплатен',  '#9b94b8',  // muted grey-purple (was outlined white)
+        '#9b94b8',
+      ];
+      // White ring on every tier so pins pop off the basemap and the icon
+      // inside has a small breathing margin.
+      const TIER_STROKE = [
+        'match', ['get', 'tier'],
+        'Премиум',    '#ffffff',
+        'Доверен',    '#ffffff',
+        'Проверен',   '#ffffff',
+        'Стандартен', '#ffffff',
+        'Безплатен',  '#ffffff',
+        '#ffffff',
+      ];
+      // Per-tier base radius scales with zoom. Bumped from the icon-less
+      // sizes so the white category icon (rendered ~12-14px wide by the
+      // pin-icons symbol layer) has room to read inside the pin.
+      const TIER_RADIUS = [
+        'interpolate', ['linear'], ['zoom'],
+        11, [
+          'match', ['get', 'tier'],
+          'Премиум',    11,
+          'Доверен',    10,
+          'Проверен',   9,
+          'Стандартен', 8,
+          'Безплатен',  7,
+          7,
+        ],
+        14, [
+          'match', ['get', 'tier'],
+          'Премиум',    16,
+          'Доверен',    15,
+          'Проверен',   14,
+          'Стандартен', 12,
+          'Безплатен',  11,
+          11,
+        ],
+        16, [
+          'match', ['get', 'tier'],
+          'Премиум',    20,
+          'Доверен',    19,
+          'Проверен',   18,
+          'Стандартен', 16,
+          'Безплатен',  14,
+          14,
+        ],
+      ];
+      // Two pin layers, identical paint, different visibility gates:
+      //   pins-paid:     Премиум/Доверен/Проверен — always visible
+      //   pins-standard: Стандартен — minzoom 13 (only on close zoom)
+      // Безплатен never reaches the map (filtered at data load).
+      map.addLayer({
+        id: 'pins-paid', type: 'circle', source: 'businesses',
+        filter: ['all',
+          ['!', ['has', 'point_count']],
+          ['in', ['get', 'tier'], ['literal', ['Премиум', 'Доверен', 'Проверен']]],
+        ],
+        paint: {
+          'circle-color': TIER_COLOR,
+          'circle-stroke-color': TIER_STROKE,
+          'circle-stroke-width': 2,
+          'circle-radius': TIER_RADIUS,
+        },
+      });
+      map.addLayer({
+        id: 'pins-standard', type: 'circle', source: 'businesses',
+        filter: ['all',
+          ['!', ['has', 'point_count']],
+          ['==', ['get', 'tier'], 'Стандартен'],
+        ],
+        minzoom: 13,
+        paint: {
+          'circle-color': TIER_COLOR,
+          'circle-stroke-color': TIER_STROKE,
+          'circle-stroke-width': 2,
+          'circle-radius': TIER_RADIUS,
+        },
+      });
+
+      // Category-icon layer — white SVGs added to the Mapbox sprite at runtime
+      // by `loadCategoryIcons()`. Sits ON TOP of the circle pins so the icon
+      // reads as the pin's foreground glyph. `icon-allow-overlap` keeps icons
+      // visible even on dense clusters of pins. minzoom: 12 hides icons when
+      // pins are too small (~7-9px radius) for a glyph to be legible.
+      // Category-icon symbol layer — split same way as the circle pins so
+      // Стандартен icons inherit the minzoom 13 gate.
+      const ICON_IMAGE_EXPR = [
+        'match', ['get', 'cats_main'],
+        'Специалисти',           'cat-specialisti',
+        'Учене и умения',        'cat-uchene',
+        'Игри и забавления',     'cat-igri',
+        'Култура',               'cat-kultura',
+        'Спорт и движение',      'cat-sport',
+        'Тържества и събития',   'cat-turzhestva',
+        'Стоки',                 'cat-stoki',
+        'Домашна грижа и помощ', 'cat-gridja',
+        CAT_FALLBACK_KEY,        'cat-fallback',
+        // Default arm — used if a row somehow has a value outside the set
+        // above. Points at the fallback bitmap so we never end up with an
+        // unrendered "Image '' is not loaded" warning from Mapbox.
+        'cat-fallback',
+      ];
+      const ICON_SIZE_EXPR = [
+        'interpolate', ['linear'], ['zoom'],
+        12, 0.45,
+        14, 0.65,
+        16, 0.85,
+      ];
+
+      // Gate the pin-icons-* symbol layers on the icon-loading Promise. By
+      // now the rasterise→addImage chain has had ~one event loop to settle
+      // in parallel with the addSource/addLayer calls above; this await
+      // typically resolves immediately. The point is to GUARANTEE that no
+      // tile-worker call ever resolves icon-image against a sprite that
+      // hasn't yet registered the cat-${slug} bitmaps.
+      await iconsReady;
+
+      map.addLayer({
+        id: 'pin-icons-paid', type: 'symbol', source: 'businesses',
+        filter: ['all',
+          ['!', ['has', 'point_count']],
+          ['in', ['get', 'tier'], ['literal', ['Премиум', 'Доверен', 'Проверен']]],
+        ],
+        minzoom: 12,
+        layout: {
+          'icon-image': ICON_IMAGE_EXPR,
+          'icon-size': ICON_SIZE_EXPR,
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
+        },
+        // Paint white on the saturated paid-tier discs (gold / purple / green).
+        // Possible only because the icons are registered with sdf: true.
+        paint: { 'icon-color': '#ffffff' },
+      });
+      map.addLayer({
+        id: 'pin-icons-standard', type: 'symbol', source: 'businesses',
+        filter: ['all',
+          ['!', ['has', 'point_count']],
+          ['==', ['get', 'tier'], 'Стандартен'],
+        ],
+        minzoom: 13,
+        layout: {
+          'icon-image': ICON_IMAGE_EXPR,
+          'icon-size': ICON_SIZE_EXPR,
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
+        },
+        // Dark muted lilac on the demoted Стандартен disc — keeps category
+        // recognisable (~5:1 contrast on #c8c2d4) while the disc itself is
+        // visually demoted vs the saturated paid tiers.
+        paint: { 'icon-color': '#4a4458' },
+      });
+
+      // Click cluster → zoom in
+      map.on('click', 'clusters', (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+        if (!features.length) return;
+        const clusterId = features[0].properties.cluster_id;
+        map.getSource('businesses').getClusterExpansionZoom(clusterId, (err, zoom) => {
+          if (err) return;
+          flyOrJump({ center: features[0].geometry.coordinates, zoom });
+        });
+      });
+
+      // Click pin → popup
+      ['pins-paid', 'pins-standard'].forEach(layer => {
+        map.on('click', layer, (e) => {
+          const f = e.features[0];
+          const coords = f.geometry.coordinates.slice();
+          if (activePopup) activePopup.remove();
+          const popup = new mapboxgl.Popup({ offset: 14, closeButton: true, maxWidth: 'none' })
+            .setLngLat(coords)
+            .setHTML(buildPopupHTML(f.properties))
+            .addTo(map);
+          activePopup = popup;
+
+          // Inject hero image safely (CSS-injection-proof)
+          const hero = pickHero(f.properties);
+          if (hero) {
+            const img = popup.getElement().querySelector('[data-pop-img]');
+            if (img) img.style.backgroundImage = `url(${JSON.stringify(hero)})`;
+          }
+          popup.on('close', () => { if (activePopup === popup) activePopup = null; });
+        });
+        map.on('mouseenter', layer, () => map.getCanvas().style.cursor = 'pointer');
+        map.on('mouseleave', layer, () => map.getCanvas().style.cursor = '');
+      });
+      map.on('mouseenter', 'clusters', () => map.getCanvas().style.cursor = 'pointer');
+      map.on('mouseleave', 'clusters', () => map.getCanvas().style.cursor = '');
+    }
+
+    function setSourceData(features) {
+      const src = map.getSource('businesses');
+      if (src) src.setData({ type: 'FeatureCollection', features });
+    }
+
+    // ───── City boundary overlay ─────
+    // Lazy-loaded GeoJSON polygons from public_html/data/city-boundaries/.
+    // Cached per session so re-selecting a city does not re-fetch.
+    const boundaryCache = new Map();
+    const EMPTY_FC = { type: 'FeatureCollection', features: [] };
+
+    async function setBoundaryFor(slug) {
+      const src = map.getSource('boundary');
+      if (!src) return;
+      // Cache hit — go straight to the cached polygon (or do nothing if a
+      // previous fetch failed). Skip the optimistic clear to avoid two
+      // setData calls in a single frame.
+      if (boundaryCache.has(slug)) {
+        const cached = boundaryCache.get(slug);
+        src.setData(cached || EMPTY_FC);
+        return;
+      }
+      // Cold path — clear the previous city's outline immediately so the
+      // user does not stare at a stale boundary while we fetch the new one.
+      src.setData(EMPTY_FC);
+      try {
+        // Append a version stamp so a future GeoJSON refresh isn't served
+        // from `force-cache` indefinitely. Bump on deploy when polygons change.
+        const resp = await fetch(`data/city-boundaries/${encodeURIComponent(slug)}.geojson?v=1`, {
+          cache: 'force-cache',
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const fc = await resp.json();
+        boundaryCache.set(slug, fc);
+        // Only apply if the user is still on this city — avoids the same
+        // race the pin-loader guards against via currentLoadToken.
+        if (currentSlug === slug) src.setData(fc);
+      } catch (e) {
+        console.warn(`[map] boundary fetch failed for ${slug}`, e);
+        // Cache the failure so we do not retry on every selectCity().
+        boundaryCache.set(slug, null);
+      }
+    }
+
+    // ───── UI: city tabs + chrome ─────
+
+    function buildCityTabs() {
+      const wrap = document.getElementById('city-tabs');
+      const html = Object.entries(CITIES).map(([slug, c]) => {
+        const selected = slug === currentSlug ? 'true' : 'false';
+        return `<button type="button" class="city-tab" role="tab" data-slug="${slug}" aria-selected="${selected}" tabindex="${selected === 'true' ? '0' : '-1'}">${escapeHtml(c.bg)}</button>`;
+      }).join('');
+      wrap.innerHTML = html;
+
+      wrap.addEventListener('click', (e) => {
+        const btn = e.target.closest('.city-tab');
+        if (!btn) return;
+        const slug = btn.dataset.slug;
+        if (slug && slug !== currentSlug) selectCity(slug, { pushHistory: true });
+      });
+
+      // ARIA tablist with manual activation: arrow keys move focus + tabindex
+      // only — Enter/Space (or click) commits the selection. Avoids firing a
+      // Supabase fetch on every arrow press while the user is browsing tabs.
+      wrap.addEventListener('keydown', (e) => {
+        const isMotion = e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End';
+        if (!isMotion) return;
+        const tabs = Array.from(wrap.querySelectorAll('.city-tab'));
+        const focusedIdx = tabs.findIndex(t => t === document.activeElement);
+        const startIdx = focusedIdx >= 0 ? focusedIdx : tabs.findIndex(t => t.dataset.slug === currentSlug);
+        let nextIdx = startIdx;
+        if (e.key === 'ArrowLeft')  nextIdx = (startIdx - 1 + tabs.length) % tabs.length;
+        if (e.key === 'ArrowRight') nextIdx = (startIdx + 1) % tabs.length;
+        if (e.key === 'Home') nextIdx = 0;
+        if (e.key === 'End')  nextIdx = tabs.length - 1;
+        e.preventDefault();
+        // Roving tabindex: only the focused tab is in the tab order.
+        tabs.forEach((t, i) => t.setAttribute('tabindex', i === nextIdx ? '0' : '-1'));
+        tabs[nextIdx].focus();
+      });
+    }
+
+    function updateTabsUi() {
+      document.querySelectorAll('.city-tab').forEach(t => {
+        const isActive = t.dataset.slug === currentSlug;
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        t.setAttribute('tabindex', isActive ? '0' : '-1');
+        if (isActive) t.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+      });
+    }
+
+    function updateCityPill() {
+      const el = document.querySelector('[data-current-city]');
+      if (el) el.textContent = CITIES[currentSlug].bg;
+    }
+
+    function showEmptyState() {
+      const city = CITIES[currentSlug];
+      document.getElementById('empty-title').textContent = `Скоро добавяме ${city.bg}`;
+      document.getElementById('empty-text').textContent =
+        `Работим по проверени бизнеси за ${city.bg}. Засега виж София и Стара Загора.`;
+      document.getElementById('empty-cta').href = `search.html?city=${encodeURIComponent(currentSlug)}`;
+      document.getElementById('empty-state').hidden = false;
+      document.getElementById('legend').hidden = true;
+      document.getElementById('stat').hidden = true;
+    }
+
+    function hideEmptyState() {
+      document.getElementById('empty-state').hidden = true;
+      document.getElementById('legend').hidden = false;
+    }
+
+    function updateStat(count) {
+      const stat = document.getElementById('stat');
+      if (count > 0) {
+        stat.innerHTML = `<strong>${count}</strong> места на картата`;
+        stat.hidden = false;
+      } else {
+        stat.hidden = true;
+      }
+    }
+
+    // ───── City switching ─────
+
+    // Notify the parent window (when this page is embedded in an iframe) that
+    // the user changed cities, so the wrapper page can sync its own URL bar.
+    // Guarded so direct visits to this page (no parent) don't crash.
+    function notifyParentCityChange(slug) {
+      try {
+        if (window.parent && window.parent !== window) {
+          // Target same-origin only. Prevents the slug leaking if a hostile
+          // third-party site ever embeds map-embed.html as an iframe.
+          window.parent.postMessage({ type: 'zd:map:cityChange', slug }, location.origin);
+        }
+      } catch (_) { /* cross-origin parent — ignore */ }
+    }
+
+    // ═══ Filters ═════════════════════════════════════════════════════════════
+    // Single source of truth for what's narrowing the map. Mutations always go
+    // through `setFilter()` (or `clearFilters()`), which re-applies + URL-syncs
+    // + notifies the parent wrapper. The per-city raw dataset is cached so we
+    // never re-query Supabase when only a filter changes.
+
+    // 33 подкатегории → 8 главни. Validated by user 2026-05-03.
+    // Rows whose `visible_categories[]` includes one of the 8 главни directly
+    // are also matched (some rows are tagged with the umbrella label).
+    const CATEGORY_ROLLUP = {
+      'Специалисти':           ['Логопед', 'Детски психолог', 'Детски център'],
+      'Учене и умения':        ['Частни уроци', 'Чужди езици', 'Математика', 'Български език', 'Занимални'],
+      'Игри и забавления':     ['Играчки', 'Куклен театър'],
+      'Култура':               ['Музикални', 'Пеене', 'Балет', 'Музеи'],
+      'Спорт и движение':      ['Бойни изкуства', 'Футбол', 'Баскетбол', 'Танци', 'Хокей', 'Борба', 'Езда', 'Ски', 'Кънки на лед', 'Тенис'],
+      'Тържества и събития':   ['Украса', 'Торти'],
+      'Стоки':                 ['Детски обувки', 'Детски дрехи', 'Детска кухня', 'Детски храни'],
+      'Домашна грижа и помощ': ['Частна детска градина', 'Частна ясла'],
+    };
+    // URL slugs for the 8 главни — keeps the URL ASCII-clean and short.
+    // CAT_FALLBACK_KEY also gets a slug so loadCategoryIcons() can register its
+    // bitmap as 'cat-fallback' alongside the 8 main category bitmaps.
+    const CAT_SLUG = {
+      'Специалисти':           'specialisti',
+      'Учене и умения':        'uchene',
+      'Игри и забавления':     'igri',
+      'Култура':               'kultura',
+      'Спорт и движение':      'sport',
+      'Тържества и събития':   'turzhestva',
+      'Стоки':                 'stoki',
+      'Домашна грижа и помощ': 'gridja',
+      [CAT_FALLBACK_KEY]:      'fallback',
+    };
+    // Reverse map for URL-slug → main-category lookup. The fallback sentinel
+    // is an internal-only key, so we exclude it: nobody should ever land on
+    // ?cat=fallback as a user-facing filter.
+    const CAT_SLUG_REVERSE = Object.fromEntries(
+      Object.entries(CAT_SLUG)
+        .filter(([bg]) => bg !== CAT_FALLBACK_KEY)
+        .map(([bg, slug]) => [slug, bg])
+    );
+    const TIERS_ORDER = ['Премиум', 'Доверен', 'Проверен', 'Стандартен', 'Безплатен'];
+
+    const FILTERS = {
+      q: '',
+      cats: new Set(),
+      subcats: new Set(),
+      ageFrom: null,
+      ageTo: null,
+      tiers: new Set(),
+      photo: false,
+      sop: false,
+      online: false,
+      top: false,  // Top picks: high-rating + spatial-distribution mode
+    };
+    // Single source of truth for the boolean toggles — used by URL parse,
+    // URL serialise, sync UI, and the change handlers.
+    const TOGGLE_KEYS = ['photo', 'sop', 'online', 'top'];
+    const TOP_PICKS_MIN_RATING = 4.5;
+    const TOP_PICKS_GRID = 6;        // 6×6 spatial cells across the city bbox
+    const TOP_PICKS_PER_CELL = 2;    // best 2 in each cell
+
+    // ── "Близо до мен" — geolocation-driven radius filter ────────────────────
+    const NEAR_RADIUS_KM = 2;
+    const nearMe = {
+      active: false,
+      lat: null,
+      lng: null,
+      pendingPrompt: false,  // true while the geolocation prompt is open
+    };
+
+    // Haversine — great-circle distance in km between two lat/lng points.
+    function haversineKm(lat1, lng1, lat2, lng2) {
+      const R = 6371;
+      const toRad = d => d * Math.PI / 180;
+      const dLat = toRad(lat2 - lat1);
+      const dLng = toRad(lng2 - lng1);
+      const a = Math.sin(dLat / 2) ** 2 +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    // Generate a 64-vertex polygon approximating a circle of `radiusKm`
+    // around (centerLng, centerLat). Used to draw the radius overlay.
+    function circlePolygon(centerLng, centerLat, radiusKm, points = 64) {
+      const coords = [];
+      const distRad = radiusKm / 6371;
+      const latRad = centerLat * Math.PI / 180;
+      const lngRad = centerLng * Math.PI / 180;
+      for (let i = 0; i <= points; i++) {
+        const bearing = (i / points) * 2 * Math.PI;
+        const lat2 = Math.asin(
+          Math.sin(latRad) * Math.cos(distRad) +
+          Math.cos(latRad) * Math.sin(distRad) * Math.cos(bearing)
+        );
+        const lng2 = lngRad + Math.atan2(
+          Math.sin(bearing) * Math.sin(distRad) * Math.cos(latRad),
+          Math.cos(distRad) - Math.sin(latRad) * Math.sin(lat2)
+        );
+        coords.push([lng2 * 180 / Math.PI, lat2 * 180 / Math.PI]);
+      }
+      return {
+        type: 'FeatureCollection',
+        features: [{ type: 'Feature', geometry: { type: 'Polygon', coordinates: [coords] } }],
+      };
+    }
+
+    function showToast(msg, durationMs = 3500) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.hidden = false;
+      // Force reflow so the transition fires when we add the class.
+      void el.offsetWidth;
+      el.classList.add('is-show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => {
+        el.classList.remove('is-show');
+        setTimeout(() => { el.hidden = true; }, 220);
+      }, durationMs);
+    }
+    // Allowlist for ?sub= URL hydration so adversarial values don't enter
+    // FILTERS.subcats. Built lazily after CATEGORY_ROLLUP is declared.
+    const ALL_SUBS = new Set(Object.values(CATEGORY_ROLLUP).flat());
+
+    // Per-city raw features cache. Keyed by city slug. Filled by
+    // `loadBusinessesFor` (called from selectCity / initial load) and read by
+    // `applyFilters` so a filter change doesn't re-query Supabase.
+    const cityFeatureCache = new Map();
+    let currentRawFeatures = [];
+
+    function activeFilterCount() {
+      let n = 0;
+      if (FILTERS.q) n++;
+      n += FILTERS.cats.size;
+      n += FILTERS.subcats.size;
+      // Age counts as a single "Възраст" filter regardless of which bound(s)
+      // the user set — matches what the pill row shows.
+      if (FILTERS.ageFrom != null || FILTERS.ageTo != null) n++;
+      n += FILTERS.tiers.size;
+      if (FILTERS.photo) n++;
+      if (FILTERS.sop) n++;
+      if (FILTERS.online) n++;
+      if (FILTERS.top) n++;
+      // Note: near-me is reflected as its own active pill but not counted
+      // here — it's a major mode separate from the in-panel toggles.
+      return n;
+    }
+
+    function featureMatches(f) {
+      const p = f.properties;
+
+      // Free-text search — name OR any tag in visible_categories[].
+      if (FILTERS.q) {
+        const needle = FILTERS.q.toLowerCase();
+        const haystack = (p.name || '').toLowerCase();
+        let cats = [];
+        try {
+          cats = typeof p.cats_raw === 'string' ? JSON.parse(p.cats_raw) : (p.cats_raw || []);
+        } catch (_) { cats = []; }
+        const catHit = cats.some(c => String(c).toLowerCase().includes(needle));
+        if (!haystack.includes(needle) && !catHit) return false;
+      }
+
+      // Категории — match if ANY of the row's tags is in the rollup of any
+      // selected главна, OR if the row is tagged directly with that главна.
+      if (FILTERS.cats.size) {
+        let cats = [];
+        try {
+          cats = typeof p.cats_raw === 'string' ? JSON.parse(p.cats_raw) : (p.cats_raw || []);
+        } catch (_) { cats = []; }
+        const catSet = new Set(cats);
+        let ok = false;
+        for (const main of FILTERS.cats) {
+          if (catSet.has(main)) { ok = true; break; }
+          const subs = CATEGORY_ROLLUP[main] || [];
+          if (subs.some(s => catSet.has(s))) { ok = true; break; }
+        }
+        if (!ok) return false;
+      }
+
+      // Подкатегории — strict match against any selected.
+      if (FILTERS.subcats.size) {
+        let cats = [];
+        try {
+          cats = typeof p.cats_raw === 'string' ? JSON.parse(p.cats_raw) : (p.cats_raw || []);
+        } catch (_) { cats = []; }
+        const catSet = new Set(cats);
+        let ok = false;
+        for (const sub of FILTERS.subcats) {
+          if (catSet.has(sub)) { ok = true; break; }
+        }
+        if (!ok) return false;
+      }
+
+      // Възраст — row must overlap the requested range. age_groups is an
+      // array of e.g. ['0-3','3-7','7-12','12-18'] or numeric strings.
+      // Rows without age_groups data are INCLUDED — most current rows lack
+      // this column, so excluding them would silently kill the result set.
+      // When the underlying data is enriched we can flip to strict mode.
+      if (FILTERS.ageFrom != null || FILTERS.ageTo != null) {
+        let groups = [];
+        try {
+          groups = typeof p.age_groups === 'string' ? JSON.parse(p.age_groups) : (p.age_groups || []);
+        } catch (_) { groups = []; }
+        if (groups.length) {
+          const wantFrom = FILTERS.ageFrom != null ? FILTERS.ageFrom : 0;
+          const wantTo = FILTERS.ageTo != null ? FILTERS.ageTo : 99;
+          const overlaps = groups.some(g => {
+            const m = String(g).match(/(\d+)\s*[-–]\s*(\d+)/);
+            if (!m) {
+              const n = Number(g);
+              return Number.isFinite(n) && n >= wantFrom && n <= wantTo;
+            }
+            const lo = Number(m[1]), hi = Number(m[2]);
+            return hi >= wantFrom && lo <= wantTo;
+          });
+          if (!overlaps) return false;
+        }
+      }
+
+      // Tier — multi-select; row must match one of the selected tiers.
+      if (FILTERS.tiers.size && !FILTERS.tiers.has(p.tier)) return false;
+
+      // Toggles
+      if (FILTERS.photo && !p.has_photo) return false;
+      if (FILTERS.sop && !p.sop) return false;
+      if (FILTERS.online && !p.is_online) return false;
+
+      // "Близо до мен" — radius gate. Combined with other filters (e.g.
+      // category + tier within the radius). Only fires when the user has
+      // granted location.
+      if (nearMe.active && nearMe.lat != null && nearMe.lng != null) {
+        const [lng, lat] = f.geometry.coordinates;
+        if (haversineKm(nearMe.lat, nearMe.lng, lat, lng) > NEAR_RADIUS_KM) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    // Top-picks distribution: keep only highly-rated rows, then thin the set
+    // by bucketing into a NxN grid over the bbox and taking the top
+    // PER_CELL by rating from each non-empty cell. Result is a curated,
+    // spatially-spread sample suitable for "highlights" mode.
+    function applyTopPicks(features) {
+      const rated = features.filter(f =>
+        Number(f.properties.google_rating) >= TOP_PICKS_MIN_RATING
+      );
+      if (rated.length <= TOP_PICKS_PER_CELL) return rated;
+
+      let minLng = Infinity, maxLng = -Infinity;
+      let minLat = Infinity, maxLat = -Infinity;
+      for (const f of rated) {
+        const [lng, lat] = f.geometry.coordinates;
+        if (lng < minLng) minLng = lng;
+        if (lng > maxLng) maxLng = lng;
+        if (lat < minLat) minLat = lat;
+        if (lat > maxLat) maxLat = lat;
+      }
+      const cellW = (maxLng - minLng) / TOP_PICKS_GRID;
+      const cellH = (maxLat - minLat) / TOP_PICKS_GRID;
+      // Degenerate bbox (all rows at one point) → just return top by rating.
+      if (cellW === 0 || cellH === 0) {
+        return rated
+          .slice()
+          .sort((a, b) => Number(b.properties.google_rating) - Number(a.properties.google_rating))
+          .slice(0, TOP_PICKS_PER_CELL * TOP_PICKS_GRID);
+      }
+
+      const buckets = new Map();
+      for (const f of rated) {
+        const [lng, lat] = f.geometry.coordinates;
+        const cx = Math.min(TOP_PICKS_GRID - 1, Math.floor((lng - minLng) / cellW));
+        const cy = Math.min(TOP_PICKS_GRID - 1, Math.floor((lat - minLat) / cellH));
+        const key = cx + ',' + cy;
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(f);
+      }
+
+      const out = [];
+      for (const list of buckets.values()) {
+        // Sort by rating desc, then by review_count desc as tiebreaker — a
+        // 5.0(2-review) loses to a 4.8(120-review) when ratings are close.
+        list.sort((a, b) => {
+          const dr = Number(b.properties.google_rating) - Number(a.properties.google_rating);
+          if (dr !== 0) return dr;
+          return (Number(b.properties.google_review_count) || 0)
+               - (Number(a.properties.google_review_count) || 0);
+        });
+        out.push(...list.slice(0, TOP_PICKS_PER_CELL));
+      }
+      return out;
+    }
+
+    function applyFilters() {
+      let filtered = currentRawFeatures.filter(featureMatches);
+      if (FILTERS.top) filtered = applyTopPicks(filtered);
+      if (layersAttached) setSourceData(filtered);
+      updateStat(filtered.length);
+      updateActiveFiltersUi();
+      const triggerCount = document.getElementById('filter-trigger-count');
+      const n = activeFilterCount();
+      if (triggerCount) {
+        triggerCount.textContent = String(n);
+        triggerCount.hidden = n === 0;
+      }
+    }
+
+    function clearFilters({ syncUrl = true } = {}) {
+      FILTERS.q = '';
+      FILTERS.cats.clear();
+      FILTERS.subcats.clear();
+      FILTERS.ageFrom = null;
+      FILTERS.ageTo = null;
+      FILTERS.tiers.clear();
+      TOGGLE_KEYS.forEach(k => { FILTERS[k] = false; });
+      // Also turn off near-me when clearing — it's a major mode that should
+      // not silently persist.
+      if (nearMe.active) deactivateNearMe();
+      syncFilterPanelInputs();
+      applyFilters();
+      if (syncUrl) syncUrlFromFilters();
+    }
+
+    // ── Near-me lifecycle ───────────────────────────────────────────────────
+
+    function _setNearTriggerState({ active = false, loading = false } = {}) {
+      const btn = document.getElementById('near-trigger');
+      if (!btn) return;
+      btn.classList.toggle('is-active', active);
+      btn.classList.toggle('is-loading', loading);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    }
+
+    function _drawNearOverlay() {
+      const radSrc = map.getSource('near-radius');
+      const userSrc = map.getSource('near-user');
+      if (!radSrc || !userSrc) return;
+      if (nearMe.active && nearMe.lat != null && nearMe.lng != null) {
+        radSrc.setData(circlePolygon(nearMe.lng, nearMe.lat, NEAR_RADIUS_KM));
+        userSrc.setData({
+          type: 'FeatureCollection',
+          features: [{
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [nearMe.lng, nearMe.lat] },
+          }],
+        });
+      } else {
+        const empty = { type: 'FeatureCollection', features: [] };
+        radSrc.setData(empty);
+        userSrc.setData(empty);
+      }
+    }
+
+    function activateNearMe(opts = {}) {
+      const { silent = false } = opts;
+      if (nearMe.pendingPrompt) return;
+      // Insecure contexts (file:// or plain http on a non-localhost domain)
+      // can't access geolocation. Mapbox's GeolocateControl already gates on
+      // this; we mirror the same check so the failure mode is a clear toast
+      // instead of a silent permission denial.
+      if (!('geolocation' in navigator) || !window.isSecureContext) {
+        if (!silent) showToast('Локацията изисква HTTPS — пробвай в реалния сайт.');
+        return;
+      }
+      nearMe.pendingPrompt = true;
+      _setNearTriggerState({ active: false, loading: true });
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          nearMe.pendingPrompt = false;
+          nearMe.active = true;
+          nearMe.lat = pos.coords.latitude;
+          nearMe.lng = pos.coords.longitude;
+          _setNearTriggerState({ active: true, loading: false });
+          _drawNearOverlay();
+          // Zoom so the radius polygon fits comfortably in the viewport.
+          // 2 km radius at lat 43° fits well at zoom ~13.7.
+          flyOrJump({ center: [nearMe.lng, nearMe.lat], zoom: 13.7 });
+          applyFilters();
+          syncUrlFromFilters();
+          updateActiveFiltersUi();
+        },
+        (err) => {
+          nearMe.pendingPrompt = false;
+          _setNearTriggerState({ active: false, loading: false });
+          if (silent) return;  // auto-fire on load: stay on city view silently
+          const msg = err && err.code === 1
+            ? 'Не получихме разрешение за локация. Пробвай пак или избери град.'
+            : 'Не успяхме да открием локацията ти.';
+          showToast(msg);
+        },
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+      );
+    }
+
+    function deactivateNearMe() {
+      nearMe.active = false;
+      nearMe.lat = null;
+      nearMe.lng = null;
+      _setNearTriggerState({ active: false, loading: false });
+      _drawNearOverlay();
+    }
+
+    function toggleNearMe() {
+      if (nearMe.active || nearMe.pendingPrompt) {
+        deactivateNearMe();
+        applyFilters();
+        syncUrlFromFilters();
+        updateActiveFiltersUi();
+      } else {
+        activateNearMe();
+      }
+    }
+
+    // ── URL ↔ FILTERS ───────────────────────────────────────────────────────
+
+    function syncUrlFromFilters() {
+      const url = new URL(location.href);
+      const set = (k, v) => v ? url.searchParams.set(k, v) : url.searchParams.delete(k);
+
+      set('q', FILTERS.q);
+      set('cat', [...FILTERS.cats].map(c => CAT_SLUG[c] || c).join(','));
+      set('sub', [...FILTERS.subcats].join(','));
+      set('age', (FILTERS.ageFrom != null || FILTERS.ageTo != null)
+        ? `${FILTERS.ageFrom ?? ''}-${FILTERS.ageTo ?? ''}` : '');
+      set('tier', [...FILTERS.tiers].join(','));
+      set('photo', FILTERS.photo ? '1' : '');
+      set('sop', FILTERS.sop ? '1' : '');
+      set('online', FILTERS.online ? '1' : '');
+      set('top', FILTERS.top ? '1' : '');
+      // Near-me URL flag — coordinates are deliberately NOT in the URL
+      // (privacy). Re-loading the page with `?near=1` will re-prompt for
+      // location.
+      set('near', nearMe.active ? '1' : '');
+
+      history.replaceState({ slug: currentSlug }, '', url);
+      notifyParentFiltersChange();
+    }
+
+    function hydrateFiltersFromUrl() {
+      const p = new URLSearchParams(location.search);
+      FILTERS.q = p.get('q') || '';
+
+      FILTERS.cats.clear();
+      (p.get('cat') || '').split(',').filter(Boolean).forEach(slug => {
+        const bg = CAT_SLUG_REVERSE[slug];
+        if (bg) FILTERS.cats.add(bg);
+      });
+
+      FILTERS.subcats.clear();
+      (p.get('sub') || '').split(',').filter(Boolean).forEach(s => {
+        // Reject anything not in the known taxonomy — defends against
+        // adversarial / stale URL params reaching FILTERS.
+        if (ALL_SUBS.has(s)) FILTERS.subcats.add(s);
+      });
+
+      const clampAge = v => {
+        if (v === '' || v == null) return null;
+        const n = Math.floor(Number(v));
+        if (!Number.isFinite(n)) return null;
+        return Math.max(0, Math.min(18, n));
+      };
+      const age = p.get('age') || '';
+      const m = age.match(/^(\d*)-(\d*)$/);
+      let ageFrom = m ? clampAge(m[1]) : null;
+      let ageTo = m ? clampAge(m[2]) : null;
+      // Inverted range → swap so the filter doesn't silently kill all rows.
+      if (ageFrom != null && ageTo != null && ageFrom > ageTo) {
+        [ageFrom, ageTo] = [ageTo, ageFrom];
+      }
+      FILTERS.ageFrom = ageFrom;
+      FILTERS.ageTo = ageTo;
+
+      FILTERS.tiers.clear();
+      (p.get('tier') || '').split(',').filter(Boolean).forEach(t => {
+        if (TIERS_ORDER.includes(t)) FILTERS.tiers.add(t);
+      });
+
+      TOGGLE_KEYS.forEach(k => { FILTERS[k] = p.get(k) === '1'; });
+      // Near-me re-prompt — only if the URL says so AND we don't already
+      // have a fix. Wrapped in setTimeout so it runs after the map is ready.
+      const wantsNear = p.get('near') === '1';
+      if (wantsNear && !nearMe.active && !nearMe.pendingPrompt) {
+        setTimeout(activateNearMe, 50);
+      } else if (!wantsNear && nearMe.active) {
+        deactivateNearMe();
+      }
+    }
+
+    function notifyParentFiltersChange() {
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'zd:map:urlChange',
+            search: location.search,
+          }, location.origin);
+        }
+      } catch (_) { /* ignore */ }
+    }
+
+    // ── Filter panel UI ─────────────────────────────────────────────────────
+
+    let filterPanelBuilt = false;
+    let qDebounceTimer = null;
+    let ageDebounceTimer = null;
+
+    function buildFilterPanelChips() {
+      if (filterPanelBuilt) return;
+      filterPanelBuilt = true;
+      // Категории
+      const catsWrap = document.getElementById('fp-cats');
+      catsWrap.innerHTML = Object.keys(CATEGORY_ROLLUP).map(cat =>
+        `<button type="button" class="fp-chip" data-cat="${escapeHtml(cat)}" aria-pressed="false">${escapeHtml(cat)}</button>`
+      ).join('');
+
+      // Подкатегории — grouped, collapsed by default
+      const subsWrap = document.getElementById('fp-subcats');
+      subsWrap.innerHTML = Object.entries(CATEGORY_ROLLUP).map(([cat, subs]) =>
+        `<details class="fp-subcat-group" data-parent="${escapeHtml(cat)}">
+           <summary class="fp-subcat-summary">${escapeHtml(cat)}</summary>
+           <div class="fp-subcat-row">
+             ${subs.map(s => `<button type="button" class="fp-chip" data-sub="${escapeHtml(s)}" aria-pressed="false">${escapeHtml(s)}</button>`).join('')}
+           </div>
+         </details>`
+      ).join('');
+
+      // Tier chips
+      const tiersWrap = document.getElementById('fp-tiers');
+      tiersWrap.innerHTML = TIERS_ORDER.map(t =>
+        `<button type="button" class="fp-chip" data-tier="${escapeHtml(t)}" aria-pressed="false">${escapeHtml(t)}</button>`
+      ).join('');
+
+      // Wire up chip clicks via delegation
+      catsWrap.addEventListener('click', e => {
+        const btn = e.target.closest('.fp-chip');
+        if (!btn) return;
+        const cat = btn.dataset.cat;
+        if (FILTERS.cats.has(cat)) FILTERS.cats.delete(cat);
+        else FILTERS.cats.add(cat);
+        btn.setAttribute('aria-pressed', FILTERS.cats.has(cat) ? 'true' : 'false');
+        applyFilters();
+        syncUrlFromFilters();
+      });
+      subsWrap.addEventListener('click', e => {
+        const btn = e.target.closest('.fp-chip');
+        if (!btn) return;
+        const sub = btn.dataset.sub;
+        if (FILTERS.subcats.has(sub)) FILTERS.subcats.delete(sub);
+        else FILTERS.subcats.add(sub);
+        btn.setAttribute('aria-pressed', FILTERS.subcats.has(sub) ? 'true' : 'false');
+        applyFilters();
+        syncUrlFromFilters();
+      });
+      tiersWrap.addEventListener('click', e => {
+        const btn = e.target.closest('.fp-chip');
+        if (!btn) return;
+        const tier = btn.dataset.tier;
+        if (FILTERS.tiers.has(tier)) FILTERS.tiers.delete(tier);
+        else FILTERS.tiers.add(tier);
+        btn.setAttribute('aria-pressed', FILTERS.tiers.has(tier) ? 'true' : 'false');
+        applyFilters();
+        syncUrlFromFilters();
+      });
+
+      // Free-text input — debounced for snappier feel
+      const qInput = document.getElementById('fp-q');
+      qInput.addEventListener('input', () => {
+        clearTimeout(qDebounceTimer);
+        qDebounceTimer = setTimeout(() => {
+          FILTERS.q = qInput.value.trim();
+          applyFilters();
+          syncUrlFromFilters();
+        }, 220);
+      });
+
+      // Age inputs — `input` event with debounce so typing 1 → 5 doesn't
+      // briefly filter to age 1, then re-filter to 5 a frame later.
+      const ageFromEl = document.getElementById('fp-age-from');
+      const ageToEl = document.getElementById('fp-age-to');
+      const clampAgeStr = v => {
+        if (v === '') return null;
+        const n = Math.floor(Number(v));
+        if (!Number.isFinite(n)) return null;
+        return Math.max(0, Math.min(18, n));
+      };
+      const ageHandler = () => {
+        clearTimeout(ageDebounceTimer);
+        ageDebounceTimer = setTimeout(() => {
+          let f = clampAgeStr(ageFromEl.value);
+          let t = clampAgeStr(ageToEl.value);
+          if (f != null && t != null && f > t) [f, t] = [t, f];
+          FILTERS.ageFrom = f;
+          FILTERS.ageTo = t;
+          applyFilters();
+          syncUrlFromFilters();
+        }, 220);
+      };
+      ageFromEl.addEventListener('input', ageHandler);
+      ageToEl.addEventListener('input', ageHandler);
+
+      // Toggles
+      TOGGLE_KEYS.forEach(key => {
+        const el = document.getElementById(`fp-${key}`);
+        el.addEventListener('change', () => {
+          FILTERS[key] = el.checked;
+          applyFilters();
+          syncUrlFromFilters();
+        });
+      });
+
+      // Footer + chrome buttons. The Apply button has to flush the q-input
+      // debounce — otherwise hitting Apply <220ms after typing leaves the
+      // filter unapplied even though the panel closes.
+      function flushPendingDebounces() {
+        if (qDebounceTimer) {
+          clearTimeout(qDebounceTimer);
+          qDebounceTimer = null;
+          FILTERS.q = qInput.value.trim();
+        }
+        if (ageDebounceTimer) {
+          clearTimeout(ageDebounceTimer);
+          ageDebounceTimer = null;
+          let f = clampAgeStr(ageFromEl.value);
+          let t = clampAgeStr(ageToEl.value);
+          if (f != null && t != null && f > t) [f, t] = [t, f];
+          FILTERS.ageFrom = f;
+          FILTERS.ageTo = t;
+        }
+        applyFilters();
+        syncUrlFromFilters();
+      }
+      document.getElementById('fp-clear').addEventListener('click', () => clearFilters());
+      document.getElementById('fp-apply').addEventListener('click', () => {
+        flushPendingDebounces();
+        closeFilterPanel();
+      });
+      document.getElementById('fp-close').addEventListener('click', () => {
+        flushPendingDebounces();
+        closeFilterPanel();
+      });
+      document.getElementById('filter-backdrop').addEventListener('click', () => {
+        flushPendingDebounces();
+        closeFilterPanel();
+      });
+      document.getElementById('filter-trigger').addEventListener('click', openFilterPanel);
+
+      // Focus trap inside the dialog. Tab from the last focusable wraps to
+      // the first; Shift+Tab from the first wraps to the last.
+      const panel = document.getElementById('filter-panel');
+      panel.addEventListener('keydown', (e) => {
+        if (e.key !== 'Tab') return;
+        const focusables = panel.querySelectorAll(
+          'a[href], button, input:not([disabled]), [tabindex]:not([tabindex="-1"]), summary'
+        );
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      });
+    }
+
+    function syncFilterPanelInputs() {
+      // Reflect current FILTERS state into the panel inputs (used after URL
+      // hydration and after Clear All).
+      const qInput = document.getElementById('fp-q');
+      if (qInput) qInput.value = FILTERS.q;
+
+      document.querySelectorAll('#fp-cats .fp-chip').forEach(b => {
+        b.setAttribute('aria-pressed', FILTERS.cats.has(b.dataset.cat) ? 'true' : 'false');
+      });
+      document.querySelectorAll('#fp-subcats .fp-chip').forEach(b => {
+        b.setAttribute('aria-pressed', FILTERS.subcats.has(b.dataset.sub) ? 'true' : 'false');
+      });
+      document.querySelectorAll('#fp-tiers .fp-chip').forEach(b => {
+        b.setAttribute('aria-pressed', FILTERS.tiers.has(b.dataset.tier) ? 'true' : 'false');
+      });
+
+      const ageFrom = document.getElementById('fp-age-from');
+      const ageTo = document.getElementById('fp-age-to');
+      if (ageFrom) ageFrom.value = FILTERS.ageFrom != null ? FILTERS.ageFrom : '';
+      if (ageTo) ageTo.value = FILTERS.ageTo != null ? FILTERS.ageTo : '';
+
+      ['photo', 'sop', 'online'].forEach(key => {
+        const el = document.getElementById(`fp-${key}`);
+        if (el) el.checked = FILTERS[key];
+      });
+
+      // Auto-expand subcat groups whose parent is selected, so the active
+      // подкатегории under it are visible at a glance.
+      document.querySelectorAll('#fp-subcats .fp-subcat-group').forEach(d => {
+        const parent = d.dataset.parent;
+        const hasActiveChild = (CATEGORY_ROLLUP[parent] || []).some(s => FILTERS.subcats.has(s));
+        if (FILTERS.cats.has(parent) || hasActiveChild) d.open = true;
+      });
+    }
+
+    let filterPanelOpenLastFocus = null;
+    function openFilterPanel() {
+      const panel = document.getElementById('filter-panel');
+      const backdrop = document.getElementById('filter-backdrop');
+      const trigger = document.getElementById('filter-trigger');
+      panel.hidden = false;
+      backdrop.hidden = false;
+      // Force reflow so the transition fires
+      void panel.offsetWidth;
+      panel.classList.add('is-open');
+      backdrop.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      filterPanelOpenLastFocus = document.activeElement;
+      // Focus the primary interaction (search input), not the close button.
+      // Pattern matches Airbnb / Booking filter panels.
+      const qInput = document.getElementById('fp-q');
+      (qInput || document.getElementById('fp-close')).focus();
+    }
+    function closeFilterPanel() {
+      const panel = document.getElementById('filter-panel');
+      const backdrop = document.getElementById('filter-backdrop');
+      const trigger = document.getElementById('filter-trigger');
+      panel.classList.remove('is-open');
+      backdrop.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      // Wait for transition before hiding from the AT tree
+      setTimeout(() => {
+        if (!panel.classList.contains('is-open')) {
+          panel.hidden = true;
+          backdrop.hidden = true;
+        }
+      }, 240);
+      if (filterPanelOpenLastFocus && filterPanelOpenLastFocus.focus) {
+        filterPanelOpenLastFocus.focus();
+      }
+    }
+    // Esc closes the panel
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      const panel = document.getElementById('filter-panel');
+      if (panel && panel.classList.contains('is-open')) closeFilterPanel();
+    });
+
+    // ── Active filter pill row ──────────────────────────────────────────────
+
+    // Active-filter pills use event delegation on the wrap. Each pill carries
+    // a `data-key` (e.g. "cat:Спорт", "sub:Логопед", "age", "q", "photo")
+    // that the single dispatcher below maps to a FILTERS mutation. Avoids
+    // the index-array brittleness of the prior implementation.
+    function buildAfPill(key, label) {
+      const safe = escapeHtml(label);
+      return `<button type="button" class="af-pill" data-key="${escapeHtml(key)}" aria-label="Премахни филтър ${safe}">${safe}<span class="af-x" aria-hidden="true">×</span></button>`;
+    }
+
+    function updateActiveFiltersUi() {
+      const wrap = document.getElementById('active-filters');
+      if (!wrap) return;
+      const pills = [];
+
+      if (FILTERS.q) {
+        pills.push(buildAfPill('q', `„${FILTERS.q}"`));
+      }
+      // Stable order: iterate the rollup definition, not the Set's insertion
+      // order — keeps pills in a predictable place across hydrate cycles.
+      Object.keys(CATEGORY_ROLLUP).forEach(c => {
+        if (FILTERS.cats.has(c)) pills.push(buildAfPill(`cat:${c}`, c));
+      });
+      Object.values(CATEGORY_ROLLUP).flat().forEach(s => {
+        if (FILTERS.subcats.has(s)) pills.push(buildAfPill(`sub:${s}`, s));
+      });
+      if (FILTERS.ageFrom != null || FILTERS.ageTo != null) {
+        const lo = FILTERS.ageFrom ?? '0';
+        const hi = FILTERS.ageTo ?? '18';
+        pills.push(buildAfPill('age', `${lo}-${hi} г.`));
+      }
+      TIERS_ORDER.forEach(t => {
+        if (FILTERS.tiers.has(t)) pills.push(buildAfPill(`tier:${t}`, t));
+      });
+      if (nearMe.active)  pills.push(buildAfPill('near', `Близо до мен · ${NEAR_RADIUS_KM} км`));
+      if (FILTERS.top)    pills.push(buildAfPill('top', 'Топ препоръки'));
+      if (FILTERS.photo)  pills.push(buildAfPill('photo', 'Със снимка'));
+      if (FILTERS.sop)    pills.push(buildAfPill('sop', 'СОП'));
+      if (FILTERS.online) pills.push(buildAfPill('online', 'Онлайн'));
+
+      if (!pills.length) {
+        wrap.hidden = true;
+        wrap.innerHTML = '';
+        return;
+      }
+      wrap.hidden = false;
+      wrap.innerHTML = pills.join('') + '<button type="button" class="af-clear" id="af-clear" aria-label="Изчисти всички филтри">Изчисти всички</button>';
+    }
+
+    // One-time delegated dispatcher — wired from the DOMContentLoaded init.
+    function wireActiveFiltersDelegate() {
+      const wrap = document.getElementById('active-filters');
+      if (!wrap || wrap.dataset.wired) return;
+      wrap.dataset.wired = '1';
+      wrap.addEventListener('click', (e) => {
+        const clearBtn = e.target.closest('#af-clear');
+        if (clearBtn) { clearFilters(); return; }
+        const pill = e.target.closest('.af-pill');
+        if (!pill) return;
+        const key = pill.dataset.key || '';
+        const [type, value] = key.includes(':') ? key.split(/:(.+)/, 2) : [key, ''];
+        switch (type) {
+          case 'q':      FILTERS.q = ''; break;
+          case 'cat':    FILTERS.cats.delete(value); break;
+          case 'sub':    FILTERS.subcats.delete(value); break;
+          case 'tier':   FILTERS.tiers.delete(value); break;
+          case 'age':    FILTERS.ageFrom = null; FILTERS.ageTo = null; break;
+          case 'photo':  FILTERS.photo = false; break;
+          case 'sop':    FILTERS.sop = false; break;
+          case 'online': FILTERS.online = false; break;
+          case 'top':    FILTERS.top = false; break;
+          case 'near':   deactivateNearMe(); break;
+          default: return;
+        }
+        syncFilterPanelInputs();
+        applyFilters();
+        syncUrlFromFilters();
+      });
+    }
+
+    async function selectCity(slug, { pushHistory } = {}) {
+      if (!CITIES[slug]) slug = DEFAULT_CITY;
+      currentSlug = slug;
+      const city = CITIES[slug];
+
+      if (pushHistory) {
+        const url = new URL(location.href);
+        url.searchParams.set('city', slug);
+        history.replaceState({ slug }, '', url);
+        notifyParentCityChange(slug);
+      }
+
+      updateTabsUi();
+      updateCityPill();
+      flyOrJump({ center: city.center, zoom: city.zoom });
+      if (activePopup) { activePopup.remove(); activePopup = null; }
+      // Boundary swap is independent of the pin fetch — kick it off in
+      // parallel so the outline appears as fast as possible.
+      if (layersAttached) setBoundaryFor(slug);
+
+      // Clear previous city's data immediately so any in-flight chip clicks
+      // during the load window don't apply filters to stale features.
+      currentRawFeatures = [];
+      if (layersAttached && !cityFeatureCache.has(slug)) setSourceData([]);
+
+      // Cache hit — skip the Supabase round trip entirely.
+      if (cityFeatureCache.has(slug)) {
+        currentRawFeatures = cityFeatureCache.get(slug);
+        if (!currentRawFeatures.length) {
+          if (layersAttached) setSourceData([]);
+          showEmptyState();
+          updateStat(0);
+          return;
+        }
+        hideEmptyState();
+        applyFilters();
+        return;
+      }
+
+      // Cancellation token — if the user taps another tab while this fetch is
+      // in-flight, the later tap bumps the token and this resolved fetch is
+      // discarded so its data never overwrites the newer city's pins.
+      const myToken = ++currentLoadToken;
+      const features = await loadBusinessesFor(city.bg);
+      if (myToken !== currentLoadToken) return;
+
+      if (features === null) {
+        // Error: clear the previous city's pins so the user does not see a
+        // phantom dataset on top of the wrong city.
+        currentRawFeatures = [];
+        if (layersAttached) setSourceData([]);
+        hideEmptyState();
+        updateStat(0);
+        const loading = document.getElementById('loading');
+        loading.hidden = false;
+        loading.textContent = 'Картата не се зареди. Опитай пак.';
+        return;
+      }
+
+      cityFeatureCache.set(slug, features);
+      currentRawFeatures = features;
+
+      if (!features.length) {
+        if (layersAttached) setSourceData([]);
+        showEmptyState();
+        updateStat(0);
+        return;
+      }
+
+      hideEmptyState();
+      applyFilters();
+    }
+
+    function whenSupabaseReady() {
+      return new Promise(resolve => {
+        if (window.ZdSupabase) return resolve();
+        window.addEventListener('zd-supabase-ready', () => resolve(), { once: true });
+      });
+    }
+
+    map.on('load', async () => {
+      // Tabs + pill are already wired from DOMContentLoaded; just refresh
+      // in case the Mapbox bundle finished loading before DOMContentLoaded fired.
+      if (!document.getElementById('city-tabs').children.length) buildCityTabs();
+      updateCityPill();
+      await whenSupabaseReady();
+      await attachLayers();
+      // Initial boundary fetch — runs in parallel with the pin fetch below.
+      setBoundaryFor(currentSlug);
+
+      const city = CITIES[currentSlug];
+      const myToken = ++currentLoadToken;
+      const features = await loadBusinessesFor(city.bg);
+      if (myToken !== currentLoadToken) return;
+
+      const loading = document.getElementById('loading');
+
+      if (features === null) {
+        // Don't clobber the auth-failure banner if the map error handler
+        // already latched it — that message is more useful for the dev
+        // than the generic "пак опитай" string.
+        if (!_zdMapErrorBannerShown) {
+          loading.textContent = 'Картата не се зареди. Опитай пак.';
+        }
+        return;
+      }
+
+      // Same guard: if the Mapbox 401 banner is up, leave it visible.
+      if (loading && !_zdMapErrorBannerShown) loading.hidden = true;
+
+      cityFeatureCache.set(currentSlug, features);
+      currentRawFeatures = features;
+
+      if (!features.length) {
+        showEmptyState();
+        updateStat(0);
+        return;
+      }
+
+      applyFilters();
+
+      // Auto-zoom to user's location with a 2 km radius on first paint.
+      // Silent — if permission is denied or geolocation fails, the user
+      // stays on the default city view instead of seeing a toast. Only
+      // fires once per page load (subsequent city tab clicks don't
+      // re-prompt).
+      activateNearMe({ silent: true });
+    });
+
+    // Browser back/forward → re-sync city AND filters from the URL.
+    window.addEventListener('popstate', () => {
+      hydrateFiltersFromUrl();
+      syncFilterPanelInputs();
+      const slug = citySlugFromUrl();
+      if (slug !== currentSlug) {
+        selectCity(slug, { pushHistory: false });
+      } else {
+        applyFilters();
+      }
+    });
+  </script>
+</body>
+</html>

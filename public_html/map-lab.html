@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Map Lab (вътрешен прототип) · За Детето</title>
+<meta name="description" content="Internal prototype — not linked from public navigation.">
+<meta name="robots" content="noindex,nofollow">
+
+<!-- No canonical / Open Graph / Twitter tags: this is an internal prototype URL
+     with noindex,nofollow. Canonical on a noindex page sends a contradictory
+     signal (noindex wins anyway), so we just omit it. -->
+
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c4dff">
+
+<link rel="stylesheet" href="brand_assets/fonts/fonts.css">
+<script src="js/nav-inject.js"></script>
+
+<style>
+  :root {
+    --zd-purple: #7c4dff;
+    --zd-purple-dark: #5a2ecf;
+    --bg: #fdfcfb;
+    --surface: #ffffff;
+    --text: #1a103c;
+    --muted: #8b80b0;
+    --accent: var(--zd-purple);
+    --border: #ece8f3;
+    --nav-h: 80px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+  h1, h2, h3 { font-family: 'DM Serif Display', serif; }
+
+  main {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  /* Iframe fills the viewport below the nav. dvh handles the iOS Safari
+     dynamic toolbar; vh is the fallback for older browsers. */
+  .map-frame {
+    display: block;
+    width: 100%;
+    height: calc(100vh - var(--nav-h));
+    height: calc(100dvh - var(--nav-h));
+    border: 0;
+    background: #FAF7FF;
+  }
+  @media (max-width: 768px) {
+    :root { --nav-h: 56px; }
+  }
+
+  /* ═══ GLOBAL FOOTER ═══ */
+  .zd-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 32px 24px;
+    background: var(--surface);
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .zd-footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .zd-footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .zd-footer-links a:hover { color: var(--accent); }
+  .zd-footer-copy {
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.6;
+  }
+  @media (max-width: 640px) {
+    .zd-footer { padding: 24px 16px; }
+    .zd-footer-links { gap: 16px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo"><img src="brand_assets/zadeteto-logo-horizontal.svg" alt="За Детето"></a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Начало</a>
+    <a href="about.html" class="nav-link">За нас</a>
+    <a href="search.html" class="nav-btn-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Търсене</a>
+    <a href="partners.html" class="nav-btn-partner">Стани партньор</a>
+    <a href="pricing.html" class="nav-link">Абонаменти</a>
+    <a href="contacts.html" class="nav-link">Контакти</a>
+    <a href="search.html?login=true" class="nav-btn-login">Вход</a>
+  </div>
+</nav>
+
+<main id="zd-main-content">
+  <iframe
+    id="map-iframe"
+    class="map-frame"
+    src="map-lab-embed.html"
+    title="Интерактивна карта на проверените бизнеси"
+    allow="geolocation"
+    loading="eager"
+  ></iframe>
+</main>
+
+<footer class="zd-footer">
+  <div class="zd-footer-links">
+    <a href="index.html">Начало</a>
+    <a href="search.html">Каталог</a>
+    <a href="partners.html">За партньори</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="report.html">Докладвай</a>
+    <a href="business-login.html">Бизнес Вход</a>
+  </div>
+  <div class="zd-footer-copy">&copy; 2026 За Детето. Всички права запазени.</div>
+</footer>
+
+<script>
+(function () {
+  // Forward the wrapper's filter-related query string into the iframe's src so
+  // direct deep-links (`/map.html?city=plovdiv&cat=specialisti&tier=Доверен`)
+  // load the right view on first paint.
+  const iframe = document.getElementById('map-iframe');
+  const CITY_SLUG_RE = /^[a-z0-9-]+$/i;
+  // Allow-list of params we forward — anything else stays on the wrapper URL
+  // and is ignored by the iframe.
+  const FORWARD_KEYS = ['city', 'q', 'cat', 'sub', 'tier', 'age', 'photo', 'sop', 'online', 'top', 'near'];
+
+  const wrapperParams = new URLSearchParams(location.search);
+  const u = new URL(iframe.src, location.href);
+  let mutated = false;
+  FORWARD_KEYS.forEach(k => {
+    const v = wrapperParams.get(k);
+    if (v == null) return;
+    if (k === 'city' && !CITY_SLUG_RE.test(v)) return;
+    u.searchParams.set(k, v);
+    mutated = true;
+  });
+  if (mutated) iframe.src = u.pathname + u.search;
+
+  // When the embed page reports a state change, sync the wrapper URL so
+  // refresh / share keeps the same view. Two message types:
+  //   - zd:map:cityChange { slug }            → only updates ?city=
+  //   - zd:map:urlChange  { search }          → updates the full filter set
+  window.addEventListener('message', (e) => {
+    // Defence in depth — both source and origin must be the trusted iframe.
+    if (e.source !== iframe.contentWindow) return;
+    if (e.origin !== location.origin) return;
+    const data = e.data;
+    if (!data || typeof data !== 'object') return;
+
+    if (data.type === 'zd:map:cityChange' && typeof data.slug === 'string' && CITY_SLUG_RE.test(data.slug)) {
+      const url = new URL(location.href);
+      if (url.searchParams.get('city') === data.slug) return;
+      url.searchParams.set('city', data.slug);
+      history.replaceState(null, '', url);
+      return;
+    }
+
+    if (data.type === 'zd:map:urlChange' && typeof data.search === 'string') {
+      // Defence-in-depth: don't trust the iframe's search string verbatim.
+      // Re-parse it, validate each key against the FORWARD_KEYS allow-list,
+      // and rebuild the wrapper URL from those alone. A bug or compromise on
+      // the embed side cannot inject extra params into the parent URL.
+      const incoming = new URLSearchParams(data.search);
+      const url = new URL(location.href);
+      // Wipe any allow-listed params first (so a removed filter is reflected),
+      // then re-set from the validated incoming string.
+      FORWARD_KEYS.forEach(k => url.searchParams.delete(k));
+      FORWARD_KEYS.forEach(k => {
+        const v = incoming.get(k);
+        if (v == null) return;
+        if (k === 'city' && !CITY_SLUG_RE.test(v)) return;
+        url.searchParams.set(k, v);
+      });
+      history.replaceState(null, '', url);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
