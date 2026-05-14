@@ -532,6 +532,41 @@ html[data-zd-active="true"] .top-error-bar {
 
 
 /* ============================================================
+   ZONE 9b: Brand accent on always-visible UI
+   Premium-tier partners don't see locked items, so purple from
+   lock states never fires. This zone keeps the brand visible on
+   active / hover sidebar items regardless of tier.
+   ============================================================ */
+
+/* Active / selected sidebar item — left bar + tinted background */
+html[data-zd-active="true"] [id^="sb_"].active,
+html[data-zd-active="true"] [id^="sb_"][class*="--active"],
+html[data-zd-active="true"] [id^="sb_"][class*="active-link"],
+html[data-zd-active="true"] [id^="sb_"][aria-current="page"] {
+  background: linear-gradient(90deg,
+    rgba(124, 77, 255, 0.16) 0%,
+    rgba(124, 77, 255, 0.06) 100%) !important;
+  box-shadow: inset 3px 0 0 0 #7c4dff !important;
+  border-radius: 6px !important;
+}
+
+html[data-zd-active="true"] [id^="sb_"].active .nav-title,
+html[data-zd-active="true"] [id^="sb_"][class*="--active"] .nav-title,
+html[data-zd-active="true"] [id^="sb_"][class*="active-link"] .nav-title,
+html[data-zd-active="true"] [id^="sb_"][aria-current="page"] .nav-title {
+  color: #7c4dff !important;
+  font-weight: 700 !important;
+}
+
+/* Hover on unlocked sidebar items — very subtle purple */
+html[data-zd-active="true"] [id^="sb_"]:not([data-zd-locked]):not([data-zd-locked-addon]):hover {
+  background: rgba(124, 77, 255, 0.06) !important;
+  border-radius: 6px !important;
+  transition: background 0.14s ease !important;
+}
+
+
+/* ============================================================
    ZONE 10: Responsive — sidebar narrower than 280px gets compact subtext
    ============================================================ */
 

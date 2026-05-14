@@ -35,7 +35,7 @@
   // ----------------------------------------------------------------
   const WHITELIST_URL = 'https://zadeteto.com/ghl-locations.json';
   const SESSION_CACHE_KEY = 'zd_ghl_whitelist_v1';
-  const SESSION_CACHE_TTL_MS = 60_000; // 1 minute
+  const SESSION_CACHE_TTL_MS = 60000; // 1 minute
 
   // Translation map: GHL English → Bulgarian
   // Keyed by `meta` attribute (more stable than ID or text)
@@ -53,6 +53,41 @@
     'reputation':          'Репутация',
     'reporting':           'Отчети',
     'settings':            'Настройки'
+  };
+
+  // In-page text translations (page headers, sub-tabs, filter chips,
+  // common labels). Matched on exact trimmed textContent of text nodes.
+  // Add new entries here as English strings are surfaced in the UI.
+  const IN_PAGE_TRANSLATIONS = {
+    // Top-level page headers (when shown as page titles inside content area)
+    'Conversations':       'Разговори',
+    'Contacts':            'Контакти',
+    'Calendars':           'Календари',
+    'Opportunities':       'Възможности',
+    'Payments':            'Плащания',
+    'Reputation':          'Репутация',
+    'Reporting':           'Отчети',
+    'Sites':               'Сайтове',
+    'Memberships':         'Членства',
+    'Email Marketing':     'Имейл маркетинг',
+    'Automation':          'Автоматизации',
+    'Settings':            'Настройки',
+
+    // Conversations sub-tabs
+    'Manual Actions':      'Ръчни действия',
+    'Snippets':            'Шаблони',
+    'Trigger Links':       'Тригер линкове',
+    'Analytics':           'Анализи',
+
+    // Inbox filter chips
+    'Team Inbox':          'Екипна поща',
+    'Unread':              'Непрочетени',
+    'All':                 'Всички',
+    'Recents':             'Последни',
+    'Starred':             'Със звезда',
+
+    // Common UI
+    'Select all':          'Маркирай всички'
   };
 
   // Subtext shown under locked items (one-line tagline)
@@ -325,6 +360,52 @@
 
     // 4. Inject "Премиум" divider before the first Premium-tier locked item
     injectPremiumDivider(partner, unlockedMetas);
+
+    // 5. Walk in-page text nodes and translate known strings (headers,
+    //    sub-tabs, filter chips, common labels). Scoped to skip inputs,
+    //    contenteditable, scripts, styles, and our own injected text.
+    translatePageText();
+  }
+
+  function translatePageText() {
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode(node) {
+          const parent = node.parentElement;
+          if (!parent) return NodeFilter.FILTER_REJECT;
+          const tag = parent.tagName;
+          if (tag === 'SCRIPT' || tag === 'STYLE' ||
+              tag === 'INPUT' || tag === 'TEXTAREA' ||
+              tag === 'NOSCRIPT') {
+            return NodeFilter.FILTER_REJECT;
+          }
+          // Skip user-editable content and our own injected text
+          if (parent.closest('[contenteditable="true"]')) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          if (parent.classList && (
+              parent.classList.contains('zd-nav-subtext') ||
+              parent.classList.contains('zd-premium-divider-label'))) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          const trimmed = node.textContent.trim();
+          if (!trimmed) return NodeFilter.FILTER_REJECT;
+          if (!IN_PAGE_TRANSLATIONS[trimmed]) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      }
+    );
+
+    let node;
+    while ((node = walker.nextNode())) {
+      const original = node.textContent.trim();
+      const translated = IN_PAGE_TRANSLATIONS[original];
+      if (translated && original !== translated) {
+        node.textContent = node.textContent.replace(original, translated);
+      }
+    }
   }
 
   function injectPremiumDivider(partner, unlockedMetas) {
