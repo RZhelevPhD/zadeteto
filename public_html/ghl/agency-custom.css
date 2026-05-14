@@ -535,34 +535,75 @@ html[data-zd-active="true"] .top-error-bar {
    ZONE 9b: Brand accent on always-visible UI
    Premium-tier partners don't see locked items, so purple from
    lock states never fires. This zone keeps the brand visible on
-   active / hover sidebar items regardless of tier.
+   active / hover sidebar items + primary buttons regardless of tier.
    ============================================================ */
 
-/* Active / selected sidebar item — left bar + tinted background */
-html[data-zd-active="true"] [id^="sb_"].active,
-html[data-zd-active="true"] [id^="sb_"][class*="--active"],
-html[data-zd-active="true"] [id^="sb_"][class*="active-link"],
-html[data-zd-active="true"] [id^="sb_"][aria-current="page"] {
+/* Active / selected sidebar item — force opacity to beat GHL's
+   default opacity-70 utility class on nav items. Without this,
+   our background tint gets washed out to ~11% effective alpha. */
+html[data-zd-active="true"] [id^="sb_"].active {
+  opacity: 1 !important;
   background: linear-gradient(90deg,
-    rgba(124, 77, 255, 0.16) 0%,
-    rgba(124, 77, 255, 0.06) 100%) !important;
+    rgba(124, 77, 255, 0.22) 0%,
+    rgba(124, 77, 255, 0.04) 100%) !important;
   box-shadow: inset 3px 0 0 0 #7c4dff !important;
-  border-radius: 6px !important;
+  border-radius: 8px !important;
 }
 
-html[data-zd-active="true"] [id^="sb_"].active .nav-title,
-html[data-zd-active="true"] [id^="sb_"][class*="--active"] .nav-title,
-html[data-zd-active="true"] [id^="sb_"][class*="active-link"] .nav-title,
-html[data-zd-active="true"] [id^="sb_"][aria-current="page"] .nav-title {
-  color: #7c4dff !important;
+html[data-zd-active="true"] [id^="sb_"].active .nav-title {
+  color: #5a2ee6 !important;
   font-weight: 700 !important;
 }
 
-/* Hover on unlocked sidebar items — very subtle purple */
-html[data-zd-active="true"] [id^="sb_"]:not([data-zd-locked]):not([data-zd-locked-addon]):hover {
-  background: rgba(124, 77, 255, 0.06) !important;
-  border-radius: 6px !important;
+/* Hover wash on unlocked inactive sidebar items */
+html[data-zd-active="true"] [id^="sb_"]:not(.active):not([data-zd-locked]):not([data-zd-locked-addon]):hover {
+  background: rgba(124, 77, 255, 0.08) !important;
+  border-radius: 8px !important;
   transition: background 0.14s ease !important;
+}
+
+
+/* ============================================================
+   ZONE 9c: Primary buttons — override GHL's Tailwind bg-blue-500
+   palette with brand purple. Tailwind utility classes are used
+   on every primary CTA in GHL (View All, Save, Create, Send, etc.)
+   so overriding the class itself paints them all in one shot.
+   ============================================================ */
+
+html[data-zd-active="true"] button.bg-blue-500,
+html[data-zd-active="true"] button[class~="bg-blue-500"],
+html[data-zd-active="true"] a.bg-blue-500,
+html[data-zd-active="true"] a[class~="bg-blue-500"] {
+  background-color: #7c4dff !important;
+  background-image: linear-gradient(135deg, #7c4dff 0%, #6a3aef 100%) !important;
+  border-color: #6a3aef !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 6px 16px -6px rgba(124, 77, 255, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+  transition: transform 140ms ease, box-shadow 140ms ease,
+              background-image 140ms ease !important;
+}
+
+html[data-zd-active="true"] button.bg-blue-500:hover,
+html[data-zd-active="true"] button[class~="bg-blue-500"]:hover,
+html[data-zd-active="true"] button.hover\:bg-blue-600:hover,
+html[data-zd-active="true"] a.bg-blue-500:hover,
+html[data-zd-active="true"] a[class~="bg-blue-500"]:hover {
+  background-color: #6a3aef !important;
+  background-image: linear-gradient(135deg, #8a5fff 0%, #5a2ee6 100%) !important;
+  box-shadow:
+    0 10px 24px -8px rgba(124, 77, 255, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  transform: translateY(-1px) !important;
+}
+
+html[data-zd-active="true"] button.bg-blue-500:active,
+html[data-zd-active="true"] button[class~="bg-blue-500"]:active {
+  transform: translateY(0) !important;
+  box-shadow:
+    0 4px 10px -4px rgba(124, 77, 255, 0.6),
+    inset 0 2px 4px rgba(28, 20, 70, 0.25) !important;
 }
 
 
