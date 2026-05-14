@@ -303,6 +303,12 @@
   // ----------------------------------------------------------------
 
   function applyTranslationsAndLocks(partner, unlockedMetas, activeAddons) {
+    // Guard: do nothing if we're not on an active ZaDeteto subaccount.
+    // The MutationObserver fires on every DOM change including SPA navigation
+    // to agency view, where this function would otherwise misapply
+    // data-zd-locked to agency sidebar items.
+    if (document.documentElement.dataset.zdActive !== 'true') return;
+
     const items = document.querySelectorAll('[id^="sb_"]');
 
     items.forEach(item => {
@@ -630,12 +636,31 @@
     bindClickHandlers(partner, locationId);
     startObserver(partner, unlockedMetas, activeAddons);
 
-    // Re-apply on URL change (SPA route change)
+    // Re-apply on URL change (SPA route change).
+    // Also handle deactivation: if user navigates from a whitelisted
+    // subaccount to agency view (or to a different subaccount that is
+    // NOT this partner), strip data-zd-active so our CSS stops applying
+    // and the user sees default GHL — not a half-broken Bulgarian agency
+    // view with misapplied padlocks.
     let lastPath = window.location.pathname;
+    const originalLocationId = locationId;
     setInterval(() => {
-      if (window.location.pathname !== lastPath) {
-        lastPath = window.location.pathname;
+      if (window.location.pathname === lastPath) return;
+      lastPath = window.location.pathname;
+      const currentLocationId = getLocationId();
+      if (currentLocationId === originalLocationId) {
+        // Still on the same partner subaccount (or returning to it).
+        // Re-set the activation gate in case it was previously removed,
+        // then re-apply translations and locks.
+        document.documentElement.setAttribute('data-zd-active', 'true');
+        document.documentElement.setAttribute('lang', 'bg');
         scheduleApply(partner, unlockedMetas, activeAddons);
+      } else {
+        // Navigated to agency view or a different subaccount — deactivate.
+        // A full page reload on the new context will re-bootstrap us
+        // properly if it's also a whitelisted partner.
+        document.documentElement.removeAttribute('data-zd-active');
+        document.documentElement.removeAttribute('lang');
       }
     }, 500);
 
