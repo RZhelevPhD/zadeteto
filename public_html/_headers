@@ -23,6 +23,19 @@
   Cache-Control: public, max-age=60
   Content-Type: application/json; charset=utf-8
 
+# Master CSS + JS for the ZaDeteto GHL agency layer.
+# Short cache so changes propagate within ~60s of a git push,
+# without partners having to hard-refresh their browsers.
+/ghl/agency-custom.css
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=60, must-revalidate
+  Content-Type: text/css; charset=utf-8
+
+/ghl/agency-custom.js
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=60, must-revalidate
+  Content-Type: application/javascript; charset=utf-8
+
 /dashboard
   X-Frame-Options: ALLOWALL
   Content-Security-Policy: frame-ancestors *
