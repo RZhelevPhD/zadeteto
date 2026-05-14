@@ -608,6 +608,59 @@ html[data-zd-active="true"] button[class~="bg-blue-500"]:active {
 
 
 /* ============================================================
+   ZONE 9d: Blue text + icons → brand purple
+   GHL uses Tailwind text-blue-* utility classes for links, arrows,
+   icon accents, and section headers in popups. Override them so
+   every interactive blue element follows the brand palette.
+   ============================================================ */
+
+html[data-zd-active="true"] .text-blue-500,
+html[data-zd-active="true"] .text-blue-600,
+html[data-zd-active="true"] .text-blue-700,
+html[data-zd-active="true"] [class~="text-blue-500"],
+html[data-zd-active="true"] [class~="text-blue-600"],
+html[data-zd-active="true"] [class~="text-blue-700"] {
+  color: #7c4dff !important;
+}
+
+/* Hover variant on blue text */
+html[data-zd-active="true"] .hover\:text-blue-600:hover,
+html[data-zd-active="true"] .hover\:text-blue-700:hover {
+  color: #5a2ee6 !important;
+}
+
+/* SVG icons inside blue-text containers — most GHL icons inherit
+   color via currentColor, so the rule above already paints them.
+   This is a safety net for icons that hardcode stroke/fill. */
+html[data-zd-active="true"] .text-blue-500 svg,
+html[data-zd-active="true"] .text-blue-600 svg,
+html[data-zd-active="true"] [class~="text-blue-500"] svg,
+html[data-zd-active="true"] [class~="text-blue-600"] svg {
+  color: #7c4dff !important;
+  stroke: currentColor !important;
+}
+
+/* Tinted blue backgrounds used for info banners, tile backgrounds,
+   icon containers in the "Get started with payments" sidebar.
+   Tailwind defaults: bg-blue-50 (very light), bg-blue-100 (light). */
+html[data-zd-active="true"] .bg-blue-50,
+html[data-zd-active="true"] .bg-blue-100,
+html[data-zd-active="true"] [class~="bg-blue-50"],
+html[data-zd-active="true"] [class~="bg-blue-100"] {
+  background-color: rgba(124, 77, 255, 0.08) !important;
+}
+
+/* Blue borders on info cards / banners */
+html[data-zd-active="true"] .border-blue-100,
+html[data-zd-active="true"] .border-blue-200,
+html[data-zd-active="true"] .border-blue-300,
+html[data-zd-active="true"] [class~="border-blue-100"],
+html[data-zd-active="true"] [class~="border-blue-200"] {
+  border-color: rgba(124, 77, 255, 0.25) !important;
+}
+
+
+/* ============================================================
    ZONE 10: Responsive — sidebar narrower than 280px gets compact subtext
    ============================================================ */
 

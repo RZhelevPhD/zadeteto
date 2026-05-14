@@ -86,6 +86,47 @@
     'Recents':             'Последни',
     'Starred':             'Със звезда',
 
+    // Conversations empty states
+    'All Caught Up!':                                              'Готово!',
+    "You don't have any unread Team Inbox conversations right now.": 'В момента нямаш непрочетени разговори в екипната поща.',
+    'View All Team Inbox Conversations':                           'Виж всички разговори в екипната поща',
+    'No conversation selected':                                    'Няма избран разговор',
+    'Select a conversation from the list to view contact details.': 'Избери разговор от списъка, за да видиш данните за контакта.',
+
+    // Payments page (Плащания) — page header + sub-tabs
+    'Invoices':                                                    'Фактури',
+    'Invoices & Estimates':                                        'Фактури и оферти',
+    'Documents & Contracts':                                       'Документи и договори',
+    'Orders':                                                      'Поръчки',
+    'Subscriptions':                                               'Абонаменти',
+    'Payment Links':                                               'Линкове за плащане',
+    'Transactions':                                                'Транзакции',
+    'Products':                                                    'Продукти',
+    'Create and manage all invoices generated for your business':  'Създавай и управлявай всички фактури на бизнеса',
+    'Connect at least one payment gateway to start receiving payments': 'Свържи поне един метод за плащане, за да започнеш да приемаш плащания',
+    'Integrate Payment Gateway':                                   'Свържи метод за плащане',
+    'No invoices to show yet':                                     'Все още няма фактури',
+
+    // "Get started with payments" sidebar popup
+    'Get started with payments':                                   'Започни с плащанията',
+    'Connect your payment provider':                               'Свържи метод за плащане',
+    'Connect your accounting':                                     'Свържи счетоводство',
+    'Connect Quickbooks':                                          'Свържи Quickbooks',
+    'Control who can see your payments':                           'Контролирай кой вижда плащанията ти',
+    'Set permissions for your team members':                       'Задай разрешения на членовете на екипа',
+
+    // Common form / table labels
+    'Start Date':          'От дата',
+    'End Date':            'До дата',
+    'Search':              'Търсене',
+    'Filters':             'Филтри',
+    'Invoice Name':        'Име на фактура',
+    'Invoice Number':      'Номер на фактура',
+    'Customer':            'Клиент',
+    'Issue Date':          'Дата на издаване',
+    'Amount':              'Сума',
+    'Status':              'Статус',
+
     // Common UI
     'Select all':          'Маркирай всички'
   };
