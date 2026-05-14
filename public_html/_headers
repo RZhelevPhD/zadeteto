@@ -1,0 +1,40 @@
+# Cloudflare Pages headers config
+# ----------------------------------------------------------------
+# Read on every deploy. Lives at the ROOT of the build output dir
+# (= public_html/ for this project — make sure CF Pages is configured
+# with build output = public_html, not repo root).
+#
+# Purpose:
+#   1. ghl-locations.json must be CORS-readable from app.gohighlevel.com
+#      so the GHL Agency Custom JS can fetch it cross-origin.
+#   2. dashboard.html + crm-upgrade.html must allow iframe embedding
+#      from GHL (otherwise the sidebar Custom Menu Links show a blocked
+#      iframe and partners see nothing).
+#
+# Note on frame-ancestors *:
+#   Current value is permissive (any site can iframe these pages). The
+#   handover chose this on purpose to avoid breaking GHL whitelabel
+#   domains. If you want to tighten later, replace * with:
+#     frame-ancestors https://app.gohighlevel.com https://app.123marketing.app
+# ----------------------------------------------------------------
+
+/ghl-locations.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=60
+  Content-Type: application/json; charset=utf-8
+
+/dashboard
+  X-Frame-Options: ALLOWALL
+  Content-Security-Policy: frame-ancestors *
+
+/dashboard.html
+  X-Frame-Options: ALLOWALL
+  Content-Security-Policy: frame-ancestors *
+
+/crm-upgrade
+  X-Frame-Options: ALLOWALL
+  Content-Security-Policy: frame-ancestors *
+
+/crm-upgrade.html
+  X-Frame-Options: ALLOWALL
+  Content-Security-Policy: frame-ancestors *

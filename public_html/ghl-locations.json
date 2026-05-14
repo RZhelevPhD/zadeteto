@@ -1,0 +1,75 @@
+{
+  "_comment_1": "ZaDeteto GHL Partner Whitelist. Lives at https://zadeteto.com/ghl-locations.json. The Agency JS fetches this on every GHL page load and decides whether to activate the Bulgarian/padlock layer based on the current Location ID.",
+  "_comment_2": "TO ADD A NEW PARTNER: copy a template entry under 'locations', replace the key with the new Location ID (from the GHL URL /v2/location/XXX/...), set their tier and addons, commit, push. Changes go live within ~60 seconds.",
+  "_comment_3": "TO UPGRADE A PARTNER'S TIER: change their 'tier' field. Valid values: verified, trusted, premium.",
+  "_comment_4": "TO ACTIVATE AN ADD-ON: add the addon key to their 'addons' array. Valid addon keys: ai_agents, unlimited_sms.",
+  "_comment_5": "TO REMOVE A PARTNER: delete their entry. They will see normal GHL again (in English).",
+
+  "version": "1.0",
+  "last_updated": "2026-05-13",
+
+  "defaults": {
+    "tier": "verified",
+    "addons": [],
+    "unlocked_by_tier": {
+      "verified": [
+        "conversations",
+        "contacts",
+        "settings"
+      ],
+      "trusted": [
+        "conversations",
+        "contacts",
+        "calendars",
+        "opportunities",
+        "settings"
+      ],
+      "premium": [
+        "conversations",
+        "contacts",
+        "calendars",
+        "opportunities",
+        "email-marketing",
+        "automation",
+        "sites",
+        "memberships",
+        "reputation",
+        "reporting",
+        "payments",
+        "settings"
+      ]
+    }
+  },
+
+  "locations": {
+
+    "_template_verified_partner": {
+      "_note": "Example entry — DELETE this when going live. Replace key with real Location ID.",
+      "name": "Логопед Иванова — пример",
+      "tier": "verified",
+      "addons": []
+    },
+
+    "_template_trusted_partner": {
+      "_note": "Example entry — DELETE this when going live.",
+      "name": "Детски център Слънце — пример",
+      "tier": "trusted",
+      "addons": []
+    },
+
+    "_template_premium_with_ai": {
+      "_note": "Example entry — DELETE this when going live.",
+      "name": "Хеликс ООД — пример",
+      "tier": "premium",
+      "addons": ["ai_agents"]
+    },
+
+    "ZCexGFW5RHvLTGxtLmtb": {
+      "_note": "ZaDeteto Template Master sub-account (Rusi's testbed). Premium tier with AI activated so all features can be tested.",
+      "name": "ZaDeteto Template",
+      "tier": "premium",
+      "addons": ["ai_agents"]
+    }
+
+  }
+}

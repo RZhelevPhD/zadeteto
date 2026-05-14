@@ -1,0 +1,555 @@
+/* ================================================================
+   ZaDeteto — Agency-level Custom CSS for GoHighLevel
+   ================================================================
+   
+   Paste this into: Settings → Company → Custom CSS (Agency level)
+   
+   WHAT THIS FILE DOES:
+   - Applies ONLY when JS adds `data-zd-active="true"` to <html>
+     (whitelist match in ghl-locations.json). Other sub-accounts unaffected.
+   - Imports Manrope font from Google Fonts
+   - Hides unused menu items (Launchpad, Dashboard, Media, App Marketplace,
+     Mobile App, Tutorials) for ZaDeteto partners
+   - Bulgarian translation is done via JS text replacement, not CSS
+     (CSS pseudo-elements don't work reliably with React-rendered text)
+   - Adds locked item opacity + gold padlock for tier-locked features
+   - Adds purple sparkle badge + special tooltip for AI Agents (add-on)
+   - Adds "Премиум" divider between free and locked items
+   - Adds shake animation on padlock click
+   
+   DEPENDENCIES:
+   - Agency Custom JS must run first to set data-zd-active="true"
+   - Custom Menu Links for "Начало" (top) and "Помощ и активиране" (bottom)
+     are added manually via Settings → Custom Menu Links
+   
+   FALLBACK:
+   - If JS fails to fetch the whitelist, nothing changes — GHL stays in
+     default English mode for all sub-accounts.
+   ================================================================ */
+
+
+/* --- Font import --- */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+
+/* ============================================================
+   ZONE 1: Activation gate
+   All ZaDeteto styles are scoped under [data-zd-active="true"].
+   The Agency JS sets this on <html> only when the current Location ID
+   matches an entry in ghl-locations.json. This means non-ZaDeteto
+   sub-accounts (B2BBorsa, IvoryBridge, etc.) see normal GHL.
+   ============================================================ */
+
+
+/* ============================================================
+   ZONE 2: Font + base typography (ZaDeteto sub-accounts only)
+   ============================================================ */
+html[data-zd-active="true"],
+html[data-zd-active="true"] body,
+html[data-zd-active="true"] .nav-title,
+html[data-zd-active="true"] #sidebar-v2 {
+  font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+
+/* ============================================================
+   ZONE 3: Hide menu items that confuse non-tech partners
+   ============================================================ */
+html[data-zd-active="true"] #sb_launchpad,
+html[data-zd-active="true"] #sb_dashboard,
+html[data-zd-active="true"] #sb_app-media,
+html[data-zd-active="true"] #sb_app-marketplace,
+html[data-zd-active="true"] #sb_location-mobile-app,
+html[data-zd-active="true"] #sb_tutorials {
+  display: none !important;
+}
+
+
+/* ============================================================
+   ZONE 4: Locked item styling (tier-locked features)
+   The JS adds `data-zd-locked="true"` to menu items the user
+   doesn't have access to based on their tier.
+   ============================================================ */
+
+/* Position context for padlock badge */
+html[data-zd-active="true"] [data-zd-locked="true"] {
+  position: relative !important;
+  opacity: 0.42 !important;
+  transition: opacity 0.14s ease, background 0.14s ease !important;
+  cursor: pointer !important;
+}
+
+html[data-zd-active="true"] [data-zd-locked="true"]:hover {
+  opacity: 0.7 !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Gold padlock badge — injected as ::after pseudo-element */
+html[data-zd-active="true"] [data-zd-locked="true"]::after {
+  content: "🔒";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: #e8c547;
+  filter: drop-shadow(0 0 0 transparent);
+  transition: transform 0.2s ease, filter 0.2s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Padlock pulse on row hover */
+html[data-zd-active="true"] [data-zd-locked="true"]:hover::after {
+  animation: zd-padlock-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes zd-padlock-pulse {
+  0%, 100% {
+    transform: translateY(-50%) scale(1);
+    filter: drop-shadow(0 0 0 rgba(232, 197, 71, 0));
+  }
+  50% {
+    transform: translateY(-50%) scale(1.18);
+    filter: drop-shadow(0 0 4px rgba(232, 197, 71, 0.55));
+  }
+}
+
+/* Shake animation triggered by JS adding `data-zd-shake` */
+html[data-zd-active="true"] [data-zd-shake="true"]::after {
+  animation: zd-padlock-shake 480ms cubic-bezier(.36, .07, .19, .97);
+}
+
+@keyframes zd-padlock-shake {
+  10%, 90% { transform: translateY(-50%) translateX(-1px) rotate(-6deg); }
+  20%, 80% { transform: translateY(-50%) translateX(2px) rotate(8deg); }
+  30%, 50%, 70% { transform: translateY(-50%) translateX(-3px) rotate(-10deg); }
+  40%, 60% { transform: translateY(-50%) translateX(3px) rotate(10deg); }
+}
+
+
+/* ============================================================
+   ZONE 5: AI Agents — special add-on treatment
+   AI Agents is always visible, always locked until manually activated.
+   Visually distinct from tier-locked items (purple sparkle, not gold lock).
+   JS adds `data-zd-addon="ai_agents"` AND `data-zd-locked-addon="true"`.
+   ============================================================ */
+
+html[data-zd-active="true"] [data-zd-locked-addon="true"] {
+  position: relative !important;
+  opacity: 0.58 !important;
+  transition: opacity 0.14s ease, background 0.14s ease !important;
+  cursor: pointer !important;
+}
+
+html[data-zd-active="true"] [data-zd-locked-addon="true"]:hover {
+  opacity: 0.85 !important;
+  background: rgba(124, 77, 255, 0.06) !important;
+}
+
+/* Purple sparkle badge for add-ons */
+html[data-zd-active="true"] [data-zd-locked-addon="true"]::after {
+  content: "✦";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #7c4dff;
+  filter: drop-shadow(0 0 0 transparent);
+  transition: transform 0.2s ease, filter 0.2s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+html[data-zd-active="true"] [data-zd-locked-addon="true"]:hover::after {
+  animation: zd-addon-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes zd-addon-pulse {
+  0%, 100% {
+    transform: translateY(-50%) scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 0 rgba(124, 77, 255, 0));
+  }
+  50% {
+    transform: translateY(-50%) scale(1.22) rotate(180deg);
+    filter: drop-shadow(0 0 5px rgba(124, 77, 255, 0.6));
+  }
+}
+
+
+/* ============================================================
+   ZONE 6: "Премиум" divider
+   JS injects a <div class="zd-premium-divider"> between the last
+   tier-unlockable item and the rest. CSS styles it with gold shimmer.
+   ============================================================ */
+
+html[data-zd-active="true"] .zd-premium-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 14px 6px;
+  margin: 4px 6px 0;
+  user-select: none;
+  pointer-events: none;
+}
+
+html[data-zd-active="true"] .zd-premium-divider::before,
+html[data-zd-active="true"] .zd-premium-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(232, 197, 71, 0.5) 100%);
+}
+
+html[data-zd-active="true"] .zd-premium-divider::after {
+  background: linear-gradient(90deg,
+    rgba(232, 197, 71, 0.5) 0%,
+    transparent 100%);
+}
+
+html[data-zd-active="true"] .zd-premium-divider-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  background: linear-gradient(100deg,
+    #b88a1a 0%,
+    #e8c547 30%,
+    #ffeb99 50%,
+    #e8c547 70%,
+    #b88a1a 100%);
+  background-size: 220% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: zd-shimmer 22s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+
+html[data-zd-active="true"] .zd-premium-divider-icon {
+  width: 11px;
+  height: 11px;
+  color: #e8c547;
+  filter: drop-shadow(0 0 3px rgba(232, 197, 71, 0.6));
+  display: inline-block;
+}
+
+@keyframes zd-shimmer {
+  0%, 82% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+
+/* ============================================================
+   ZONE 7: Subtext under locked items
+   JS injects a <div class="zd-nav-subtext"> inside each locked item.
+   Shows a short tagline (e.g., "Pipeline за всяко запитване").
+   ============================================================ */
+
+html[data-zd-active="true"] .zd-nav-subtext {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  pointer-events: none;
+}
+
+/* Make sure the parent <a> stacks title + subtext vertically.
+   GHL uses flex-row for nav items; we need to switch the text container
+   to flex-col. The .nav-title span is wrapped by a div we add via JS. */
+html[data-zd-active="true"] .zd-nav-textblock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+
+/* ============================================================
+   ZONE 8: Hide the "Action Required" banner that GHL shows for
+   unconfigured Messaging/Voice services. Confuses partners.
+   ============================================================ */
+
+html[data-zd-active="true"] [class*="action-required"],
+html[data-zd-active="true"] [data-banner-type="setup"],
+html[data-zd-active="true"] .top-error-bar {
+  display: none !important;
+}
+
+
+/* ============================================================
+   ZONE 9: Modal — locked feature upgrade modal
+   JS injects a <div id="zd-modal-overlay"> when a locked item is clicked.
+   ============================================================ */
+
+#zd-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 10, 40, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease-out;
+  font-family: 'Manrope', sans-serif;
+}
+
+#zd-modal-overlay.zd-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#zd-modal {
+  background: #ffffff;
+  border-radius: 16px;
+  width: min(480px, calc(100vw - 32px));
+  padding: 32px 32px 24px;
+  box-shadow:
+    0 30px 80px -20px rgba(28, 20, 70, 0.35),
+    0 8px 24px -8px rgba(28, 20, 70, 0.18);
+  transform: translateY(24px);
+  opacity: 0;
+  transition: transform 250ms cubic-bezier(.2, .8, .2, 1),
+              opacity 250ms cubic-bezier(.2, .8, .2, 1);
+  position: relative;
+}
+
+#zd-modal-overlay.zd-open #zd-modal {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.zd-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #a3a0b3;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.zd-modal-close:hover {
+  background: #f3f1f8;
+  color: #45425a;
+}
+
+.zd-modal-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.zd-modal-icon-tile {
+  width: 88px;
+  height: 88px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #ece2ff 0%, #f7f2ff 100%);
+  border: 1px solid #e0d2ff;
+  color: #7c4dff;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  box-shadow:
+    0 14px 30px -14px rgba(124, 77, 255, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  position: relative;
+}
+
+.zd-modal-icon-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fbf3df;
+  border: 2px solid #ffffff;
+  color: #b88a3a;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  box-shadow: 0 4px 10px -2px rgba(184, 138, 58, 0.35);
+}
+
+/* Add-on icon badge variant (purple sparkle instead of gold lock) */
+.zd-modal-icon-badge.zd-addon-badge {
+  background: #f3eeff;
+  color: #7c4dff;
+  box-shadow: 0 4px 10px -2px rgba(124, 77, 255, 0.35);
+}
+
+#zd-modal-headline {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #1a1830;
+  text-wrap: balance;
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+#zd-modal-body {
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: #45425a;
+  text-wrap: pretty;
+  max-width: 380px;
+  margin: 0 auto 22px;
+  text-align: center;
+}
+
+#zd-modal-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#zd-modal-benefits li {
+  background: #faf8ff;
+  border: 1px solid #efeaff;
+  border-radius: 10px;
+  padding: 11px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #45425a;
+}
+
+.zd-benefit-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f3eeff;
+  color: #7c4dff;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.zd-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+#zd-modal-cta-primary {
+  background: #7c4dff;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 14.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow:
+    0 10px 24px -10px rgba(124, 77, 255, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: background 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+
+#zd-modal-cta-primary:hover {
+  background: #6a3aef;
+  transform: translateY(-1px);
+  box-shadow:
+    0 14px 28px -10px rgba(124, 77, 255, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#zd-modal-cta-secondary {
+  background: transparent;
+  color: #7a778d;
+  border: none;
+  padding: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+#zd-modal-cta-secondary:hover {
+  color: #45425a;
+}
+
+.zd-modal-footer {
+  font-size: 11.5px;
+  color: #a3a0b3;
+  text-align: center;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.zd-modal-footer a {
+  color: #7c4dff;
+  text-decoration: none;
+}
+
+.zd-modal-footer a:hover {
+  text-decoration: underline;
+}
+
+
+/* ============================================================
+   ZONE 10: Responsive — sidebar narrower than 280px gets compact subtext
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  html[data-zd-active="true"] .zd-nav-subtext {
+    max-width: 140px;
+  }
+}
+
+@media (max-width: 900px) {
+  html[data-zd-active="true"] .zd-nav-subtext {
+    display: none;
+  }
+}
+
+
+/* ============================================================
+   END OF FILE
+   Version: 1.0
+   Last updated: 2026-05-13
+   ============================================================ */

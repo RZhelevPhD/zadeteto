@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Начало · ZaDeteto партньор</title>
+<meta name="description" content="Партньорски център на ZaDeteto: управление на запитвания, разговори и профил.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#7c4dff">
+
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<!-- Manrope per GHL system design (handover override of main-site DM Sans). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --accent:        #7c4dff;
+    --accent-dark:   #5a2ee6;
+    --accent-soft:   #f3eeff;
+    --accent-border: #e0d2ff;
+    --bg:            #fdfcfb;
+    --surface:       #ffffff;
+    --surface-2:     #faf8ff;
+    --text:          #1a103c;
+    --text-2:        #45425a;
+    --muted:         #8b80b0;
+    --border:        #ece8f3;
+    --border-soft:   #f3f0f8;
+    --ok:            #1a6e34;
+    --ok-soft:       #e6f4ec;
+    --gold:          #d4a017;
+    --gold-soft:     #faf3df;
+    --shadow-card:   0 1px 2px rgba(26,16,60,0.04), 0 8px 24px -12px rgba(26,16,60,0.10);
+    --shadow-pop:    0 14px 32px -10px rgba(124,77,255,0.18);
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-pill: 999px;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100vh; min-height: 100dvh; }
+  body {
+    font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background: var(--bg);
+    background-image:
+      radial-gradient(at 88% -10%, rgba(124,77,255,0.08) 0, transparent 42%),
+      radial-gradient(at 0% 100%, rgba(212,160,23,0.05) 0, transparent 45%);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ============ Standalone header (hidden when iframed) ============ */
+  .zd-standalone-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  body.zd-iframed .zd-standalone-bar { display: none; }
+  .zd-standalone-bar img { height: 24px; }
+  .zd-standalone-bar nav {
+    display: flex;
+    gap: 22px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-2);
+  }
+  .zd-standalone-bar nav a:hover { color: var(--accent); }
+
+  /* ============ Main two-column layout ============ */
+  .zd-layout {
+    display: grid;
+    grid-template-columns: 304px minmax(0, 1fr);
+    gap: 28px;
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 32px 28px 56px;
+    align-items: start;
+  }
+
+  .zd-rail {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .zd-content {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    min-width: 0;
+  }
+
+  /* ============ Cards (single elevation tier, no nesting) ============ */
+  .zd-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 22px;
+    box-shadow: var(--shadow-card);
+  }
+  .zd-card-tight { padding: 18px 20px; }
+
+  .zd-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .zd-card-header h3 {
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+  .zd-card-header .ico {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: grid; place-items: center;
+    background: var(--accent-soft);
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .zd-card-header .ico svg { width: 16px; height: 16px; }
+
+  /* ============ Empty state widgets (left rail) ============ */
+  .zd-empty {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .zd-empty strong {
+    display: block;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 14.5px;
+  }
+  .zd-empty-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    color: var(--accent);
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: color 160ms var(--ease-out);
+  }
+  .zd-empty-link:hover { color: var(--accent-dark); }
+  .zd-empty-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .zd-empty-link::after { content: "→"; transition: transform 200ms var(--ease-out); }
+  .zd-empty-link:hover::after { transform: translateX(3px); }
+
+  /* ============ Tip card (rotating) ============ */
+  .zd-tip {
+    background: linear-gradient(165deg, #1a103c 0%, #322270 100%);
+    color: #fff;
+    border: 1px solid #2a1a5a;
+    border-radius: var(--r-lg);
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 18px 40px -18px rgba(26,16,60,0.45);
+  }
+  .zd-tip::before {
+    content: "";
+    position: absolute;
+    inset: -40% -40% auto auto;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(212,160,23,0.35), transparent 65%);
+    pointer-events: none;
+  }
+  .zd-tip .zd-tip-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .zd-tip .zd-tip-label::before {
+    content: "✦";
+    font-size: 13px;
+  }
+  .zd-tip-frame {
+    position: relative;
+    min-height: 96px;
+  }
+  .zd-tip-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+    pointer-events: none;
+  }
+  .zd-tip-slide.is-active {
+    opacity: 1;
+    transform: translateY(0);
+    position: relative;
+    pointer-events: auto;
+  }
+  .zd-tip-slide h4 {
+    font-size: 15.5px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #fff;
+  }
+  .zd-tip-slide p {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.78);
+  }
+  .zd-tip-dots {
+    display: flex;
+    gap: 5px;
+    margin-top: 14px;
+  }
+  .zd-tip-dot {
+    width: 18px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.18);
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: background 180ms var(--ease-out);
+  }
+  .zd-tip-dot.is-active { background: var(--gold); }
+  .zd-tip-dot:hover { background: rgba(255,255,255,0.40); }
+  .zd-tip-dot.is-active:hover { background: var(--gold); }
+
+  /* ============ Right column header ============ */
+  .zd-greeting-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .zd-greeting h1 {
+    font-size: clamp(24px, 2.4vw, 30px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .zd-greet-spark {
+    color: var(--gold);
+    font-size: 0.62em;
+    font-weight: 600;
+    vertical-align: 0.35em;
+    margin-left: 6px;
+    letter-spacing: 0;
+    display: inline-block;
+    transform: rotate(8deg);
+  }
+  .zd-greeting p {
+    font-size: 14.5px;
+    color: var(--text-2);
+    line-height: 1.5;
+    max-width: 56ch;
+  }
+  .zd-bg-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px 7px 8px;
+    border-radius: var(--r-pill);
+    background: #fff;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 8px rgba(26,16,60,0.05);
+    flex-shrink: 0;
+  }
+  .zd-bg-pill svg {
+    width: 18px; height: 12px;
+    border-radius: 2px;
+    overflow: hidden;
+    display: block;
+  }
+
+  /* ============ Stats grid (2x2, no hero-metric trap) ============ */
+  .zd-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .zd-stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: border-color 180ms var(--ease-out), transform 180ms var(--ease-out);
+  }
+  .zd-stat:hover {
+    border-color: var(--accent-border);
+    transform: translateY(-1px);
+  }
+  .zd-stat-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .zd-stat-ico {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    display: grid; place-items: center;
+    background: var(--accent-soft);
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .zd-stat-ico svg { width: 14px; height: 14px; }
+  .zd-stat-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+  .zd-stat-num {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+    margin-top: 6px;
+  }
+  .zd-stat-num.is-empty { color: var(--muted); font-weight: 600; }
+  .zd-stat-sub {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-top: 4px;
+  }
+
+  /* ============ Section heading ============ */
+  .zd-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .zd-section-head h2 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--text);
+  }
+  .zd-section-head .zd-section-aside {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ============ Unlock teasers (premium) ============ */
+  .zd-teasers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .zd-teaser {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 18px 18px 16px;
+    text-align: left;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 180ms var(--ease-out), transform 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+    position: relative;
+    overflow: hidden;
+  }
+  .zd-teaser::after {
+    content: "";
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 14px; height: 14px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4a017' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='11' width='16' height='10' rx='2'/><path d='M8 11V7a4 4 0 0 1 8 0v4'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.78;
+    transform-origin: center;
+    transition: transform 220ms var(--ease-out), opacity 220ms var(--ease-out);
+  }
+  .zd-teaser:hover {
+    border-color: var(--accent-border);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-pop);
+  }
+  .zd-teaser:hover::after {
+    transform: rotate(-10deg) scale(1.12);
+    opacity: 1;
+  }
+  .zd-teaser:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .zd-teaser:active { transform: translateY(0); }
+  .zd-teaser-ico {
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid; place-items: center;
+    margin-bottom: 4px;
+    border: 1px solid var(--accent-border);
+  }
+  .zd-teaser-ico svg {
+    width: 20px; height: 20px;
+    display: block;
+  }
+  .zd-teaser:hover .zd-teaser-ico {
+    background: #fff;
+    color: var(--accent-dark);
+  }
+  .zd-teaser h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .zd-teaser p {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.45;
+  }
+
+  /* ============ Getting started steps ============ */
+  .zd-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .zd-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .zd-step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 13px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .zd-step-body h4 {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .zd-step-body p {
+    font-size: 13.5px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+  .zd-step-body p a {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .zd-step-body p a:hover { color: var(--accent-dark); }
+
+  /* ============ Footer note ============ */
+  .zd-foot {
+    font-size: 12.5px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.55;
+    padding-top: 4px;
+  }
+  .zd-foot a {
+    color: var(--text-2);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 3px;
+  }
+  .zd-foot a:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
+  .zd-foot a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ============ Responsive ============ */
+  @media (max-width: 980px) {
+    .zd-layout {
+      grid-template-columns: 1fr;
+      padding: 20px 16px 40px;
+      gap: 20px;
+    }
+    .zd-rail {
+      position: static;
+    }
+    .zd-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 540px) {
+    .zd-stats {
+      grid-template-columns: 1fr;
+    }
+    .zd-section-head { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .zd-greeting-row { flex-direction: column; align-items: flex-start; }
+    .zd-bg-pill { align-self: flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .zd-tip-slide,
+    .zd-teaser,
+    .zd-stat,
+    .zd-empty-link::after {
+      transition: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Standalone header, visible only when opened directly, hidden inside GHL iframe -->
+<header class="zd-standalone-bar" aria-label="ZaDeteto външна навигация">
+  <a href="https://zadeteto.com" aria-label="Към zadeteto.com">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="ZaDeteto">
+  </a>
+  <nav>
+    <a href="https://zadeteto.com/partners.html">Партньори</a>
+    <a href="https://zadeteto.com/pricing.html">Цени</a>
+    <a href="https://zadeteto.com/contacts.html">Контакти</a>
+  </nav>
+</header>
+
+<div class="zd-layout">
+
+  <!-- ============ LEFT RAIL (sticky) ============ -->
+  <aside class="zd-rail" aria-label="Бърз преглед">
+
+    <!-- Today's schedule (empty state) -->
+    <div class="zd-card zd-card-tight">
+      <div class="zd-card-header">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </span>
+        <h3>Дневен график</h3>
+      </div>
+      <div class="zd-empty">
+        <strong>Все още няма часове за днес.</strong>
+        Първите часове ще се появят скоро. Отвори Календари от страничното меню, за да зададеш свободни часове.
+      </div>
+    </div>
+
+    <!-- Recent messages (empty state) -->
+    <div class="zd-card zd-card-tight">
+      <div class="zd-card-header">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        <h3>Последни съобщения</h3>
+      </div>
+      <div class="zd-empty">
+        <strong>Тук ще се появят разговорите.</strong>
+        Профилът ти току-що се отвори към родителите.
+      </div>
+    </div>
+
+    <!-- Rotating tip card -->
+    <div class="zd-tip">
+      <span class="zd-tip-label">Съвет от ZaDeteto</span>
+      <div class="zd-tip-frame" id="zd-tip-frame">
+        <!-- Slides injected by JS -->
+      </div>
+      <div class="zd-tip-dots" id="zd-tip-dots" role="tablist" aria-label="Смени съвета"></div>
+    </div>
+
+  </aside>
+
+  <!-- ============ RIGHT CONTENT ============ -->
+  <main class="zd-content">
+
+    <!-- Greeting + BG pill -->
+    <header class="zd-greeting-row">
+      <div class="zd-greeting">
+        <h1>
+          <span id="zd-greeting">Здравей!</span><span class="zd-greet-spark" aria-hidden="true">✦</span>
+        </h1>
+        <p>Партньорският ти център. Тук виждаш кой пита, кой записва час и как изглежда профилът ти пред родителите.</p>
+      </div>
+      <div class="zd-bg-pill" title="Интерфейсът е на български">
+        <svg viewBox="0 0 6 4" aria-hidden="true">
+          <rect width="6" height="4" fill="#fff"/>
+          <rect y="1.333" width="6" height="1.333" fill="#00966e"/>
+          <rect y="2.666" width="6" height="1.333" fill="#d62612"/>
+        </svg>
+        BG режим
+      </div>
+    </header>
+
+    <!-- Stats (empty state) -->
+    <section aria-label="Бързи показатели">
+      <div class="zd-stats">
+        <div class="zd-stat">
+          <div class="zd-stat-head">
+            <span class="zd-stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9a3 3 0 1 0-6 0v3"/><rect x="4" y="12" width="16" height="9" rx="2"/></svg>
+            </span>
+            <span class="zd-stat-label">Запитвания тази седмица</span>
+          </div>
+          <div class="zd-stat-num is-empty">0</div>
+          <div class="zd-stat-sub">Тук излизат новите.</div>
+        </div>
+
+        <div class="zd-stat">
+          <div class="zd-stat-head">
+            <span class="zd-stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </span>
+            <span class="zd-stat-label">Запазени часове</span>
+          </div>
+          <div class="zd-stat-num is-empty">0</div>
+          <div class="zd-stat-sub">Първият час е съвсем близо.</div>
+        </div>
+
+        <div class="zd-stat">
+          <div class="zd-stat-head">
+            <span class="zd-stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3a8.38 8.38 0 0 1 8.5 8.5z"/></svg>
+            </span>
+            <span class="zd-stat-label">Активни разговори</span>
+          </div>
+          <div class="zd-stat-num is-empty">0</div>
+          <div class="zd-stat-sub">Чакат първите съобщения.</div>
+        </div>
+
+        <div class="zd-stat">
+          <div class="zd-stat-head">
+            <span class="zd-stat-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+            <span class="zd-stat-label">Преглеждания на профила</span>
+          </div>
+          <div class="zd-stat-num is-empty">0</div>
+          <div class="zd-stat-sub">Профилът ти набира скорост.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Unlock teasers (premium) -->
+    <section aria-label="Премиум функции">
+      <div class="zd-section-head">
+        <h2>Отвори повече от ZaDeteto</h2>
+        <span class="zd-section-aside">Заключено в твоя план</span>
+      </div>
+      <div class="zd-teasers" id="zd-teasers">
+        <button class="zd-teaser" data-feature="automation">
+          <span class="zd-teaser-ico" aria-hidden="true">
+            <!-- Cycle arrow + center dot — "set it and it runs" -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3.5 12a8.5 8.5 0 0 1 14.7-5.8"/>
+              <path d="M20.5 12a8.5 8.5 0 0 1-14.7 5.8"/>
+              <polyline points="18.5 3 18.5 7 14.5 7"/>
+              <polyline points="5.5 21 5.5 17 9.5 17"/>
+              <circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <h4>Автоматизации</h4>
+          <p>Пращай напомняния и последващи съобщения автоматично, докато спиш.</p>
+        </button>
+
+        <button class="zd-teaser" data-feature="email-marketing">
+          <span class="zd-teaser-ico" aria-hidden="true">
+            <!-- Paper plane — outgoing campaign, not inbox -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="21.5" y1="2.5" x2="11" y2="13"/>
+              <polygon points="21.5 2.5 15 21 11 13 3 9 21.5 2.5"/>
+            </svg>
+          </span>
+          <h4>Имейл маркетинг</h4>
+          <p>Достигни всички родители с един клик и готови български шаблони.</p>
+        </button>
+
+        <button class="zd-teaser" data-feature="sites">
+          <span class="zd-teaser-ico" aria-hidden="true">
+            <!-- Browser frame top + funnel narrowing — actual site-to-conversion shape -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3.5" width="18" height="3.5" rx="1"/>
+              <path d="M4.5 9.5h15l-5.2 7v5l-4.6-1.3v-3.7z"/>
+            </svg>
+          </span>
+          <h4>Сайт и фуния</h4>
+          <p>Превърни посетителите в записани часове, без програмист.</p>
+        </button>
+
+        <button class="zd-teaser" data-feature="reputation">
+          <span class="zd-teaser-ico" aria-hidden="true">
+            <!-- Star inside a circle — verified-review badge, not generic star -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9.2"/>
+              <polygon points="12 7 13.55 10.5 17.3 10.85 14.5 13.4 15.3 17 12 15.2 8.7 17 9.5 13.4 6.7 10.85 10.45 10.5"/>
+            </svg>
+          </span>
+          <h4>Репутация</h4>
+          <p>Събирай Google отзиви автоматично след всеки час.</p>
+        </button>
+      </div>
+    </section>
+
+    <!-- Getting started -->
+    <section aria-label="Първи стъпки">
+      <div class="zd-section-head">
+        <h2>Как да започнеш</h2>
+      </div>
+      <div class="zd-steps">
+        <div class="zd-step">
+          <div class="zd-step-num">1</div>
+          <div class="zd-step-body">
+            <h4>Допълни профила си</h4>
+            <p>Снимка, кратко описание и две услуги. Профил със снимка получава 3× повече запитвания.</p>
+          </div>
+        </div>
+        <div class="zd-step">
+          <div class="zd-step-num">2</div>
+          <div class="zd-step-body">
+            <h4>Покани първите родители</h4>
+            <p>Сподели линка към профила си в групите и в личните си канали. Покажи, че вече си тук.</p>
+          </div>
+        </div>
+        <div class="zd-step">
+          <div class="zd-step-num">3</div>
+          <div class="zd-step-body">
+            <h4>Включи онлайн запис</h4>
+            <p>Родителите често търсят специалист извън работно време. Календарът поема, без да отговаряш ти.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="zd-foot">
+      Имаш въпрос? Пиши ни на
+      <a href="mailto:partner@zadeteto.com">partner@zadeteto.com</a>
+      или отвори <a href="#" data-zd-go="upgrade">Помощ и активиране</a>.
+    </p>
+
+  </main>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ----------------- iframe detection -----------------
+  if (window.self !== window.top) {
+    document.body.classList.add('zd-iframed');
+  }
+
+  // ----------------- URL params -----------------
+  const params = new URLSearchParams(window.location.search);
+  // Truncate the GHL-supplied name to a sane length so a 5000-char string
+  // cannot blow up the layout. 40 chars covers every real Bulgarian name.
+  const userName = (params.get('user_name') || '').trim().slice(0, 40);
+  const locationId = (params.get('location_id') || '').trim();
+
+  // ----------------- Greeting -----------------
+  // Only the name span is mutated; the gold spark span stays static so its
+  // styling survives. textContent keeps this XSS-safe regardless of GHL input.
+  const greetEl = document.getElementById('zd-greeting');
+  if (greetEl && userName) {
+    greetEl.textContent = 'Здравей, ' + userName + '!';
+  }
+
+  // ----------------- Tip rotation -----------------
+  const TIPS = [
+    {
+      title: 'Бърз отговор печели',
+      body: 'Отговаряй на Viber съобщения в първите 15 минути, родителите ценят бързата реакция.'
+    },
+    {
+      title: 'Снимките продават',
+      body: 'Профил със снимка получава 3× повече запитвания от профил без.'
+    },
+    {
+      title: 'Описанието',
+      body: 'Кратко описание с конкретен резултат работи по-добре от дълъг списък с услуги.'
+    },
+    {
+      title: 'Виж кои деца чакат',
+      body: 'Виж кои родители са питали, но не са записали час. Често чакат само едно напомняне.'
+    },
+    {
+      title: 'Календарът',
+      body: 'Включи онлайн запис, родителите често търсят специалист извън работно време.'
+    },
+    {
+      title: 'Активирай ZaDeteto бадж',
+      body: 'Заявка за одит дава верифициран бадж и приоритет в търсенето.'
+    }
+  ];
+
+  const tipFrame = document.getElementById('zd-tip-frame');
+  const tipDots = document.getElementById('zd-tip-dots');
+  let tipIdx = 0;
+  let tipTimer = null;
+  const TIP_INTERVAL = 12000;
+  const prefersReducedMotion =
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function buildTipDom() {
+    TIPS.forEach((tip, i) => {
+      const slideId = 'zd-tip-slide-' + i;
+      const dotId = 'zd-tip-dot-' + i;
+
+      const slide = document.createElement('div');
+      slide.className = 'zd-tip-slide' + (i === 0 ? ' is-active' : '');
+      slide.id = slideId;
+      slide.setAttribute('role', 'tabpanel');
+      slide.setAttribute('aria-labelledby', dotId);
+      const h = document.createElement('h4');
+      h.textContent = tip.title;
+      const p = document.createElement('p');
+      p.textContent = tip.body;
+      slide.append(h, p);
+      tipFrame.appendChild(slide);
+
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'zd-tip-dot' + (i === 0 ? ' is-active' : '');
+      dot.id = dotId;
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('aria-controls', slideId);
+      dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      dot.setAttribute('aria-label', 'Съвет ' + (i + 1));
+      dot.addEventListener('click', () => goToTip(i));
+      tipDots.appendChild(dot);
+    });
+  }
+
+  function goToTip(i) {
+    const slides = tipFrame.querySelectorAll('.zd-tip-slide');
+    const dots = tipDots.querySelectorAll('.zd-tip-dot');
+    if (!slides.length) return;
+    slides[tipIdx]?.classList.remove('is-active');
+    dots[tipIdx]?.classList.remove('is-active');
+    dots[tipIdx]?.setAttribute('aria-selected', 'false');
+    tipIdx = (i + TIPS.length) % TIPS.length;
+    slides[tipIdx]?.classList.add('is-active');
+    dots[tipIdx]?.classList.add('is-active');
+    dots[tipIdx]?.setAttribute('aria-selected', 'true');
+    resetTipTimer();
+  }
+
+  function startAutoRotate() {
+    if (prefersReducedMotion) return; // honour user preference
+    if (tipTimer) clearInterval(tipTimer);
+    tipTimer = setInterval(() => goToTip(tipIdx + 1), TIP_INTERVAL);
+  }
+
+  function stopAutoRotate() {
+    if (tipTimer) {
+      clearInterval(tipTimer);
+      tipTimer = null;
+    }
+  }
+
+  // Manual nav resets the auto-rotate timer; named the old way for clarity.
+  function resetTipTimer() {
+    startAutoRotate();
+  }
+
+  if (tipFrame && tipDots) {
+    buildTipDom();
+    startAutoRotate();
+    // Pause when the tab is hidden so we do not burn cycles or jump on return.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopAutoRotate();
+      } else {
+        startAutoRotate();
+      }
+    });
+  }
+
+  // ----------------- Unlock teaser handler -----------------
+  function buildUpgradeUrl(feature) {
+    const u = new URL('https://zadeteto.com/crm-upgrade');
+    if (feature) u.searchParams.set('feature', feature);
+    if (locationId) u.searchParams.set('location', locationId);
+    return u.toString();
+  }
+
+  function openUpgrade(feature) {
+    const url = buildUpgradeUrl(feature);
+    try {
+      // Break out of GHL iframe so the upgrade page takes the full window.
+      window.top.location.href = url;
+    } catch (e) {
+      // Cross-origin top access threw. _top still breaks out reliably
+      // inside the iframe; falling back to it keeps the user in one tab.
+      window.open(url, '_top');
+    }
+  }
+
+  document.querySelectorAll('.zd-teaser').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openUpgrade(btn.getAttribute('data-feature'));
+    });
+  });
+
+  // Footer + empty-state links that should open the upgrade page
+  document.querySelectorAll('[data-zd-go="upgrade"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      openUpgrade(null);
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>

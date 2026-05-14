@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Помощ и активиране · ZaDeteto партньор</title>
+<meta name="description" content="Премиум функции на ZaDeteto партньорския CRM: pipeline, календари, автоматизации, сайтове, отчети, AI Агенти.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#7c4dff">
+
+<link rel="icon" type="image/svg+xml" href="brand_assets/zadeteto-app-icon.svg">
+<link rel="apple-touch-icon" href="brand_assets/zadeteto-app-icon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --accent:        #7c4dff;
+    --accent-dark:   #5a2ee6;
+    --accent-soft:   #f3eeff;
+    --accent-border: #e0d2ff;
+    --bg:            #fdfcfb;
+    --surface:       #ffffff;
+    --surface-2:     #faf8ff;
+    --text:          #1a103c;
+    --text-2:        #45425a;
+    --muted:         #8b80b0;
+    --border:        #ece8f3;
+    --border-soft:   #f3f0f8;
+    --ok:            #1a6e34;
+    --ok-soft:       #e6f4ec;
+    --ok-border:     #cde6d6;
+    --gold:          #d4a017;
+    --gold-soft:     #faf3df;
+    --gold-border:   #ecd9a3;
+    --shadow-card:   0 1px 2px rgba(26,16,60,0.04), 0 8px 24px -12px rgba(26,16,60,0.10);
+    --shadow-pop:    0 14px 32px -10px rgba(124,77,255,0.18);
+    --shadow-modal:  0 40px 80px -20px rgba(28,20,70,0.40), 0 12px 32px -8px rgba(28,20,70,0.20);
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-pill: 999px;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100vh; min-height: 100dvh; }
+  body {
+    font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background: var(--bg);
+    background-image:
+      radial-gradient(at 88% -10%, rgba(124,77,255,0.16) 0, transparent 44%),
+      radial-gradient(at -6% 30%, rgba(212,160,23,0.12) 0, transparent 40%),
+      radial-gradient(at 105% 78%, rgba(124,77,255,0.10) 0, transparent 36%),
+      radial-gradient(at 50% 110%, rgba(26,110,52,0.06) 0, transparent 40%);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+  svg { display: block; }
+
+  /* ============ Standalone header ============ */
+  .zd-standalone-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  body.zd-iframed .zd-standalone-bar { display: none; }
+  .zd-standalone-bar img { height: 24px; }
+  .zd-standalone-bar nav {
+    display: flex;
+    gap: 22px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-2);
+  }
+  .zd-standalone-bar nav a:hover { color: var(--accent); }
+
+  /* ============ Page container ============ */
+  .zd-page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 40px 28px 64px;
+  }
+
+  /* ============ Hero ============ */
+  .zd-hero {
+    margin-bottom: 44px;
+  }
+  .zd-hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .zd-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    padding: 6px 12px;
+    border-radius: var(--r-pill);
+  }
+  .zd-eyebrow::before {
+    content: "✦";
+    font-size: 13px;
+    color: var(--gold);
+  }
+  .zd-bg-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px 7px 8px;
+    border-radius: var(--r-pill);
+    background: #fff;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 8px rgba(26,16,60,0.05);
+  }
+  .zd-bg-pill svg {
+    width: 18px; height: 12px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .zd-hero h1 {
+    font-size: clamp(28px, 3.4vw, 40px);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    margin-bottom: 14px;
+    text-wrap: balance;
+    max-width: 22ch;
+  }
+  .zd-hero h1 .zd-greet-spark {
+    color: var(--gold);
+    font-size: 0.55em;
+    font-weight: 600;
+    vertical-align: 0.4em;
+    margin-left: 10px;
+    display: inline-block;
+    transform: rotate(8deg);
+  }
+  .zd-hero p {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--text-2);
+    max-width: 60ch;
+  }
+
+  .zd-active-summary {
+    display: none;
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: var(--ok-soft);
+    border: 1px solid var(--ok-border);
+    border-radius: var(--r-md);
+    font-size: 14px;
+    color: var(--ok);
+    line-height: 1.5;
+    align-items: center;
+    gap: 10px;
+  }
+  .zd-active-summary.is-on { display: flex; }
+  .zd-active-summary svg {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+  }
+  .zd-active-summary strong { font-weight: 700; }
+
+  /* ============ Section ============ */
+  .zd-section {
+    margin-bottom: 36px;
+    position: relative;
+    padding: 26px 24px 24px;
+    border-radius: 22px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+  }
+  .zd-section[hidden] { display: none; }
+  /* Tier-coded section panel — adds visual stripes between sections */
+  #zd-section-trusted {
+    background:
+      linear-gradient(180deg, rgba(124,77,255,0.04) 0%, rgba(124,77,255,0.01) 100%),
+      var(--surface);
+    border-color: var(--accent-border);
+  }
+  #zd-section-premium {
+    background:
+      linear-gradient(180deg, rgba(212,160,23,0.07) 0%, rgba(212,160,23,0.02) 100%),
+      var(--surface);
+    border-color: var(--gold-border);
+  }
+  #zd-section-addons {
+    background:
+      linear-gradient(180deg, rgba(26,110,52,0.05) 0%, rgba(26,110,52,0.015) 100%),
+      var(--surface);
+    border-color: var(--ok-border);
+  }
+  .zd-section-head {
+    margin-bottom: 18px;
+  }
+  .zd-tier-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 11px;
+    border-radius: var(--r-pill);
+    margin-bottom: 12px;
+  }
+  .zd-tier-pill.is-trusted {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+  }
+  .zd-tier-pill.is-premium {
+    background: var(--gold-soft);
+    color: var(--gold);
+    border: 1px solid var(--gold-border);
+  }
+  .zd-tier-pill.is-addon {
+    background: var(--ok-soft);
+    color: var(--ok);
+    border: 1px solid var(--ok-border);
+  }
+  .zd-section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.018em;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .zd-section-head p {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text-2);
+    max-width: 64ch;
+  }
+
+  /* ============ Feature grid ============ */
+  .zd-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .zd-feature {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 22px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    transition: border-color 200ms var(--ease-out), transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .zd-feature:hover {
+      border-color: var(--accent-border);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-pop);
+    }
+    .zd-feature.is-featured:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px -10px rgba(212,160,23,0.40);
+    }
+    .zd-feature:hover .zd-feature-ico {
+      background: #fff;
+      color: var(--accent-dark);
+    }
+    .zd-contact-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-pop);
+    }
+  }
+  .zd-feature.is-featured {
+    border-color: var(--gold-border);
+    box-shadow: 0 1px 2px rgba(26,16,60,0.04), 0 12px 28px -10px rgba(212,160,23,0.30);
+  }
+  .zd-feature.is-active {
+    background: var(--surface-2);
+    border-color: var(--border);
+  }
+
+  .zd-feature-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .zd-feature-ico {
+    width: 40px; height: 40px;
+    border-radius: 11px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+    transition: background 200ms var(--ease-out), color 200ms var(--ease-out);
+  }
+  .zd-feature-ico svg { width: 20px; height: 20px; }
+  .zd-feature.is-active .zd-feature-ico {
+    background: var(--ok-soft);
+    color: var(--ok);
+    border-color: var(--ok-border);
+  }
+  /* Tier-coded icon tiles for visual variety across sections */
+  .zd-feature[data-tier="premium"] .zd-feature-ico {
+    background: var(--gold-soft);
+    color: #8a6a10;
+    border-color: var(--gold-border);
+  }
+  .zd-feature[data-addon] .zd-feature-ico {
+    background: var(--ok-soft);
+    color: var(--ok);
+    border-color: var(--ok-border);
+  }
+
+  /* status chip */
+  .zd-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--r-pill);
+    white-space: nowrap;
+  }
+  .zd-chip svg { width: 11px; height: 11px; }
+  .zd-chip.is-active {
+    background: var(--ok-soft);
+    color: var(--ok);
+    border: 1px solid var(--ok-border);
+  }
+  .zd-chip.is-locked {
+    background: var(--gold-soft);
+    color: #8a6a10;
+    border: 1px solid var(--gold-border);
+  }
+  .zd-chip.is-addon {
+    background: var(--ok-soft);
+    color: var(--ok);
+    border: 1px solid var(--ok-border);
+  }
+  .zd-chip.is-featured {
+    background: var(--gold);
+    color: #fff;
+    border: 1px solid #b88a1a;
+  }
+
+  .zd-feature h3 {
+    font-size: 17.5px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .zd-feature p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-2);
+    flex-grow: 1;
+  }
+  .zd-feature-cta {
+    align-self: flex-start;
+    background: none;
+    border: 0;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 2px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .zd-feature-cta::after {
+    content: "→";
+    transition: transform 220ms var(--ease-out);
+  }
+  .zd-feature-cta:hover {
+    color: var(--accent-dark);
+    border-color: currentColor;
+  }
+  .zd-feature-cta:hover::after { transform: translateX(3px); }
+  .zd-feature-cta:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+  .zd-feature-cta:active { transform: translateY(1px); }
+  .zd-feature.is-active .zd-feature-cta {
+    color: var(--muted);
+    cursor: default;
+  }
+  .zd-feature.is-active .zd-feature-cta::after { content: "✓"; }
+  .zd-feature.is-active .zd-feature-cta:hover {
+    color: var(--muted);
+    border-color: transparent;
+  }
+  .zd-feature.is-active .zd-feature-cta:hover::after { transform: none; }
+
+  /* ============ Contact strip ============ */
+  .zd-contact-strip {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .zd-contact-card {
+    background: linear-gradient(165deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--accent-border);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+  }
+  .zd-contact-ico {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    display: grid; place-items: center;
+    box-shadow: 0 8px 18px -6px rgba(124,77,255,0.5);
+  }
+  .zd-contact-ico svg { width: 22px; height: 22px; }
+  .zd-contact-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .zd-contact-card p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-2);
+    flex-grow: 1;
+  }
+  .zd-contact-btn {
+    align-self: flex-start;
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    padding: 11px 18px;
+    border-radius: var(--r-md);
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 8px 20px -8px rgba(124,77,255,0.5);
+    transition: background 140ms var(--ease-out), transform 140ms var(--ease-out);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .zd-contact-btn:hover {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+  }
+  .zd-contact-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .zd-contact-btn:active { transform: translateY(0); }
+  .zd-contact-btn::after {
+    content: "→";
+    transition: transform 220ms var(--ease-out);
+  }
+  .zd-contact-btn:hover::after { transform: translateX(3px); }
+
+  /* ============ Foot ============ */
+  .zd-foot {
+    margin-top: 36px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .zd-foot a {
+    color: var(--text-2);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 3px;
+  }
+  .zd-foot a:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
+  .zd-foot a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ============ Booking modal ============ */
+  .zd-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 10, 40, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms var(--ease-out);
+  }
+  .zd-modal-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .zd-modal-overlay[hidden] {
+    display: none !important;
+  }
+  .zd-modal {
+    background: #fff;
+    border-radius: 18px;
+    width: min(640px, 100%);
+    height: min(740px, calc(100dvh - 40px));
+    box-shadow: var(--shadow-modal);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 280ms var(--ease-out), opacity 280ms var(--ease-out);
+  }
+  .zd-modal-overlay.is-open .zd-modal {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .zd-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .zd-modal-head h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .zd-modal-close {
+    background: transparent;
+    border: 0;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    color: var(--text-2);
+    display: grid; place-items: center;
+    transition: background 140ms var(--ease-out), color 140ms var(--ease-out);
+  }
+  .zd-modal-close:hover {
+    background: var(--border-soft);
+    color: var(--text);
+  }
+  .zd-modal-close svg { width: 16px; height: 16px; }
+  .zd-modal-frame {
+    flex: 1;
+    border: 0;
+    width: 100%;
+  }
+
+  /* ============ Responsive ============ */
+  @media (max-width: 720px) {
+    .zd-page { padding: 24px 16px 48px; }
+    .zd-hero h1 { font-size: 28px; }
+    .zd-hero p { font-size: 15px; }
+    .zd-feature-grid { grid-template-columns: 1fr; }
+    .zd-contact-strip { grid-template-columns: 1fr; }
+    .zd-hero-top { gap: 10px; }
+    .zd-bg-pill { align-self: flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .zd-feature, .zd-contact-card, .zd-contact-btn, .zd-feature-cta,
+    .zd-feature-ico, .zd-modal, .zd-modal-overlay {
+      transition: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Standalone header, visible only when opened directly -->
+<header class="zd-standalone-bar" aria-label="ZaDeteto външна навигация">
+  <a href="https://zadeteto.com" aria-label="Към zadeteto.com">
+    <img src="brand_assets/zadeteto-logo-horizontal.svg" alt="ZaDeteto">
+  </a>
+  <nav>
+    <a href="https://zadeteto.com/partners.html">Партньори</a>
+    <a href="https://zadeteto.com/pricing.html">Цени</a>
+    <a href="https://zadeteto.com/contacts.html">Контакти</a>
+  </nav>
+</header>
+
+<main class="zd-page">
+
+  <!-- ============ HERO ============ -->
+  <section class="zd-hero">
+    <div class="zd-hero-top">
+      <span class="zd-eyebrow">Помощ и активиране</span>
+      <span class="zd-bg-pill" title="Интерфейсът е на български">
+        <svg viewBox="0 0 6 4" aria-hidden="true">
+          <rect width="6" height="4" fill="#fff"/>
+          <rect y="1.333" width="6" height="1.333" fill="#00966e"/>
+          <rect y="2.666" width="6" height="1.333" fill="#d62612"/>
+        </svg>
+        BG режим
+      </span>
+    </div>
+    <h1>
+      Премиум функции за партньори<span class="zd-greet-spark" aria-hidden="true">✦</span>
+    </h1>
+    <p id="zd-hero-sub">Виж какво получаваш, когато надградиш партньорския си план.</p>
+    <div class="zd-active-summary" id="zd-active-summary" role="status" aria-live="polite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
+      <span id="zd-active-text"></span>
+    </div>
+  </section>
+
+  <!-- ============ TRUSTED TIER ============ -->
+  <section class="zd-section" id="zd-section-trusted" data-tier="trusted">
+    <header class="zd-section-head">
+      <span class="zd-tier-pill is-trusted">План Доверен</span>
+      <h2>Поток на запитванията и календар, на едно място</h2>
+      <p>Това отключваш с план Доверен: подреден поток на запитванията и онлайн запис за родителите.</p>
+    </header>
+    <div class="zd-feature-grid">
+
+      <article class="zd-feature" data-feature="opportunities" data-tier="trusted">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="5.5" height="16" rx="1.5"/>
+              <rect x="9.25" y="4" width="5.5" height="16" rx="1.5"/>
+              <rect x="15.5" y="4" width="5.5" height="16" rx="1.5"/>
+              <rect x="4.5" y="6" width="2.5" height="1.5" rx="0.5" fill="currentColor" stroke="none"/>
+              <rect x="10.75" y="9" width="2.5" height="1.5" rx="0.5" fill="currentColor" stroke="none"/>
+              <rect x="17" y="12" width="2.5" height="1.5" rx="0.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Възможности (поток)</h3>
+        <p>Виж всяко запитване от родител в подредени етапи. Знай кой чака отговор и кой е готов да запази час.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за активиране</button>
+      </article>
+
+      <article class="zd-feature" data-feature="calendars" data-tier="trusted">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="16" rx="2"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <line x1="8" y1="3" x2="8" y2="7"/>
+              <line x1="16" y1="3" x2="16" y2="7"/>
+              <circle cx="8" cy="14" r="0.9" fill="currentColor" stroke="none"/>
+              <circle cx="12" cy="14" r="0.9" fill="currentColor" stroke="none"/>
+              <circle cx="16" cy="14" r="0.9" fill="currentColor" stroke="none"/>
+              <circle cx="8" cy="17.5" r="0.9" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Календари</h3>
+        <p>Онлайн запис, синхронизация с Google, автоматични напомняния. Родителите запазват час сами, без обаждания.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за активиране</button>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ PREMIUM TIER ============ -->
+  <section class="zd-section" id="zd-section-premium" data-tier="premium">
+    <header class="zd-section-head">
+      <span class="zd-tier-pill is-premium">План Премиум</span>
+      <h2>Маркетинг, сайт и репутация</h2>
+      <p>Пълният набор за партньори в растеж: автоматизации, имейл кампании, страница за записване, отзиви, отчети и плащания.</p>
+    </header>
+    <div class="zd-feature-grid">
+
+      <article class="zd-feature" data-feature="automation" data-tier="premium">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3.5 12a8.5 8.5 0 0 1 14.7-5.8"/>
+              <path d="M20.5 12a8.5 8.5 0 0 1-14.7 5.8"/>
+              <polyline points="18.5 3 18.5 7 14.5 7"/>
+              <polyline points="5.5 21 5.5 17 9.5 17"/>
+              <circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Автоматизации</h3>
+        <p>Напомняния, благодарствени съобщения и последващи имейли. Изпращат се сами, спестяваш часове седмично.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за активиране</button>
+      </article>
+
+      <article class="zd-feature" data-feature="email-marketing" data-tier="premium">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="21.5" y1="2.5" x2="11" y2="13"/>
+              <polygon points="21.5 2.5 15 21 11 13 3 9 21.5 2.5"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Имейл маркетинг</h3>
+        <p>Достигни всички родители с един клик. Готови български шаблони, сегментиране по възраст и курс.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за активиране</button>
+      </article>
+
+      <article class="zd-feature" data-feature="sites" data-tier="premium">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3.5" width="18" height="3.5" rx="1"/>
+              <path d="M4.5 9.5h15l-5.2 7v5l-4.6-1.3v-3.7z"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Сайтове и фунии</h3>
+        <p>Направи страница за записване за минути. Форми, разписания, плащане, без програмист.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за активиране</button>
+      </article>
+
+      <article class="zd-feature" data-feature="memberships" data-tier="premium">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2"/>
+              <circle cx="8.5" cy="11" r="2"/>
+              <path d="M5.5 16c0-1.5 1.5-2.5 3-2.5s3 1 3 2.5"/>
+              <line x1="14" y1="10" x2="18" y2="10"/>
+              <line x1="14" y1="13" x2="17" y2="13"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Членства</h3>
+        <p>Продавай абонаменти, онлайн курсове и материали в защитена зона за родители.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за активиране</button>
+      </article>
+
+      <article class="zd-feature" data-feature="reputation" data-tier="premium">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9.2"/>
+              <polygon points="12 7 13.55 10.5 17.3 10.85 14.5 13.4 15.3 17 12 15.2 8.7 17 9.5 13.4 6.7 10.85 10.45 10.5"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Репутация</h3>
+        <p>Събирай Google отзиви автоматично след всеки час. Повече звезди, повече запитвания.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за активиране</button>
+      </article>
+
+      <article class="zd-feature" data-feature="reporting" data-tier="premium">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="20" x2="21" y2="20"/>
+              <rect x="5" y="12" width="3" height="8" rx="0.5"/>
+              <rect x="10.5" y="8" width="3" height="12" rx="0.5"/>
+              <rect x="16" y="4" width="3" height="16" rx="0.5"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Отчети</h3>
+        <p>Приходи, посещения, конверсии, задържане на родители. Реални числа, без таблици и предположения.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за активиране</button>
+      </article>
+
+      <article class="zd-feature" data-feature="payments" data-tier="premium">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2.5"/>
+              <line x1="2" y1="10" x2="22" y2="10"/>
+              <line x1="6" y1="15" x2="9" y2="15"/>
+              <line x1="12" y1="15" x2="15" y2="15"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Плащания</h3>
+        <p>Приемай плащания директно от профила. Парите идват при теб, без посредници и без забавяне.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за активиране</button>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ ADD-ONS ============ -->
+  <section class="zd-section" id="zd-section-addons">
+    <header class="zd-section-head">
+      <span class="zd-tier-pill is-addon">Допълнения</span>
+      <h2>Активират се отделно, независимо от плана</h2>
+      <p>Допълнителни модули, които не зависят от тарифата. Активират се по заявка, обикновено в рамките на 24 часа.</p>
+    </header>
+    <div class="zd-feature-grid">
+
+      <article class="zd-feature" data-feature="ai-agents" data-addon="ai_agents">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3a8.38 8.38 0 0 1 8.5 8.5z"/>
+              <path d="M12.5 8.5l1 2 2 1-2 1-1 2-1-2-2-1 2-1z" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>AI Агенти</h3>
+        <p>AI асистент отговаря на родители 24/7 за разписания, цени и запазване на час. Работи и докато спиш.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за предложение</button>
+      </article>
+
+      <article class="zd-feature" data-feature="unlimited-sms" data-addon="unlimited_sms">
+        <div class="zd-feature-top">
+          <span class="zd-feature-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2.5" width="14" height="19" rx="2.5"/>
+              <line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/>
+              <rect x="8" y="5.5" width="8" height="6" rx="1.2"/>
+              <circle cx="10" cy="8.5" r="0.7" fill="currentColor" stroke="none"/>
+              <circle cx="12" cy="8.5" r="0.7" fill="currentColor" stroke="none"/>
+              <circle cx="14" cy="8.5" r="0.7" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span class="zd-chip"></span>
+        </div>
+        <h3>Неограничени SMS</h3>
+        <p>Изпращай напомняния, потвърждения и сезонни кампании без месечен лимит. Мигновена доставка до родителите.</p>
+        <button type="button" class="zd-feature-cta">Свържи се за предложение</button>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ CONTACT STRIP ============ -->
+  <section aria-label="Контакти">
+    <div class="zd-contact-strip">
+
+      <div class="zd-contact-card">
+        <div class="zd-contact-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="18" height="14" rx="2"/>
+            <path d="M3 7l9 6 9-6"/>
+          </svg>
+        </div>
+        <h3>Имейл</h3>
+        <p>Опиши какво те интересува и ще ти отговорим до края на работния ден.</p>
+        <a class="zd-contact-btn" id="zd-email-btn" href="mailto:partner@zadeteto.com">partner@zadeteto.com</a>
+      </div>
+
+      <div class="zd-contact-card">
+        <div class="zd-contact-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <line x1="8" y1="3" x2="8" y2="7"/>
+            <line x1="16" y1="3" x2="16" y2="7"/>
+            <circle cx="12" cy="15" r="2.5"/>
+          </svg>
+        </div>
+        <h3>Запази 15 минути</h3>
+        <p>Кратък видеоразговор с екипа. Подходящ за активиране на профила или конкретен въпрос.</p>
+        <button type="button" class="zd-contact-btn" id="zd-book-btn">Избери час</button>
+      </div>
+
+    </div>
+  </section>
+
+  <p class="zd-foot">
+    Не намираш това, което търсиш? Пиши ни на
+    <a href="mailto:partner@zadeteto.com">partner@zadeteto.com</a>,
+    или виж <a href="https://zadeteto.com/pricing.html">страницата с цените</a>.
+  </p>
+
+</main>
+
+<!-- ============ Booking modal ============ -->
+<div class="zd-modal-overlay" id="zd-modal" role="dialog" aria-modal="true" aria-labelledby="zd-modal-title" hidden>
+  <div class="zd-modal">
+    <div class="zd-modal-head">
+      <h3 id="zd-modal-title">Запази 15 минути с ZaDeteto</h3>
+      <button type="button" class="zd-modal-close" id="zd-modal-close" aria-label="Затвори">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <iframe class="zd-modal-frame" id="zd-booking-frame" title="Календар за запазване на час" src="about:blank"></iframe>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ----------------- iframe detection -----------------
+  if (window.self !== window.top) {
+    document.body.classList.add('zd-iframed');
+  }
+
+  // ----------------- URL params -----------------
+  const params = new URLSearchParams(window.location.search);
+  const fromTierRaw = (params.get('from_tier') || 'verified').toLowerCase();
+  const fromTier = ['verified', 'trusted', 'premium'].indexOf(fromTierRaw) >= 0 ? fromTierRaw : 'verified';
+  const featured = (params.get('feature') || '').trim();
+  const locationId = (params.get('location') || params.get('location_id') || '').trim();
+  const addonsRaw = (params.get('addons') || '').toLowerCase();
+  const activeAddons = new Set(addonsRaw.split(',').map(s => s.trim()).filter(Boolean));
+
+  // Which features are unlocked by which tier
+  const TIER_UNLOCKS = {
+    verified: [],
+    trusted: ['opportunities', 'calendars'],
+    premium: ['opportunities', 'calendars', 'automation', 'email-marketing',
+              'sites', 'memberships', 'reputation', 'reporting', 'payments']
+  };
+  const unlocked = new Set(TIER_UNLOCKS[fromTier]);
+
+  // BG label per feature for emails
+  const FEATURE_LABEL = {
+    'opportunities':   'Възможности (Pipeline)',
+    'calendars':       'Календари',
+    'automation':      'Автоматизации',
+    'email-marketing': 'Имейл маркетинг',
+    'sites':           'Сайтове и фунии',
+    'memberships':     'Членства',
+    'reputation':      'Репутация',
+    'reporting':       'Отчети',
+    'payments':        'Плащания',
+    'ai-agents':       'AI Агенти',
+    'unlimited-sms':   'Неограничени SMS'
+  };
+  const TIER_LABEL = {
+    trusted: 'Доверен',
+    premium: 'Премиум'
+  };
+
+  // ----------------- Hero subline + active summary -----------------
+  const heroSub = document.getElementById('zd-hero-sub');
+  const activeSummary = document.getElementById('zd-active-summary');
+  const activeText = document.getElementById('zd-active-text');
+
+  if (fromTier === 'verified') {
+    heroSub.textContent = 'Имаш достъп до Разговори и Контакти. Виж какво получаваш, когато надградиш плана.';
+  } else if (fromTier === 'trusted') {
+    heroSub.textContent = 'Имаш план Доверен с поток на запитванията и календар. Премиум добавя маркетинг, сайт и отчети.';
+    activeText.innerHTML = '';
+    const strong = document.createElement('strong');
+    strong.textContent = 'Активни: ';
+    activeText.appendChild(strong);
+    activeText.appendChild(document.createTextNode('Разговори, Контакти, Календари, Възможности.'));
+    activeSummary.classList.add('is-on');
+  } else if (fromTier === 'premium') {
+    heroSub.textContent = 'Имаш план Премиум с пълен достъп до функциите. Виж допълненията, които можеш да активираш отделно.';
+    activeText.innerHTML = '';
+    const strong = document.createElement('strong');
+    strong.textContent = 'Активни: ';
+    activeText.appendChild(strong);
+    activeText.appendChild(document.createTextNode('всички функции на плановете.'));
+    activeSummary.classList.add('is-on');
+  }
+
+  // ----------------- Hide sections that no longer apply -----------------
+  if (fromTier === 'trusted' || fromTier === 'premium') {
+    document.getElementById('zd-section-trusted').hidden = true;
+  }
+  if (fromTier === 'premium') {
+    document.getElementById('zd-section-premium').hidden = true;
+  }
+
+  // ----------------- Render each feature card -----------------
+  function renderChip(chipEl, mode, tierName) {
+    chipEl.innerHTML = '';
+    let cls = '';
+    let label = '';
+    let glyph = '';
+    if (mode === 'active') {
+      cls = 'is-active';
+      label = 'Активна';
+      glyph = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 8"/></svg>';
+    } else if (mode === 'featured') {
+      cls = 'is-featured';
+      label = 'За теб';
+      glyph = '<span aria-hidden="true">✦</span>';
+    } else if (mode === 'addon') {
+      cls = 'is-addon';
+      label = 'Допълнение';
+      glyph = '<span aria-hidden="true">✦</span>';
+    } else if (mode === 'locked') {
+      cls = 'is-locked';
+      label = tierName || 'Заключена';
+      glyph = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+    }
+    chipEl.className = 'zd-chip ' + cls;
+    chipEl.innerHTML = glyph + '<span>' + label + '</span>';
+  }
+
+  function buildMailto(feature) {
+    const featureLabel = FEATURE_LABEL[feature] || feature;
+    const partnerLabel = locationId ? ('Location ID: ' + locationId) : '(няма Location ID)';
+    const isAddon = feature === 'ai-agents' || feature === 'unlimited-sms';
+    const subject = isAddon
+      ? featureLabel + ': заявка за предложение'
+      : 'Активиране на „' + featureLabel + '"';
+    const lines = [
+      'Здравейте,',
+      '',
+      isAddon
+        ? ('Бих искал(а) да обсъдим активиране на „' + featureLabel + '" за моя профил.')
+        : ('Бих искал(а) да активирам „' + featureLabel + '" за моя профил.'),
+      '',
+      partnerLabel,
+      '',
+      'Поздрави,'
+    ];
+    return 'mailto:partner@zadeteto.com'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(lines.join('\n'));
+  }
+
+  document.querySelectorAll('.zd-feature').forEach(card => {
+    const feature = card.dataset.feature;
+    const featureTier = card.dataset.tier;
+    const isAddon = !!card.dataset.addon;
+    const chip = card.querySelector('.zd-chip');
+    const cta = card.querySelector('.zd-feature-cta');
+
+    // Decide state
+    let mode;
+    if (featured && featured === feature) {
+      mode = 'featured';
+    } else if (isAddon) {
+      mode = activeAddons.has(card.dataset.addon) ? 'active' : 'addon';
+    } else if (unlocked.has(feature)) {
+      mode = 'active';
+    } else {
+      mode = 'locked';
+    }
+
+    if (mode === 'locked') {
+      renderChip(chip, 'locked', TIER_LABEL[featureTier] || '');
+    } else {
+      renderChip(chip, mode);
+    }
+
+    if (mode === 'active') {
+      card.classList.add('is-active');
+      cta.textContent = 'Вече активна';
+    }
+    if (mode === 'featured') {
+      card.classList.add('is-featured');
+    }
+
+    // CTA click
+    cta.addEventListener('click', () => {
+      if (mode === 'active') return;
+      const href = buildMailto(feature);
+      window.location.href = href;
+    });
+  });
+
+  // ----------------- Scroll to featured card -----------------
+  const reduceMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (featured) {
+    requestAnimationFrame(() => {
+      const target = document.querySelector('.zd-feature.is-featured');
+      if (target) {
+        target.scrollIntoView({
+          behavior: reduceMotion ? 'auto' : 'smooth',
+          block: 'center'
+        });
+      }
+    });
+  }
+
+  // ----------------- Booking modal -----------------
+  const BOOKING_BASE = 'https://link.123marketing.app/widget/bookings/zdu';
+  const modal = document.getElementById('zd-modal');
+  const modalClose = document.getElementById('zd-modal-close');
+  const bookBtn = document.getElementById('zd-book-btn');
+  const frame = document.getElementById('zd-booking-frame');
+
+  function buildBookingUrl() {
+    const u = new URL(BOOKING_BASE);
+    if (locationId) u.searchParams.set('location', locationId);
+    return u.toString();
+  }
+
+  let closeBookingTimer = null;
+  let lastFocusedBeforeModal = null;
+
+  function openBooking() {
+    if (closeBookingTimer) {
+      // Cancel any pending close so reopening doesn't race the timer
+      clearTimeout(closeBookingTimer);
+      closeBookingTimer = null;
+    }
+    lastFocusedBeforeModal = document.activeElement;
+    frame.src = buildBookingUrl();
+    modal.hidden = false;
+    void modal.offsetWidth; // force reflow so the transition runs
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    modalClose.focus();
+  }
+  function closeBooking() {
+    modal.classList.remove('is-open');
+    document.body.style.overflow = '';
+    closeBookingTimer = setTimeout(() => {
+      modal.hidden = true;
+      frame.src = 'about:blank'; // stop the widget from running in the background
+      closeBookingTimer = null;
+      if (lastFocusedBeforeModal && typeof lastFocusedBeforeModal.focus === 'function') {
+        lastFocusedBeforeModal.focus();
+      }
+    }, 280);
+  }
+
+  if (bookBtn) bookBtn.addEventListener('click', openBooking);
+  if (modalClose) modalClose.addEventListener('click', closeBooking);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeBooking();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (modal.classList.contains('is-open')) closeBooking();
+  });
+
+  // ----------------- Email card prefill -----------------
+  const emailBtn = document.getElementById('zd-email-btn');
+  if (emailBtn) {
+    if (featured) {
+      emailBtn.href = buildMailto(featured);
+    } else {
+      const subject = 'Въпрос за партньорския профил';
+      const body = locationId
+        ? ('Здравейте,\n\nИмам въпрос за моя партньорски профил.\n\nLocation ID: ' + locationId + '\n\nПоздрави,')
+        : 'Здравейте,\n\nИмам въпрос за партньорския профил.\n\nПоздрави,';
+      emailBtn.href = 'mailto:partner@zadeteto.com'
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(body);
+    }
+  }
+
+})();
+</script>
+
+</body>
+</html>
