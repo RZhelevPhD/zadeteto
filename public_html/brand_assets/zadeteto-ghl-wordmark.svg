@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 120" role="img" aria-label="Национален Регистър За Детето">
+  <defs>
+    <linearGradient id="zd-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#7c4dff"/>
+      <stop offset="100%" stop-color="#5a2ee6"/>
+    </linearGradient>
+    <linearGradient id="zd-gold" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%"   stop-color="#b88a1a" stop-opacity="0"/>
+      <stop offset="20%"  stop-color="#e8c547" stop-opacity="1"/>
+      <stop offset="80%"  stop-color="#e8c547" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#b88a1a" stop-opacity="0"/>
+    </linearGradient>
+    <style>
+      .zd-line-1 {
+        font-family: 'Manrope', -apple-system, 'Segoe UI', sans-serif;
+        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: 0.04em;
+        fill: #45425a;
+      }
+      .zd-line-2 {
+        font-family: 'Manrope', -apple-system, 'Segoe UI', sans-serif;
+        font-weight: 800;
+        font-size: 42px;
+        letter-spacing: -0.01em;
+        fill: url(#zd-purple);
+      }
+    </style>
+  </defs>
+
+  <!-- Line 1: «Национален Регистър» (smaller, neutral dark) -->
+  <text x="180" y="40" text-anchor="middle" class="zd-line-1">
+    Национален Регистър
+  </text>
+
+  <!-- Thin gold accent line between the two text lines -->
+  <rect x="60" y="52" width="240" height="2" rx="1" fill="url(#zd-gold)"/>
+
+  <!-- Line 2: «За Детето» (larger, brand purple gradient) -->
+  <text x="180" y="98" text-anchor="middle" class="zd-line-2">
+    За Детето
+  </text>
+</svg>

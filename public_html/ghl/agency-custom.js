@@ -46,11 +46,11 @@
     'opportunities':       'Възможности',
     'payments':            'Плащания',
     'AI Agents':           'AI Агенти',
-    'email-marketing':     'Имейл маркетинг',
+    'email-marketing':     'Онлайн маркетинг',
     'automation':          'Автоматизации',
-    'sites':               'Сайтове',
+    'sites':               'Сайтове и страници',
     'memberships':         'Членства',
-    'reputation':          'Репутация',
+    'reputation':          'Отзиви',
     'reporting':           'Отчети',
     'settings':            'Настройки'
   };
@@ -126,6 +126,321 @@
     'Issue Date':          'Дата на издаване',
     'Amount':              'Сума',
     'Status':              'Статус',
+    'Sort':                'Сортиране',
+    'Tasks':               'Задачи',
+    'More':                'Още',
+    'Delete':              'Изтрий',
+    'Import':              'Импорт',
+    'Export':              'Експорт',
+    'New':                 'Нов',
+    'Add':                 'Добави',
+    'Send':                'Изпрати',
+    'Invite':              'Покани',
+    'Invited':             'Поканен',
+    'Generate':            'Генерирай',
+    'Actions':             'Действия',
+    'Branding':            'Брандиране',
+    'Overview':            'Преглед',
+    'Sections':            'Раздели',
+    'Sources':             'Източници',
+    'Listings':            'Списъци',
+    'Requests':            'Заявки',
+    'Widgets':             'Виджети',
+    'Beta':                'Бета',
+    'Page Size':           'Размер на страница',
+    'Page 1 of 1':         'Страница 1 от 1',
+    'Prev':                'Предишна',
+    'Next':                'Следваща',
+    'First':               'Първа',
+    'Last':                'Последна',
+    'Go':                  'Напред',
+    'Get Started':         'Започни',
+
+    // Common header / chrome (appears across all GHL pages)
+    'Ask AI':                                                'Питай AI',
+    'Notifications':                                         'Известия',
+    'Quick Actions':                                         'Бързи действия',
+    'Loading fresh data...':                                 'Зарежда се ново съдържание...',
+    'Initializing...':                                       'Зарежда се...',
+    'View Changelog':                                        'Виж промените',
+    'Signout':                                               'Изход',
+    'Support':                                               'Поддръжка',
+    'Login As':                                              'Влез като',
+    'Help me decide':                                        'Помогни ми да избера',
+    "What's new":                                            'Какво е ново',
+    'Contact updates':                                       'Промени по контакти',
+    'SELECTED':                                              'ИЗБРАНО',
+    'User not assigned':                                     'Няма зачислен потребител',
+    'Schedule appointment':                                  'Запиши среща',
+    'You need to add calendar to start scheduling appointments.':
+      'Трябва да добавиш календар, за да започнеш да записваш срещи.',
+
+    // Phone / call widget (appears across pages)
+    'Keypad':                                                'Клавиатура',
+    'Queue':                                                 'Опашка',
+    'Voicemail':                                             'Гласова поща',
+    'Connect a phone number':                                'Свържи телефонен номер',
+    'Buy phone number':                                      'Купи телефонен номер',
+    'Search Numbers':                                        'Търси номера',
+    'No numbers found':                                      'Няма намерени номера',
+    'Use your existing phone number':                        'Използвай съществуващ телефонен номер',
+    "You'll need a phone number to get started.":            'За да започнеш, ще ти трябва телефонен номер.',
+    'Outbound and inbound calls':                            'Изходящи и входящи разговори',
+    'Outbound calls only. Test call in 60 seconds':          'Само изходящи разговори. Тестов разговор за 60 секунди',
+    'Call, record, transcribe, automate follow-ups and more - all in one place.':
+      'Звъни, записвай, транскрибирай, автоматизирай follow-up и още, всичко на едно място.',
+
+    // Calendars page
+    'Appointment List View':                                 'Списък със срещи',
+    'Calendar Settings':                                     'Настройки на календара',
+    'Calendar Updates':                                      'Промени по календара',
+    'Calendar View':                                         'Изглед календар',
+    'Go to Calendar Settings':                               'Към настройки на календара',
+    'No Calendar Found!':                                    'Няма календар!',
+    'Please create a new one or ask the admin to assign you to an existing calendar':
+      'Създай нов или поискай админ да те зачисли към съществуващ календар',
+
+    // Contacts page
+    '0 Contacts':                                            '0 контакта',
+    '0 Contacts Selected':                                   '0 избрани контакта',
+    'Add Contact':                                           'Добави контакт',
+    'Add smart list':                                        'Добави smart списък',
+    'Add tags':                                              'Добави етикети',
+    'Advanced filters':                                      'Разширени филтри',
+    'Bulk Actions':                                          'Масови действия',
+    'Business name':                                         'Име на бизнес',
+    'Companies':                                             'Компании',
+    'Contact name':                                          'Име на контакт',
+    'Created (EEST)':                                        'Създаден (EEST)',
+    'Last activity (EEST)':                                  'Последна активност (EEST)',
+    'Email':                                                 'Имейл',
+    'Phone':                                                 'Телефон',
+    'Tags':                                                  'Етикети',
+    'Smart Lists':                                           'Smart списъци',
+    'Manage fields':                                         'Управление на полета',
+    'Send email':                                            'Прати имейл',
+    'Trigger automation':                                    'Стартирай автоматизация',
+    "It's so lonely in here!":                               'Самотничко е тук!',
+    'No Contacts in sight! Ready to create a fresh one?':    'Няма контакти! Готов ли си да създадеш един?',
+    'Select all 0':                                          'Маркирай всички 0',
+
+    // Opportunities page
+    'Pipelines':                                             'Pipeline-и',
+
+    // Payments page (extras beyond what's already in dictionary)
+    '0 Invoice(s) Overdue':                                  '0 просрочени фактури',
+    '0 Invoice(s) in Draft':                                 '0 фактури в чернова',
+    '0 Invoice(s) in Due':                                   '0 фактури за плащане',
+    '0 Invoice(s) received':                                 '0 получени фактури',
+    'Abandoned Checkouts':                                   'Изоставени поръчки',
+    'All Documents & Contracts':                             'Всички документи и договори',
+    'All Invoices':                                          'Всички фактури',
+    'Collections':                                           'Колекции',
+    'Coupons':                                               'Купони',
+    'Estimates':                                             'Оферти',
+    'Gift Cards':                                            'Подаръчни карти',
+    'Integrations':                                          'Интеграции',
+    'Inventory':                                             'Наличност',
+    'Recurring Invoices':                                    'Повтарящи се фактури',
+
+    // AI Agents page — UI only, marketing copy is intentionally skipped
+    'AI Agent':                                              'AI агент',
+    'AI Agent · Auto-reply':                                 'AI агент · Авто-отговор',
+    'AI Reputation Manager':                                 'AI мениджър отзиви',
+    'Agent Logs':                                            'Логове на агенти',
+    'Agent Templates':                                       'Шаблони за агенти',
+    'Appointment Scheduler':                                 'Запис на срещи',
+    'Appointments Booked':                                   'Записани срещи',
+    'Availability':                                          'Достъпност',
+    'Avg answer':                                            'Средно време за отговор',
+    'Booked':                                                'Записан',
+    'Booking confirmed':                                     'Срещата е потвърдена',
+    'Calls':                                                 'Разговори',
+    'Calls handled':                                         'Обработени разговори',
+    'Carrier':                                               'Оператор',
+    'Customers Every Day':                                   'Клиенти всеки ден',
+    'Deploy now →':                                          'Стартирай сега →',
+    'End':                                                   'Край',
+    'Estimate':                                              'Оферта',
+    'Get Started →':                                         'Започни →',
+    'Employee Availability':                                 'Достъпност на служители',
+    'Find the right agents for your business':               'Намери правилните агенти за бизнеса',
+
+    // Marketing (Онлайн маркетинг) page
+    'Ad Manager':                                            'Реклама мениджър',
+    'Affiliate':                                             'Партньорска програма',
+    'Affiliate Manager':                                     'Партньорски мениджър',
+    'Attach file':                                           'Прикачи файл',
+    'Brand Boards':                                          'Брандови табла',
+    'Bulk Scheduling with CSV':                              'Масово планиране с CSV',
+    'Campaign':                                              'Кампания',
+    'Community':                                             'Общност',
+    'Countdown Timers':                                      'Таймери за обратно броене',
+    'Create Evergreen Post':                                 'Създай Evergreen пост',
+    'Create RSS Post':                                       'Създай RSS пост',
+    'Create Recurring Post':                                 'Създай Повтарящ пост',
+    'Emails':                                                'Имейли',
+    'Evergreen Queue Post':                                  'Evergreen опашка пост',
+    'Feedback':                                              'Обратна връзка',
+    'From':                                                  'От',
+    'Generate Feed from RSS Post':                           'Генерирай feed от RSS пост',
+    'Grow faster with a smarter social media calendar':      'Расти по-бързо с умен календар за социални медии',
+    'Have any ideas, troubles or questions?':                'Имаш идея, проблем или въпрос?',
+    'Keep your social channels active by scheduling posts!': 'Поддържай социалните канали активни с планиране на постове!',
+    'Keep your social presence active by publishing posts across multiple social media networks at once!':
+      'Поддържай социалното си присъствие активно с публикуване в множество мрежи наведнъж!',
+    'Marketing':                                             'Маркетинг',
+    'Media':                                                 'Медии',
+    'Payout':                                                'Изплащане',
+    'Prospecting':                                           'Привличане',
+    'Recurring Post':                                        'Повтарящ пост',
+    'Save time by scheduling posts':                         'Спести време с планиране на постове',
+    'Schedule Now':                                          'Планирай сега',
+    'Select the social accounts you want to connect:':       'Избери социалните мрежи за свързване:',
+    'Send Message':                                          'Изпрати съобщение',
+    'Set up posts that automatically repeat on a schedule to maintain consistent engagement':
+      'Настрой постове, които се повтарят по график за постоянна ангажираност',
+    'Social Planner':                                        'Социален планер',
+    'Subject':                                               'Тема',
+    'Talk to us!':                                           'Свържи се с нас!',
+    'Upload A CSV':                                          'Качи CSV',
+    'Automatically create and share posts from your favorite RSS feeds to stay current':
+      'Автоматично създавай и публикувай постове от любимите си RSS feed-и',
+    'Import and schedule multiple posts at once using CSV files for efficient content management':
+      'Импортирай и планирай множество постове наведнъж с CSV файлове',
+    'Create a library of timeless content that automatically recycles to keep your feed fresh':
+      'Създай библиотека с вечнозелено съдържание, което автоматично се рециклира',
+
+    // Automation page
+    'Automation Updates':                                    'Промени по автоматизациите',
+    'Global Workflow Settings':                              'Глобални настройки на workflow',
+    'Workflows':                                             'Workflow-и',
+
+    // Sites (Сайтове и страници) page
+    'All your funnels and folders will live here. Start by creating your first Funnel':
+      'Всички твои фунии и папки ще са тук. Започни с първата си фуния',
+    'Analyze':                                               'Анализ',
+    'Blogs':                                                 'Блогове',
+    'Branded Mobile App':                                    'Брандирано мобилно приложение',
+    'Build funnels to generate leads, appointments and receive payment':
+      'Изгради фунии за лийдове, срещи и плащания',
+    'Build with AI':                                         'Изгради с AI',
+    'Builder':                                               'Билдер',
+    'Chat Widget':                                           'Чат виджет',
+    'Client Portal':                                         'Клиентски портал',
+    'Create Folder':                                         'Създай папка',
+    'Forms':                                                 'Формуляри',
+    'Funnels':                                               'Фунии',
+    'Home':                                                  'Начало',
+    'Last Updated':                                          'Последна промяна',
+    'Name':                                                  'Име',
+    'New Funnel':                                            'Нова фуния',
+    'QR Codes':                                              'QR кодове',
+    'Quizzes':                                               'Тестове',
+    'Search for Funnels':                                    'Търси фунии',
+    'Start by creating a funnel':                            'Започни със създаване на фуния',
+    'Stores':                                                'Магазини',
+    'Submissions':                                           'Заявки',
+    'Surveys':                                               'Анкети',
+    'Webinars':                                              'Уебинари',
+    'Websites':                                              'Уебсайтове',
+
+    // Memberships page
+    'Client Portal App':                                     'Клиентско портал приложение',
+    'Client portal URL':                                     'URL на клиентски портал',
+    'Communities':                                           'Общности',
+    'Course Builder':                                        'Курс билдер',
+    'Courses':                                               'Курсове',
+    'Creating a protected online gateway for client interactions':
+      'Създаване на защитен онлайн портал за работа с клиенти',
+    'Credentials':                                           'Данни за вход',
+    'Domain setup':                                          'Настройка на домейн',
+    'Email notifications':                                   'Имейл известия',
+    'Generate magic link':                                   'Генерирай магически линк',
+    'Groups':                                                'Групи',
+    'Invite to client portal':                               'Покани в клиентския портал',
+    'Launch your white-label app with courses and communities':
+      'Стартирай white-label приложение с курсове и общности',
+    'Manage your client portal activities':                  'Управление на дейностите в клиентския портал',
+    'Offers':                                                'Оферти',
+    'Send login email':                                      'Прати имейл за вход',
+    'Users':                                                 'Потребители',
+    'What is a client portal?':                              'Какво е клиентски портал?',
+    'Your Brand. Your App.':                                 'Твоят бранд. Твоето приложение.',
+    'Your clients can log in anytime to access courses and manage affiliate payouts.':
+      'Клиентите ти могат да влизат по всяко време и да управляват плащания.',
+
+    // Reputation (Отзиви) page
+    'Begin sending review requests.':                        'Започни да изпращаш заявки за отзиви.',
+    'Competitor Analysis':                                   'Анализ на конкуренти',
+    'Configure Reviews AI':                                  'Настрой AI за отзиви',
+    'Connect Google Business Profile':                       'Свържи Google Business Profile',
+    'Connect more platforms':                                'Свържи още платформи',
+    'Create Widget':                                         'Създай виджет',
+    'Create a Collector':                                    'Създай колектор',
+    'Create a Review Widget':                                'Създай виджет за отзиви',
+    'Create one now! You can easily gather responses and send out review requests.':
+      'Създай го сега! Лесно ще събираш отговори и ще изпращаш заявки за отзиви.',
+    'DD / MM / YYYY':                                        'ДД / ММ / ГГГГ',
+    'Embed the widget on your site to display authentic customer testimonials.':
+      'Постави виджета на сайта си, за да показваш реални отзиви от клиенти.',
+    'Finish all these Steps to Set up Your Reputation Dashboard':
+      'Завърши тези стъпки, за да настроиш таблото си за отзиви',
+    'GBP Optimization':                                      'GBP оптимизация',
+    'Gather more customer feedback to enhance your online reputation.':
+      'Събери повече обратна връзка от клиенти, за да подобриш онлайн репутацията си.',
+    'Hi Rusi':                                               'Здравей, Руси',
+    'Measure on-site review visibility, impressions, and submissions through widgets.':
+      'Измервай видимостта, импресиите и подаванията на отзиви през виджети.',
+    'Monitor how your ratings change over time. Start collecting feedback to gain insights.':
+      'Следи как се променят оценките ти. Започни да събираш обратна връзка за прозрения.',
+    'Monitor review request volume and conversion across Email, SMS, and WhatsApp.':
+      'Следи обема и конверсията на заявки за отзиви в Имейл, SMS и WhatsApp.',
+    'My Stats':                                              'Моите статистики',
+    'No responses yet.':                                     'Все още няма отговори.',
+    'No video reviews yet.':                                 'Все още няма видео отзиви.',
+    'No widget activity detected.':                          'Не е засечена активност на виджет.',
+    'Once reviews start coming in, you can manage and respond here to foster trust.':
+      'Когато отзивите започнат да идват, ще можеш да отговаряш тук и да градиш доверие.',
+    'QR code scans':                                         'Сканирания на QR код',
+    'Reviews':                                               'Отзиви',
+    'Review request':                                        'Заявка за отзив',
+    'Review response':                                       'Отговор на отзив',
+    'Review widget':                                         'Виджет за отзив',
+    'Reviews and ratings trend':                             'Тренд на отзиви и оценки',
+    'Send First Review Request':                             'Изпрати първа заявка за отзив',
+    'Send Review Request':                                   'Изпрати заявка за отзив',
+    'Send your 1st Review Request':                          'Изпрати първата си заявка за отзив',
+    'Setup Review Link':                                     'Настрой линк за отзив',
+    'Skip Onboarding':                                       'Пропусни въведението',
+    'Start Collecting Reviews':                              'Започни да събираш отзиви',
+    'Track customer QR scans from physical touchpoints leading to reviews.':
+      'Следи сканиранията на QR код, които водят до отзиви.',
+    'Track how customers record, submit, and engage with your video testimonials.':
+      'Следи как клиентите записват, изпращат и взаимодействат с видео отзиви.',
+    'Track how your ratings and review volume change over time.':
+      'Следи как се променят оценките и обемът отзиви.',
+    'Track your review performance.':                        'Следи представянето на отзивите си.',
+    'Video Testimonials':                                    'Видео отзиви',
+    'Video testimonials':                                    'Видео отзиви',
+    'View response coverage, response time, and how reviews are handled across platforms.':
+      'Виж покритието и времето за отговор по платформи.',
+
+    // Reports page
+    'Add Reports Insights':                                  'Добави статистики',
+    'Appointment Report':                                    'Доклад срещи',
+    'Attribution Report':                                    'Доклад атрибуция',
+    'Call Report':                                           'Доклад разговори',
+    'Create Multi-Page Reports':                             'Създай многостранични доклади',
+    'Custom Reports':                                        'Персонализирани доклади',
+    'Facebook Ads Report':                                   'Доклад Facebook реклами',
+    'Local Marketing Audit':                                 'Локален маркетинг одит',
+    'Looking to Track Key Client Metrics at a glance?':      'Искаш ли да следиш ключови клиентски метрики наведнъж?',
+    'New Report':                                            'Нов доклад',
+    'Reports Overview':                                      'Преглед на доклади',
+    'Schedule the Report to your Team Members and Stakeholders':
+      'Планирай доклада за членовете на екипа и инвесторите',
+    'Try Dashboards':                                        'Опитай таблата',
 
     // Common UI
     'Select all':          'Маркирай всички'
@@ -412,6 +727,32 @@
     //    sub-tabs, filter chips, common labels). Scoped to skip inputs,
     //    contenteditable, scripts, styles, and our own injected text.
     translatePageText();
+
+    // 6. Replace the whitelabel agency logo (123marketing.app) with the
+    //    ZaDeteto wordmark. Re-runs on every SPA navigation via the
+    //    MutationObserver so newly-mounted logo elements get rewritten too.
+    replaceAgencyLogo();
+  }
+
+  function replaceAgencyLogo() {
+    const logos = document.querySelectorAll('img');
+    logos.forEach(img => {
+      if (img.dataset.zdLogoReplaced) return;
+      const src = img.getAttribute('src') || '';
+      // Target images whose src looks like an agency-level whitelabel logo.
+      // GHL serves these from leadconnectorhq CDN, gohighlevel media, or
+      // a custom-uploaded agency logo on the 123marketing domain.
+      if (/123marketing|leadconnectorhq.*logo|gohighlevel.*logo|msgsndr/i.test(src)) {
+        img.src = 'https://zadeteto.com/brand_assets/zadeteto-ghl-wordmark.svg';
+        img.alt = 'Национален Регистър За Детето';
+        img.dataset.zdLogoReplaced = 'true';
+        // Wordmark is wider than the square 123marketing logo — adjust
+        // styling so it fits the agency sidebar header without distortion.
+        img.style.maxHeight = '48px';
+        img.style.width = 'auto';
+        img.style.objectFit = 'contain';
+      }
+    });
   }
 
   function translatePageText() {

@@ -661,6 +661,27 @@ html[data-zd-active="true"] [class~="border-blue-200"] {
 
 
 /* ============================================================
+   ZONE 9e: Agency logo replacement — CSS fallback
+   The JS (replaceAgencyLogo) swaps the <img> src for images whose src
+   matches /123marketing|leadconnectorhq|gohighlevel|msgsndr/. If GHL
+   serves the logo from an unexpected path (custom upload at a private
+   domain), the JS rule misses. These selectors catch common header /
+   sidebar logo container patterns as a safety net.
+   ============================================================ */
+
+html[data-zd-active="true"] [class*="agency-logo"] img,
+html[data-zd-active="true"] [class*="sidebar-logo"] img,
+html[data-zd-active="true"] [class*="brand-logo"] img,
+html[data-zd-active="true"] [class*="header-logo"] img,
+html[data-zd-active="true"] [class*="company-logo"] img {
+  content: url('https://zadeteto.com/brand_assets/zadeteto-ghl-wordmark.svg');
+  max-height: 48px !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+
+/* ============================================================
    ZONE 10: Responsive — sidebar narrower than 280px gets compact subtext
    ============================================================ */
 
