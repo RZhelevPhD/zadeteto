@@ -65,7 +65,14 @@
     },
 
     "ZCexGFW5RHvLTGxtLmtb": {
-      "_note": "ZaDeteto Template Master sub-account (Rusi's testbed). Premium tier with AI activated so all features can be tested.",
+      "_note": "Stale/legacy ID — kept temporarily until confirmed deleted. The real testbed Location ID is 0zaEBrUJkiqr2MgkQ8LF.",
+      "name": "ZaDeteto Template (legacy ID)",
+      "tier": "premium",
+      "addons": ["ai_agents"]
+    },
+
+    "0zaEBrUJkiqr2MgkQ8LF": {
+      "_note": "ZaDeteto Template Master sub-account (Rusi's testbed, Stara Zagora). Premium tier with AI activated so all features can be tested.",
       "name": "ZaDeteto Template",
       "tier": "premium",
       "addons": ["ai_agents"]
