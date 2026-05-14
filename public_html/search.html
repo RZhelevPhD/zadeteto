@@ -244,6 +244,81 @@ main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   display: flex; flex-direction: column; gap: 8px; padding: 8px 10px 80px;
 }
 
+/* ═══ LIST VIEW ═══
+   Activated by toggling .view-list on the container (#cardStack desktop or
+   #stackArea mobile). Hides the existing .zd-card flip cards and renders
+   .zd-list-row anchors instead.
+   Specificity is scoped to body.variant-rigor to BEAT the existing
+   `body.variant-rigor .card-stack` grid rule (line ~1983) and the
+   `@media (min-width: 768px) .card-stack` grid rule (line ~855). */
+body.variant-rigor .card-stack.view-list,
+.card-stack.view-list { display: flex !important; flex-direction: column; gap: 6px; padding: 8px 12px 80px; max-width: 980px; margin: 0 auto; grid-template-columns: none !important; }
+body.variant-rigor .card-stack.view-list > .zd-card,
+.card-stack.view-list > .zd-card { display: none !important; }
+
+.zd-list-row {
+  display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: center;
+  padding: 10px 14px; background: #fff; border: 1px solid var(--zd-gray-100);
+  border-radius: 14px; text-decoration: none; color: inherit;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .zd-list-row:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(124,77,255,.08); border-color: var(--zd-purple-200); }
+}
+.zd-list-row:focus-visible { outline: 2px solid var(--zd-purple-600); outline-offset: 2px; }
+.zd-list-row:active { transform: translateY(0); }
+.zd-list-row.tier-free { opacity: .82; }
+.zd-list-row.tier-premium { border-color: #ffe98a; box-shadow: 0 1px 2px rgba(212,175,55,.06), 0 3px 10px rgba(212,175,55,.08); }
+.zd-list-row.tier-elite { border-color: var(--zd-purple-100); }
+.zd-list-row.tier-verified { border-color: #c7e7d0; }
+
+.zd-list-thumb { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; background: var(--zd-gray-100); }
+.zd-list-thumb-empty { width: 56px; height: 56px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font: 700 22px/1 var(--zd-font); color: var(--zd-gray-400);
+  background: linear-gradient(145deg, var(--zd-gray-100) 0%, var(--zd-gray-200) 100%); }
+
+.zd-list-body { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.zd-list-line1 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.zd-list-name { font: 600 15px/1.3 var(--zd-font); color: var(--zd-gray-800); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.zd-list-tier-badge { font: 600 10px/1 var(--zd-font); padding: 3px 7px; border-radius: 6px; flex-shrink: 0;
+  background: var(--accent-light, var(--zd-gray-100)); color: var(--accent-text, var(--zd-gray-600)); }
+.zd-list-row.tier-premium .zd-list-tier-badge { background: linear-gradient(135deg,#d4af37,#ffe98a); color: #5a4500; }
+.zd-list-row.tier-elite .zd-list-tier-badge { background: linear-gradient(135deg,var(--zd-purple-600),var(--zd-purple-400)); color: #fff; }
+.zd-list-row.tier-verified .zd-list-tier-badge { background: linear-gradient(135deg,var(--zd-mint-600),var(--zd-mint-400)); color: #fff; }
+.zd-list-meta { font: 400 12px/1.4 var(--zd-font); color: var(--zd-gray-600); display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.zd-list-meta .sep { opacity: .4; }
+.zd-list-rating { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
+.zd-list-rating-val { font: 700 14px/1 var(--zd-font); color: var(--zd-gray-800); display: flex; align-items: center; gap: 4px; }
+.zd-list-rating-val .star { color: var(--zd-gold-500); }
+.zd-list-rating-cnt { font: 400 11px/1 var(--zd-font); color: var(--zd-gray-400); }
+
+@media (max-width: 480px) {
+  .zd-list-row { grid-template-columns: 44px 1fr auto; gap: 10px; padding: 9px 11px; }
+  .zd-list-thumb, .zd-list-thumb-empty { width: 44px; height: 44px; border-radius: 10px; font-size: 18px; }
+  .zd-list-name { font-size: 14px; }
+  .zd-list-meta { font-size: 11px; }
+  .zd-list-rating-val { font-size: 13px; }
+}
+
+/* Mobile container override — disable snap-feed when list view is active.
+   The mobile .stack-area normally renders full-viewport snap-scroll cards;
+   when .view-list is toggled, switch to a normal vertical scroll. */
+@media (max-width: 899px) {
+  /* List view overrides the base .stack-area which has max-width: 380px and
+     scroll-snap. On phones wider than 380px (390, 412, etc.) we want full-
+     bleed list rows, normal scrolling, and auto height. */
+  .zd-mode-mobile .stack-area.view-list {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 8px 12px 80px;
+    overflow-y: auto; scroll-snap-type: none; height: auto;
+    max-width: none;
+  }
+  .zd-mode-mobile .stack-area.view-list .card-wrap { display: none; }
+  .view-toggle--mobile { display: flex; justify-content: flex-end; padding: 4px 12px 0; background: transparent; }
+}
+.view-toggle--mobile { display: none; }
+
 /* Loading */
 .loading-msg { text-align: center; padding: 40px 20px; color: var(--zd-gray-400); font-size: 14px; }
 
@@ -2041,9 +2116,9 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
           <span>Близо до мен</span>
         </button>
       </div>
-      <div class="view-toggle">
-        <button class="view-btn active" title="List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-        <button class="view-btn" title="Grid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+      <div class="view-toggle" role="group" aria-label="Изглед на резултатите">
+        <button id="viewBtnGrid" class="view-btn active" title="Карти" aria-label="Карти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+        <button id="viewBtnList" class="view-btn" title="Списък" aria-label="Списък"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
     </div>
 
@@ -2083,6 +2158,10 @@ body.variant-rigor .card-stack > .zd-card:nth-child(n+12) { animation-delay: 440
       </div>
     </div>
     <div class="applied-chips" id="appliedChips"></div>
+    <div class="view-toggle view-toggle--mobile" role="group" aria-label="Изглед на резултатите">
+      <button id="viewBtnGridM" class="view-btn active" title="Карти" aria-label="Карти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+      <button id="viewBtnListM" class="view-btn" title="Списък" aria-label="Списък"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    </div>
     <div class="stack-view">
       <div class="stack-area" id="stackArea"></div>
       <!-- v4 coachmark: floats above the active card on first visit -->
@@ -2306,6 +2385,9 @@ let searchTerm = "", cityTerm = "";
 let ageFrom = null, ageTo = null;
 const active = { level: { include: new Set(), exclude: new Set() }, category: { include: new Set(), exclude: new Set() } };
 let sopFilter = null, onlineFilter = false, withPhotoFilter = false;
+/* viewMode: 'grid' (default — flip cards) | 'list' (compact rows).
+   Persisted under localStorage key 'zd_view_mode'. */
+let viewMode = (function(){ try { return localStorage.getItem('zd_view_mode') === 'list' ? 'list' : 'grid'; } catch(_) { return 'grid'; } })();
 let selectedCat = null;
 let nearMeActive = false;
 let userLat = null, userLng = null;
@@ -2750,7 +2832,7 @@ const passCat = d => {
   return hasIncluded && !hasExcluded;
 };
 const passLevel = d => !(active.level.include.size && !active.level.include.has(d.tier)) && !active.level.exclude.has(d.tier);
-const passCity = d => !cityTerm || d.city.toLowerCase() === cityTerm;
+const passCity = d => !cityTerm || d.city.toLowerCase().includes(cityTerm);
 const passSop = d => sopFilter === null || d.sop === sopFilter;
 const passOnline = d => !onlineFilter || d.city === "Онлайн";
 const passWithPhoto = d => !withPhotoFilter || (typeof getCardPhoto === 'function' && getCardPhoto(d) !== "");
@@ -2768,6 +2850,21 @@ const passWithPhoto = d => !withPhotoFilter || (typeof getCardPhoto === 'functio
  *
  * Free tier: NO back face is rendered. The card stays a static front-only.
  */
+/* Module-scope: prefer explicit neighborhood; else strip the city from the
+   address so we don't duplicate it (city gets its own pill in cards / its own
+   inline chunk in list rows). Lifted out of buildCardHTML so buildListRowHTML
+   can call it too. */
+function deriveNeighborhood(b) {
+  if (b && b.neighborhood) return String(b.neighborhood).trim();
+  if (!b || !b.address) return '';
+  let s = String(b.address);
+  if (b.city) {
+    const cityRe = new RegExp('\\s*[,·]?\\s*' + b.city.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$', 'i');
+    s = s.replace(cityRe, '').trim();
+  }
+  return s;
+}
+
 function buildCardHTML(d) {
   /* search3.html: Rigor card. Outer article carries .zd-card (legacy compat)
      PLUS .rig-card (Rigor styling). data-flip-card enables generic flip. */
@@ -2919,16 +3016,8 @@ function buildCardHTML(d) {
 
   // Address line: prefer explicit neighborhood; else strip the city from
   // the address so we don't duplicate it (city gets its own pill below).
-  function deriveNeighborhood(b) {
-    if (b.neighborhood) return String(b.neighborhood).trim();
-    if (!b.address) return '';
-    let s = String(b.address);
-    if (b.city) {
-      const cityRe = new RegExp('\\s*[,·]?\\s*' + b.city.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$', 'i');
-      s = s.replace(cityRe, '').trim();
-    }
-    return s;
-  }
+  // deriveNeighborhood is module-scoped now (above this function) so the
+  // list-view row builder can share it.
   const neighborhood = deriveNeighborhood(d);
 
   // Ratings — vertical 3-row strip in the body. Sequence top→bottom:
@@ -3060,6 +3149,80 @@ function buildCardHTML(d) {
 }
 
 
+/* ═══ LIST VIEW HELPERS ═══
+   setViewMode flips between grid (flip-cards) and list (compact rows),
+   persists to localStorage, syncs the .active class across all 4 toggle
+   buttons (desktop + mobile), toggles .view-list on both containers, and
+   triggers a re-render. buildListRowHTML produces a single anchor row
+   (compact: thumb · name+tier · city+categories · rating) that navigates
+   to listing.html?id=<id> on click. Field sources:
+   - photo  → getCardPhoto(d) (gallery_urls[0])
+   - tier   → tierClassMap[d.tier] → 'premium'/'elite'/'verified'/'standard'/'free'
+   - cats   → _visibleCats(d).slice(0, 2)
+   - city   → d.city; neighborhood → deriveNeighborhood(d)
+   - rating → prefers Google (d.google_rating + d.google_review_count),
+              falls back to ZaDeteto via getZadetetoRating(d). */
+function setViewMode(mode) {
+  viewMode = (mode === 'list') ? 'list' : 'grid';
+  try { localStorage.setItem('zd_view_mode', viewMode); } catch (_) {}
+  ['viewBtnGrid','viewBtnList','viewBtnGridM','viewBtnListM'].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    const wantsGrid = id.startsWith('viewBtnGrid');
+    el.classList.toggle('active', wantsGrid === (viewMode === 'grid'));
+  });
+  const ds = document.getElementById('cardStack'); if (ds) ds.classList.toggle('view-list', viewMode === 'list');
+  const ms = document.getElementById('stackArea'); if (ms) ms.classList.toggle('view-list', viewMode === 'list');
+  _visibleCount = LAZY_BATCH_SIZE;
+  if (typeof render === 'function') render();
+}
+
+function buildListRowHTML(d) {
+  const photo = (typeof getCardPhoto === 'function' && getCardPhoto(d)) || '';
+  const cats = (typeof _visibleCats === 'function' ? _visibleCats(d) : []).slice(0, 2);
+  const tierKey = (typeof tierClassMap === 'object' && tierClassMap[d.tier]) || 'free';
+  const tierLabel = d.tier || '';
+  const city = d.city || '';
+  let neighborhood = '';
+  try { if (typeof deriveNeighborhood === 'function') neighborhood = deriveNeighborhood(d) || ''; } catch(_) {}
+  // Rating: prefer Google, fall back to ZaDeteto
+  let ratingAvg = null, ratingCount = 0;
+  if (typeof d.google_rating === 'number' && d.google_rating > 0) {
+    ratingAvg = d.google_rating;
+    ratingCount = (typeof d.google_review_count === 'number') ? d.google_review_count : 0;
+  } else if (typeof getZadetetoRating === 'function') {
+    const z = getZadetetoRating(d);
+    if (z && z.avg) { ratingAvg = z.avg; ratingCount = z.count || 0; }
+  }
+  const initial = (d.name || '?').charAt(0).toUpperCase();
+  const thumb = photo
+    ? `<img class="zd-list-thumb" src="${ZdSec.escapeHtml(photo)}" alt="" loading="lazy">`
+    : `<div class="zd-list-thumb-empty" aria-hidden="true">${ZdSec.escapeHtml(initial)}</div>`;
+  const cityChunk = ZdSec.escapeHtml(city) + (neighborhood ? `, ${ZdSec.escapeHtml(neighborhood)}` : '');
+  const catsHtml = cats.length
+    ? ` <span class="sep">·</span> ${cats.map(c => ZdSec.escapeHtml(String(c))).join(' <span class="sep">·</span> ')}`
+    : '';
+  const ratingHtml = ratingAvg != null
+    ? `<span class="zd-list-rating-val"><span class="star">★</span>${ratingAvg.toFixed(1)}</span>${ratingCount ? `<span class="zd-list-rating-cnt">(${ratingCount})</span>` : ''}`
+    : `<span class="zd-list-rating-val" style="color:var(--zd-gray-400);">·</span>`;
+  // Build a compact aria-label so screen readers don't read the row as a
+  // run-on of disconnected tokens. Plain text only, no HTML.
+  const ariaBits = [d.name || '', tierLabel, city];
+  if (cats.length) ariaBits.push(cats.join(', '));
+  if (ratingAvg != null) ariaBits.push(`оценка ${ratingAvg.toFixed(1)}${ratingCount ? ` от ${ratingCount} отзива` : ''}`);
+  const ariaLabel = ariaBits.filter(Boolean).join(', ');
+  return `<a class="zd-list-row tier-${tierKey}" href="listing.html?id=${ZdSec.escapeHtml(String(d.id))}" data-id="${ZdSec.escapeHtml(String(d.id))}" aria-label="${ZdSec.escapeHtml(ariaLabel)}">
+    ${thumb}
+    <div class="zd-list-body">
+      <div class="zd-list-line1">
+        <span class="zd-list-name">${ZdSec.escapeHtml(d.name || '')}</span>
+        ${tierLabel ? `<span class="zd-list-tier-badge">${ZdSec.escapeHtml(tierLabel)}</span>` : ''}
+      </div>
+      <div class="zd-list-meta">${cityChunk}${catsHtml}</div>
+    </div>
+    <div class="zd-list-rating" aria-hidden="true">${ratingHtml}</div>
+  </a>`;
+}
+
 /* ═══ RENDER ═══ */
 function render() {
   renderPills();
@@ -3091,8 +3254,11 @@ function render() {
   // The IntersectionObserver in _initLazyLoadObserver() bumps _visibleCount
   // and re-calls render() when the user scrolls near the bottom sentinel. ───
   const stack = $("#cardStack");
+  // Keep the .view-list class in sync with viewMode (handles cold renders and
+  // re-renders triggered before setViewMode has run).
+  stack.classList.toggle('view-list', viewMode === 'list');
   const visibleSlice = activeCards.slice(0, _visibleCount);
-  let html = visibleSlice.map(d => buildCardHTML(d)).join("");
+  let html = visibleSlice.map(d => viewMode === 'list' ? buildListRowHTML(d) : buildCardHTML(d)).join("");
   // Sentinel — only present if there are more cards to load
   if (_visibleCount < activeCards.length) {
     html += '<div id="loadMoreSentinel" style="grid-column: 1 / -1; height: 1px; pointer-events: none;"></div>';
@@ -3299,6 +3465,18 @@ async function init() {
   $("#online-toggle").addEventListener("change", e => { onlineFilter = e.target.checked; resetLazyAndRender(); });
   const _wpt = $("#withphoto-toggle");
   if (_wpt) _wpt.addEventListener("change", e => { withPhotoFilter = e.target.checked; _syncQuickChips(); resetLazyAndRender(); });
+
+  // ─── View toggle (grid ⇄ list) ───
+  // Wire all four buttons (desktop + mobile copies). Sync the .active class
+  // to the persisted viewMode so the first paint matches localStorage even
+  // before any click. setViewMode handles persistence + re-render on click.
+  ['viewBtnGrid','viewBtnGridM'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('click', () => setViewMode('grid')); });
+  ['viewBtnList','viewBtnListM'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('click', () => setViewMode('list')); });
+  ['viewBtnGrid','viewBtnList','viewBtnGridM','viewBtnListM'].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    const wantsGrid = id.startsWith('viewBtnGrid');
+    el.classList.toggle('active', wantsGrid === (viewMode === 'grid'));
+  });
 
   // Honour URL params so shareable links like ?city=Стара Загора land pre-filtered.
   // Populates both the input value (for user-facing feedback) and the filter state
@@ -4298,6 +4476,24 @@ function _buildMobileWrapHTML(c) {
 
 function renderStack(cards){
   const area = document.getElementById('stackArea'); if (!area) return;
+  // List view branch — skips snap-feed, gallery rotation, and feed observer.
+  // Renders compact rows directly into the same #stackArea container; the
+  // .view-list class on the container disables snap-scroll via CSS.
+  if (viewMode === 'list') {
+    area.classList.add('view-list');
+    // Tear down feed/snap observers that the grid path sets up — they'd
+    // keep observing stale .card-wrap nodes from the previous render.
+    if (_feedObserver) { _feedObserver.disconnect(); _feedObserver = null; }
+    if (_mobileLoadMoreObserver) { _mobileLoadMoreObserver.disconnect(); _mobileLoadMoreObserver = null; }
+    if (!cards.length) {
+      area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`;
+      return;
+    }
+    area.innerHTML = cards.map(buildListRowHTML).join('');
+    area.scrollTop = 0;
+    return;
+  }
+  area.classList.remove('view-list');
   if (!cards.length) {
     area.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Няма резултати</h3><p>Промени филтрите или търсенето</p></div>`;
     return;
