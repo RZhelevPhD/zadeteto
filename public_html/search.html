@@ -3177,6 +3177,16 @@ function setViewMode(mode) {
 }
 
 function buildListRowHTML(d) {
+  try { return _buildListRowHTMLInner(d); }
+  catch (err) {
+    if (typeof console !== 'undefined') console.warn('list-row build failed for', d && d.id, err);
+    // Emit a minimal placeholder row so one bad record doesn't blank the whole feed.
+    const safeName = ZdSec.escapeHtml((d && d.name) || '—');
+    const safeId = ZdSec.escapeHtml(String((d && d.id) || ''));
+    return `<a class="zd-list-row tier-free" href="listing.html?id=${safeId}"><div class="zd-list-thumb-empty">·</div><div class="zd-list-body"><span class="zd-list-name">${safeName}</span></div><div class="zd-list-rating"></div></a>`;
+  }
+}
+function _buildListRowHTMLInner(d) {
   const photo = (typeof getCardPhoto === 'function' && getCardPhoto(d)) || '';
   const cats = (typeof _visibleCats === 'function' ? _visibleCats(d) : []).slice(0, 2);
   const tierKey = (typeof tierClassMap === 'object' && tierClassMap[d.tier]) || 'free';
@@ -3184,14 +3194,22 @@ function buildListRowHTML(d) {
   const city = d.city || '';
   let neighborhood = '';
   try { if (typeof deriveNeighborhood === 'function') neighborhood = deriveNeighborhood(d) || ''; } catch(_) {}
-  // Rating: prefer Google, fall back to ZaDeteto
+  // Rating: prefer Google, fall back to ZaDeteto.
+  // getGoogleRating/getZadetetoRating return `avg` as a string (already
+  // `.toFixed(1)`-formatted) — coerce to number here so the toFixed call
+  // below doesn't crash on strings.
   let ratingAvg = null, ratingCount = 0;
   if (typeof d.google_rating === 'number' && d.google_rating > 0) {
     ratingAvg = d.google_rating;
     ratingCount = (typeof d.google_review_count === 'number') ? d.google_review_count : 0;
   } else if (typeof getZadetetoRating === 'function') {
-    const z = getZadetetoRating(d);
-    if (z && z.avg) { ratingAvg = z.avg; ratingCount = z.count || 0; }
+    try {
+      const z = getZadetetoRating(d);
+      if (z && z.avg != null) {
+        const n = parseFloat(z.avg);
+        if (isFinite(n) && n > 0) { ratingAvg = n; ratingCount = parseInt(z.count, 10) || 0; }
+      }
+    } catch(_) {}
   }
   const initial = (d.name || '?').charAt(0).toUpperCase();
   const thumb = photo
