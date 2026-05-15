@@ -221,16 +221,27 @@ def _process_row(row: pd.Series) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Enrich Google Maps provider list with contact and social data")
     parser.add_argument("--input", required=True, help="Path to CSV or Excel input file")
-    parser.add_argument("--sheet-id", required=True, help="Google Sheets ID (from the URL)")
+    parser.add_argument("--sheet-id", help="Google Sheets ID (required unless --output-csv is used)")
     parser.add_argument("--sheet-name", default="Enriched", help="Tab name in the sheet")
+    parser.add_argument("--output-csv", help="Write results to this CSV file instead of Google Sheets")
     parser.add_argument("--resume", action="store_true", help="Skip rows already in checkpoint")
     parser.add_argument("--no-search", action="store_true", help="Skip Google search (crawl only)")
     args = parser.parse_args()
 
+    if not args.sheet_id and not args.output_csv:
+        parser.error("Either --sheet-id or --output-csv must be provided.")
+    if args.sheet_id and args.output_csv:
+        parser.error("--sheet-id and --output-csv are mutually exclusive.")
+
     checkpoint_path = os.path.join("tmp", "enrichment_progress.json")
     checkpoint = _load_checkpoint(checkpoint_path)
     checkpoint["input_file"] = args.input
-    checkpoint["sheet_id"] = args.sheet_id
+    if args.sheet_id:
+        checkpoint["sheet_id"] = args.sheet_id
+        checkpoint.pop("output_csv", None)
+    else:
+        checkpoint["output_csv"] = args.output_csv
+        checkpoint.pop("sheet_id", None)
 
     ext = os.path.splitext(args.input)[1].lower()
     if ext == ".csv":
@@ -289,7 +300,6 @@ def main():
             print(f"  Waiting {pause:.0f}s before next row...")
             time.sleep(pause)
 
-    print("\nWriting results to Google Sheets...")
     all_input_cols = list(df.columns)
     header = all_input_cols + OUTPUT_NEW_COLUMNS
     rows_out = [header]
@@ -300,6 +310,24 @@ def main():
         output_vals = [str(enrich_vals.get(col, "") or "") for col in OUTPUT_NEW_COLUMNS]
         rows_out.append(input_vals + output_vals)
 
+    if args.output_csv:
+        out_abs = os.path.abspath(args.output_csv)
+        os.makedirs(os.path.dirname(out_abs) or ".", exist_ok=True)
+        tmp_path = out_abs + ".tmp"
+        try:
+            pd.DataFrame(rows_out[1:], columns=rows_out[0]).to_csv(tmp_path, index=False, encoding="utf-8-sig")
+            os.replace(tmp_path, out_abs)
+        except Exception:
+            if os.path.exists(tmp_path):
+                try:
+                    os.remove(tmp_path)
+                except OSError:
+                    pass
+            raise
+        print(f"\nDone. {len(rows_out)-1} rows written to: {out_abs}")
+        return
+
+    print("\nWriting results to Google Sheets...")
     try:
         client = _get_sheets_client()
         _write_to_sheets(client, args.sheet_id, args.sheet_name, rows_out)

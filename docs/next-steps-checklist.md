@@ -254,5 +254,5 @@ Two small follow-ups after the real-ratings bundle:
 ### 5.7 Pre-Pro upgrade triggers (when to start paying $25/mo)
 - DB approaches 500MB (≈50K businesses)
 - MAU approaches 50K
-- Need custom domain for API (api.zadeteto.bg)
+- Need custom domain for API (api.zadeteto.com)
 - Need daily backups instead of 7-day rollback

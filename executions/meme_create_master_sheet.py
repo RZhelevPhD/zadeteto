@@ -48,7 +48,7 @@ CONFIG_ROWS: list[tuple[str, object, str]] = [
     ("funnel_L5_target_pct", 5, "Most Aware"),
     ("default_timezone", "Europe/Sofia", "For QUEUE post_time"),
     ("default_brand", "ZaDeteto", ""),
-    ("default_brand_url", "https://zadeteto.bg", ""),
+    ("default_brand_url", "https://zadeteto.com", ""),
 ]
 
 AVATARS_COLUMNS = [
@@ -143,8 +143,8 @@ PRODUCTS_SEED = [
         "Directory",
         "Видимост в най-голямата БГ директория за детски специалисти",
         "Единствена с проверени отзиви + StoryBrand профили",
-        "Регистрирай се за безплатен листинг на zadeteto.bg",
-        "https://zadeteto.bg/register",
+        "Регистрирай се за безплатен листинг на zadeteto.com",
+        "https://zadeteto.com/register",
         "Free tier, lead-gen magnet",
     ],
     [
@@ -153,8 +153,8 @@ PRODUCTS_SEED = [
         "Premium Subscription",
         "Пълен брандиран профил + SEO + директен контакт с родители",
         "Премахва невидимостта от Google за соло специалисти",
-        "Запазете място в Partner Package: https://zadeteto.bg/partners",
-        "https://zadeteto.bg/partners",
+        "Запазете място в Partner Package: https://zadeteto.com/partners",
+        "https://zadeteto.com/partners",
         "Main revenue product",
     ],
 ]

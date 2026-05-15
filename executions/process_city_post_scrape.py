@@ -186,7 +186,8 @@ def main() -> None:
     print(f"[stamp] adding legacy_id to {len(cleaned_paths)} cleaned file(s).")
     for kw, p in cleaned_paths:
         df = pd.read_csv(p, encoding="utf-8-sig", dtype=str, keep_default_na=False)
-        if "legacy_id" not in df.columns:
+        column_was_missing = "legacy_id" not in df.columns
+        if column_was_missing:
             df.insert(0, "legacy_id", "")
         existing = df["legacy_id"].astype(str).str.strip()
         # Find positional index of each blank row; counter `n` increments only
@@ -199,8 +200,11 @@ def main() -> None:
                 new_ids.append(f"{args.legacy_prefix}-{kw}-{n:03d}")
             else:
                 new_ids.append(cur)
-        # Only rewrite if we actually changed anything.
-        if any(a != b for a, b in zip(new_ids, existing.tolist())):
+        # Rewrite if we changed anything OR if we just added the column to the
+        # frame (matters for empty-data CSVs where the loop above is a no-op
+        # but the file on disk still lacks the column).
+        ids_changed = any(a != b for a, b in zip(new_ids, existing.tolist()))
+        if column_was_missing or ids_changed:
             df["legacy_id"] = new_ids
             tmp = p + ".tmp"
             df.to_csv(tmp, index=False, encoding="utf-8-sig")

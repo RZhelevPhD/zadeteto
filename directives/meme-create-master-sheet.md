@@ -28,7 +28,7 @@ Workbook-ът съдържа 5 таба. Всички табове имат:
 | funnel_L5_target_pct | 5 | Most Aware |
 | default_timezone | Europe/Sofia | За QUEUE post_time |
 | default_brand | ZaDeteto | |
-| default_brand_url | https://zadeteto.bg | |
+| default_brand_url | https://zadeteto.com | |
 
 Схема: `key` (колона A) — named-range-friendly; `value` (колона B); `notes` (колона C).
 
@@ -128,3 +128,4 @@ python executions/meme_create_master_sheet.py
 ## Changelog
 - 2026-04-19: Initial version.
 - 2026-04-19: Documented reviewer-round fixes: `char_budget` formula now uses INDEX/MATCH by key against CONFIG (not a fixed `$B$2` reference); `QUEUE.awareness_level` seed values stored as strings to match the inline dropdown; noted the 255-char Excel inline-list ceiling asserted by `add_list_validation`.
+- 2026-05-07: Domain rename `zadeteto.bg` → `zadeteto.com` in CONFIG `default_brand_url` and in P01 / P02 product seed CTAs.

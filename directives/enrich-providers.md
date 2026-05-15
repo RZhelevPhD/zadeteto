@@ -1,11 +1,11 @@
 # Enrich Providers SOP — ZaDeteto Prospect Enrichment
 
 ## Objective
-Take a raw Google Maps export (CSV or Excel) of Bulgarian childcare/education providers and enrich each record with emails, phone numbers, social media profiles, and decision maker names. Output goes to Google Sheets.
+Take a raw Google Maps export (CSV or Excel) of Bulgarian childcare/education providers and enrich each record with emails, phone numbers, social media profiles, and decision maker names. Output goes to either Google Sheets (`--sheet-id`) or a local CSV file (`--output-csv`). Exactly one of the two destinations must be supplied.
 
 ## Required Inputs
 - Google Maps export file (CSV or Excel) — place in project root or `tmp/`
-- `credentials.json` in project root (Google OAuth — see Step 0 if first time)
+- `credentials.json` in project root (Google OAuth — only needed when using `--sheet-id`; see Step 0 if first time)
 - Python dependencies installed (see Step 0)
 
 ---
@@ -20,7 +20,7 @@ pip install requests beautifulsoup4 googlesearch-python \
             google-auth-oauthlib google-auth python-dotenv
 ```
 
-### Set up Google Sheets OAuth (one-time only)
+### Set up Google Sheets OAuth (one-time only — skip if you only use `--output-csv`)
 
 1. Go to: https://console.cloud.google.com/
 2. Create or select a project → **APIs & Services** → **Enable APIs** → enable **Google Sheets API**
@@ -43,16 +43,26 @@ pip install requests beautifulsoup4 googlesearch-python \
 
 ---
 
-## Step 2 — Create the Output Google Sheet
+## Step 2 — Choose an Output Destination
 
+Pick exactly one of the following. The script errors out if both or neither are supplied.
+
+**Option A — Google Sheets:**
 1. Open Google Sheets → create a new blank spreadsheet
 2. Copy the Sheet ID from the URL:
    `https://docs.google.com/spreadsheets/d/**SHEET_ID_HERE**/edit`
 3. Share the sheet with your Google account (the one used for OAuth)
 
+**Option B — Local CSV:**
+1. Decide on a target path (e.g., `tmp/enriched.csv`)
+2. The parent directory will be created automatically if needed
+3. The file is written atomically (via a `.tmp` sibling plus `os.replace`) in UTF-8 with BOM (`utf-8-sig`)
+
 ---
 
 ## Step 3 — Run Enrichment
+
+Google Sheets output:
 
 ```bash
 python executions/enrich_providers.py \
@@ -61,13 +71,22 @@ python executions/enrich_providers.py \
   --sheet-name "Enriched"
 ```
 
+Local CSV output (no Google Sheets or OAuth needed):
+
+```bash
+python executions/enrich_providers.py \
+  --input tmp/google_maps_export.csv \
+  --output-csv tmp/enriched.csv
+```
+
 **Options:**
 
 | Flag | Description |
 |------|-------------|
 | `--input` | Path to CSV or Excel file (required) |
-| `--sheet-id` | Google Sheets ID from the URL (required) |
-| `--sheet-name` | Tab name in the sheet (default: "Enriched") |
+| `--sheet-id` | Google Sheets ID from the URL (optional; mutually exclusive with `--output-csv`) |
+| `--sheet-name` | Tab name in the sheet (default: "Enriched"; only used with `--sheet-id`) |
+| `--output-csv` | Path to a local CSV file. When set, the Google Sheets path is skipped entirely. Mutually exclusive with `--sheet-id`. Exactly one of the two is required |
 | `--resume` | Skip rows already in `tmp/enrichment_progress.json` |
 | `--no-search` | Crawl websites only, skip Google search (faster, less complete) |
 
@@ -85,15 +104,15 @@ python executions/enrich_providers.py \
   --resume
 ```
 
-The checkpoint file `tmp/enrichment_progress.json` tracks every completed row. `--resume` skips any row that completed with status `enriched` or `partial`. Rows with status `failed` are re-attempted.
+The checkpoint file `tmp/enrichment_progress.json` tracks every completed row. `--resume` skips any row that completed with status `enriched` or `partial`. Rows with status `failed` are re-attempted. The checkpoint also records which destination was used for the run — either `sheet_id` or `output_csv` — depending on which flag was passed.
 
 > Never delete `tmp/enrichment_progress.json` during or between runs.
 
 ---
 
-## Step 5 — Review Output in Google Sheets
+## Step 5 — Review Output
 
-The enriched sheet contains all original columns plus:
+The enriched output (Google Sheet tab or local CSV) contains all original columns plus:
 
 | Column | Description |
 |--------|-------------|
@@ -128,7 +147,8 @@ The enriched sheet contains all original columns plus:
 | Website crawl | 2–5s per page (network dependent) | Up to 3 pages per provider |
 | Google search | 8–15s per query (randomized) | Built into `googlesearch-python` |
 | Between rows | 20–40s (randomized) | Enforced in `enrich_providers.py` |
-| Google Sheets write | Single batch at end | One write for all rows |
+| Google Sheets write | Single batch at end | One write for all rows (only when `--sheet-id` is used) |
+| Local CSV write | Single atomic write at end | Only when `--output-csv` is used; writes to `PATH.tmp` then `os.replace` |
 
 **Expected duration**: ~2–4 minutes per row with Google search enabled.
 
@@ -178,3 +198,8 @@ python executions/google_search_enrichment.py "Детска градина Сл�
 **If Google blocks the IP:**
 - Wait 1–2 hours before resuming
 - Or run with `--no-search` to crawl websites only without Google queries
+
+---
+
+## Changelog
+- 2026-04-20: Documented new `--output-csv` flag and that `--sheet-id` is now optional; the two are mutually exclusive and exactly one is required. Noted atomic UTF-8-SIG CSV write, checkpoint `sheet_id`/`output_csv` key, and updated Step 2 / Step 3 / Step 5 / rate-limits table to match current script behavior.

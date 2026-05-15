@@ -9,8 +9,20 @@ docs/AH+DM reference docs/
 docs/Benjamin Dennehy reference docs/
 docs/cheatsheets/
 
+# Private branding sources (Colin Boyd PDFs, Rusi's stories, research captures — never commit)
+BRANDING/cb-conversion/
+BRANDING/cb-sfs/
+BRANDING/stories-vault/
+BRANDING/research-library/
+
 # Large local-only asset folders (available on Google Drive)
 0. MEME MACHINE - Copy/
+
+# Cross-machine deploy notes (synced via Google Drive, never commit)
+claude_notes/
+
+# Archive of pruned `businesses` rows (full NDJSON dumps, gdrive-synced)
+archive/
 
 # Python bytecode
 **/__pycache__/
