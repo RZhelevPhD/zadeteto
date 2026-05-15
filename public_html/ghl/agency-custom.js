@@ -868,11 +868,13 @@
     reorderAddonsToBottom();
 
     // 8b. Position the static custom links — "Начало" anchors at the
-    //     top of the sidebar, "Помощ и активиране" anchors at the very
-    //     bottom (below Settings). GHL groups all Custom Menu Links
-    //     together by default, so without this they cluster in the
-    //     middle of the sidebar regardless of drag order.
+    //     top of the sidebar, "Помощ и активиране" anchors right above
+    //     Settings (so it sits in the addon group with breathing room).
     repositionStaticCustomLinks();
+
+    // 8c. Inject a thin separator above "Помощ и активиране" so it
+    //     visually breathes apart from the addon items above it.
+    injectHelpDivider();
 
     // 9. Replace the whitelabel agency logo (123marketing.app) with the
     //    ZaDeteto wordmark. Re-runs on every SPA navigation via the
@@ -1024,17 +1026,29 @@
       }
     }
 
-    // "Помощ и активиране" → move to be the last child of Settings' parent.
+    // "Помощ и активиране" → move to be RIGHT BEFORE Settings, so it
+    // visually sits in the addon group (right under По заявка items) with
+    // Settings remaining at the very bottom. Helps Помощ "breathe" — see
+    // injectHelpDivider for the thin spacing rule above it.
     const pomoshch = findElementByTitle('помощ и активиране');
     if (pomoshch && settings) {
       const settingsParent = settings.parentElement;
       const alreadyThere =
         pomoshch.parentElement === settingsParent &&
-        settingsParent.lastElementChild === pomoshch;
+        pomoshch.nextElementSibling === settings;
       if (!alreadyThere) {
-        settingsParent.appendChild(pomoshch);
+        settingsParent.insertBefore(pomoshch, settings);
       }
     }
+  }
+
+  function injectHelpDivider() {
+    if (document.querySelector('.zd-help-divider')) return;
+    const pomoshch = findElementByTitle('помощ и активиране');
+    if (!pomoshch || !pomoshch.parentElement) return;
+    const divider = document.createElement('div');
+    divider.className = 'zd-help-divider';
+    pomoshch.parentElement.insertBefore(divider, pomoshch);
   }
 
   function findElementByTitle(targetTitle) {

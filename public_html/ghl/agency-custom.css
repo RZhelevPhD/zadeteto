@@ -348,12 +348,37 @@ html[data-zd-active="true"] .zd-nav-textblock {
    Without this the icon top-aligns when the text becomes two lines tall,
    making locked / addon items look misaligned vs single-line items. */
 html[data-zd-active="true"] [id^="sb_"] {
+  display: flex !important;
   align-items: center !important;
 }
-html[data-zd-active="true"] [id^="sb_"] > img,
-html[data-zd-active="true"] [id^="sb_"] > svg,
-html[data-zd-active="true"] [id^="sb_"] > span:first-child {
+/* Force every child of a sidebar item (icon img, icon span, text block,
+   nav-title span when no zd-nav-textblock wraps it) to align-self center
+   so they all share the same vertical midline. */
+html[data-zd-active="true"] [id^="sb_"] > * {
   align-self: center !important;
+}
+/* The .zd-nav-textblock we inject for locked/addon items needs explicit
+   centering too, since it's a flex column with its own internal layout. */
+html[data-zd-active="true"] .zd-nav-textblock {
+  align-self: center !important;
+}
+
+
+/* ============================================================
+   ZONE 7b: "Help" divider — thin separator above
+   "Помощ и активиране" so it visually breathes from the
+   addon group above without taking much vertical space.
+   ============================================================ */
+
+html[data-zd-active="true"] .zd-help-divider {
+  height: 1px;
+  margin: 10px 18px 8px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(124, 77, 255, 0.18) 50%,
+    transparent 100%);
+  pointer-events: none;
+  user-select: none;
 }
 
 
