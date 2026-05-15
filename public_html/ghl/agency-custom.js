@@ -625,7 +625,23 @@
         'Записва часове директно в календара',
         'Прехвърля сложни случаи към теб'
       ],
-      isAddon: true
+      isAddon: true,
+      addonName: 'AI Служители'
+    },
+    // SMS cards add-on — prepaid SMS credits for reminders + campaigns.
+    // Targeted via Custom Menu Link with title "СМС карти" (no native
+    // sb_* item exists for it). See markCustomLinkAddons() below.
+    'sms_cards': {
+      icon: '💬',
+      headline: 'СМС карти — напомняния и кампании в SMS',
+      body: 'Купи пакет SMS-и наведнъж и ги изразходвай постепенно. Стига до родителите за секунди, без приложение.',
+      benefits: [
+        'Напомняния за час 24 часа предварително',
+        'Потвърждения на записани занимания',
+        'Сезонни кампании до цялата база родители'
+      ],
+      isAddon: true,
+      addonName: 'СМС карти'
     }
   };
 
@@ -782,10 +798,42 @@
     //    CSS selector misses (custom links get unpredictable sb_* IDs).
     hideCustomTutorialsLink();
 
-    // 7. Replace the whitelabel agency logo (123marketing.app) with the
+    // 7. Mark Custom Menu Links that act as add-on entry points (e.g.
+    //    "СМС карти" added in GHL UI → flagged as locked-addon so the
+    //    purple sparkle CSS + click-to-modal handler kick in).
+    markCustomLinkAddons(partner, activeAddons);
+
+    // 8. Replace the whitelabel agency logo (123marketing.app) with the
     //    ZaDeteto wordmark. Re-runs on every SPA navigation via the
     //    MutationObserver so newly-mounted logo elements get rewritten too.
     replaceAgencyLogo();
+  }
+
+  // Map of sidebar item title (case-insensitive trimmed) to addon meta key.
+  // Used by markCustomLinkAddons to convert user-created Custom Menu Links
+  // into addon-styled sidebar entries with sparkle + click-to-modal.
+  const CUSTOM_LINK_ADDONS = {
+    'смс карти':       { meta: 'sms_cards', addonKey: 'sms_cards' }
+  };
+
+  function markCustomLinkAddons(partner, activeAddons) {
+    const items = document.querySelectorAll('[id^="sb_"]');
+    items.forEach(item => {
+      const titleEl = item.querySelector('.nav-title');
+      if (!titleEl) return;
+      const title = titleEl.textContent.trim().toLowerCase();
+      const cfg = CUSTOM_LINK_ADDONS[title];
+      if (!cfg) return;
+      // Clear any prior tier-locked flag — these are addons, not tier items.
+      item.removeAttribute('data-zd-locked');
+      const activated = activeAddons.has(cfg.addonKey);
+      if (activated) {
+        item.removeAttribute('data-zd-locked-addon');
+      } else {
+        item.setAttribute('data-zd-locked-addon', 'true');
+        item.setAttribute('data-zd-feature', cfg.meta);
+      }
+    });
   }
 
   function hideCustomTutorialsLink() {
@@ -974,9 +1022,10 @@
     if (isAddon) {
       cta.textContent = 'Свържи се за оферта →';
       cta.onclick = () => {
-        const subject = encodeURIComponent(`AI Служители за ${partner.name}`);
+        const addonLabel = content.addonName || 'Надстройка';
+        const subject = encodeURIComponent(`${addonLabel} за ${partner.name}`);
         const body = encodeURIComponent(
-          `Здравейте,\n\nИнтересувам се от активиране на AI Служители за моя профил (${partner.name}).\n\nLocation ID: ${locationId}\n\nПоздрави,`
+          `Здравейте,\n\nИнтересувам се от активиране на ${addonLabel} за моя профил (${partner.name}).\n\nLocation ID: ${locationId}\n\nПоздрави,`
         );
         window.open(`mailto:partner@zadeteto.com?subject=${subject}&body=${body}`, '_blank');
       };
