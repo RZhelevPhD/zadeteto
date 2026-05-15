@@ -668,6 +668,20 @@
       ],
       isAddon: true,
       addonName: 'Касови бележки'
+    },
+    // Documents add-on — contracts, invoices, signed forms with parents.
+    // Targeted via Custom Menu Link with title "Документи".
+    'documents': {
+      icon: '📄',
+      headline: 'Документи — договори, оферти, фактури',
+      body: 'Създавай, изпращай и подписвай документи с родителите без излизане от профила. Готови шаблони и автоматични напомняния.',
+      benefits: [
+        'Електронен подпис на договори',
+        'PDF фактури и оферти',
+        'Архив на всички документи'
+      ],
+      isAddon: true,
+      addonName: 'Документи'
     }
   };
 
@@ -816,8 +830,10 @@
       }
     });
 
-    // 4. Inject "Премиум" divider before the first Premium-tier locked item
-    injectPremiumDivider(partner, unlockedMetas);
+    // 4. (DISABLED — partner asked to remove the Премиум divider for
+    //    sidebar compactness; padlocks on premium items are enough of
+    //    a visual cue. Function kept for reference + easy re-enable.)
+    // injectPremiumDivider(partner, unlockedMetas);
 
     // 4b. Inject "Услуги по заявка" divider before the first add-on item
     //     (Payments, AI Служители, plus any Custom Menu Link addons).
@@ -881,6 +897,16 @@
     )];
     if (!divider || !addons.length) return;
 
+    // Sort addons by ADDON_ORDER (partner-specified display order).
+    // Items whose data-zd-feature is not in ADDON_ORDER end up last.
+    addons.sort((a, b) => {
+      const af = a.getAttribute('data-zd-feature') || '';
+      const bf = b.getAttribute('data-zd-feature') || '';
+      const ai = ADDON_ORDER.indexOf(af);
+      const bi = ADDON_ORDER.indexOf(bf);
+      return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+    });
+
     const desired = [divider, ...addons];
 
     // Idempotency check — if the elements directly preceding Settings
@@ -906,9 +932,25 @@
   // Used by markCustomLinkAddons to convert user-created Custom Menu Links
   // into addon-styled sidebar entries with sparkle + click-to-modal.
   const CUSTOM_LINK_ADDONS = {
-    'смс карти':       { meta: 'sms_cards',     addonKey: 'sms_cards' },
-    'касови бележки':  { meta: 'cash_receipts', addonKey: 'cash_receipts' }
+    'неограничени смс':  { meta: 'sms_cards',     addonKey: 'sms_cards' },
+    'неограничени sms':  { meta: 'sms_cards',     addonKey: 'sms_cards' },
+    'смс карти':         { meta: 'sms_cards',     addonKey: 'sms_cards' },
+    'sms карти':         { meta: 'sms_cards',     addonKey: 'sms_cards' },
+    'касови бележки':    { meta: 'cash_receipts', addonKey: 'cash_receipts' },
+    'документи':         { meta: 'documents',     addonKey: 'documents' }
   };
+
+  // Explicit display order for the add-ons group. Without this we'd
+  // get whatever DOM-discovery order produces, which depends on GHL
+  // sidebar ordering + user drag order in Custom Menu Links. Indexes
+  // in this array win over data-zd-feature alphabetical fallback.
+  const ADDON_ORDER = [
+    'payments',       // Плащания (native)
+    'documents',      // Документи (custom)
+    'cash_receipts',  // Касови бележки (custom)
+    'AI Agents',      // AI Служители (native)
+    'sms_cards'       // Неограничени СМС / СМС карти (custom)
+  ];
 
   function markCustomLinkAddons(partner, activeAddons) {
     // Custom Menu Links sometimes lack the [id^="sb_"] convention used
@@ -988,6 +1030,8 @@
     const candidates = document.querySelectorAll(
       '[id^="sb_"], aside a, nav a, [class*="sidebar"] a'
     );
+    let nativeMatch = null;
+    let customMatch = null;
     for (const el of candidates) {
       const titleEl = el.querySelector('.nav-title');
       const candidatesText = [
@@ -996,9 +1040,20 @@
         el.getAttribute('title'),
         el.textContent
       ].filter(Boolean).map(s => s.trim().toLowerCase());
-      if (candidatesText.some(t => t === norm)) return el;
+      if (!candidatesText.some(t => t === norm)) continue;
+      // Skip hidden elements (e.g. CSS-hidden #sb_dashboard).
+      const cs = window.getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+      if (el.id && el.id.startsWith('sb_')) {
+        if (!nativeMatch) nativeMatch = el;
+      } else {
+        if (!customMatch) customMatch = el;
+      }
     }
-    return null;
+    // Prefer custom links over native items — when both exist (e.g. user
+    // created a "Начало" custom link AND we display-none the native
+    // sb_dashboard whose nav-title also got translated to "Начало").
+    return customMatch || nativeMatch;
   }
 
   function hideCustomTutorialsLink() {

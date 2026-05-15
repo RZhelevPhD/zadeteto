@@ -344,6 +344,18 @@ html[data-zd-active="true"] .zd-nav-textblock {
   line-height: 1.2;
 }
 
+/* Vertically center the icon against the (title + subtext) text block.
+   Without this the icon top-aligns when the text becomes two lines tall,
+   making locked / addon items look misaligned vs single-line items. */
+html[data-zd-active="true"] [id^="sb_"] {
+  align-items: center !important;
+}
+html[data-zd-active="true"] [id^="sb_"] > img,
+html[data-zd-active="true"] [id^="sb_"] > svg,
+html[data-zd-active="true"] [id^="sb_"] > span:first-child {
+  align-self: center !important;
+}
+
 
 /* ============================================================
    ZONE 8: Hide the "Action Required" banner that GHL shows for
