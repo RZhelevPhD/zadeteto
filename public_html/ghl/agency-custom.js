@@ -845,10 +845,60 @@
     //    purple sparkle CSS + click-to-modal handler kick in).
     markCustomLinkAddons(partner, activeAddons);
 
-    // 8. Replace the whitelabel agency logo (123marketing.app) with the
+    // 8. Reorder addon items (Plaщания, AI Служители, СМС карти, Касови
+    //    бележки) + their divider to the BOTTOM of the sidebar, right
+    //    above Settings. Keeps tier-locked items + their gold divider
+    //    in their original GHL positions; only the per-service addons
+    //    get pulled out into a separate bottom section.
+    reorderAddonsToBottom();
+
+    // 9. Replace the whitelabel agency logo (123marketing.app) with the
     //    ZaDeteto wordmark. Re-runs on every SPA navigation via the
     //    MutationObserver so newly-mounted logo elements get rewritten too.
     replaceAgencyLogo();
+  }
+
+  function reorderAddonsToBottom() {
+    // Find the sidebar items' parent. GHL renders sb_* items as direct
+    // children of a wrapper container.
+    const sample = document.querySelector('[id^="sb_"]');
+    if (!sample) return;
+    const parent = sample.parentElement;
+    if (!parent) return;
+
+    const divider = parent.querySelector(':scope > .zd-addons-divider');
+    const addons = [...parent.querySelectorAll(
+      ':scope > [id^="sb_"][data-zd-locked-addon="true"], ' +
+      ':scope > [id^="sb_"][data-zd-addon-activated="true"]'
+    )];
+    if (!divider || !addons.length) return;
+
+    // Anchor: Settings stays at its native position, addons get inserted
+    // immediately before it. If user positions a Custom Menu Link below
+    // Settings (e.g. "Помощ и активиране"), it remains at the very
+    // bottom of the sidebar.
+    const settings = parent.querySelector(':scope > [id^="sb_"][meta="settings"]');
+    const desired = [divider, ...addons];
+
+    // Idempotency check — if the elements directly preceding the anchor
+    // (or at the tail when no anchor) already match `desired`, skip the
+    // reorder. Prevents the MutationObserver from looping.
+    const tail = [];
+    let cursor = settings ? settings.previousElementSibling : parent.lastElementChild;
+    for (let i = 0; i < desired.length && cursor; i++) {
+      tail.unshift(cursor);
+      cursor = cursor.previousElementSibling;
+    }
+    const correctOrder = desired.length === tail.length &&
+                         desired.every((el, i) => el === tail[i]);
+    if (correctOrder) return;
+
+    // Move in order.
+    if (settings) {
+      desired.forEach(el => parent.insertBefore(el, settings));
+    } else {
+      desired.forEach(el => parent.appendChild(el));
+    }
   }
 
   // Map of sidebar item title (case-insensitive trimmed) to addon meta key.
