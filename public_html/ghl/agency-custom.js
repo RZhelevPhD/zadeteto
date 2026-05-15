@@ -830,12 +830,11 @@
       }
     });
 
-    // 4. (DISABLED — partner asked to remove the Премиум divider for
-    //    sidebar compactness; padlocks on premium items are enough of
-    //    a visual cue. Function kept for reference + easy re-enable.)
-    // injectPremiumDivider(partner, unlockedMetas);
+    // 4. Inject "Premium upgrade" divider before the first Premium-tier
+    //    locked item.
+    injectPremiumDivider(partner, unlockedMetas);
 
-    // 4b. Inject "Услуги по заявка" divider before the first add-on item
+    // 4b. Inject "По заявка" divider before the first add-on item
     //     (Payments, AI Служители, plus any Custom Menu Link addons).
     //     Runs AFTER markCustomLinkAddons (called in step 7) by way of
     //     the MutationObserver re-firing apply() once those links get
@@ -1210,7 +1209,7 @@
         divider.className = 'zd-premium-divider';
         divider.innerHTML =
           '<span class="zd-premium-divider-icon">🔒</span>' +
-          '<span class="zd-premium-divider-label">Премиум</span>';
+          '<span class="zd-premium-divider-label">Premium upgrade</span>';
         item.parentNode.insertBefore(divider, item);
         break;
       }
@@ -1242,7 +1241,7 @@
     divider.className = 'zd-addons-divider';
     divider.innerHTML =
       '<span class="zd-addons-divider-icon">✦</span>' +
-      '<span class="zd-addons-divider-label">Услуги по заявка</span>';
+      '<span class="zd-addons-divider-label">По заявка</span>';
     first.parentNode.insertBefore(divider, first);
   }
 
