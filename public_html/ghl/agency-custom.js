@@ -740,24 +740,28 @@
     const logos = document.querySelectorAll('img');
     logos.forEach(img => {
       if (img.dataset.zdLogoReplaced) return;
+      const alt = (img.getAttribute('alt') || '').trim().toLowerCase();
       const src = img.getAttribute('src') || '';
-      // Strict targeting — earlier version matched any msgsndr / GHL CDN
-      // URL and accidentally replaced every menu / icon image with the
-      // wordmark. Now we require BOTH a CDN host match AND an explicit
-      // 'logo' indicator in the URL, OR the image being inside a
-      // container whose class clearly says it's a logo slot.
-      const looksLikeLogoSrc = /(\/logo[\.\-_/]|_logo\.|whitelabel_logo|companylogo|agency-logo)/i.test(src);
-      const inLogoContainer = !!img.closest('[class*="agency-logo"], [class*="sidebar-logo"], [class*="brand-logo"], [class*="header-logo"], [class*="company-logo"], [id*="agency-logo"], [id*="company-logo"]');
-      if (looksLikeLogoSrc || inLogoContainer) {
-        img.src = 'https://zadeteto.com/brand_assets/zadeteto-ghl-wordmark.svg';
-        img.alt = 'Национален Регистър За Детето';
-        img.dataset.zdLogoReplaced = 'true';
-        // Wordmark is wider than the square original logo — adjust
-        // styling so it fits the agency sidebar header without distortion.
-        img.style.maxHeight = '48px';
-        img.style.width = 'auto';
-        img.style.objectFit = 'contain';
-      }
+      // GHL tags the whitelabel agency logo uniquely with alt="agency logo".
+      // Sidebar menu icons use alt="X icon" (Dashboard icon, Conversations
+      // icon, etc.) so they will never match. As a belt-and-braces fallback
+      // we also accept src patterns that point at company-uploaded photos
+      // or paths with explicit 'logo' markers.
+      const isAgencyLogo =
+        alt === 'agency logo' ||
+        alt === 'company logo' ||
+        /companyPhotos|companyphotos|whitelabel_logo|companylogo/i.test(src);
+      if (!isAgencyLogo) return;
+      img.src = 'https://zadeteto.com/brand_assets/zadeteto-ghl-wordmark.svg';
+      img.alt = 'Национален Регистър За Детето';
+      img.dataset.zdLogoReplaced = 'true';
+      // Wordmark is 3:1 — constrain by height and let width follow.
+      // max-width:100% keeps it inside narrow sidebars on smaller screens.
+      img.style.maxHeight = '64px';
+      img.style.maxWidth = '100%';
+      img.style.width = 'auto';
+      img.style.height = 'auto';
+      img.style.objectFit = 'contain';
     });
   }
 
