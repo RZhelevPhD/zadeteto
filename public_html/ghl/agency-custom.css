@@ -57,9 +57,11 @@ html[data-zd-active="true"] #sidebar-v2 {
 
 /* ============================================================
    ZONE 3: Hide menu items that confuse non-tech partners
+   Note: #sb_dashboard is intentionally NOT hidden — partners want
+   the native GHL dashboard as their entry point until we ship the
+   custom "Начало" menu link.
    ============================================================ */
 html[data-zd-active="true"] #sb_launchpad,
-html[data-zd-active="true"] #sb_dashboard,
 html[data-zd-active="true"] #sb_app-media,
 html[data-zd-active="true"] #sb_app-marketplace,
 html[data-zd-active="true"] #sb_location-mobile-app,

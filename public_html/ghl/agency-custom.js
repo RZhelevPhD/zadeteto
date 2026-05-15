@@ -40,6 +40,7 @@
   // Translation map: GHL English → Bulgarian
   // Keyed by `meta` attribute (more stable than ID or text)
   const TRANSLATIONS = {
+    'dashboard':           'Начало',
     'conversations':       'Разговори',
     'contacts':            'Контакти',
     'calendars':           'Календари',
@@ -48,7 +49,7 @@
     'AI Agents':           'AI Агенти',
     'email-marketing':     'Онлайн маркетинг',
     'automation':          'Автоматизации',
-    'sites':               'Сайтове и страници',
+    'sites':               'Уебсайтове',
     'memberships':         'Членства',
     'reputation':          'Отзиви',
     'reporting':           'Отчети',
@@ -60,16 +61,17 @@
   // Add new entries here as English strings are surfaced in the UI.
   const IN_PAGE_TRANSLATIONS = {
     // Top-level page headers (when shown as page titles inside content area)
+    'Dashboard':           'Начало',
     'Conversations':       'Разговори',
     'Contacts':            'Контакти',
     'Calendars':           'Календари',
     'Opportunities':       'Възможности',
     'Payments':            'Плащания',
-    'Reputation':          'Репутация',
+    'Reputation':          'Отзиви',
     'Reporting':           'Отчети',
-    'Sites':               'Сайтове',
+    'Sites':               'Уебсайтове',
     'Memberships':         'Членства',
-    'Email Marketing':     'Имейл маркетинг',
+    'Email Marketing':     'Онлайн маркетинг',
     'Automation':          'Автоматизации',
     'Settings':            'Настройки',
 
@@ -739,14 +741,18 @@
     logos.forEach(img => {
       if (img.dataset.zdLogoReplaced) return;
       const src = img.getAttribute('src') || '';
-      // Target images whose src looks like an agency-level whitelabel logo.
-      // GHL serves these from leadconnectorhq CDN, gohighlevel media, or
-      // a custom-uploaded agency logo on the 123marketing domain.
-      if (/123marketing|leadconnectorhq.*logo|gohighlevel.*logo|msgsndr/i.test(src)) {
+      // Strict targeting — earlier version matched any msgsndr / GHL CDN
+      // URL and accidentally replaced every menu / icon image with the
+      // wordmark. Now we require BOTH a CDN host match AND an explicit
+      // 'logo' indicator in the URL, OR the image being inside a
+      // container whose class clearly says it's a logo slot.
+      const looksLikeLogoSrc = /(\/logo[\.\-_/]|_logo\.|whitelabel_logo|companylogo|agency-logo)/i.test(src);
+      const inLogoContainer = !!img.closest('[class*="agency-logo"], [class*="sidebar-logo"], [class*="brand-logo"], [class*="header-logo"], [class*="company-logo"], [id*="agency-logo"], [id*="company-logo"]');
+      if (looksLikeLogoSrc || inLogoContainer) {
         img.src = 'https://zadeteto.com/brand_assets/zadeteto-ghl-wordmark.svg';
         img.alt = 'Национален Регистър За Детето';
         img.dataset.zdLogoReplaced = 'true';
-        // Wordmark is wider than the square 123marketing logo — adjust
+        // Wordmark is wider than the square original logo — adjust
         // styling so it fits the agency sidebar header without distortion.
         img.style.maxHeight = '48px';
         img.style.width = 'auto';
