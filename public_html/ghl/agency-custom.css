@@ -344,68 +344,43 @@ html[data-zd-active="true"] .zd-nav-textblock {
   line-height: 1.2;
 }
 
-/* Vertically center the icon against the (title + subtext) text block.
-   Three stacked root causes (per Phase 4 diagnosis):
-   1. <img> default vertical-align:baseline sits the image on the text
-      line-baseline, not on its own geometric centre — flex centring of
-      the line BOX still leaves the visible glyphs off-axis.
-   2. .nav-title is an inline <span> inheriting Manrope's ~1.4 line
-      height — the line box is taller than the cap-height so the visible
-      text "floats" above the box centre because descender padding pushes
-      the optical mid-line upward.
-   3. ::after padlock uses top:50% + translateY(-50%) against the <a>'s
-      padding box, which doesn't share the same midline reference as the
-      inline text — 1-2px offset.
-   Fix: (a) display:block on the img to kill the baseline quirk,
-        (b) line-height:1 on the flex row + 1.2 on text blocks so the
-            line boxes shrink to a predictable height,
-        (c) line-height:1 on ::after so the emoji glyph centres in its
-            own box before the translateY(-50%) snap. */
+/* Phase 5: simplified vertical alignment.
+   Single root cause that's worth fixing here:
+     <img> defaults to vertical-align:baseline so the icon sits on the
+     text baseline instead of its geometric centre. display:block kills
+     that quirk and lets align-self:center put the icon's mid-line on
+     the flex row's mid-line.
+   Everything else (line-height:1 on the row, display:flex on
+   .nav-title, justify-content:center on textblock) was Phase 4
+   overreach that broke horizontal left-alignment of labels. Reverted. */
 html[data-zd-active="true"] [id^="sb_"] {
   display: flex !important;
   align-items: center !important;
-  line-height: 1 !important;
 }
 
+html[data-zd-active="true"] [id^="sb_"] > * {
+  align-self: center !important;
+}
+
+/* The real fix: img display:block kills vertical-align:baseline so the
+   icon centres on its geometric mid-line, not its text baseline. */
 html[data-zd-active="true"] [id^="sb_"] > img,
 html[data-zd-active="true"] [id^="sb_"] img[alt$="icon"] {
-  /* display:block kills the default vertical-align:baseline behaviour
-     that was sitting the icon on the text baseline. With block layout,
-     align-self:center against the flex parent puts the icon's geometric
-     centre on the row midline — exactly what we want. */
   display: block !important;
   align-self: center !important;
   flex-shrink: 0 !important;
 }
 
-html[data-zd-active="true"] [id^="sb_"] .nav-title {
-  display: flex !important;
-  align-items: center !important;
-  line-height: 1.2 !important;
-  align-self: center !important;
-}
-
-html[data-zd-active="true"] [id^="sb_"] .zd-nav-textblock {
+/* For locked / addon items the JS wraps .nav-title + .zd-nav-subtext in
+   .zd-nav-textblock. Keep it as a left-aligned flex column so labels
+   stay flush against the icon, with title and subtext stacked. */
+html[data-zd-active="true"] .zd-nav-textblock {
   display: flex !important;
   flex-direction: column !important;
+  align-items: flex-start !important;
   justify-content: center !important;
   align-self: center !important;
-  line-height: 1.2 !important;
-}
-
-html[data-zd-active="true"] .zd-nav-textblock .nav-title,
-html[data-zd-active="true"] .zd-nav-textblock .zd-nav-subtext {
-  display: block !important;
-  line-height: 1.2 !important;
-}
-
-html[data-zd-active="true"] [id^="sb_"]::after {
-  align-self: center !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  line-height: 1 !important;
-  display: flex !important;
-  align-items: center !important;
+  line-height: 1.2;
 }
 
 

@@ -860,16 +860,21 @@
     //    purple sparkle CSS + click-to-modal handler kick in).
     markCustomLinkAddons(partner, activeAddons);
 
+    // 7b. Move Settings to be right after "Потенциални клиенти"
+    //     (sb_opportunities). This breaks GHL's default "Settings at
+    //     bottom" convention by partner request — they want quick access
+    //     to settings near the top, between free nav and premium group.
+    repositionSettings();
+
     // 8. Reorder addon items (Plaщания, AI Служители, СМС карти, Касови
     //    бележки) + their divider to the BOTTOM of the sidebar, right
-    //    above Settings. Keeps tier-locked items + their gold divider
-    //    in their original GHL positions; only the per-service addons
-    //    get pulled out into a separate bottom section.
+    //    above "Помощ и активиране". Since Settings now lives near the
+    //    top (step 7b), Помощ becomes the anchor for the addon group.
     reorderAddonsToBottom();
 
     // 8b. Position the static custom links — "Начало" anchors at the
-    //     top of the sidebar, "Помощ и активиране" anchors right above
-    //     Settings (so it sits in the addon group with breathing room).
+    //     top of the sidebar, "Помощ и активиране" anchors as the last
+    //     child of the parent (very bottom of the sidebar).
     repositionStaticCustomLinks();
 
     // 8c. Inject a thin separator above "Помощ и активиране" so it
@@ -882,16 +887,29 @@
     replaceAgencyLogo();
   }
 
-  function reorderAddonsToBottom() {
-    // Find Settings as the anchor — addons go directly above it.
+  function repositionSettings() {
+    // Move Settings to be right after "Потенциални клиенти" (sb_opportunities)
+    // per partner request. Breaks GHL's default "Settings at bottom"
+    // convention so admin can hit Settings without scrolling past premium
+    // and addon groups.
     const settings = document.querySelector('[id^="sb_"][meta="settings"]');
-    if (!settings) return;
-    const parent = settings.parentElement;
+    const opportunities = document.querySelector('[id^="sb_"][meta="opportunities"]');
+    if (!settings || !opportunities) return;
+    if (opportunities.nextElementSibling === settings) return; // already there
+    opportunities.parentElement.insertBefore(settings, opportunities.nextElementSibling);
+  }
+
+  function reorderAddonsToBottom() {
+    // Anchor on Помощ и активиране (which sits at the very bottom as the
+    // last child of the parent). Settings used to be the anchor, but
+    // Phase 5 moved Settings up next to Потенциални клиенти, so it can't
+    // serve as a bottom anchor any more.
+    const pomoshch = findElementByTitle('помощ и активиране');
+    const parent = pomoshch
+      ? pomoshch.parentElement
+      : (document.querySelector('[id^="sb_"]') || {}).parentElement;
     if (!parent) return;
 
-    // Gather addon items document-wide (not just direct children of one
-    // parent) — Custom Menu Links may live in a different wrapper than
-    // native sb_* items. We'll move them into Settings' parent.
     const divider = document.querySelector('.zd-addons-divider');
     const addons = [...document.querySelectorAll(
       '[data-zd-locked-addon="true"], [data-zd-addon-activated="true"]'
@@ -899,7 +917,6 @@
     if (!divider || !addons.length) return;
 
     // Sort addons by ADDON_ORDER (partner-specified display order).
-    // Items whose data-zd-feature is not in ADDON_ORDER end up last.
     addons.sort((a, b) => {
       const af = a.getAttribute('data-zd-feature') || '';
       const bf = b.getAttribute('data-zd-feature') || '';
@@ -910,10 +927,11 @@
 
     const desired = [divider, ...addons];
 
-    // Idempotency check — if the elements directly preceding Settings
-    // (in Settings' parent) already match `desired`, skip the reorder.
+    // Idempotency check — if the elements directly preceding the anchor
+    // (pomoshch if present, else end-of-parent) already match `desired`,
+    // skip the reorder to avoid MutationObserver loop.
     const tail = [];
-    let cursor = settings.previousElementSibling;
+    let cursor = pomoshch ? pomoshch.previousElementSibling : parent.lastElementChild;
     for (let i = 0; i < desired.length && cursor; i++) {
       tail.unshift(cursor);
       cursor = cursor.previousElementSibling;
@@ -922,11 +940,12 @@
                          desired.every((el, i) => el === tail[i]);
     if (correctOrder) return;
 
-    // Reorder: each insertBefore relocates the element into Settings'
-    // parent (if it was elsewhere) and positions it directly before
-    // Settings. Looping in order produces the final sequence:
-    // [..., divider, ...addons (in DOM-discovery order), settings].
-    desired.forEach(el => parent.insertBefore(el, settings));
+    // Reorder: insert each before pomoshch (or appendChild as fallback).
+    if (pomoshch) {
+      desired.forEach(el => parent.insertBefore(el, pomoshch));
+    } else {
+      desired.forEach(el => parent.appendChild(el));
+    }
   }
 
   // Map of sidebar item title (case-insensitive trimmed) to addon meta key.
@@ -1026,18 +1045,18 @@
       }
     }
 
-    // "Помощ и активиране" → move to be RIGHT BEFORE Settings, so it
-    // visually sits in the addon group (right under По заявка items) with
-    // Settings remaining at the very bottom. Helps Помощ "breathe" — see
-    // injectHelpDivider for the thin spacing rule above it.
+    // "Помощ и активиране" → move to be the last child of the sidebar
+    // parent (very bottom of the sidebar). Settings used to be the
+    // anchor, but Phase 5 moved Settings up to position 5, so Помощ
+    // takes over as the bottom anchor.
     const pomoshch = findElementByTitle('помощ и активиране');
-    if (pomoshch && settings) {
-      const settingsParent = settings.parentElement;
+    if (pomoshch && topAnchor) {
+      const parent = topAnchor.parentElement;
       const alreadyThere =
-        pomoshch.parentElement === settingsParent &&
-        pomoshch.nextElementSibling === settings;
+        pomoshch.parentElement === parent &&
+        parent.lastElementChild === pomoshch;
       if (!alreadyThere) {
-        settingsParent.insertBefore(pomoshch, settings);
+        parent.appendChild(pomoshch);
       }
     }
   }
