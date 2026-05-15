@@ -999,29 +999,42 @@
   };
 
   function repositionStaticCustomLinks() {
-    // Find Settings as anchor for "bottom" group reasoning.
-    const settings = document.querySelector('[id^="sb_"][meta="settings"]');
-    if (!settings) return;
-    const parent = settings.parentElement;
-    if (!parent) return;
+    // Build anchors from visible native sidebar items. Earlier version
+    // anchored on Settings' parent which failed when custom links lived
+    // in a different wrapper (both share class flex-1 w-full so it
+    // looked like same parent on inspection, but they aren't).
+    const visibleSb = [...document.querySelectorAll('[id^="sb_"]')]
+      .filter(el => {
+        const cs = window.getComputedStyle(el);
+        return cs.display !== 'none' && cs.visibility !== 'hidden';
+      });
+    if (!visibleSb.length) return;
 
-    Object.entries(STATIC_LINK_POSITIONS).forEach(([title, position]) => {
-      const link = findElementByTitle(title);
-      if (!link) return;
-      if (link.dataset.zdStaticPositionApplied === position) return;
-      // Move into Settings' parent if it's elsewhere.
-      if (position === 'top') {
-        const firstChild = parent.firstElementChild;
-        if (firstChild !== link) {
-          parent.insertBefore(link, firstChild);
-        }
-      } else if (position === 'bottom') {
-        if (parent.lastElementChild !== link) {
-          parent.appendChild(link);
-        }
+    const topAnchor = visibleSb[0];
+    const settings = visibleSb.find(el => el.getAttribute('meta') === 'settings');
+
+    // "Начало" → move to be the immediate previous sibling of topAnchor.
+    const nachalo = findElementByTitle('начало');
+    if (nachalo && topAnchor && nachalo !== topAnchor) {
+      const alreadyThere =
+        nachalo.parentElement === topAnchor.parentElement &&
+        nachalo.nextElementSibling === topAnchor;
+      if (!alreadyThere) {
+        topAnchor.parentElement.insertBefore(nachalo, topAnchor);
       }
-      link.dataset.zdStaticPositionApplied = position;
-    });
+    }
+
+    // "Помощ и активиране" → move to be the last child of Settings' parent.
+    const pomoshch = findElementByTitle('помощ и активиране');
+    if (pomoshch && settings) {
+      const settingsParent = settings.parentElement;
+      const alreadyThere =
+        pomoshch.parentElement === settingsParent &&
+        settingsParent.lastElementChild === pomoshch;
+      if (!alreadyThere) {
+        settingsParent.appendChild(pomoshch);
+      }
+    }
   }
 
   function findElementByTitle(targetTitle) {
