@@ -72,10 +72,10 @@
     },
 
     "0zaEBrUJkiqr2MgkQ8LF": {
-      "_note": "ZaDeteto Template Master sub-account (Rusi's testbed, Stara Zagora). Premium tier with AI activated so all features can be tested.",
+      "_note": "ZaDeteto Template Master sub-account (Rusi's testbed, Stara Zagora). Tier temporarily set to 'trusted' (was 'premium') and addons cleared so the partner-view padlocks + Премиум divider + AI Служители addon sparkle become visible for QA. Revert to 'premium' + addons:['ai_agents'] when shipping a real partner who paid for premium.",
       "name": "ZaDeteto Template",
-      "tier": "premium",
-      "addons": ["ai_agents"]
+      "tier": "trusted",
+      "addons": []
     }
 
   }

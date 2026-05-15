@@ -40,13 +40,15 @@
   // Translation map: GHL English → Bulgarian
   // Keyed by `meta` attribute (more stable than ID or text)
   const TRANSLATIONS = {
-    'dashboard':           'Начало',
+    // Note: no 'dashboard' entry — the native Dashboard sidebar item is
+    // hidden by CSS Zone 3. The "Начало" custom menu link (created
+    // manually in GHL Settings > Custom Menu Links) replaces it.
     'conversations':       'Разговори',
     'contacts':            'Контакти',
     'calendars':           'Календари',
     'opportunities':       'Възможности',
     'payments':            'Плащания',
-    'AI Agents':           'AI Агенти',
+    'AI Agents':           'AI Служители',
     'email-marketing':     'Онлайн маркетинг',
     'automation':          'Автоматизации',
     'sites':               'Уебсайтове',
@@ -62,6 +64,50 @@
   const IN_PAGE_TRANSLATIONS = {
     // Top-level page headers (when shown as page titles inside content area)
     'Dashboard':           'Начало',
+    // Native Dashboard widgets + metrics (in case partner deep-links
+    // directly to /dashboard URL even though sidebar item is hidden)
+    '(Last 12 months)':       '(Последните 12 месеца)',
+    '(Last 30 Days)':         '(Последните 30 дни)',
+    'Last 30 Days':           'Последните 30 дни',
+    '0s':                     '0с',
+    'All Pipelines':          'Всички pipeline-и',
+    'Average Sales Duration': 'Средна продължителност на продажба',
+    'Bookings':               'Записвания',
+    'Campaign Selection':     'Избор на кампания',
+    'Conversion Rate':        'Степен на конверсия',
+    'Due Date (ASC)':         'Краен срок (възх.)',
+    'Edit Dashboard':         'Редактирай таблото',
+    'Email Health Report':    'Доклад имейл здраве',
+    'Error while loading data': 'Грешка при зареждане',
+    'Funnel':                 'Фуния',
+    'Go to Manual Actions':   'Към ръчните действия',
+    'Google Ads Report':      'Доклад Google Ads',
+    'Google Analytics Report':'Доклад Google Analytics',
+    'Lead Source Report':     'Доклад източник на лийдове',
+    'Maps (Desktop & Mobile)':'Карти (Desktop & Mobile)',
+    'No Data Found':          'Няма данни',
+    'No pipeline available':  'Няма наличен pipeline',
+    'Opportunity Status':     'Статус на възможност',
+    'Opportunity Value':      'Стойност на възможност',
+    'Pending':                'Чакащи',
+    'Please Select':          'Моля, изберете',
+    'Previous':               'Предишен',
+    'Quick Filters':          'Бързи филтри',
+    'Sales Efficiency':       'Ефективност на продажби',
+    'Sales Velocity':         'Скорост на продажби',
+    'Search (Desktop & Mobile)': 'Търсене (Desktop & Mobile)',
+    'Stage Distribution':     'Разпределение по етапи',
+    'Total Pending':          'Общо чакащи',
+    'Total Sale Value':       'Обща стойност продажби',
+    'Total views':            'Общо прегледи',
+    'User Selection':         'Избор на потребител',
+    'Website visits':         'Посещения на сайт',
+    'Won revenue':            'Спечелени приходи',
+    'Workflow':               'Workflow',
+    'Workflow Selection':     'Избор на workflow',
+    'You must send at least 500 emails within the last 30 days. Start sending now to track your performance!':
+      'За да следиш ефективността, трябва да изпратиш поне 500 имейла през последните 30 дни. Започни сега!',
+
     'Conversations':       'Разговори',
     'Contacts':            'Контакти',
     'Calendars':           'Календари',
@@ -246,8 +292,9 @@
     'Recurring Invoices':                                    'Повтарящи се фактури',
 
     // AI Agents page — UI only, marketing copy is intentionally skipped
-    'AI Agent':                                              'AI агент',
-    'AI Agent · Auto-reply':                                 'AI агент · Авто-отговор',
+    'AI Agent':                                              'AI служител',
+    'AI Agents':                                             'AI Служители',
+    'AI Agent · Auto-reply':                                 'AI служител · Авто-отговор',
     'AI Reputation Manager':                                 'AI мениджър отзиви',
     'Agent Logs':                                            'Логове на агенти',
     'Agent Templates':                                       'Шаблони за агенти',
@@ -571,7 +618,7 @@
     // Add-on — different copy, different CTA
     'AI Agents': {
       icon: '🤖',
-      headline: 'AI асистент, който отговаря вместо теб',
+      headline: 'AI служител, който отговаря вместо теб',
       body: 'Отговаряй на родители 24/7 — за разписания, цени и записване. Когато спиш, AI работи за теб.',
       benefits: [
         'Отговори на български в твоя стил',
@@ -730,10 +777,29 @@
     //    contenteditable, scripts, styles, and our own injected text.
     translatePageText();
 
-    // 6. Replace the whitelabel agency logo (123marketing.app) with the
+    // 6. Hide any sidebar item whose title is "Tutorials" or "Уроци" —
+    //    catches user-created Custom Menu Links that the #sb_tutorials
+    //    CSS selector misses (custom links get unpredictable sb_* IDs).
+    hideCustomTutorialsLink();
+
+    // 7. Replace the whitelabel agency logo (123marketing.app) with the
     //    ZaDeteto wordmark. Re-runs on every SPA navigation via the
     //    MutationObserver so newly-mounted logo elements get rewritten too.
     replaceAgencyLogo();
+  }
+
+  function hideCustomTutorialsLink() {
+    const items = document.querySelectorAll('[id^="sb_"]');
+    items.forEach(item => {
+      if (item.dataset.zdTutorialsHidden) return;
+      const titleEl = item.querySelector('.nav-title');
+      if (!titleEl) return;
+      const title = titleEl.textContent.trim().toLowerCase();
+      if (title === 'tutorials' || title === 'уроци') {
+        item.style.display = 'none';
+        item.dataset.zdTutorialsHidden = 'true';
+      }
+    });
   }
 
   function replaceAgencyLogo() {
@@ -908,9 +974,9 @@
     if (isAddon) {
       cta.textContent = 'Свържи се за оферта →';
       cta.onclick = () => {
-        const subject = encodeURIComponent(`AI Агенти за ${partner.name}`);
+        const subject = encodeURIComponent(`AI Служители за ${partner.name}`);
         const body = encodeURIComponent(
-          `Здравейте,\n\nИнтересувам се от активиране на AI Агенти за моя профил (${partner.name}).\n\nLocation ID: ${locationId}\n\nПоздрави,`
+          `Здравейте,\n\nИнтересувам се от активиране на AI Служители за моя профил (${partner.name}).\n\nLocation ID: ${locationId}\n\nПоздрави,`
         );
         window.open(`mailto:partner@zadeteto.com?subject=${subject}&body=${body}`, '_blank');
       };
