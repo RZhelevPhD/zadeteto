@@ -852,6 +852,13 @@
     //    get pulled out into a separate bottom section.
     reorderAddonsToBottom();
 
+    // 8b. Position the static custom links — "Начало" anchors at the
+    //     top of the sidebar, "Помощ и активиране" anchors at the very
+    //     bottom (below Settings). GHL groups all Custom Menu Links
+    //     together by default, so without this they cluster in the
+    //     middle of the sidebar regardless of drag order.
+    repositionStaticCustomLinks();
+
     // 9. Replace the whitelabel agency logo (123marketing.app) with the
     //    ZaDeteto wordmark. Re-runs on every SPA navigation via the
     //    MutationObserver so newly-mounted logo elements get rewritten too.
@@ -859,32 +866,27 @@
   }
 
   function reorderAddonsToBottom() {
-    // Find the sidebar items' parent. GHL renders sb_* items as direct
-    // children of a wrapper container.
-    const sample = document.querySelector('[id^="sb_"]');
-    if (!sample) return;
-    const parent = sample.parentElement;
+    // Find Settings as the anchor — addons go directly above it.
+    const settings = document.querySelector('[id^="sb_"][meta="settings"]');
+    if (!settings) return;
+    const parent = settings.parentElement;
     if (!parent) return;
 
-    const divider = parent.querySelector(':scope > .zd-addons-divider');
-    const addons = [...parent.querySelectorAll(
-      ':scope > [id^="sb_"][data-zd-locked-addon="true"], ' +
-      ':scope > [id^="sb_"][data-zd-addon-activated="true"]'
+    // Gather addon items document-wide (not just direct children of one
+    // parent) — Custom Menu Links may live in a different wrapper than
+    // native sb_* items. We'll move them into Settings' parent.
+    const divider = document.querySelector('.zd-addons-divider');
+    const addons = [...document.querySelectorAll(
+      '[data-zd-locked-addon="true"], [data-zd-addon-activated="true"]'
     )];
     if (!divider || !addons.length) return;
 
-    // Anchor: Settings stays at its native position, addons get inserted
-    // immediately before it. If user positions a Custom Menu Link below
-    // Settings (e.g. "Помощ и активиране"), it remains at the very
-    // bottom of the sidebar.
-    const settings = parent.querySelector(':scope > [id^="sb_"][meta="settings"]');
     const desired = [divider, ...addons];
 
-    // Idempotency check — if the elements directly preceding the anchor
-    // (or at the tail when no anchor) already match `desired`, skip the
-    // reorder. Prevents the MutationObserver from looping.
+    // Idempotency check — if the elements directly preceding Settings
+    // (in Settings' parent) already match `desired`, skip the reorder.
     const tail = [];
-    let cursor = settings ? settings.previousElementSibling : parent.lastElementChild;
+    let cursor = settings.previousElementSibling;
     for (let i = 0; i < desired.length && cursor; i++) {
       tail.unshift(cursor);
       cursor = cursor.previousElementSibling;
@@ -893,12 +895,11 @@
                          desired.every((el, i) => el === tail[i]);
     if (correctOrder) return;
 
-    // Move in order.
-    if (settings) {
-      desired.forEach(el => parent.insertBefore(el, settings));
-    } else {
-      desired.forEach(el => parent.appendChild(el));
-    }
+    // Reorder: each insertBefore relocates the element into Settings'
+    // parent (if it was elsewhere) and positions it directly before
+    // Settings. Looping in order produces the final sequence:
+    // [..., divider, ...addons (in DOM-discovery order), settings].
+    desired.forEach(el => parent.insertBefore(el, settings));
   }
 
   // Map of sidebar item title (case-insensitive trimmed) to addon meta key.
@@ -910,23 +911,94 @@
   };
 
   function markCustomLinkAddons(partner, activeAddons) {
-    const items = document.querySelectorAll('[id^="sb_"]');
+    // Custom Menu Links sometimes lack the [id^="sb_"] convention used
+    // by native sidebar items, so cast a wider net — anything that looks
+    // like a sidebar nav element and whose visible text matches a known
+    // addon title.
+    const items = document.querySelectorAll(
+      '[id^="sb_"], aside a, nav a, [class*="sidebar"] a'
+    );
     items.forEach(item => {
+      if (item.dataset.zdCustomAddonMarked === 'true') return;
       const titleEl = item.querySelector('.nav-title');
-      if (!titleEl) return;
-      const title = titleEl.textContent.trim().toLowerCase();
-      const cfg = CUSTOM_LINK_ADDONS[title];
-      if (!cfg) return;
+      const candidates = [
+        titleEl && titleEl.textContent,
+        item.getAttribute('aria-label'),
+        item.getAttribute('title'),
+        item.textContent
+      ].filter(Boolean).map(s => s.trim().toLowerCase());
+      let matchedCfg = null;
+      for (const t of candidates) {
+        if (CUSTOM_LINK_ADDONS[t]) {
+          matchedCfg = CUSTOM_LINK_ADDONS[t];
+          break;
+        }
+      }
+      if (!matchedCfg) return;
       // Clear any prior tier-locked flag — these are addons, not tier items.
       item.removeAttribute('data-zd-locked');
-      const activated = activeAddons.has(cfg.addonKey);
+      const activated = activeAddons.has(matchedCfg.addonKey);
       if (activated) {
         item.removeAttribute('data-zd-locked-addon');
+        item.setAttribute('data-zd-addon-activated', 'true');
       } else {
         item.setAttribute('data-zd-locked-addon', 'true');
-        item.setAttribute('data-zd-feature', cfg.meta);
       }
+      item.setAttribute('data-zd-feature', matchedCfg.meta);
+      item.dataset.zdCustomAddonMarked = 'true';
     });
+  }
+
+  // Custom Menu Links that should anchor at the TOP or BOTTOM of the
+  // sidebar regardless of where GHL places them by default. Matched
+  // by visible title (case-insensitive).
+  const STATIC_LINK_POSITIONS = {
+    'начало':              'top',
+    'помощ и активиране':  'bottom'
+  };
+
+  function repositionStaticCustomLinks() {
+    // Find Settings as anchor for "bottom" group reasoning.
+    const settings = document.querySelector('[id^="sb_"][meta="settings"]');
+    if (!settings) return;
+    const parent = settings.parentElement;
+    if (!parent) return;
+
+    Object.entries(STATIC_LINK_POSITIONS).forEach(([title, position]) => {
+      const link = findElementByTitle(title);
+      if (!link) return;
+      if (link.dataset.zdStaticPositionApplied === position) return;
+      // Move into Settings' parent if it's elsewhere.
+      if (position === 'top') {
+        const firstChild = parent.firstElementChild;
+        if (firstChild !== link) {
+          parent.insertBefore(link, firstChild);
+        }
+      } else if (position === 'bottom') {
+        if (parent.lastElementChild !== link) {
+          parent.appendChild(link);
+        }
+      }
+      link.dataset.zdStaticPositionApplied = position;
+    });
+  }
+
+  function findElementByTitle(targetTitle) {
+    const norm = targetTitle.trim().toLowerCase();
+    const candidates = document.querySelectorAll(
+      '[id^="sb_"], aside a, nav a, [class*="sidebar"] a'
+    );
+    for (const el of candidates) {
+      const titleEl = el.querySelector('.nav-title');
+      const candidatesText = [
+        titleEl && titleEl.textContent,
+        el.getAttribute('aria-label'),
+        el.getAttribute('title'),
+        el.textContent
+      ].filter(Boolean).map(s => s.trim().toLowerCase());
+      if (candidatesText.some(t => t === norm)) return el;
+    }
+    return null;
   }
 
   function hideCustomTutorialsLink() {
