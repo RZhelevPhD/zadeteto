@@ -407,7 +407,7 @@
   }
   .rig-thumb {
     position: relative;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
     border-radius: var(--rig-radius-sm);
     overflow: hidden;
     background: var(--zd-gray-100);
@@ -421,6 +421,76 @@
   .rig-thumb > img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s var(--rig-ease); }
   @media (hover: hover) and (pointer: fine) {
     .rig-card:hover .rig-thumb > img { transform: scale(1.03); }
+  }
+
+  /* ═══ LIGHTBOX ═══ */
+  .rig-thumb[data-zoomable] { cursor: zoom-in; }
+  .rig-thumb[data-zoomable]:focus-visible { outline: none; box-shadow: var(--rig-focus); }
+  .zd-lightbox {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(20, 18, 40, 0.78);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity .3s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: zoom-out;
+  }
+  .zd-lightbox[hidden] { display: none; }
+  .zd-lightbox--open { opacity: 1; }
+  .zd-lightbox-figure {
+    position: relative;
+    margin: 0;
+    max-width: min(800px, 92vw);
+    max-height: 90vh;
+    transform: scale(0.96);
+    transition: transform .3s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default;
+  }
+  .zd-lightbox--open .zd-lightbox-figure { transform: scale(1); }
+  .zd-lightbox-img {
+    display: block;
+    width: 100%; height: auto;
+    max-height: calc(90vh - 40px);
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    background: #fff;
+  }
+  .zd-lightbox-caption {
+    text-align: center;
+    color: #fff;
+    font-family: var(--zd-font);
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 14px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+  .zd-lightbox-close {
+    position: fixed;
+    top: 20px; right: 20px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 26px; line-height: 1;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background .2s var(--rig-ease), transform .2s var(--rig-ease);
+    z-index: 1;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .zd-lightbox-close:hover { background: rgba(0, 0, 0, 0.75); transform: scale(1.05); }
+  }
+  .zd-lightbox-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    .zd-lightbox,
+    .zd-lightbox-figure,
+    .zd-lightbox-close { transition: none; }
+    .zd-lightbox-figure { transform: none; }
+    .zd-lightbox--open .zd-lightbox-figure { transform: none; }
   }
   .rig-name {
     font-family: var(--zd-font-serif);
@@ -757,11 +827,8 @@
             <span class="rig-tier-label">Основател</span>
           </header>
           <div class="rig-body">
-            <div class="rig-thumb">
-              <div class="rig-thumb-empty" aria-hidden="true">
-                <img class="rig-thumb-mark" src="brand_assets/zadeteto-icon-mark.svg" alt="" aria-hidden="true">
-              </div>
-              <!-- When photo lands: replace inner with <img src="brand_assets/team/rusi.jpg" alt=""> -->
+            <div class="rig-thumb" data-zoomable="true" role="button" tabindex="0" aria-label="Уголеми портрета на Руси Желев">
+              <img src="brand_assets/team/rusi.jpg" alt="Руси Желев — портрет" loading="lazy" width="800" height="800">
             </div>
             <h3 class="rig-name">Руси Желев, PhD</h3>
             <p class="rig-meta">Доктор по психология · детски психолог · главен сътрудник методология</p>
@@ -787,11 +854,8 @@
             <span class="rig-tier-label">Методология · педагогика и логопедия</span>
           </header>
           <div class="rig-body">
-            <div class="rig-thumb">
-              <div class="rig-thumb-empty" aria-hidden="true">
-                <img class="rig-thumb-mark" src="brand_assets/zadeteto-icon-mark.svg" alt="" aria-hidden="true">
-              </div>
-              <!-- When photo lands: replace inner with <img src="brand_assets/team/maria.jpg" alt=""> -->
+            <div class="rig-thumb" data-zoomable="true" role="button" tabindex="0" aria-label="Уголеми портрета на Мария Желева-Митева">
+              <img src="brand_assets/team/maria.jpg" alt="Мария Желева-Митева — портрет" loading="lazy" width="800" height="800">
             </div>
             <h3 class="rig-name">Мария Желева-Митева</h3>
             <p class="rig-meta">Начална педагогика и логопедия · главен сътрудник методология</p>
@@ -816,11 +880,8 @@
             <span class="rig-tier-label">Методология · спортни дейности</span>
           </header>
           <div class="rig-body">
-            <div class="rig-thumb">
-              <div class="rig-thumb-empty" aria-hidden="true">
-                <img class="rig-thumb-mark" src="brand_assets/zadeteto-icon-mark.svg" alt="" aria-hidden="true">
-              </div>
-              <!-- When photo lands: replace inner with <img src="brand_assets/team/dinko.jpg" alt=""> -->
+            <div class="rig-thumb" data-zoomable="true" role="button" tabindex="0" aria-label="Уголеми портрета на Динко Митев">
+              <img src="brand_assets/team/dinko.jpg" alt="Динко Митев — портрет" loading="lazy" width="800" height="800">
             </div>
             <h3 class="rig-name">Динко Митев</h3>
             <p class="rig-meta">Спортни дейности и кондиционна подготовка · главен сътрудник методология</p>
@@ -869,7 +930,7 @@
   <!-- ═══ 9. FINAL CTA ═══ -->
   <section class="about-final">
     <div class="about-wrap">
-      <p lang="bg">Зад тази платформа стои проста идея: родителят заслужава проверка, добрите специалисти заслужават да бъдат отличени от другите, и детето заслужава и двете. Ако търсите специалист сега, започнете оттук.</p>
+      <p lang="bg">Зад тази платформа стои проста идея: родителят заслужава проверка, добрите специалисти заслужават да бъдат отличени от другите, а детето заслужава и двете. Ако търсите специалист сега, започнете оттук.</p>
       <a href="search.html" class="about-cta-primary">
         <span>Намери специалист сега</span>
         <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
@@ -892,6 +953,105 @@
   </section>
 
 </main>
+
+<!-- ═══ TEAM PHOTO LIGHTBOX (outside <main> so `inert` on main doesn't trap the close button) ═══ -->
+<div class="zd-lightbox" id="zd-team-lightbox" hidden role="dialog" aria-modal="true" aria-label="Уголемена снимка на член от екипа">
+  <button type="button" class="zd-lightbox-close" aria-label="Затвори уголемената снимка">&times;</button>
+  <figure class="zd-lightbox-figure">
+    <img class="zd-lightbox-img" src="" alt="">
+    <figcaption class="zd-lightbox-caption" id="zd-lightbox-caption"></figcaption>
+  </figure>
+</div>
+
+<script>
+(function () {
+  var lightbox = document.getElementById('zd-team-lightbox');
+  if (!lightbox) return;
+  var imgEl = lightbox.querySelector('.zd-lightbox-img');
+  var captionEl = lightbox.querySelector('.zd-lightbox-caption');
+  var closeBtn = lightbox.querySelector('.zd-lightbox-close');
+  var mainEl = document.getElementById('zd-main-content');
+  var thumbs = document.querySelectorAll('.about-team-grid .rig-thumb[data-zoomable]');
+  var lastFocused = null;
+  var pointerDownOnBackdrop = false;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function openLightbox(thumb) {
+    var img = thumb.querySelector('img');
+    if (!img) return;
+    var card = thumb.closest('.rig-card');
+    var name = card ? (card.querySelector('.rig-name') || {}).textContent : '';
+    lastFocused = document.activeElement;
+    imgEl.src = img.src;
+    imgEl.alt = img.alt || '';
+    captionEl.textContent = (name || '').trim();
+    lightbox.hidden = false;
+    document.body.style.overflow = 'hidden';
+    // Hide page content from assistive tech while lightbox is open
+    if (mainEl) mainEl.setAttribute('inert', '');
+    if (reduceMotion) {
+      lightbox.classList.add('zd-lightbox--open');
+    } else {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { lightbox.classList.add('zd-lightbox--open'); });
+      });
+    }
+    requestAnimationFrame(function () { closeBtn.focus(); });
+    document.addEventListener('keydown', onKey);
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('zd-lightbox--open');
+    document.removeEventListener('keydown', onKey);
+    document.body.style.overflow = '';
+    if (mainEl) mainEl.removeAttribute('inert');
+    var finish = function () {
+      lightbox.hidden = true;
+      imgEl.removeAttribute('src');
+      imgEl.alt = '';
+      captionEl.textContent = '';
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+    };
+    if (reduceMotion) finish();
+    else setTimeout(finish, 300);
+  }
+
+  function onKey(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      e.preventDefault();
+      closeLightbox();
+    }
+    // No Tab handler: with <main inert>, the only focusable element left is closeBtn,
+    // so Tab/Shift+Tab naturally cycles to it.
+  }
+
+  thumbs.forEach(function (thumb) {
+    thumb.addEventListener('click', function () { openLightbox(thumb); });
+    // WAI-ARIA button pattern: Enter on keydown, Space on keyup.
+    thumb.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); openLightbox(thumb); }
+      else if (e.key === ' ') { e.preventDefault(); }  // prevent page scroll
+    });
+    thumb.addEventListener('keyup', function (e) {
+      if (e.key === ' ') { e.preventDefault(); openLightbox(thumb); }
+    });
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+  // Track mousedown target so a drag-out (mousedown on figure → mouseup on backdrop)
+  // doesn't mistakenly close the lightbox.
+  lightbox.addEventListener('mousedown', function (e) {
+    pointerDownOnBackdrop = (e.target === lightbox);
+  });
+  lightbox.addEventListener('click', function (e) {
+    if (e.target === lightbox && pointerDownOnBackdrop) closeLightbox();
+    pointerDownOnBackdrop = false;
+  });
+  // Note: document.body.style.overflow lock does not stop iOS Safari rubber-band scroll.
+  // For a portrait lightbox that fills the viewport this is tolerable; revisit if iOS users
+  // report background scroll bleed-through.
+})();
+</script>
 
 </body>
 </html>

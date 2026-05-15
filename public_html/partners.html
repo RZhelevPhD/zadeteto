@@ -119,6 +119,8 @@
     .p-hero { padding:100px 24px 60px; }
     .p-hero h1 { font-size:36px; }
     .stats-grid, .pain-points, .form-row { grid-template-columns:1fr; gap:24px; }
+    .bonus-grid { grid-template-columns:1fr !important; }
+    .bonus-grid > div[style*="grid-column:1/-1"] { grid-column:auto !important; }
     .form-section { padding:32px 24px; border-radius:24px; }
     .zd-footer { padding:32px 24px; margin-top:40px; }
   }
@@ -134,6 +136,7 @@
     .form-group input, .form-group select { font-size:16px; padding:14px; }
     .submit-btn { min-height:48px; }
     .zd-footer { padding:24px 16px; }
+    .section ul { font-size:14px; line-height:1.65; padding-left:18px; }
   }
 </style>
 </head>
@@ -156,12 +159,11 @@
 
 <main id="zd-main-content">
 <section class="p-hero">
-  <div class="launch-badge">1 юни 2026 | Основателски кръг</div>
+  <div class="launch-badge">Основателски кръг · 50 места</div>
   <h1>За специалисти, които <span>държат да бъдат избирани</span> заради качеството си.</h1>
-  <p>Верифицирана среда за професионалисти, които работят с деца и могат да докажат стандарта си. Ограничен капацитет. Приемаме само практики, на които родителите наистина могат да се доверят.</p>
-  <p style="font-size:14px;color:var(--muted);margin-bottom:24px;font-weight:600;">Без обвързване и без такси до официалния старт.</p>
-  <button class="submit-btn" style="width:auto;padding:16px 40px;border-radius:40px;font-size:16px;" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Запази място (безплатно)</button>
-  <p style="font-size:14px;color:var(--muted);margin-top:16px;">Капацитетът е ограничен. Първите в листата получават ранен достъп.</p>
+  <p>Верифицирана среда за професионалисти, които работят с деца и могат да докажат стандарта си.<br><strong style="color:var(--accent);">Кръгът затваря при 50 одобрени · цел: около 1 юни 2026.</strong><br>Приемаме само практики, на които родителите наистина могат да се доверят.</p>
+  <button class="submit-btn" style="width:auto;padding:16px 40px;border-radius:40px;font-size:16px;margin-top:8px;" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Запази място</button>
+  <p style="font-size:14px;color:var(--muted);margin-top:16px;">Първите 50 в листата заключват Проверена цена 348€/година за цял живот, с автоматично повишаване до ниво Доверен.</p>
 </section>
 
 <section class="section" style="background:#fff;border-radius:40px;box-shadow:0 24px 80px rgba(0,0,0,0.03);">
@@ -208,41 +210,49 @@
 <section class="section">
   <h2 class="section-title">Как работи стандартът „За Детето“ на практика</h2>
   <div style="max-width:800px;margin:0 auto;text-align:center;font-size:18px;color:var(--muted);line-height:1.6;">
-    <p style="font-style:italic;color:var(--accent);font-size:17px;line-height:1.6;margin-bottom:20px;">„Прекарахме 15 години в клинична практика. Знаем какво е да вършиш отлична работа и да гледаш как по-малко подготвени конкуренти печелят вниманието на родителите с по-шумна реклама. Затова създадохме За Детето."</p>
-    <p>С над 15 години клиничен опит изградихме ZaDeteto не като пореден указател, а като ясен стандарт за доверие. Всеки профил минава през проверка по конкретни критерии за качество, безопасност и отговорност към децата.</p>
+    <p style="font-style:italic;color:var(--text);font-size:17px;line-height:1.7;margin-bottom:14px;">„17 години в кабинета като детски психолог, логопед и специален педагог. Изградих методология за работа с деца, която родителите разпознават като различна още от първите сесии.</p>
+    <p style="font-style:italic;color:var(--text);font-size:17px;line-height:1.7;margin-bottom:14px;">6+ локации в два големи български града: с първата се учих, със следващите 4 постигнахме 5-цифрен месечен приход за под 3 месеца и пълна възвращаемост на инвестициите почти моментално. С последната малко се изложихме първоначално, но това ме посмири и се сетих колко беше трудно в началото.</p>
+    <p style="font-style:italic;color:var(--text);font-size:17px;line-height:1.7;margin-bottom:20px;">Омръзна ми да гледам как кадърни колеги се отказват. Затова сега правя <strong style="color:var(--accent);">За Детето</strong>, за да дам същата база на качествените колеги."</p>
+    <p>Не строим поредния указател, а ясен стандарт за доверие. Всеки профил минава през проверка по конкретни критерии за качество, безопасност и отговорност към децата и родителите.</p>
   </div>
   
   <div class="cats-list">
     <div class="cat-pill">Детски психолози и логопеди</div>
     <div class="cat-pill">Образователни школи</div>
-    <div class="cat-pill">Търговци на стоки</div>
     <div class="cat-pill">Специалисти по ранно развитие</div>
     <div class="cat-pill">Организатори на забавления</div>
+    <div class="cat-pill">Търговци на стоки</div>
   </div>
 </section>
 
 <section class="section" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-  <h2 class="section-title">Ограничен капацитет</h2>
-  <p style="text-align:center;max-width:700px;margin:0 auto 40px;color:var(--muted);font-size:16px;line-height:1.6;">
-    Поддържаме ограничен брой партньори, защото искаме да разглеждаме кандидатурите внимателно и да не разводняваме клиентския поток за одобрените. Има голяма разлика дали родителското внимание се разпределя между 10 или между 100 сходни профила.
+  <h2 class="section-title" style="color:var(--accent);">Ограничен брой партньори</h2>
+  <p style="text-align:center;max-width:700px;margin:0 auto 20px;color:var(--muted);font-size:16px;line-height:1.6;">
+    Поддържаме ограничен брой партньори по няколко причини:
   </p>
+  <ul style="max-width:700px;margin:0 auto 40px;color:var(--muted);font-size:15px;line-height:1.7;padding-left:20px;padding-right:8px;text-align:left;">
+    <li>сега започваме и разполагаме с ограничен човешки ресурс за прегледите;</li>
+    <li>искаме да разглеждаме всяка кандидатура внимателно;</li>
+    <li>подбираме партньорите, за да улесним избора на родителите, а не да ги затрупаме с десетки сходни профили;</li>
+    <li>така вниманието на родителите се разпределя между по-малък брой одобрени партньори, което означава реална полза за всеки от тях (има голяма разлика дали едно търсене връща 10 или 100 сходни профила).</li>
+  </ul>
   
   <div class="quotas-grid">
     <div class="quota-box">
       <div class="quota-val">20</div>
-      <div class="quota-city">позиции / гр. София</div>
+      <div class="quota-city">партньорски места / гр. София</div>
     </div>
     <div class="quota-box">
       <div class="quota-val" style="color:#4caf6a;">10</div>
-      <div class="quota-city">Пловдив, Варна, Бургас</div>
+      <div class="quota-city">партньорски места / Пловдив, Варна, Бургас</div>
     </div>
     <div class="quota-box">
       <div class="quota-val" style="color:#d95757;">5</div>
-      <div class="quota-city">Останали градове</div>
+      <div class="quota-city">партньорски места / Останали градове</div>
     </div>
   </div>
-  <p style="text-align:center;color:var(--muted);font-size:14px;margin-top:24px;">Когато квотата се запълни, следващият шанс идва при освобождаване на място от настоящ член.</p>
-  <p style="text-align:center;color:var(--accent);font-size:14px;font-weight:600;margin-top:12px;">Листата на чакащите определя реда за прием след старта на 1 юни.</p>
+  <p style="text-align:center;color:var(--muted);font-size:14px;margin-top:24px;">Когато партньорските места се запълнят, можете да се запишете в списъка на чакащите.</p>
+  <p style="text-align:center;color:var(--accent);font-size:14px;font-weight:600;margin-top:12px;">Списъкът на чакащите определя реда за разглеждане на следващите кандидатури.</p>
 </section>
 
 <!-- ═══ HOW TO JOIN (3 Steps + Timeline) ═══ -->
@@ -253,7 +263,7 @@
     <div style="flex:1;position:relative;z-index:1;">
       <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">1</div>
       <div style="font-weight:600;font-size:15px;">Кандидатствайте</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:4px;">2 минути. Без такси.</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px;">2 минути.</div>
     </div>
     <div style="flex:1;position:relative;z-index:1;">
       <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">2</div>
@@ -265,15 +275,6 @@
       <div style="font-weight:600;font-size:15px;">Профилът ви е активен</div>
       <div style="font-size:13px;color:var(--muted);margin-top:4px;">Родителите ви намират.<br>Вие работите.</div>
     </div>
-  </div>
-</section>
-
-<!-- ═══ GUARANTEE ═══ -->
-<section class="section" style="padding-top:40px;padding-bottom:40px;">
-  <div style="max-width:700px;margin:0 auto;background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:2px solid #4caf6a;border-radius:24px;padding:40px 32px;text-align:center;">
-    <h2 style="font-size:24px;color:#2e7d32;margin-bottom:12px;">Нашата гаранция: 10 запитвания или е за наша сметка</h2>
-    <p style="font-size:15px;color:#555;line-height:1.6;max-width:560px;margin:0 auto;">Ако верифицираният ви профил не генерира поне 10 запитвания от родители в първите 90 дни след старта, удължаваме членството ви безплатно с 3 месеца и лично оптимизираме профила ви.</p>
-    <p style="font-size:13px;color:#888;margin-top:12px;">Защото не продаваме присъствие в списък, а изграждаме работеща инфраструктура на доверие и заставаме с името си зад нея.</p>
   </div>
 </section>
 
@@ -289,49 +290,81 @@
 <!-- ═══ FOUNDER BONUS STACK ═══ -->
 <section class="section" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
   <h2 class="section-title">Какво получават основателите</h2>
-  <p style="text-align:center;max-width:600px;margin:0 auto 40px;color:var(--muted);font-size:16px;line-height:1.6;">Първите 50 партньори влизат в Основателския кръг с бонуси на стойност над <strong style="color:var(--text);">1,200€</strong>, включени безплатно.</p>
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:800px;margin:0 auto;">
+  <p style="text-align:center;max-width:600px;margin:0 auto 40px;color:var(--muted);font-size:16px;line-height:1.6;">Първите 50 партньори влизат в Основателския кръг с бонуси на стойност <strong style="color:var(--text);">1 478€</strong> за първата година, включени в годишния абонамент 348€.</p>
+  <div class="bonus-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:800px;margin:0 auto;">
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:20px;">
-      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">Пълен маркетинг одит</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.5;">Цялостен анализ на онлайн присъствието ви с конкретен план за действие.</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 150€</div>
+      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">Независим маркетинг одит</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.5;">Дълбок анализ на онлайн присъствието и позиционирането ви. Помага да достигате до повече родители и да се представяте като премиум избор, не като аматьор с онлайн сертификат. Получавате подробен отчет и план независимо от резултата.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 397€</div>
     </div>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:20px;">
-      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">Стратегическа сесия 1-на-1</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.5;">30 мин видео разговор за позициониране, ценообразуване и 90-дневен план.</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 200€</div>
+      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">Сесия за изграждане на стандарта Доверен</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.5;">60–90 мин разговор един на един. Оформяте заедно с нас критериите за вашата категория, не само се присъединявате към платформа. Партньорите от Втора вълна само се съобразяват със стандарта.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 247€</div>
     </div>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:20px;">
-      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">Приоритетна видимост 90 дни</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.5;">Появявате се първи в резултатите за вашата категория и град.</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 300€</div>
+      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">Безплатно повишаване до Доверен със заключена Проверена цена</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.5;">Когато финализираме критериите за категорията ви, преминавате на ниво Доверен без доплащане. Цената остава 348€/година за цял живот, докато партньорите от Втора вълна плащат пълните 588€.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 240€ годишно спестявания</div>
     </div>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:20px;">
-      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">30 дни соц. медия шаблони</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.5;">Готов календар + Canva шаблони + текстове за постове и сторита.</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 250€</div>
+      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">Затворена общност на основателите</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.5;">Седмични срещи на живо, библиотека от обучения (на български и английски), сесии с поканени експерти за въпроси и отговори, форум за обмен между колеги в защитена членска зона.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 497€/година</div>
     </div>
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:20px;">
-      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">Затворена група + обучения</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.5;">Достъп до групата на основателите и вътрешните обучения на екипа.</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 200€</div>
-    </div>
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:20px;">
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:24px;grid-column:1/-1;max-width:420px;margin:0 auto;text-align:center;">
+      <img src="brand_assets/founder-badge.svg" alt="Знак Основател" width="72" height="72" style="display:block;margin:0 auto 14px;" loading="lazy">
       <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">Сертификат „Основател"</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.5;">Рамкиран физически сертификат + дигитален бадж за сайта ви.</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 100€</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.5;">Изтегляем PDF и дигитален знак за сайта и социалните ви профили. Отличава 50-те основатели от партньорите от Втора вълна завинаги.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;opacity:0.7;">Стойност: 97€</div>
     </div>
   </div>
-  <p style="text-align:center;font-size:14px;font-weight:600;color:var(--accent);margin-top:24px;">Когато кръгът приключи на 1 юни, няма да има повече специалисти със статут и допълнителни екстри като Основател.</p>
+  <p style="text-align:center;font-size:14px;font-weight:600;color:var(--accent);margin-top:24px;">Когато 50-те места се запълнят, Основателският кръг затваря. Партньорите от Втора вълна (септември 2026) плащат пълната Доверена цена 588€/година, без право на глас при оформянето на стандарта.</p>
+</section>
+
+<!-- ═══ RISK REVERSAL — locked architecture ═══ -->
+<section class="section" style="background:linear-gradient(135deg, rgba(124,77,255,0.04), rgba(124,77,255,0.08));">
+  <h2 class="section-title">Три гаранции, които правят решението безрисково</h2>
+  <p style="text-align:center;max-width:700px;margin:0 auto 40px;color:var(--muted);font-size:16px;line-height:1.6;">
+    Не обещаваме повече клиенти или гарантирани приходи, защото не това продаваме. Гарантираме това, което можем да контролираме: депозита, репутацията и цената.
+  </p>
+  <div style="display:grid;grid-template-columns:1fr;gap:20px;max-width:760px;margin:0 auto;">
+    <div style="background:#fff;border:1px solid var(--border);border-radius:20px;padding:24px;display:flex;gap:20px;align-items:flex-start;">
+      <div style="width:48px;height:48px;background:rgba(76,175,106,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#4caf6a;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+      </div>
+      <div>
+        <h3 style="font-size:19px;margin-bottom:10px;">Депозитът е възстановим до началото на одита</h3>
+        <p style="font-size:14px;color:#5a5176;line-height:1.6;">97€ заключват мястото и пускат одита. До момента, в който одиторският екип започне прегледа, можете да поискате пълно възстановяване, без въпроси и без обяснения. След като одитът е стартирал, депозитът се превръща в част от годишния абонамент.</p>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:20px;padding:24px;display:flex;gap:20px;align-items:flex-start;">
+      <div style="width:48px;height:48px;background:rgba(124,77,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <h3 style="font-size:19px;margin-bottom:10px;">Репутацията ви остава непокътната при непреминаване</h3>
+        <p style="font-size:14px;color:#5a5176;line-height:1.6;">Ако одитът не премине, вашето име никога не се появява публично като „отхвърлен". Резултатите остават между нас и вас, депозитът се връща изцяло, и получавате прегледа плюс плана за подобрение. Никой не научава, че сте опитали.</p>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:20px;padding:24px;display:flex;gap:20px;align-items:flex-start;">
+      <div style="width:48px;height:48px;background:rgba(245,215,110,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#b08a1f;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div>
+        <h3 style="font-size:19px;margin-bottom:10px;">Цената ви е заключена, със спестявания, които се натрупват</h3>
+        <p style="font-size:14px;color:#5a5176;line-height:1.6;">Като основател плащате 348€/година (Проверена цена) завинаги. Когато финализираме критериите за ниво Доверен във вашата категория, преминавате нагоре при същите 348€. Партньорите от Втора вълна (септември 2026) плащат пълната Доверена цена 588€/година. Вашето предимство: 240€ спестявания всяка година, докато сте в платформата.</p>
+      </div>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:32px;max-width:700px;margin-left:auto;margin-right:auto;line-height:1.5;font-style:italic;">
+    Какво съзнателно не обещаваме: фиксиран срок „одит за X дни", повторен одит при недоволство, връщане на пари след като одитът и бонусите са изпълнени, повече запитвания или гарантирани приходи.
+  </p>
 </section>
 
 <section class="section">
   <h2 class="section-title">Преди да решите</h2>
   <div class="faq-container">
-    <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-      <div class="faq-q">Трябва ли да плащам веднага? <div class="faq-icon">+</div></div>
-      <div class="faq-a"><div class="faq-a-inner">Не. За кръга на основателите кандидатствате безплатно и запазвате място срещу депозит от 1 евро. Плащате остатъка само ако преминете одита успешно и решите да активирате профила си. Без обвързване до старта на 1 юни 2026.</div></div>
-    </div>
     <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
       <div class="faq-q">Какво представлява одитът? <div class="faq-icon">+</div></div>
       <div class="faq-a"><div class="faq-a-inner">Одитът е структуриран преглед на практиката ви по 5 ключови области: образование и квалификации, клиничен или практически опит, подход и методология, безопасност и протоколи, репутация и препоръки. Целта му не е да ви „оцени по усет", а да покаже на родителите защо на този профил може да се има доверие.</div></div>
@@ -341,12 +374,12 @@
       <div class="faq-a"><div class="faq-a-inner">Процесът включва попълване на въпросник (около 5 минути) и видео разговор (около 45 минути). Резултатите се изпращат в рамките на 2 работни дни.</div></div>
     </div>
     <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-      <div class="faq-q">Защо трябва да плащам такса за одит? <div class="faq-icon">+</div></div>
-      <div class="faq-a"><div class="faq-a-inner">Таксата покрива самия процес по верификация. Това не е плащане за място в списък, а инвестиция в профил, който ясно показва стандарта ви. Одитът е и бариерата, която не допуска случайни участници.</div></div>
+      <div class="faq-q">Как работи плащането при Основателски кръг? <div class="faq-icon">+</div></div>
+      <div class="faq-a"><div class="faq-a-inner">Заплащате 97€ депозит, който заключва мястото и пуска одита. Депозитът се връща изцяло, без въпроси, до момента, в който одиторският екип започне прегледа. След като одитът е стартирал, депозитът се превръща в част от годишния абонамент 348€. Остатъкът от 251€ се събира при старта на платформата (целево около 1 юни 2026). Така одитът, 1-на-1 сесията и достъпът до общността са включени в общата сума 348€/година.</div></div>
     </div>
     <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
       <div class="faq-q">Какво става, ако не премина одита? <div class="faq-icon">+</div></div>
-      <div class="faq-a"><div class="faq-a-inner">Очакванията ни са, че 97% от квалифицираните кандидати ще преминават успешно. Ако има области за подобрение, получавате подробен отчет, образци и примери, и 7 дни да адресирате местата, които трябва да се подобрят. Тези, които го изпълнят преминават повторен преглед. Одит таксата покрива персонален преглед от екип специалисти с дългогодишен опит. Стойност, която получавате независимо от резултата.</div></div>
+      <div class="faq-a"><div class="faq-a-inner">Очакваме над 90% от квалифицираните кандидати да преминат успешно. Ако има области за подобрение, получавате подробен отчет с примери и 7 дни да ги адресирате преди повторен преглед.<br><br>Ако одитът не премине окончателно, вашето име никога не се появява публично като „отхвърлен". Резултатите остават между нас, депозитът ви се връща изцяло, без въпроси, а прегледа и плана за подобрение получавате независимо от резултата.</div></div>
     </div>
     <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
       <div class="faq-q">Мога ли просто да закупя място на първа страница? <div class="faq-icon">+</div></div>
@@ -354,11 +387,7 @@
     </div>
     <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
       <div class="faq-q">Какво се случва, ако прекратя членството си? <div class="faq-icon">+</div></div>
-      <div class="faq-a"><div class="faq-a-inner">При прекратяване губите незабавно идентификатора „Верифициран" и другите си значки и идентификатори. Мястото ви се заема от следващия в списъка на чакащите. Повторното включване изисква нов одит и входна такса.</div></div>
-    </div>
-    <div class="faq-item" tabindex="0" role="button" aria-expanded="false" onclick="this.classList.toggle('active');this.setAttribute('aria-expanded',this.classList.contains('active'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
-      <div class="faq-q">Гарантирате ли ми определен брой клиенти? <div class="faq-icon">+</div></div>
-      <div class="faq-a"><div class="faq-a-inner">В За Детето не „купувате“ контакти, а изграждате инфраструктура на доверието. Ако в рамките на договорения период профилът Ви не генерира очакваното ниво на свързаност, поемаме ангажимента лично да анализираме и оптимизираме представянето Ви пред ключовата аудитория.</div></div>
+      <div class="faq-a"><div class="faq-a-inner">При прекратяване губите идентификатора „Верифициран" и другите си значки и идентификатори. Мястото ви се заема от следващия в списъка на чакащите. Повторното включване изисква нов одит и входна такса.</div></div>
     </div>
   </div>
 </section>
@@ -466,13 +495,13 @@
             var category         = document.getElementById('category').value;
             var vipStart         = document.getElementById('vipStart').checked;
 
-            if (!contact_name)                                                  return showError('Въведи името си.');
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))            return showError('Въведи валиден имейл.');
-            if (!phone || phone.replace(/[^\d]/g, '').length < 9)               return showError('Въведи валиден телефон.');
+            if (!contact_name)                                                  return showError('Въведете името си.');
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))            return showError('Въведете валиден имейл.');
+            if (!phone || phone.replace(/[^\d]/g, '').length < 9)               return showError('Въведете валиден телефон.');
             if (!password || password.length < 8)                               return showError('Паролата трябва да е поне 8 знака.');
             if (password !== password_confirm)                                  return showError('Паролите не съвпадат.');
-            if (!city)                                                          return showError('Въведи населено място.');
-            if (!category)                                                      return showError('Избери категория.');
+            if (!city)                                                          return showError('Въведете населено място.');
+            if (!category)                                                      return showError('Изберете категория.');
 
             btn.disabled = true;
             btn.textContent = 'Създаваме акаунта...';
@@ -480,7 +509,7 @@
 
             // 1. Supabase auth signUp. Confirmation email сочи към welcome.html.
             if (typeof window.ZdSupabase === 'undefined') {
-              showError('Връзката към сървъра не е достъпна. Презареди страницата и опитай отново.');
+              showError('Връзката към сървъра не е достъпна. Презаредете страницата и опитайте отново.');
               resetBtn();
               return;
             }
@@ -501,8 +530,8 @@
                 if (/already registered|already exists|user already/i.test(msg)) {
                   showErrorHTML(
                     'Вече има акаунт с този имейл. ' +
-                    '<a href="business-login.html" style="color:#c23a5d;text-decoration:underline;font-weight:600;">Влез вместо това</a> ' +
-                    'или си възстанови паролата.'
+                    '<a href="business-login.html" style="color:#c23a5d;text-decoration:underline;font-weight:600;">Влезте вместо това</a> ' +
+                    'или си възстановете паролата.'
                   );
                 } else {
                   showError('Грешка при регистрация: ' + msg);
@@ -537,11 +566,11 @@
                 .then(function (insertRes) {
                   if (insertRes.error) {
                     console.error('[partner form] partner_applications insert failed after signUp:', insertRes.error, 'auth_user_id:', authUserId, 'email:', email);
-                    var supportLink = '<a href="mailto:info@zadeteto.bg?subject=' +
+                    var supportLink = '<a href="mailto:info@zadeteto.com?subject=' +
                       encodeURIComponent('Проблем с регистрация (' + email + ')') +
                       '&body=' + encodeURIComponent('Здравейте,\n\nРегистрирах се, но получих съобщение че данните не са запазени.\n\nuser id: ' + authUserId + '\nemail: ' + email + '\n\nПомогнете ми да продължа.') +
-                      '" style="color:#c23a5d;text-decoration:underline;font-weight:600;">пиши ни на info@zadeteto.bg</a>';
-                    showErrorHTML('Регистрацията започна, но не успяхме да запазим данните ти. Моля ' + supportLink + ' и ще ти помогнем веднага.');
+                      '" style="color:#c23a5d;text-decoration:underline;font-weight:600;">пишете ни на info@zadeteto.com</a>';
+                    showErrorHTML('Регистрацията започна, но не успяхме да запазим данните ви. Моля ' + supportLink + ' и ще ви помогнем веднага.');
                     resetBtn();
                     throw insertRes.error;
                   }
@@ -554,11 +583,11 @@
               document.getElementById('partnerWaitlist').innerHTML =
                 '<div class="waitlist-success" style="text-align:center;padding:24px;" role="status" aria-live="polite">' +
                   '<div style="font-size:48px;color:#7c4dff;margin-bottom:16px;" aria-hidden="true">&#9993;</div>' +
-                  '<h2 style="font-size:32px;margin-bottom:16px;" tabindex="-1" id="waitlistSuccessHeading">Провери имейла си</h2>' +
+                  '<h2 style="font-size:32px;margin-bottom:16px;" tabindex="-1" id="waitlistSuccessHeading">Проверете имейла си</h2>' +
                   '<p style="font-size:18px;color:var(--text);line-height:1.6;max-width:520px;margin:0 auto 12px;">Изпратихме линк за потвърждение на <strong>' + esc(result.email) + '</strong>.</p>' +
-                  '<p style="font-size:15px;color:var(--muted);line-height:1.6;max-width:520px;margin:0 auto 20px;">Кликни линка от писмото, за да активираш акаунта си. След това попадаш направо в твоя бизнес профил.</p>' +
+                  '<p style="font-size:15px;color:var(--muted);line-height:1.6;max-width:520px;margin:0 auto 20px;">Кликнете линка от писмото, за да активирате акаунта си. След това попадате направо в бизнес профила си.</p>' +
                   (result.vip ? '<p style="font-size:14px;color:#c89a00;font-weight:700;margin-bottom:8px;letter-spacing:0.02em;">VIP старт е активен</p>' : '') +
-                  '<p style="font-size:13px;color:var(--muted);opacity:0.75;">Не виждаш писмото? Провери папка „Спам" или ни пиши на info@zadeteto.bg.</p>' +
+                  '<p style="font-size:13px;color:var(--muted);opacity:0.75;">Не виждате писмото? Проверете папка „Спам" или ни пишете на info@zadeteto.com.</p>' +
                 '</div>';
               var heading = document.getElementById('waitlistSuccessHeading');
               if (heading) heading.focus();
@@ -566,7 +595,7 @@
               if (errorShown) return; // already shown a specific error upstream
               console.error('[partner form]', err);
               if (!document.body.contains(errBox)) return; // form already replaced
-              showError('Нещо се обърка при изпращането. Опитай отново или ни пиши на info@zadeteto.bg.');
+              showError('Нещо се обърка при изпращането. Опитайте отново или ни пишете на info@zadeteto.com.');
               resetBtn();
             });
           });
