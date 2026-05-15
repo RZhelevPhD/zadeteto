@@ -46,7 +46,7 @@
     'conversations':       'Разговори',
     'contacts':            'Контакти',
     'calendars':           'Календари',
-    'opportunities':       'Възможности',
+    'opportunities':       'Потенциални клиенти',
     'payments':            'Плащания',
     'AI Agents':           'AI Служители',
     'email-marketing':     'Онлайн маркетинг',
@@ -111,7 +111,7 @@
     'Conversations':       'Разговори',
     'Contacts':            'Контакти',
     'Calendars':           'Календари',
-    'Opportunities':       'Възможности',
+    'Opportunities':       'Потенциални клиенти',
     'Payments':            'Плащания',
     'Reputation':          'Отзиви',
     'Reporting':           'Отчети',
@@ -510,19 +510,27 @@
 
   // Which `meta` values are unlocked by each tier
   // (Used as fallback if whitelist defaults are missing)
+  // NOTE: 'payments' was removed from premium tier in May 2026 — it is now
+  // an add-on (configured manually by a ZaDeteto employee on request).
   const TIER_UNLOCKS = {
     'verified':  ['conversations', 'contacts', 'settings'],
     'trusted':   ['conversations', 'contacts', 'calendars', 'opportunities', 'settings'],
     'premium':   ['conversations', 'contacts', 'calendars', 'opportunities',
                   'email-marketing', 'automation', 'sites', 'memberships',
-                  'reputation', 'reporting', 'payments', 'settings']
+                  'reputation', 'reporting', 'settings']
   };
 
-  // Which `meta` values are add-ons (always visible, separately gated)
-  const ADDON_METAS = ['AI Agents'];
-  // Map addon meta → internal addon key (for whitelist matching)
+  // Which `meta` values are add-ons — always visible in the sidebar but
+  // gated separately from the tier. Activated by listing the matching
+  // key in the partner's `addons` array in ghl-locations.json. All four
+  // are services that a ZaDeteto employee configures manually on request.
+  const ADDON_METAS = ['AI Agents', 'payments'];
+  // Map addon meta → internal addon key (for whitelist matching).
+  // Custom Menu Links (СМС карти, Касови бележки) are handled separately
+  // via CUSTOM_LINK_ADDONS at the bottom of this file.
   const ADDON_KEYS = {
-    'AI Agents': 'ai_agents'
+    'AI Agents': 'ai_agents',
+    'payments':  'payments'
   };
 
   // Modal copy per feature
@@ -604,6 +612,9 @@
       ],
       tier: 'premium'
     },
+    // Payments is now an add-on (May 2026 restructure) — needs to be
+    // requested separately because integration with the payment gateway
+    // is configured manually by a ZaDeteto employee.
     'payments': {
       icon: '💳',
       headline: 'Приемай плащания директно от профила',
@@ -613,7 +624,8 @@
         'Автоматични фактури',
         'Месечни абонаменти за курсове'
       ],
-      tier: 'premium'
+      isAddon: true,
+      addonName: 'Плащания'
     },
     // Add-on — different copy, different CTA
     'AI Agents': {
@@ -642,6 +654,20 @@
       ],
       isAddon: true,
       addonName: 'СМС карти'
+    },
+    // Cash receipts add-on — fiscal receipt integration for cash payments.
+    // Targeted via Custom Menu Link with title "Касови бележки".
+    'cash_receipts': {
+      icon: '🧾',
+      headline: 'Касови бележки за плащания в брой',
+      body: 'Регистрирай всяко плащане в брой като фискална касова бележка, директно от профила. Без отделен касов апарат.',
+      benefits: [
+        'Издаване и съхранение на касови бележки',
+        'Свързване с НАП и фискална памет',
+        'Месечен отчет за приходи в брой'
+      ],
+      isAddon: true,
+      addonName: 'Касови бележки'
     }
   };
 
@@ -760,6 +786,11 @@
         if (!addonActivated) {
           item.setAttribute('data-zd-locked-addon', 'true');
           item.setAttribute('data-zd-feature', meta);
+        } else {
+          // Activated add-on — still want it marked so the addons divider
+          // header appears above the addons group regardless of activation.
+          item.setAttribute('data-zd-addon-activated', 'true');
+          item.setAttribute('data-zd-feature', meta);
         }
       } else {
         // Tier logic
@@ -788,6 +819,13 @@
     // 4. Inject "Премиум" divider before the first Premium-tier locked item
     injectPremiumDivider(partner, unlockedMetas);
 
+    // 4b. Inject "Услуги по заявка" divider before the first add-on item
+    //     (Payments, AI Служители, plus any Custom Menu Link addons).
+    //     Runs AFTER markCustomLinkAddons (called in step 7) by way of
+    //     the MutationObserver re-firing apply() once those links get
+    //     their data-zd-locked-addon attributes.
+    injectAddonsDivider();
+
     // 5. Walk in-page text nodes and translate known strings (headers,
     //    sub-tabs, filter chips, common labels). Scoped to skip inputs,
     //    contenteditable, scripts, styles, and our own injected text.
@@ -797,6 +835,10 @@
     //    catches user-created Custom Menu Links that the #sb_tutorials
     //    CSS selector misses (custom links get unpredictable sb_* IDs).
     hideCustomTutorialsLink();
+
+    // 6b. Translate icon alt attributes so any image-load failure shows
+    //     Bulgarian fallback text instead of "Calendars icon" / similar.
+    translateIconAlts();
 
     // 7. Mark Custom Menu Links that act as add-on entry points (e.g.
     //    "СМС карти" added in GHL UI → flagged as locked-addon so the
@@ -813,7 +855,8 @@
   // Used by markCustomLinkAddons to convert user-created Custom Menu Links
   // into addon-styled sidebar entries with sparkle + click-to-modal.
   const CUSTOM_LINK_ADDONS = {
-    'смс карти':       { meta: 'sms_cards', addonKey: 'sms_cards' }
+    'смс карти':       { meta: 'sms_cards',     addonKey: 'sms_cards' },
+    'касови бележки':  { meta: 'cash_receipts', addonKey: 'cash_receipts' }
   };
 
   function markCustomLinkAddons(partner, activeAddons) {
@@ -837,15 +880,67 @@
   }
 
   function hideCustomTutorialsLink() {
-    const items = document.querySelectorAll('[id^="sb_"]');
+    // Match against multiple text sources because Custom Menu Links
+    // sometimes lack a .nav-title child and put text directly in the
+    // anchor, or use an aria-label / title attribute instead.
+    const items = document.querySelectorAll(
+      '[id^="sb_"], aside a[href*="custom"], aside a[href*="tutorials" i]'
+    );
     items.forEach(item => {
       if (item.dataset.zdTutorialsHidden) return;
       const titleEl = item.querySelector('.nav-title');
-      if (!titleEl) return;
-      const title = titleEl.textContent.trim().toLowerCase();
-      if (title === 'tutorials' || title === 'уроци') {
+      const candidates = [
+        titleEl && titleEl.textContent,
+        item.getAttribute('aria-label'),
+        item.getAttribute('title'),
+        item.textContent
+      ].filter(Boolean).map(s => s.trim().toLowerCase());
+      const isTutorials = candidates.some(t =>
+        t === 'tutorials' || t === 'уроци' ||
+        t.startsWith('tutorials ') || t.startsWith('уроци ') ||
+        t.startsWith('tutorials\n') || t.startsWith('уроци\n')
+      );
+      if (isTutorials) {
         item.style.display = 'none';
         item.dataset.zdTutorialsHidden = 'true';
+      }
+    });
+  }
+
+  // Translate the alt-text on GHL sidebar icons so that if the icon
+  // fails to load (CDN flake, ad blocker, slow connection), the fallback
+  // text the browser renders is Bulgarian, not English. Also helps with
+  // screen-reader localisation.
+  const ICON_ALT_TRANSLATIONS = {
+    'Dashboard icon':       'Начало',
+    'Conversations icon':   'Разговори',
+    'Calendars icon':       'Календари',
+    'Contacts icon':        'Контакти',
+    'Opportunities icon':   'Потенциални клиенти',
+    'Payments icon':        'Плащания',
+    'AI Agents icon':       'AI Служители',
+    'Marketing icon':       'Онлайн маркетинг',
+    'Automation icon':      'Автоматизации',
+    'Sites icon':           'Уебсайтове',
+    'Memberships icon':     'Членства',
+    'Media Storage icon':   'Хранилище',
+    'Reputation icon':      'Отзиви',
+    'Reporting icon':       'Отчети',
+    'Settings icon':        'Настройки',
+    'Launchpad icon':       'Старт',
+    'Mobile App icon':      'Мобилно приложение',
+    'Tutorials icon':       'Уроци',
+    'Quick actions icon':   'Бързи действия'
+  };
+
+  function translateIconAlts() {
+    const imgs = document.querySelectorAll('[id^="sb_"] img[alt]');
+    imgs.forEach(img => {
+      if (img.dataset.zdAltTranslated) return;
+      const alt = img.getAttribute('alt');
+      if (ICON_ALT_TRANSLATIONS[alt]) {
+        img.alt = ICON_ALT_TRANSLATIONS[alt];
+        img.dataset.zdAltTranslated = 'true';
       }
     });
   }
@@ -925,9 +1020,10 @@
     if (document.querySelector('.zd-premium-divider')) return;
 
     // Find the first item that is premium-locked (i.e., locked AND only
-    // unlocks at premium tier)
+    // unlocks at premium tier). 'payments' is no longer in this list —
+    // it became an add-on in the May 2026 restructure.
     const premiumOnlyMetas = ['email-marketing', 'automation', 'sites',
-                              'memberships', 'reputation', 'reporting', 'payments'];
+                              'memberships', 'reputation', 'reporting'];
 
     for (const meta of premiumOnlyMetas) {
       const item = document.querySelector(`[meta="${meta}"]`);
@@ -942,6 +1038,35 @@
         break;
       }
     }
+  }
+
+  function injectAddonsDivider() {
+    // Already injected? Skip.
+    if (document.querySelector('.zd-addons-divider')) return;
+
+    // Find the first item that is an add-on (whether currently locked or
+    // already activated — we still want the section header to appear so
+    // the partner can scan 'these are paid services configured manually').
+    // Order matters because DOM order on GHL native sidebar is fixed.
+    const addonCandidates = document.querySelectorAll(
+      '[id^="sb_"][data-zd-locked-addon="true"], [id^="sb_"][data-zd-addon-activated="true"]'
+    );
+    if (!addonCandidates.length) return;
+
+    // Pick the topmost one in document order.
+    let first = addonCandidates[0];
+    addonCandidates.forEach(el => {
+      if (el.compareDocumentPosition(first) & Node.DOCUMENT_POSITION_PRECEDING) {
+        first = el;
+      }
+    });
+
+    const divider = document.createElement('div');
+    divider.className = 'zd-addons-divider';
+    divider.innerHTML =
+      '<span class="zd-addons-divider-icon">✦</span>' +
+      '<span class="zd-addons-divider-label">Услуги по заявка</span>';
+    first.parentNode.insertBefore(divider, first);
   }
 
   // ----------------------------------------------------------------

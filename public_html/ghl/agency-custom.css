@@ -252,6 +252,69 @@ html[data-zd-active="true"] .zd-premium-divider-icon {
 
 
 /* ============================================================
+   ZONE 6b: "Услуги по заявка" divider — purple shimmer variant
+   for the add-ons group (Payments, AI Служители, СМС карти,
+   Касови бележки). Visually distinct from the gold Премиум
+   divider so partners can tell tier upgrades apart from per-
+   service add-ons configured manually by a ZaDeteto employee.
+   ============================================================ */
+
+html[data-zd-active="true"] .zd-addons-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 14px 6px;
+  margin: 4px 6px 0;
+  user-select: none;
+  pointer-events: none;
+}
+
+html[data-zd-active="true"] .zd-addons-divider::before,
+html[data-zd-active="true"] .zd-addons-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(124, 77, 255, 0.5) 100%);
+}
+
+html[data-zd-active="true"] .zd-addons-divider::after {
+  background: linear-gradient(90deg,
+    rgba(124, 77, 255, 0.5) 0%,
+    transparent 100%);
+}
+
+html[data-zd-active="true"] .zd-addons-divider-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  background: linear-gradient(100deg,
+    #5a2ee6 0%,
+    #7c4dff 30%,
+    #b388ff 50%,
+    #7c4dff 70%,
+    #5a2ee6 100%);
+  background-size: 220% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: zd-shimmer 22s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+
+html[data-zd-active="true"] .zd-addons-divider-icon {
+  width: 11px;
+  height: 11px;
+  color: #7c4dff;
+  filter: drop-shadow(0 0 3px rgba(124, 77, 255, 0.6));
+  display: inline-block;
+}
+
+
+/* ============================================================
    ZONE 7: Subtext under locked items
    JS injects a <div class="zd-nav-subtext"> inside each locked item.
    Shows a short tagline (e.g., "Pipeline за всяко запитване").

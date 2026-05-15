@@ -2,7 +2,7 @@
   "_comment_1": "ZaDeteto GHL Partner Whitelist. Lives at https://zadeteto.com/ghl-locations.json. The Agency JS fetches this on every GHL page load and decides whether to activate the Bulgarian/padlock layer based on the current Location ID.",
   "_comment_2": "TO ADD A NEW PARTNER: copy a template entry under 'locations', replace the key with the new Location ID (from the GHL URL /v2/location/XXX/...), set their tier and addons, commit, push. Changes go live within ~60 seconds.",
   "_comment_3": "TO UPGRADE A PARTNER'S TIER: change their 'tier' field. Valid values: verified, trusted, premium.",
-  "_comment_4": "TO ACTIVATE AN ADD-ON: add the addon key to their 'addons' array. Valid addon keys: ai_agents, unlimited_sms.",
+  "_comment_4": "TO ACTIVATE AN ADD-ON: add the addon key to their 'addons' array. Valid addon keys: ai_agents, sms_cards, cash_receipts, payments. All four are configured manually by a ZaDeteto employee and have to be requested separately — none of them auto-unlock at any tier.",
   "_comment_5": "TO REMOVE A PARTNER: delete their entry. They will see normal GHL again (in English).",
 
   "version": "1.0",
@@ -35,7 +35,6 @@
         "memberships",
         "reputation",
         "reporting",
-        "payments",
         "settings"
       ]
     }
