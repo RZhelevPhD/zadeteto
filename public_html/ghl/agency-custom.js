@@ -35,6 +35,53 @@
   const WHITELIST_URL = 'https://zadeteto.com/ghl-locations.json';
   const SESSION_CACHE_KEY = 'zd_ghl_whitelist_v1';
   const SESSION_CACHE_TTL_MS = 60000; // 1 minute
+  const LOADER_HARD_TIMEOUT_MS = 6000;     // never trap the partner
+  const LOADER_GRACE_AFTER_SIDEBAR_MS = 200; // let sidebar finish painting
+  const LOADER_FADE_OUT_MS = 400;          // matches CSS transition
+
+  // Wordmark inlined as a string (not fetched at runtime) so the loader
+  // has zero external dependencies: no CORS preflight, no fetch latency,
+  // no XSS surface from innerHTML on a fetched response. The string
+  // must stay byte-identical to public_html/brand_assets/zadeteto-ghl-wordmark.svg
+  // — when that file changes, copy the new contents here verbatim.
+  const WORDMARK_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 120" role="img" aria-hidden="true">'
+    + '<defs>'
+    + '<linearGradient id="pMain" x1="0.2" y1="0" x2="0.8" y2="1">'
+    +   '<stop offset="0%" stop-color="#b388ff"/>'
+    +   '<stop offset="40%" stop-color="#9c5fff"/>'
+    +   '<stop offset="100%" stop-color="#7c4dff"/>'
+    + '</linearGradient>'
+    + '<linearGradient id="cMain" x1="0.1" y1="0" x2="0.9" y2="1">'
+    +   '<stop offset="0%" stop-color="#ffe082"/>'
+    +   '<stop offset="45%" stop-color="#f5d76e"/>'
+    +   '<stop offset="100%" stop-color="#d4a843"/>'
+    + '</linearGradient>'
+    + '<linearGradient id="zd-text-purple" x1="0%" y1="0%" x2="100%" y2="100%">'
+    +   '<stop offset="0%" stop-color="#7c4dff"/>'
+    +   '<stop offset="100%" stop-color="#5a2ee6"/>'
+    + '</linearGradient>'
+    + '<linearGradient id="zd-gold" x1="0%" y1="50%" x2="100%" y2="50%">'
+    +   '<stop offset="0%" stop-color="#b88a1a" stop-opacity="0"/>'
+    +   '<stop offset="20%" stop-color="#e8c547" stop-opacity="1"/>'
+    +   '<stop offset="80%" stop-color="#e8c547" stop-opacity="1"/>'
+    +   '<stop offset="100%" stop-color="#b88a1a" stop-opacity="0"/>'
+    + '</linearGradient>'
+    + '<style>'
+    +   '.zd-line-1{font-family:"Manrope",-apple-system,"Segoe UI",sans-serif;font-weight:700;font-size:23px;letter-spacing:0;fill:#45425a}'
+    +   '.zd-line-2{font-family:"Manrope",-apple-system,"Segoe UI",sans-serif;font-weight:800;font-size:36px;letter-spacing:-0.01em;fill:url(#zd-text-purple)}'
+    + '</style>'
+    + '</defs>'
+    + '<g transform="translate(8 12) scale(0.8)">'
+    +   '<rect x="5" y="5" width="110" height="110" rx="24" fill="url(#pMain)"/>'
+    +   '<circle cx="75" cy="75" r="28" fill="url(#cMain)" opacity=".95"/>'
+    +   '<circle cx="60" cy="65" r="10" fill="rgba(255,255,255,.1)"/>'
+    +   '<circle cx="85" cy="58" r="2" fill="rgba(255,255,255,.55)"/>'
+    +   '<circle cx="90" cy="64" r="1.3" fill="rgba(255,255,255,.3)"/>'
+    + '</g>'
+    + '<text x="118" y="46" text-anchor="start" class="zd-line-1">Национален Регистър</text>'
+    + '<rect x="118" y="58" width="220" height="2" rx="1" class="zd-gold-rule" fill="url(#zd-gold)"/>'
+    + '<text x="118" y="98" text-anchor="start" class="zd-line-2">За Детето</text>'
+    + '</svg>';
 
   // Translation map: GHL English → Bulgarian
   // Keyed by `meta` attribute (more stable than ID or text)
@@ -1491,6 +1538,129 @@
 
     console.info('[ZaDeteto] Activated for', partner.name, '— tier:', partner.tier);
   }
+
+  // ----------------------------------------------------------------
+  // BOOT LOADER (ZONE 10 in agency-custom.css)
+  // Branded splash that paints over GHL's default spinner on cold
+  // load. Runs synchronously at script-eval, BEFORE main(), so it
+  // has the best chance of being first paint. Only fires on this
+  // whitelabel domain (saas.123marketing.app) per the agency-level
+  // pasting; no need to gate by location/whitelist here.
+  // ----------------------------------------------------------------
+  function showBootLoader() {
+    // 1. Cold-boot gate. If the document already finished loading,
+    //    the partner is mid-session (navigation, hot reload, devtool
+    //    refresh) and the GHL shell is already on screen — showing
+    //    our overlay now would feel like a regression, not a polish.
+    if (document.readyState !== 'loading') return;
+
+    // 2. Idempotency. Belt-and-braces against double-injection if
+    //    GHL's pipeline somehow evaluates the script twice.
+    if (document.getElementById('zd-loader')) return;
+
+    // 3. Build overlay with the wordmark inlined directly — no fetch,
+    //    no network round-trip, no XSS surface from injecting fetched
+    //    HTML. The SVG itself is aria-hidden (inside WORDMARK_SVG)
+    //    so screen readers don't read its visible glyphs as a status
+    //    update; the overlay's aria-label carries the announcement.
+    const overlay = document.createElement('div');
+    overlay.id = 'zd-loader';
+    overlay.setAttribute('role', 'status');
+    overlay.setAttribute('aria-label', 'Зареждане');
+    overlay.innerHTML = WORDMARK_SVG;
+
+    // Append to <html> — <body> may not exist yet at this point.
+    const root = document.documentElement;
+    root.appendChild(overlay);
+
+    // 4. Focus management — block keyboard input from reaching DOM
+    //    behind the overlay. <body> may not exist yet; defer the
+    //    inert+aria-hidden flip until it does.
+    let bodyObserver = null;
+    function gateBody() {
+      if (!document.body) return false;
+      document.body.setAttribute('inert', '');
+      document.body.setAttribute('aria-hidden', 'true');
+      return true;
+    }
+    if (!gateBody()) {
+      bodyObserver = new MutationObserver(function() {
+        if (gateBody()) {
+          bodyObserver.disconnect();
+          bodyObserver = null;
+        }
+      });
+      bodyObserver.observe(root, { childList: true });
+    }
+
+    // 5. Schedule removal. Whichever trigger fires first wins.
+    let removed = false;
+    let hardTimeoutId = null;
+    function hide(source) {
+      if (removed) return;
+      removed = true;
+      if (hardTimeoutId !== null) {
+        clearTimeout(hardTimeoutId);
+        hardTimeoutId = null;
+      }
+      if (bodyObserver) {
+        bodyObserver.disconnect();
+        bodyObserver = null;
+      }
+      if (document.body) {
+        document.body.removeAttribute('inert');
+        document.body.removeAttribute('aria-hidden');
+      }
+      const el = document.getElementById('zd-loader');
+      if (!el) return;
+      el.classList.add('zd-loader-hide');
+      setTimeout(function() {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, LOADER_FADE_OUT_MS);
+      if (source === 'timeout') {
+        console.warn('[ZaDeteto] loader hard-timeout fired — sidebar never appeared within',
+                     LOADER_HARD_TIMEOUT_MS, 'ms');
+      }
+    }
+
+    // 5a. Sidebar-appeared signal. We already use [id^="sb_"] as the
+    //     "GHL has rendered the menu" anchor throughout the script.
+    //     MutationObserver fires often during a React boot; throttle
+    //     the querySelector call to once-per-frame with rAF and
+    //     short-circuit after the first match.
+    let seen = false;
+    let rafPending = false;
+    const observer = new MutationObserver(function() {
+      if (seen || rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(function() {
+        rafPending = false;
+        if (seen) return;
+        if (document.querySelector('[id^="sb_"]')) {
+          seen = true;
+          observer.disconnect();
+          setTimeout(function() { hide('sidebar'); },
+                     LOADER_GRACE_AFTER_SIDEBAR_MS);
+        }
+      });
+    });
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true
+    });
+
+    // 5b. Hard timeout. Non-negotiable safety net — even if GHL
+    //     renames sb_* IDs in some future release, the loader can
+    //     never trap the partner on a tinted blank screen.
+    hardTimeoutId = setTimeout(function() {
+      observer.disconnect();
+      hide('timeout');
+    }, LOADER_HARD_TIMEOUT_MS);
+  }
+
+  // Boot loader runs synchronously NOW, before main() defers behind
+  // DOMContentLoaded. This is the earliest moment we can paint.
+  showBootLoader();
 
   // Run as soon as possible
   if (document.readyState === 'loading') {

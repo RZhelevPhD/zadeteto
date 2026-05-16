@@ -760,9 +760,120 @@ html[data-zd-active="true"] [class*="company-logo"] img {
 
 
 /* ============================================================
+   ZONE 10: Boot loader — branded splash that paints over GHL's
+   default spinner on cold load. JS (showBootLoader) injects
+   <div id="zd-loader"> with the inlined wordmark SVG, schedules
+   removal once GHL's sidebar appears, then hard-fails-safe at 6s.
+
+   Not scoped to data-zd-active because the loader must appear
+   BEFORE the whitelist fetch resolves. JS gates injection by
+   document.readyState === 'loading' so it only fires on cold
+   boot, not on re-apply.
+   ============================================================ */
+
+#zd-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647; /* max signed-32-bit — beats any GHL native loader */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px; /* breathing room so wordmark + glow never touch viewport edge */
+  /* Calm warm off-white with a hint of lavender at the edges only —
+     restrained enough to not read as "AI demo" while still hinting at
+     brand purple. The drop-shadow on the SVG carries most of the
+     purple character. */
+  background:
+    radial-gradient(ellipse at center,
+      #fcfcfd 0%,
+      #f6f4fb 65%,
+      #ece8f5 100%);
+  opacity: 1;
+  transition: opacity 400ms cubic-bezier(.65, 0, .35, 1);
+  pointer-events: auto;
+}
+
+#zd-loader.zd-loader-hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#zd-loader svg {
+  width: clamp(240px, 36vw, 420px);
+  height: auto;
+  display: block;
+  /* overflow:visible lets the wordmark render correctly even when
+     Manrope isn't installed on the partner's machine — Cyrillic
+     fallback fonts (Segoe UI, system-ui) render wider and would
+     otherwise clip "ър" off "Регистър" at the viewBox right edge. */
+  overflow: visible;
+  filter: drop-shadow(0 2px 12px rgba(124, 77, 255, 0.18));
+}
+
+/* The wipe: each text line + the gold rule start fully clipped from
+   the right, then animate to fully revealed. Staggered delays create
+   the "writing" sequence. */
+#zd-loader svg .zd-line-1,
+#zd-loader svg .zd-line-2,
+#zd-loader svg .zd-gold-rule {
+  clip-path: inset(0 100% 0 0);
+  animation-name: zd-loader-wipe;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(.65, 0, .35, 1);
+}
+
+#zd-loader svg .zd-line-1 {
+  animation-duration: 700ms;
+  animation-delay: 100ms;
+  /* Gold trailing glow that rides the wipe edge — drop-shadow extends
+     past the visible characters but is clipped on the right, so only
+     the leading edge gets the glow naturally. */
+  filter: drop-shadow(0 0 4px rgba(232, 197, 71, 0.5));
+}
+
+#zd-loader svg .zd-gold-rule {
+  animation-duration: 450ms;
+  animation-delay: 350ms;
+  filter: drop-shadow(0 0 3px rgba(232, 197, 71, 0.6));
+}
+
+#zd-loader svg .zd-line-2 {
+  animation-duration: 800ms;
+  animation-delay: 500ms;
+  filter: drop-shadow(0 0 5px rgba(124, 77, 255, 0.38));
+}
+
+@keyframes zd-loader-wipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+/* Reduced-motion: collapse the wipe to instant reveal. Overlay still
+   fades in / out (much gentler than the keyframe animation but still
+   communicates "loading"). */
+@media (prefers-reduced-motion: reduce) {
+  #zd-loader svg .zd-line-1,
+  #zd-loader svg .zd-line-2,
+  #zd-loader svg .zd-gold-rule {
+    animation: none;
+    clip-path: inset(0 0 0 0);
+  }
+  #zd-loader {
+    transition: opacity 200ms linear;
+  }
+}
+
+
+/* ============================================================
    END OF FILE
-   Version: 1.1
+   Version: 1.2.1
    Last updated: 2026-05-16
    Changelog 1.1: removed locked-item subtext (ZONE 7 + ZONE 10
    responsive rules); sidebar rows now single-line only.
+   Changelog 1.2: added ZONE 10 boot loader (branded wordmark
+   draw-in that replaces GHL's default spinner on cold load).
+   Changelog 1.2.1: ZONE 10 review polish — gold rect targeted via
+   .zd-gold-rule class instead of brittle fill-attribute selector;
+   fade timing aligned to 400ms across CSS/JS; lila gradient toned
+   down; drop-shadow blur radii reduced; overlay padding added.
    ============================================================ */

@@ -59,8 +59,12 @@
   </text>
 
   <!-- Thin gold accent rule between the two text lines, sized to match
-       the left edge of the text and the approximate width of line 1. -->
-  <rect x="118" y="58" width="220" height="2" rx="1" fill="url(#zd-gold)"/>
+       the left edge of the text and the approximate width of line 1.
+       The .zd-gold-rule class is a stable hook for the boot-loader
+       wipe animation (agency-custom.css ZONE 10); without it the
+       wipe would rely on the brittle fill="url(#zd-gold)" selector. -->
+  <rect x="118" y="58" width="220" height="2" rx="1"
+        class="zd-gold-rule" fill="url(#zd-gold)"/>
 
   <text x="118" y="98" text-anchor="start" class="zd-line-2">
     За Детето
