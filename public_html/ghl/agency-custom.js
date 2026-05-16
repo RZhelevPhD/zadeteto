@@ -12,7 +12,6 @@
       - Translates sidebar text to Bulgarian
       - Marks tier-locked items with data-zd-locked="true"
       - Marks AI Agents with data-zd-locked-addon="true" (unless activated)
-      - Injects subtext under locked items
       - Injects "Премиум" divider
       - Binds click handlers that show upgrade/contact modals
    4. If Location ID does NOT match → exits silently
@@ -495,19 +494,6 @@
     'Select all':          'Маркирай всички'
   };
 
-  // Subtext shown under locked items (one-line tagline)
-  const SUBTEXTS = {
-    'opportunities':       'Pipeline за всяко запитване',
-    'AI Agents':           'Отговаря на запитвания 24/7',
-    'email-marketing':     'Кампании с готови шаблони',
-    'automation':          'Напомняния, имейли, SMS',
-    'sites':               'Landing страници и фунии',
-    'memberships':         'Курсове и онлайн уроци',
-    'reputation':          'Отзиви и Google отговори',
-    'reporting':           'Записвания, удържане, приходи',
-    'payments':            'Онлайн такси и абонаменти'
-  };
-
   // Which `meta` values are unlocked by each tier
   // (Used as fallback if whitelist defaults are missing)
   // NOTE: 'payments' was removed from premium tier in May 2026 — it is now
@@ -814,20 +800,6 @@
         }
       }
 
-      // 3. Inject subtext under title for locked items
-      const isLocked = item.hasAttribute('data-zd-locked') ||
-                       item.hasAttribute('data-zd-locked-addon');
-      if (isLocked && SUBTEXTS[meta] && titleEl && !item.querySelector('.zd-nav-subtext')) {
-        // Wrap title + subtext in a flex column container
-        const wrap = document.createElement('div');
-        wrap.className = 'zd-nav-textblock';
-        const subtext = document.createElement('div');
-        subtext.className = 'zd-nav-subtext';
-        subtext.textContent = SUBTEXTS[meta];
-        titleEl.parentNode.insertBefore(wrap, titleEl);
-        wrap.appendChild(titleEl);
-        wrap.appendChild(subtext);
-      }
     });
 
     // 4. Inject "Premium upgrade" divider before the first Premium-tier
@@ -1214,9 +1186,8 @@
           if (parent.closest('[contenteditable="true"]')) {
             return NodeFilter.FILTER_REJECT;
           }
-          if (parent.classList && (
-              parent.classList.contains('zd-nav-subtext') ||
-              parent.classList.contains('zd-premium-divider-label'))) {
+          if (parent.classList &&
+              parent.classList.contains('zd-premium-divider-label')) {
             return NodeFilter.FILTER_REJECT;
           }
           const trimmed = node.textContent.trim();

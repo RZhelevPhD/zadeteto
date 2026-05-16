@@ -315,44 +315,12 @@ html[data-zd-active="true"] .zd-addons-divider-icon {
 
 
 /* ============================================================
-   ZONE 7: Subtext under locked items
-   JS injects a <div class="zd-nav-subtext"> inside each locked item.
-   Shows a short tagline (e.g., "Pipeline за всяко запитване").
+   ZONE 7: Sidebar item vertical alignment
+   Single-line nav rows (no subtext). The <img> default
+   vertical-align:baseline pushes icons onto the text baseline; we
+   force display:block + align-self:center so the icon centres on
+   its geometric mid-line and the row mid-line agree.
    ============================================================ */
-
-html[data-zd-active="true"] .zd-nav-subtext {
-  display: block;
-  font-family: 'Manrope', sans-serif;
-  font-size: 10.5px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
-  margin-top: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 180px;
-  pointer-events: none;
-}
-
-/* Make sure the parent <a> stacks title + subtext vertically.
-   GHL uses flex-row for nav items; we need to switch the text container
-   to flex-col. The .nav-title span is wrapped by a div we add via JS. */
-html[data-zd-active="true"] .zd-nav-textblock {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1.2;
-}
-
-/* Phase 5: simplified vertical alignment.
-   Single root cause that's worth fixing here:
-     <img> defaults to vertical-align:baseline so the icon sits on the
-     text baseline instead of its geometric centre. display:block kills
-     that quirk and lets align-self:center put the icon's mid-line on
-     the flex row's mid-line.
-   Everything else (line-height:1 on the row, display:flex on
-   .nav-title, justify-content:center on textblock) was Phase 4
-   overreach that broke horizontal left-alignment of labels. Reverted. */
 html[data-zd-active="true"] [id^="sb_"] {
   display: flex !important;
   align-items: center !important;
@@ -362,25 +330,11 @@ html[data-zd-active="true"] [id^="sb_"] > * {
   align-self: center !important;
 }
 
-/* The real fix: img display:block kills vertical-align:baseline so the
-   icon centres on its geometric mid-line, not its text baseline. */
 html[data-zd-active="true"] [id^="sb_"] > img,
 html[data-zd-active="true"] [id^="sb_"] img[alt$="icon"] {
   display: block !important;
   align-self: center !important;
   flex-shrink: 0 !important;
-}
-
-/* For locked / addon items the JS wraps .nav-title + .zd-nav-subtext in
-   .zd-nav-textblock. Keep it as a left-aligned flex column so labels
-   stay flush against the icon, with title and subtext stacked. */
-html[data-zd-active="true"] .zd-nav-textblock {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  justify-content: center !important;
-  align-self: center !important;
-  line-height: 1.2;
 }
 
 
@@ -806,24 +760,9 @@ html[data-zd-active="true"] [class*="company-logo"] img {
 
 
 /* ============================================================
-   ZONE 10: Responsive — sidebar narrower than 280px gets compact subtext
-   ============================================================ */
-
-@media (max-width: 1200px) {
-  html[data-zd-active="true"] .zd-nav-subtext {
-    max-width: 140px;
-  }
-}
-
-@media (max-width: 900px) {
-  html[data-zd-active="true"] .zd-nav-subtext {
-    display: none;
-  }
-}
-
-
-/* ============================================================
    END OF FILE
-   Version: 1.0
-   Last updated: 2026-05-13
+   Version: 1.1
+   Last updated: 2026-05-16
+   Changelog 1.1: removed locked-item subtext (ZONE 7 + ZONE 10
+   responsive rules); sidebar rows now single-line only.
    ============================================================ */
