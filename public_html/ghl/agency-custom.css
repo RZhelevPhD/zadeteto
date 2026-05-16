@@ -865,8 +865,70 @@ html[data-zd-active="true"] [class*="company-logo"] img {
 
 
 /* ============================================================
+   ZONE 10b: SPA nav progress bar — top-of-viewport sweep that
+   signals an in-flight top-level section change (Dashboard ->
+   Contacts -> Calendars ...). Sits at z-index ONE BELOW the
+   cold-boot loader so v1 always wins if both are live in a race.
+   Non-blocking — pointer-events:none so it never eats a click.
+   ============================================================ */
+
+#zd-nav-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 2147483646; /* one less than #zd-loader */
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 200ms cubic-bezier(.65, 0, .35, 1);
+  /* Soft brand glow under the bar — depth without weight. */
+  filter: drop-shadow(0 1px 4px rgba(124, 77, 255, 0.35));
+}
+
+#zd-nav-progress.zd-nav-progress--active {
+  opacity: 1;
+}
+
+/* The sweep itself — a narrow gold->purple gradient that slides
+   left-to-right on loop. Lives as ::before so the parent's opacity
+   transition isn't fighting the keyframe transform. */
+#zd-nav-progress::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #e8c547 35%,
+    #7c4dff 70%,
+    transparent 100%);
+  transform: translateX(-100%);
+  animation: zd-nav-progress-sweep 900ms cubic-bezier(.65, 0, .35, 1) infinite;
+}
+
+@keyframes zd-nav-progress-sweep {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+/* Reduced-motion: stop the sweep, show a static gold->purple bar
+   spanning the full width. Still communicates "in progress" via
+   the fade-in / fade-out of the parent (200ms opacity transition
+   above). */
+@media (prefers-reduced-motion: reduce) {
+  #zd-nav-progress::before {
+    animation: none;
+    transform: translateX(0);
+    background: linear-gradient(90deg, #e8c547 0%, #7c4dff 100%);
+  }
+}
+
+
+/* ============================================================
    END OF FILE
-   Version: 1.2.1
+   Version: 1.3
    Last updated: 2026-05-16
    Changelog 1.1: removed locked-item subtext (ZONE 7 + ZONE 10
    responsive rules); sidebar rows now single-line only.
@@ -876,4 +938,8 @@ html[data-zd-active="true"] [class*="company-logo"] img {
    .zd-gold-rule class instead of brittle fill-attribute selector;
    fade timing aligned to 400ms across CSS/JS; lila gradient toned
    down; drop-shadow blur radii reduced; overlay padding added.
+   Changelog 1.3: added ZONE 10b SPA nav progress bar — top-edge
+   gold->purple sweep that fires on top-level section changes
+   (Dashboard -> Contacts -> Calendars). Non-blocking, brand-
+   coherent, ~300–1200ms per fire.
    ============================================================ */

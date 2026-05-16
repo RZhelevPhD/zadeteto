@@ -39,6 +39,13 @@
   const LOADER_GRACE_AFTER_SIDEBAR_MS = 200; // let sidebar finish painting
   const LOADER_FADE_OUT_MS = 400;          // matches CSS transition
 
+  // Nav-progress bar (ZONE 10b in agency-custom.css) — lightweight
+  // top-edge sweep that signals a top-level section change. Distinct
+  // from the cold-boot loader.
+  const NAV_PROGRESS_MIN_VISIBLE_MS = 300;  // floor — avoids flicker on instant navs
+  const NAV_PROGRESS_MAX_VISIBLE_MS = 1200; // ceiling — never hangs the bar
+  const NAV_PROGRESS_SETTLE_QUIET_MS = 250; // "main content stopped mutating" window
+
   // Wordmark inlined as a string (not fetched at runtime) so the loader
   // has zero external dependencies: no CORS preflight, no fetch latency,
   // no XSS surface from innerHTML on a fetched response. The string
@@ -1515,8 +1522,10 @@
     // and the user sees default GHL — not a half-broken Bulgarian agency
     // view with misapplied padlocks.
     let lastPath = window.location.pathname;
+    let lastSection = getTopLevelSection();
     const originalLocationId = locationId;
-    setInterval(() => {
+
+    function handlePathChange() {
       if (window.location.pathname === lastPath) return;
       lastPath = window.location.pathname;
       const currentLocationId = getLocationId();
@@ -1527,16 +1536,194 @@
         document.documentElement.setAttribute('data-zd-active', 'true');
         document.documentElement.setAttribute('lang', 'bg');
         scheduleApply(partner, unlockedMetas, activeAddons);
+
+        // Top-level section changed? Fire the nav-progress bar.
+        // Sub-nav inside the same section (e.g. contacts -> contacts
+        // /detail) is intentionally suppressed.
+        const currentSection = getTopLevelSection();
+        if (currentSection && currentSection !== lastSection) {
+          lastSection = currentSection;
+          showNavProgress();
+        }
       } else {
         // Navigated to agency view or a different subaccount — deactivate.
         // A full page reload on the new context will re-bootstrap us
         // properly if it's also a whitelisted partner.
         document.documentElement.removeAttribute('data-zd-active');
         document.documentElement.removeAttribute('lang');
+        // Also clear any in-flight nav-progress so it doesn't linger
+        // on the deactivated (non-partner) screen.
+        hideNavProgress('cross-location');
       }
-    }, 500);
+    }
+
+    // Two parallel triggers feed the same handler:
+    //  - 500ms poll (catches frameworks that bypass pushState somehow,
+    //    plus the back-forward edge cases)
+    //  - Synchronous `zd-pathchange` event from instrumentHistory()
+    //    (fires within ~5ms of a sidebar click — gives the partner
+    //    immediate visual feedback)
+    setInterval(handlePathChange, 500);
+    window.addEventListener('zd-pathchange', handlePathChange);
+    instrumentHistory();
 
     console.info('[ZaDeteto] Activated for', partner.name, '— tier:', partner.tier);
+  }
+
+  // ----------------------------------------------------------------
+  // NAV PROGRESS BAR (ZONE 10b in agency-custom.css)
+  // Lightweight top-edge sweep that fires on top-level section
+  // changes (Dashboard -> Contacts -> Calendars -> ...). Distinct
+  // from the cold-boot loader (#zd-loader) which is a one-time
+  // wordmark moment; this is the per-navigation signal.
+  // ----------------------------------------------------------------
+
+  // Pulls the first path segment after /v2/location/<id>/ so we can
+  // compare "top-level section" across pathname changes. Returns
+  // null if the URL doesn't match (e.g. agency view, login page).
+  function getTopLevelSection() {
+    const m = window.location.pathname
+      .match(/^\/v2\/location\/[^\/]+\/([^\/]+)/);
+    return m ? m[1] : null;
+  }
+
+  // Module-local state for the nav-progress bar. Closed over by
+  // showNavProgress / hideNavProgress so the bar is a singleton.
+  let navProgressEl = null;
+  let navProgressShownAt = 0;
+  let navProgressHardTimer = null;
+  let navProgressSettleTimer = null;
+  let navProgressDeferredHideTimer = null; // honours MIN_VISIBLE_MS
+  let navProgressObserver = null;
+  let navProgressActive = false;
+
+  function ensureNavProgressEl() {
+    if (navProgressEl) return navProgressEl;
+    navProgressEl = document.createElement('div');
+    navProgressEl.id = 'zd-nav-progress';
+    // Decorative: the sweep is indeterminate and continuous, conveys
+    // no semantic info beyond "in flight". aria-hidden cleanly removes
+    // it from the a11y tree; no role / label so we don't contradict.
+    navProgressEl.setAttribute('aria-hidden', 'true');
+    // Defensive fallback: in practice showNavProgress is only reachable
+    // after main() activated (whitelist resolved, body exists), so the
+    // body branch always wins. The documentElement branch is kept as
+    // belt-and-braces.
+    (document.body || document.documentElement).appendChild(navProgressEl);
+    return navProgressEl;
+  }
+
+  function showNavProgress() {
+    // Suppression rules:
+    //  - cold-boot loader still up AND not yet fading → it already
+    //    conveys "loading"; the bar would compete visually. Once the
+    //    loader has the .zd-loader-hide class (fading out), we let
+    //    the nav bar take over so it appears within the same beat.
+    //  - not on a whitelisted partner location → stay neutral
+    const l = document.getElementById('zd-loader');
+    if (l && !l.classList.contains('zd-loader-hide')) return;
+    if (document.documentElement.getAttribute('data-zd-active') !== 'true') return;
+
+    const el = ensureNavProgressEl();
+    // If already active, just reset the ceiling + restart settle watch
+    // (rapid second click should extend, not stack).
+    if (!navProgressActive) {
+      navProgressActive = true;
+      navProgressShownAt = Date.now();
+      el.classList.add('zd-nav-progress--active');
+    }
+
+    // Cancel any pending deferred-hide from a previous show — if we're
+    // re-arming, the old MIN_VISIBLE_MS timer must not fire later and
+    // tear down THIS bar mid-sweep (Critical race fix).
+    if (navProgressDeferredHideTimer !== null) {
+      clearTimeout(navProgressDeferredHideTimer);
+      navProgressDeferredHideTimer = null;
+    }
+    if (navProgressHardTimer !== null) clearTimeout(navProgressHardTimer);
+    navProgressHardTimer = setTimeout(function() {
+      hideNavProgress('ceiling');
+    }, NAV_PROGRESS_MAX_VISIBLE_MS);
+
+    // Settle watch: scoped to body subtree mutations. When mutations
+    // go quiet for NAV_PROGRESS_SETTLE_QUIET_MS, treat the screen as
+    // settled and start the hide.
+    if (navProgressObserver) navProgressObserver.disconnect();
+    if (navProgressSettleTimer !== null) clearTimeout(navProgressSettleTimer);
+    function bumpSettleTimer() {
+      if (navProgressSettleTimer !== null) clearTimeout(navProgressSettleTimer);
+      navProgressSettleTimer = setTimeout(function() {
+        hideNavProgress('settled');
+      }, NAV_PROGRESS_SETTLE_QUIET_MS);
+    }
+    if (document.body) {
+      navProgressObserver = new MutationObserver(bumpSettleTimer);
+      navProgressObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+      bumpSettleTimer(); // arm even if body is already quiet
+    }
+  }
+
+  function hideNavProgress(source) {
+    if (!navProgressActive) return;
+    const elapsed = Date.now() - navProgressShownAt;
+    if (elapsed < NAV_PROGRESS_MIN_VISIBLE_MS) {
+      // Defer to honour the minimum visible duration. Store the
+      // handle so a subsequent showNavProgress() can cancel it —
+      // otherwise the deferred call lands mid-sweep on the re-armed
+      // bar and tears down a fresh nav unexpectedly.
+      if (navProgressDeferredHideTimer !== null) {
+        clearTimeout(navProgressDeferredHideTimer);
+      }
+      navProgressDeferredHideTimer = setTimeout(function() {
+        navProgressDeferredHideTimer = null;
+        hideNavProgress(source);
+      }, NAV_PROGRESS_MIN_VISIBLE_MS - elapsed);
+      return;
+    }
+    navProgressActive = false;
+    if (navProgressEl) {
+      navProgressEl.classList.remove('zd-nav-progress--active');
+    }
+    if (navProgressObserver) {
+      navProgressObserver.disconnect();
+      navProgressObserver = null;
+    }
+    if (navProgressSettleTimer !== null) {
+      clearTimeout(navProgressSettleTimer);
+      navProgressSettleTimer = null;
+    }
+    if (navProgressHardTimer !== null) {
+      clearTimeout(navProgressHardTimer);
+      navProgressHardTimer = null;
+    }
+    if (navProgressDeferredHideTimer !== null) {
+      clearTimeout(navProgressDeferredHideTimer);
+      navProgressDeferredHideTimer = null;
+    }
+  }
+
+  // Monkey-patch pushState/replaceState + listen to popstate so we
+  // can react synchronously on every SPA nav, not wait up to 500ms
+  // for the next pathname poll tick. Wrap preserves this/args/return
+  // so it composes cleanly with any other instrumentation.
+  let historyInstrumented = false;
+  function instrumentHistory() {
+    if (historyInstrumented) return;
+    historyInstrumented = true;
+    ['pushState', 'replaceState'].forEach(function(method) {
+      const orig = history[method];
+      history[method] = function() {
+        const result = orig.apply(this, arguments);
+        try { window.dispatchEvent(new Event('zd-pathchange')); } catch (e) {}
+        return result;
+      };
+    });
+    window.addEventListener('popstate', function() {
+      try { window.dispatchEvent(new Event('zd-pathchange')); } catch (e) {}
+    });
   }
 
   // ----------------------------------------------------------------
